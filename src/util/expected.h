@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <exception>
 #include <stdexcept>
 #include <atomic>
@@ -21,7 +20,7 @@ protected:
 public:
 
     /*constructors*/
-    Expected(const T& r) : result(r), gotResult(true){}
+    Expected(const T& r) : result(r), gotResult(true) {}
     Expected(T&& r) : result(std::move(r)), gotResult(true) {}
     Expected(const Expected& e) : gotResult(e.gotResult)
     {
@@ -37,7 +36,7 @@ public:
         else
             new(&spam) std::exception_ptr(std::move(e.spam));
     }
-    ~Expected(){}
+    ~Expected() {}
 
     /*swap two Expected*/
     void swap(Expected& e)
@@ -65,7 +64,7 @@ public:
 
     /*Create Expected from exception*/
     template<typename E>
-    Expected<T>(E const& e) : spam(std::make_exception_ptr(e)), gotResult(false){}
+    Expected<T>(E const& e) : spam(std::make_exception_ptr(e)), gotResult(false) {}
 
     template<class E>
     static Expected<T> fromException(const E& exception)
@@ -132,11 +131,9 @@ public:
         }
         catch (...)
         {
-
         }
         return false;
     }
-
 
     friend class Expected<void>;
 };
@@ -149,7 +146,7 @@ class Expected<void>
 public:
     /*constructors*/
     template<typename E>
-    Expected(E const& e) : spam(std::make_exception_ptr(e)){}
+    Expected(E const& e) : spam(std::make_exception_ptr(e)) {}
     template<typename T>
     Expected(const Expected<T>& e)
     {
@@ -157,8 +154,8 @@ public:
             new(&spam) std::exception_ptr(e.spam);
     }
 
-    Expected(Expected&& o) : spam(std::move(o.spam)){}
-    Expected() : spam(){}
+    Expected(Expected&& o) : spam(std::move(o.spam)) {}
+    Expected() : spam() {}
 
     /*operator overload*/
     Expected& operator=(const Expected& e)
@@ -170,5 +167,5 @@ public:
 
     bool isValid() const { return !spam; }
     void get() const { if (!isValid()) std::rethrow_exception(spam); }
-    void suppress(){}
+    void suppress() {}
 };
