@@ -36,6 +36,9 @@
     <Filter Include="Source Files\src\render">
       <UniqueIdentifier>{2b42a9b1-a302-4d72-8f26-fb78a82f06fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\extern">
+      <UniqueIdentifier>{cd8896ff-a8d0-4f9f-990f-43cbd0f742ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\util\expected.h">
@@ -47,21 +50,33 @@
     <ClInclude Include="src\util\log.h">
       <Filter>Header Files\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\serviceprovider.h">
+    <ClInclude Include="src\util\settings.h">
       <Filter>Header Files\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\extern\json.hpp">
+    <ClInclude Include="src\extern\tinyxml2.h">
       <Filter>Header Files\src\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\serviceprovider.h">
+      <Filter>Header Files\src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\dx12init.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\util\serviceprovider.cpp">
+    <ClCompile Include="src\util\log.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
-    <ClCompile Include="src\util\log.cpp">
+    <ClCompile Include="src\core\4E53.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\tinyxml2.cpp">
+      <Filter>Source Files\src\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\settings.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\serviceprovider.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>

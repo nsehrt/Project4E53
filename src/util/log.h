@@ -137,9 +137,7 @@ Logger<LogPolicy>::Logger(const std::wstring& name) : logLineNumber(0), threadNa
 template<typename LogPolicy>
 Logger<LogPolicy>::~Logger()
 {
-#ifdef _DEBUG
-
-#endif
+    print<Severity::Info>("Logger is shutting down.");
     isStillRunning.clear();
     daemon.join();
 

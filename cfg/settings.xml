@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <Audio />
+    <Display>
+        <BufferFrames>3</BufferFrames>
+        <GPUAdapter>0</GPUAdapter>
+        <Monitor>0</Monitor>
+        <RefreshRate>144.0</RefreshRate>
+        <ResolutionHeight>1080</ResolutionHeight>
+        <ResolutionWidth>1920</ResolutionWidth>
+        <VSync>0</VSync>
+        <WindowMode>0</WindowMode>
+    </Display>
+    <Gameplay />
+    <Graphic />
+    <Input />
+</root>

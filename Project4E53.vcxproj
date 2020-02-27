@@ -148,16 +148,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\4E53.cpp" />
     <ClCompile Include="src\core\dx12init.cpp" />
+    <ClCompile Include="src\extern\tinyxml2.cpp" />
     <ClCompile Include="src\util\log.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
+    <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\dx12init.h" />
-    <ClInclude Include="src\extern\json.hpp" />
+    <ClInclude Include="src\extern\tinyxml2.h" />
     <ClInclude Include="src\util\expected.h" />
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
+    <ClInclude Include="src\util\settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
