@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Source Files\src">
       <UniqueIdentifier>{6c26a2ae-1b18-4b8a-a48e-a0229a411fc0}</UniqueIdentifier>
     </Filter>
@@ -18,21 +14,6 @@
     <Filter Include="Source Files\src\util">
       <UniqueIdentifier>{3ccd39a4-89c4-440c-b9c9-c4ed48430f26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\src">
-      <UniqueIdentifier>{7ccdb4af-5f7b-4d21-97c9-1d62f5e7a80c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\src\core">
-      <UniqueIdentifier>{29da06d2-5662-402e-8754-1e36898d5d27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\src\util">
-      <UniqueIdentifier>{2633b30f-6021-43b5-8577-7c0252461fed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\src\extern">
-      <UniqueIdentifier>{a5e2e5b1-ad8a-43a4-8a32-d8e92eab67b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\src\render">
-      <UniqueIdentifier>{be363375-5a7c-4b96-b8af-9190361d337b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\src\render">
       <UniqueIdentifier>{2b42a9b1-a302-4d72-8f26-fb78a82f06fc}</UniqueIdentifier>
     </Filter>
@@ -41,23 +22,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\util\expected.h">
-      <Filter>Header Files\src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\dx12init.h">
-      <Filter>Header Files\src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\util\log.h">
-      <Filter>Header Files\src\util</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\settings.h">
-      <Filter>Header Files\src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="src\extern\tinyxml2.h">
-      <Filter>Header Files\src\extern</Filter>
+      <Filter>Source Files\src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\serviceprovider.h">
-      <Filter>Header Files\src\util</Filter>
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\log.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\expected.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\dx12init.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\tinyxml2.h">
+      <Filter>Source Files\src\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\gametime.hpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\d3dUtil.h">
+      <Filter>Source Files\src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +64,12 @@
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\util\serviceprovider.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\gametime.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\d3dUtil.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>

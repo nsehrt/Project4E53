@@ -6,8 +6,8 @@
         <GPUAdapter>0</GPUAdapter>
         <Monitor>0</Monitor>
         <RefreshRate>144.0</RefreshRate>
-        <ResolutionHeight>1080</ResolutionHeight>
-        <ResolutionWidth>1920</ResolutionWidth>
+        <ResolutionWidth>1280</ResolutionWidth>
+        <ResolutionHeight>720</ResolutionHeight>
         <VSync>0</VSync>
         <WindowMode>0</WindowMode>
     </Display>

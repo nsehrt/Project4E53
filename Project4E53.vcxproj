@@ -76,16 +76,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\Output</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)\Temp</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\Output</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)\Temp</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -150,14 +150,18 @@
   <ItemGroup>
     <ClCompile Include="src\core\4E53.cpp" />
     <ClCompile Include="src\core\dx12init.cpp" />
+    <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\extern\tinyxml2.cpp" />
+    <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\log.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
     <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\dx12init.h" />
+    <ClInclude Include="src\core\gametime.hpp" />
     <ClInclude Include="src\extern\tinyxml2.h" />
+    <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\expected.h" />
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
