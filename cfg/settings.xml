@@ -4,11 +4,11 @@
     <Display>
         <BufferFrames>3</BufferFrames>
         <Monitor>0</Monitor>
-        <RefreshRate>144.0</RefreshRate>
-        <ResolutionWidth>1920</ResolutionWidth>
-        <ResolutionHeight>1080</ResolutionHeight>
+        <RefreshRate>144</RefreshRate>
+        <ResolutionWidth>1280</ResolutionWidth>
+        <ResolutionHeight>720</ResolutionHeight>
         <VSync>0</VSync>
-        <WindowMode>1</WindowMode>
+        <WindowMode>0</WindowMode>
     </Display>
 
     <Gameplay />

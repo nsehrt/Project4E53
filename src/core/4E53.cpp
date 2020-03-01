@@ -21,8 +21,16 @@ private:
 	virtual void update(const GameTime& gt)override;
 	virtual void draw(const GameTime& gt)override;
 
+	int vsyncIntervall;
 };
 
+
+
+
+
+/*******/
+/*main entry point*/
+/*******/
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 				   _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -83,6 +91,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 
 
+
+/*class members*/
+
 P_4E53::P_4E53(HINSTANCE hInstance)
 	: DX12App(hInstance)
 {
@@ -97,12 +108,17 @@ bool P_4E53::Initialize()
 	if (!DX12App::Initialize())
 		return false;
 
+	/**copy settings **/
+	vsyncIntervall = ServiceProvider::getSettings()->displaySettings.VSync;
+
 	return true;
 }
 
 void P_4E53::onResize()
 {
 	DX12App::onResize();
+
+
 }
 
 void P_4E53::update(const GameTime& gt)
@@ -129,7 +145,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 
 	// Clear the back buffer and depth buffer.
-	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
+	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::DarkBlue, 0, nullptr);
 	mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
@@ -147,7 +163,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	// swap the back and front buffers
-	ThrowIfFailed(mSwapChain->Present(ServiceProvider::getSettings()->displaySettings.VSync, 0));
+	ThrowIfFailed(mSwapChain->Present(vsyncIntervall, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	// Wait until frame commands are complete.  This waiting is inefficient and is

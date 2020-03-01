@@ -24,8 +24,10 @@ DX12App::DX12App(HINSTANCE hInstance)
     mScissorRect = D3D12_RECT();
     mScreenViewport = D3D12_VIEWPORT();
 
-    mWindowWidth = ServiceProvider::getSettings()->displaySettings.ResolutionWidth;
-    mWindowHeight = ServiceProvider::getSettings()->displaySettings.ResolutionHeight;
+    mWindowWidth = 800;
+    mWindowHeight = 600;
+
+    getPrimaryResolution();
 }
 
 DX12App::~DX12App()
@@ -49,21 +51,57 @@ float DX12App::getAspectRatio()const
     return static_cast<float>(mWindowWidth) / mWindowHeight;
 }
 
-
-bool DX12App::getMSAAState()const
+void DX12App::setFullscreen(bool value)
 {
-    return msaaState;
+
+    if (value)
+    {
+        /*query for monitors*/
+        IDXGIAdapter* adapter = nullptr;
+        mdxgiFactory->EnumAdapters(0, &adapter);
+
+        IDXGIOutput* output = nullptr;
+        if (adapter->EnumOutputs(ServiceProvider::getSettings()->displaySettings.Monitor, &output) == DXGI_ERROR_NOT_FOUND)
+        {
+            mSwapChain->SetFullscreenState(true, nullptr);
+            ServiceProvider::getVSLogger()->print<Severity::Info>("Switching to fullscreen mode on standard monitor. (Setting ignored)");
+        }
+        else
+        {
+            mSwapChain->SetFullscreenState(true, output);
+            std::stringstream stream;
+            stream << "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".";
+            ServiceProvider::getVSLogger()->print<Severity::Info>(stream.str());
+        }
+
+    }
+    else
+    {
+        mSwapChain->SetFullscreenState(false, nullptr);
+
+        ServiceProvider::getVSLogger()->print<Severity::Info>("Leaving fullscreen mode.");
+    }
+
 }
 
-void DX12App::setMSAAState(bool value)
+bool DX12App::changeWindowSize()
 {
-    if (msaaState != value)
-    {
-        msaaState = value;
+    int fX = (priResX - mWindowWidth) / 2;
+    int fY = (priResY - mWindowHeight) / 2;
 
-        createSwapChain();
-        onResize();
-    }
+    if (fX < 0) fX = 0;
+    if (fY < 0) fY = 0;
+
+
+    bool ret = SetWindowPos(mMainWindow, HWND_TOP, fX, fY, mWindowWidth, mWindowHeight, SWP_SHOWWINDOW);
+
+    return ret;
+}
+
+void DX12App::getPrimaryResolution()
+{
+    priResX = GetSystemMetrics(SM_CXSCREEN);
+    priResY = GetSystemMetrics(SM_CYSCREEN);
 }
 
 int DX12App::run()
@@ -94,7 +132,7 @@ int DX12App::run()
 
     if (mFullscreenState)
     {
-        mSwapChain->SetFullscreenState(false, nullptr);
+        setFullscreen(false);
     }
 
     return (int)msg.wParam;
@@ -123,35 +161,16 @@ bool DX12App::Initialize()
     {
         ServiceProvider::getVSLogger()->print<Severity::Info>("DirectX 12 was set up successfully.");
     }
-        
-
-    onResize();
 
     /*fullscreen state*/
 
-    mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode;
-    if (mFullscreenState)
-    {
-        /*query for monitors*/
-        IDXGIAdapter* adapter = nullptr;
-        mdxgiFactory->EnumAdapters(0, &adapter);
-        
-        IDXGIOutput* output = nullptr;
-        if (adapter->EnumOutputs(ServiceProvider::getSettings()->displaySettings.Monitor, &output) == DXGI_ERROR_NOT_FOUND)
-        {
-            mSwapChain->SetFullscreenState(true, nullptr);
-            ServiceProvider::getVSLogger()->print<Severity::Info>("Switching to fullscreen mode on standard monitor. (Setting ignored)");
-        }
-        else
-        {
-            mSwapChain->SetFullscreenState(true, output);
-            std::stringstream stream;
-            stream << "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".";
-            ServiceProvider::getVSLogger()->print<Severity::Info>(stream.str());
-        }
+    mWindowWidth = ServiceProvider::getSettings()->displaySettings.ResolutionWidth;
+    mWindowHeight = ServiceProvider::getSettings()->displaySettings.ResolutionHeight;
 
-    }
-       
+    changeWindowSize();
+
+    mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode;
+    setFullscreen(mFullscreenState);
 
     return true;
 }
@@ -189,6 +208,8 @@ void DX12App::onResize()
 
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
 
+    ServiceProvider::getVSLogger()->print<Severity::Info>("Resizing DX12 resources.");
+
     /*release the previous resources*/
     for (int i = 0; i < SwapChainBufferCount; ++i)
         mSwapChainBuffer[i].Reset();
@@ -220,8 +241,8 @@ void DX12App::onResize()
     depthStencilDesc.DepthOrArraySize = 1;
     depthStencilDesc.MipLevels = 1;
     depthStencilDesc.Format = mDepthStencilFormat;
-    depthStencilDesc.SampleDesc.Count = msaaState ? 4 : 1;
-    depthStencilDesc.SampleDesc.Quality = msaaState ? (msaaQuality - 1) : 0;
+    depthStencilDesc.SampleDesc.Count = 1;
+        depthStencilDesc.SampleDesc.Quality = 0;
     depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
@@ -264,7 +285,7 @@ void DX12App::onResize()
 }
 
 
-
+/***WIN32 Message Loop****/
 LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -273,81 +294,23 @@ LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         // We pause the game when the window is deactivated and unpause it 
         // when it becomes active.  
         case WM_ACTIVATE:
-            if (LOWORD(wParam) == WA_INACTIVE)
-            {
-                mAppPaused = true;
-                mTimer.Stop();
-            }
-            else
-            {
-                mAppPaused = false;
-                mTimer.Start();
-            }
             return 0;
 
             // WM_SIZE is sent when the user resizes the window.  
         case WM_SIZE:
-            // Save the new client area dimensions.
-            mWindowWidth = LOWORD(lParam);
-            mWindowHeight = HIWORD(lParam);
             if (mDevice)
             {
-                if (wParam == SIZE_MINIMIZED)
-                {
-                    mAppPaused = true;
-                    mMinimized = true;
-                    mMaximized = false;
-                }
-                else if (wParam == SIZE_MAXIMIZED)
-                {
-                    mAppPaused = false;
-                    mMinimized = false;
-                    mMaximized = true;
                     onResize();
-                }
-                else if (wParam == SIZE_RESTORED)
-                {
-
-                    // Restoring from minimized state?
-                    if (mMinimized)
-                    {
-                        mAppPaused = false;
-                        mMinimized = false;
-                        onResize();
-                    }
-
-                    // Restoring from maximized state?
-                    else if (mMaximized)
-                    {
-                        mAppPaused = false;
-                        mMaximized = false;
-                        onResize();
-                    }
-                    else if (mResizing)
-                    {
-                    }
-                    else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
-                    {
-                        onResize();
-                    }
-                }
             }
             return 0;
 
             // WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
         case WM_ENTERSIZEMOVE:
-            mAppPaused = true;
-            mResizing = true;
-            mTimer.Stop();
             return 0;
 
             // WM_EXITSIZEMOVE is sent when the user releases the resize bars.
             // Here we reset everything based on the new window dimensions.
         case WM_EXITSIZEMOVE:
-            mAppPaused = false;
-            mResizing = false;
-            mTimer.Start();
-            onResize();
             return 0;
 
             // WM_DESTROY is sent when the window is being destroyed.
@@ -363,8 +326,6 @@ LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
             // Catch this message so to prevent the window from becoming too small.
         case WM_GETMINMAXINFO:
-            ((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
-            ((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
             return 0;
 
         case WM_KEYUP:
@@ -515,12 +476,12 @@ void DX12App::createSwapChain()
     sd.BufferDesc.Format = mBackBufferFormat;
     sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-    sd.SampleDesc.Count = msaaState ? 4 : 1;
-    sd.SampleDesc.Quality = msaaState ? (msaaQuality - 1) : 0;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.BufferCount = SwapChainBufferCount;
     sd.OutputWindow = mMainWindow;
-    sd.Windowed = false;
+    sd.Windowed = true;
     sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -606,83 +567,16 @@ void DX12App::logAdapters()
         DXGI_ADAPTER_DESC desc;
         adapter->GetDesc(&desc);
 
-        std::wstring text = L"***Adapter: ";
-        text += desc.Description;
-        text += L"\n";
-
         if (ServiceProvider::getSettings()->miscSettings.AdapterName == "")
         {
             std::wstring t = desc.Description;
             std::string s(t.begin(), t.end());
             ServiceProvider::getSettings()->miscSettings.AdapterName = s;
         }
-            
-
-        //OutputDebugString(text.c_str());
 
         ReleaseCom(adapter);
-
-        //adapterList.push_back(adapter);
 
         i++;
     }
 
-    //for (size_t i = 0; i < adapterList.size(); ++i)
-    //{
-    //    //logAdapterOutputs(adapterList[i]);
-    //    ReleaseCom(adapterList[i]);
-    //}
 }
-
-//void DX12App::logAdapterOutputs(IDXGIAdapter* adapter)
-//{
-//    UINT i = 0;
-//    IDXGIOutput* output = nullptr;
-//    while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
-//    {
-//        DXGI_OUTPUT_DESC desc;
-//        output->GetDesc(&desc);
-//
-//        std::wstring text = L"***Output: ";
-//        text += desc.DeviceName;
-//        text += L"\n";
-//        OutputDebugString(text.c_str());
-//
-//        logOutputDisplayModes(output, mBackBufferFormat);
-//
-//        ReleaseCom(output);
-//
-//        ++i;
-//    }
-//}
-//
-//void DX12App::logOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
-//{
-//    UINT count = 0;
-//    UINT flags = 0;
-//
-//    // Call with nullptr to get list count.
-//    output->GetDisplayModeList(format, flags, &count, nullptr);
-//
-//    std::vector<DXGI_MODE_DESC> modeList(count);
-//    output->GetDisplayModeList(format, flags, &count, &modeList[0]);
-//
-//    for (auto& x : modeList)
-//    {
-//        UINT n = x.RefreshRate.Numerator;
-//        UINT d = x.RefreshRate.Denominator;
-//        std::wstring text =
-//            L"Width = " + std::to_wstring(x.Width) + L" " +
-//            L"Height = " + std::to_wstring(x.Height) + L" " +
-//            L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
-//            L"\n";
-//
-//        ::OutputDebugString(text.c_str());
-//    }
-//}
-//
-//
-
-
-
-

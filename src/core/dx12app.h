@@ -25,8 +25,9 @@ public:
     HWND getMainWindowHandle()const;
     float getAspectRatio()const;
 
-    bool getMSAAState()const;
-    void setMSAAState(bool value);
+    void setFullscreen(bool value);
+    bool changeWindowSize();
+    void getPrimaryResolution();
 
     int run();
 
@@ -107,5 +108,8 @@ protected:
     DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     int mWindowWidth = 800;
     int mWindowHeight = 600;
+
+    int priResX = 0;
+    int priResY = 0;
 
 };

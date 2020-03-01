@@ -36,6 +36,11 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pDisplay, "VSync", &settings.displaySettings.VSync))
         return false;
 
+    if (settings.displaySettings.VSync < 0 || settings.displaySettings.VSync > 4)
+    {
+        settings.displaySettings.VSync = 0;
+    }
+
     if (!setSetting(pDisplay, "WindowMode", &settings.displaySettings.WindowMode))
         return false;
 
