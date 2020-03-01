@@ -437,7 +437,11 @@ bool DX12App::initDirect3D()
     createSwapChain();
     createRtvAndDsvDescriptorHeaps();
 
+    /*disable alt enter*/
+    mdxgiFactory->MakeWindowAssociation(mMainWindow, DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_WINDOW_CHANGES);
+
     return true;
+
 }
 
 

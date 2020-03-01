@@ -39,6 +39,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	auto startTime = std::chrono::system_clock::now();
+
 	int status = 0;
 
 	/*create logger*/
@@ -70,7 +72,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			return 0;
 		}
 
-		ServiceProvider::getVSLogger()->print<Severity::Info>("Game initialization was successful.");
+		auto endTime = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsedTime = endTime - startTime;
+		std::stringstream outStr;
+		outStr << "Game initialization was successful. (" << elapsedTime.count() << " seconds)";
+
+		ServiceProvider::getVSLogger()->print<Severity::Info>(outStr.str());
 
 		status = app.run();
 
@@ -97,10 +104,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 P_4E53::P_4E53(HINSTANCE hInstance)
 	: DX12App(hInstance)
 {
+	mWindowCaption = L"Project 4E53";
+
+
+
 }
 
 P_4E53::~P_4E53()
 {
+
+
 }
 
 bool P_4E53::Initialize()

@@ -19,6 +19,7 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
+#include <chrono>
 #include "../extern/d3dx12.h"
 #include "../extern/DDSTextureLoader.h"
 
