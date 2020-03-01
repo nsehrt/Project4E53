@@ -34,9 +34,6 @@
     <ClInclude Include="src\util\expected.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\dx12init.h">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\extern\tinyxml2.h">
       <Filter>Source Files\src\extern</Filter>
     </ClInclude>
@@ -46,11 +43,11 @@
     <ClInclude Include="src\util\d3dUtil.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\dx12app.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\dx12init.cpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="src\util\log.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
@@ -71,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="src\util\d3dUtil.cpp">
       <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\dx12app.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

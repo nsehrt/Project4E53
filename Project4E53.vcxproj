@@ -149,7 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\4E53.cpp" />
-    <ClCompile Include="src\core\dx12init.cpp" />
+    <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\extern\tinyxml2.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
@@ -158,7 +158,7 @@
     <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\dx12init.h" />
+    <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\gametime.hpp" />
     <ClInclude Include="src\extern\tinyxml2.h" />
     <ClInclude Include="src\util\d3dUtil.h" />

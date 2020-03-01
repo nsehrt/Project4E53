@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
+#include <locale>
+#include <codecvt>
 #include "../extern/d3dx12.h"
 #include "../extern/DDSTextureLoader.h"
 
@@ -62,8 +64,6 @@ class d3dUtil
 public:
 
     static bool isKeyDown(int vKeyCode);
-
-    static std::string toString(HRESULT hr);
 
     static UINT CalcConstantBufferSize(UINT byteSize)
     {

@@ -1,4 +1,4 @@
-#include "dx12init.h"
+#include "dx12app.h"
 #include "../util/serviceprovider.h"
 #include <windowsx.h>
 
@@ -8,19 +8,19 @@ using namespace std;
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    return Dx12Init::getApp()->MsgProc(hwnd, msg, wParam, lParam);
+    return DX12App::getApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
-Dx12Init* Dx12Init::dx12Init = nullptr;
-Dx12Init* Dx12Init::getApp()
+DX12App* DX12App::dx12App = nullptr;
+DX12App* DX12App::getApp()
 {
-    return dx12Init;
+    return dx12App;
 }
 
-Dx12Init::Dx12Init(HINSTANCE hInstance)
+DX12App::DX12App(HINSTANCE hInstance)
 {
-    assert(dx12Init == nullptr);
-    dx12Init = this;
+    assert(dx12App == nullptr);
+    dx12App = this;
     mScissorRect = D3D12_RECT();
     mScreenViewport = D3D12_VIEWPORT();
 
@@ -28,34 +28,34 @@ Dx12Init::Dx12Init(HINSTANCE hInstance)
     mWindowHeight = ServiceProvider::getSettings()->displaySettings.ResolutionHeight;
 }
 
-Dx12Init::~Dx12Init()
+DX12App::~DX12App()
 {
     if (mDevice != nullptr)
         flushCommandQueue();
 }
 
-HINSTANCE Dx12Init::getAppInst()const
+HINSTANCE DX12App::getAppInst()const
 {
     return mAppInst;
 }
 
-HWND Dx12Init::getMainWindowHandle()const
+HWND DX12App::getMainWindowHandle()const
 {
     return mMainWindow;
 }
 
-float Dx12Init::getAspectRatio()const
+float DX12App::getAspectRatio()const
 {
     return static_cast<float>(mWindowWidth) / mWindowHeight;
 }
 
 
-bool Dx12Init::getMSAAState()const
+bool DX12App::getMSAAState()const
 {
     return msaaState;
 }
 
-void Dx12Init::setMSAAState(bool value)
+void DX12App::setMSAAState(bool value)
 {
     if (msaaState != value)
     {
@@ -66,7 +66,7 @@ void Dx12Init::setMSAAState(bool value)
     }
 }
 
-int Dx12Init::run()
+int DX12App::run()
 {
     MSG msg = { 0 };
 
@@ -90,11 +90,18 @@ int Dx12Init::run()
 
     }
 
+    ServiceProvider::getVSLogger()->print<Severity::Info>("Main window has been flagged for destruction.");
+
+    if (mFullscreenState)
+    {
+        mSwapChain->SetFullscreenState(false, nullptr);
+    }
+
     return (int)msg.wParam;
 }
 
 
-bool Dx12Init::Initialize()
+bool DX12App::Initialize()
 {
     if (!initMainWindow())
     {
@@ -120,11 +127,37 @@ bool Dx12Init::Initialize()
 
     onResize();
 
+    /*fullscreen state*/
+
+    mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode;
+    if (mFullscreenState)
+    {
+        /*query for monitors*/
+        IDXGIAdapter* adapter = nullptr;
+        mdxgiFactory->EnumAdapters(0, &adapter);
+        
+        IDXGIOutput* output = nullptr;
+        if (adapter->EnumOutputs(ServiceProvider::getSettings()->displaySettings.Monitor, &output) == DXGI_ERROR_NOT_FOUND)
+        {
+            mSwapChain->SetFullscreenState(true, nullptr);
+            ServiceProvider::getVSLogger()->print<Severity::Info>("Switching to fullscreen mode on standard monitor. (Setting ignored)");
+        }
+        else
+        {
+            mSwapChain->SetFullscreenState(true, output);
+            std::stringstream stream;
+            stream << "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".";
+            ServiceProvider::getVSLogger()->print<Severity::Info>(stream.str());
+        }
+
+    }
+       
+
     return true;
 }
 
 
-void Dx12Init::createRtvAndDsvDescriptorHeaps()
+void DX12App::createRtvAndDsvDescriptorHeaps()
 {
     D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
     rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
@@ -146,7 +179,7 @@ void Dx12Init::createRtvAndDsvDescriptorHeaps()
 
 
 
-void Dx12Init::onResize()
+void DX12App::onResize()
 {
     assert(mDevice);
     assert(mSwapChain);
@@ -232,7 +265,7 @@ void Dx12Init::onResize()
 
 
 
-LRESULT Dx12Init::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
@@ -347,7 +380,7 @@ LRESULT Dx12Init::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 
-bool Dx12Init::initMainWindow()
+bool DX12App::initMainWindow()
 {
     WNDCLASS wc;
     wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -374,7 +407,7 @@ bool Dx12Init::initMainWindow()
     int height = R.bottom - R.top;
 
     mMainWindow = CreateWindow(L"MainWnd", mWindowCaption.c_str(),
-                             WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
+                             WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX ^ WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
     if (!mMainWindow)
     {
         MessageBox(0, L"CreateWindow Failed.", 0, 0);
@@ -390,7 +423,7 @@ bool Dx12Init::initMainWindow()
 
 
 
-bool Dx12Init::initDirect3D()
+bool DX12App::initDirect3D()
 {
 #ifdef _DEBUG
     {
@@ -429,26 +462,15 @@ bool Dx12Init::initDirect3D()
     mDsvDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     mCbvSrvUavDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-    // Check 4X MSAA quality support for our back buffer format.
-    // All Direct3D 11 capable devices support 4X MSAA for all render 
-    // target formats, so we only need to check quality support.
+    msaaState = false;
+    msaaQuality = 0;
 
-    D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msQualityLevels;
-    msQualityLevels.Format = mBackBufferFormat;
-    msQualityLevels.SampleCount = 4;
-    msQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
-    msQualityLevels.NumQualityLevels = 0;
-    ThrowIfFailed(mDevice->CheckFeatureSupport(
-        D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,
-        &msQualityLevels,
-        sizeof(msQualityLevels)));
-
-    msaaQuality = msQualityLevels.NumQualityLevels;
-    assert(msaaQuality > 0 && "Unexpected MSAA quality level.");
-
-#ifdef _DEBUG
     logAdapters();
-#endif
+
+    std::stringstream adapterInfo;
+    adapterInfo << "Using graphic adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".";
+
+    ServiceProvider::getVSLogger()->print<Severity::Info>(adapterInfo.str());
 
     createCommandObjects();
     createSwapChain();
@@ -458,7 +480,7 @@ bool Dx12Init::initDirect3D()
 }
 
 
-void Dx12Init::createCommandObjects()
+void DX12App::createCommandObjects()
 {
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -480,7 +502,7 @@ void Dx12Init::createCommandObjects()
 }
 
 
-void Dx12Init::createSwapChain()
+void DX12App::createSwapChain()
 {
     // Release the previous swapchain we will be recreating.
     mSwapChain.Reset();
@@ -498,7 +520,7 @@ void Dx12Init::createSwapChain()
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.BufferCount = SwapChainBufferCount;
     sd.OutputWindow = mMainWindow;
-    sd.Windowed = !ServiceProvider::getSettings()->displaySettings.WindowMode;
+    sd.Windowed = false;
     sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -510,7 +532,7 @@ void Dx12Init::createSwapChain()
 }
 
 
-void Dx12Init::flushCommandQueue()
+void DX12App::flushCommandQueue()
 {
     mCurrentFence++;
 
@@ -527,12 +549,12 @@ void Dx12Init::flushCommandQueue()
     }
 }
 
-ID3D12Resource* Dx12Init::getCurrentBackBuffer()const
+ID3D12Resource* DX12App::getCurrentBackBuffer()const
 {
     return mSwapChainBuffer[mCurrBackBuffer].Get();
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE Dx12Init::getCurrentBackBufferView()const
+D3D12_CPU_DESCRIPTOR_HANDLE DX12App::getCurrentBackBufferView()const
 {
     return CD3DX12_CPU_DESCRIPTOR_HANDLE(
         mRtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -540,12 +562,12 @@ D3D12_CPU_DESCRIPTOR_HANDLE Dx12Init::getCurrentBackBufferView()const
         mRtvDescriptorSize);
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE Dx12Init::getDepthStencilView()const
+D3D12_CPU_DESCRIPTOR_HANDLE DX12App::getDepthStencilView()const
 {
     return mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
-void Dx12Init::calculateFrameStats()
+void DX12App::calculateFrameStats()
 {
     static int frameCount = 0;
     static float timeElapsed = 0.0f;
@@ -574,7 +596,7 @@ void Dx12Init::calculateFrameStats()
 
 
 
-void Dx12Init::logAdapters()
+void DX12App::logAdapters()
 {
     UINT i = 0;
     IDXGIAdapter* adapter = nullptr;
@@ -588,68 +610,78 @@ void Dx12Init::logAdapters()
         text += desc.Description;
         text += L"\n";
 
-        OutputDebugString(text.c_str());
+        if (ServiceProvider::getSettings()->miscSettings.AdapterName == "")
+        {
+            std::wstring t = desc.Description;
+            std::string s(t.begin(), t.end());
+            ServiceProvider::getSettings()->miscSettings.AdapterName = s;
+        }
+            
 
-        adapterList.push_back(adapter);
+        //OutputDebugString(text.c_str());
 
-        ++i;
+        ReleaseCom(adapter);
+
+        //adapterList.push_back(adapter);
+
+        i++;
     }
 
-    for (size_t i = 0; i < adapterList.size(); ++i)
-    {
-        logAdapterOutputs(adapterList[i]);
-        ReleaseCom(adapterList[i]);
-    }
+    //for (size_t i = 0; i < adapterList.size(); ++i)
+    //{
+    //    //logAdapterOutputs(adapterList[i]);
+    //    ReleaseCom(adapterList[i]);
+    //}
 }
 
-void Dx12Init::logAdapterOutputs(IDXGIAdapter* adapter)
-{
-    UINT i = 0;
-    IDXGIOutput* output = nullptr;
-    while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
-    {
-        DXGI_OUTPUT_DESC desc;
-        output->GetDesc(&desc);
-
-        std::wstring text = L"***Output: ";
-        text += desc.DeviceName;
-        text += L"\n";
-        OutputDebugString(text.c_str());
-
-        logOutputDisplayModes(output, mBackBufferFormat);
-
-        ReleaseCom(output);
-
-        ++i;
-    }
-}
-
-void Dx12Init::logOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
-{
-    UINT count = 0;
-    UINT flags = 0;
-
-    // Call with nullptr to get list count.
-    output->GetDisplayModeList(format, flags, &count, nullptr);
-
-    std::vector<DXGI_MODE_DESC> modeList(count);
-    output->GetDisplayModeList(format, flags, &count, &modeList[0]);
-
-    for (auto& x : modeList)
-    {
-        UINT n = x.RefreshRate.Numerator;
-        UINT d = x.RefreshRate.Denominator;
-        std::wstring text =
-            L"Width = " + std::to_wstring(x.Width) + L" " +
-            L"Height = " + std::to_wstring(x.Height) + L" " +
-            L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
-            L"\n";
-
-        ::OutputDebugString(text.c_str());
-    }
-}
-
-
+//void DX12App::logAdapterOutputs(IDXGIAdapter* adapter)
+//{
+//    UINT i = 0;
+//    IDXGIOutput* output = nullptr;
+//    while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
+//    {
+//        DXGI_OUTPUT_DESC desc;
+//        output->GetDesc(&desc);
+//
+//        std::wstring text = L"***Output: ";
+//        text += desc.DeviceName;
+//        text += L"\n";
+//        OutputDebugString(text.c_str());
+//
+//        logOutputDisplayModes(output, mBackBufferFormat);
+//
+//        ReleaseCom(output);
+//
+//        ++i;
+//    }
+//}
+//
+//void DX12App::logOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
+//{
+//    UINT count = 0;
+//    UINT flags = 0;
+//
+//    // Call with nullptr to get list count.
+//    output->GetDisplayModeList(format, flags, &count, nullptr);
+//
+//    std::vector<DXGI_MODE_DESC> modeList(count);
+//    output->GetDisplayModeList(format, flags, &count, &modeList[0]);
+//
+//    for (auto& x : modeList)
+//    {
+//        UINT n = x.RefreshRate.Numerator;
+//        UINT d = x.RefreshRate.Denominator;
+//        std::wstring text =
+//            L"Width = " + std::to_wstring(x.Width) + L" " +
+//            L"Height = " + std::to_wstring(x.Height) + L" " +
+//            L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
+//            L"\n";
+//
+//        ::OutputDebugString(text.c_str());
+//    }
+//}
+//
+//
 
 
 

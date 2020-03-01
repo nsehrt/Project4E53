@@ -24,45 +24,26 @@ bool SettingsLoader::loadSettings(const std::string& path)
     XMLElement* pDisplay = pRoot->FirstChildElement("Display");
     XMLCheckExist(pDisplay);
 
-    XMLElement* pValue = pDisplay->FirstChildElement("GPUAdapter");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.GPUAdapter);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "Monitor", &settings.displaySettings.Monitor))
+        return false;
 
-    pValue = pDisplay->FirstChildElement("Monitor");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.Monitor);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "ResolutionWidth", &settings.displaySettings.ResolutionWidth))
+        return false;
 
-    pValue = pDisplay->FirstChildElement("ResolutionWidth");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.ResolutionWidth);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "ResolutionHeight", &settings.displaySettings.ResolutionHeight))
+        return false;
 
-    pValue = pDisplay->FirstChildElement("ResolutionHeight");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.ResolutionHeight);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "VSync", &settings.displaySettings.VSync))
+        return false;
 
-    pValue = pDisplay->FirstChildElement("VSync");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.VSync);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "WindowMode", &settings.displaySettings.WindowMode))
+        return false;
 
-    pValue = pDisplay->FirstChildElement("WindowMode");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.WindowMode);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "BufferFrames", &settings.displaySettings.BufferFrames))
+        return false;
 
-    pValue = pDisplay->FirstChildElement("BufferFrames");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryIntText(&settings.displaySettings.BufferFrames);
-    XMLCheckResult(eResult);
-
-    pValue = pDisplay->FirstChildElement("RefreshRate");
-    XMLCheckExist(pValue);
-    eResult = pValue->QueryFloatText(&settings.displaySettings.RefreshRate);
-    XMLCheckResult(eResult);
+    if (!setSetting(pDisplay, "RefreshRate", &settings.displaySettings.RefreshRate))
+        return false;
 
     /*load gameplay settings*/
     XMLElement* pGameplay = pRoot->FirstChildElement("Gameplay");
@@ -71,6 +52,7 @@ bool SettingsLoader::loadSettings(const std::string& path)
     /*load graphic settings*/
     XMLElement* pGraphic = pRoot->FirstChildElement("Graphic");
     XMLCheckExist(pGraphic);
+
 
     /*load input settings*/
     XMLElement* pInput = pRoot->FirstChildElement("Input");
@@ -83,4 +65,34 @@ bool SettingsLoader::loadSettings(const std::string& path)
 std::shared_ptr<Settings> SettingsLoader::get()
 {
     return std::make_shared<Settings>(settings);
+}
+
+bool SettingsLoader::setSetting(XMLElement* r, const char* id, int* target)
+{
+    XMLElement* value = r->FirstChildElement(id);
+    XMLError eResult;
+    XMLCheckExist(value);
+    eResult = value->QueryIntText(target);
+    
+    if (eResult != XML_SUCCESS)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool SettingsLoader::setSetting(XMLElement* r, const char* id, float* target)
+{
+    XMLElement* value = r->FirstChildElement(id);
+    XMLError eResult;
+    XMLCheckExist(value);
+    eResult = value->QueryFloatText(target);
+
+    if (eResult != XML_SUCCESS)
+    {
+        return false;
+    }
+
+    return true;
 }

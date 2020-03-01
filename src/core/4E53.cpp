@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "dx12init.h"
+#include "dx12app.h"
 #include "../util/settings.h"
 #include "../util/serviceprovider.h"
 
@@ -7,7 +7,7 @@
 
 using namespace DirectX;
 
-class P_4E53 : public Dx12Init
+class P_4E53 : public DX12App
 {
 
 public:
@@ -62,13 +62,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			return 0;
 		}
 
+		ServiceProvider::getVSLogger()->print<Severity::Info>("Game initialization was successful.");
+
 		status = app.run();
+
 		ServiceProvider::getVSLogger()->print<Severity::Info>("Game loop has been quit!");
 
 		return 0;
 	}
 	catch (DxException & e)
 	{
+		ServiceProvider::getVSLogger()->print<Severity::Critical>("Exception thrown!");
+
 		MessageBox(nullptr, e.toString().c_str(), L"HR Failed", MB_OK);
 		status = -1;
 		return status;
@@ -79,7 +84,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 
 P_4E53::P_4E53(HINSTANCE hInstance)
-	: Dx12Init(hInstance)
+	: DX12App(hInstance)
 {
 }
 
@@ -89,7 +94,7 @@ P_4E53::~P_4E53()
 
 bool P_4E53::Initialize()
 {
-	if (!Dx12Init::Initialize())
+	if (!DX12App::Initialize())
 		return false;
 
 	return true;
@@ -97,7 +102,7 @@ bool P_4E53::Initialize()
 
 void P_4E53::onResize()
 {
-	Dx12Init::onResize();
+	DX12App::onResize();
 }
 
 void P_4E53::update(const GameTime& gt)

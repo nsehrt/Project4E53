@@ -4,17 +4,12 @@
 #include <string>
 #include <memory>
 
-#ifndef XMLCheckResult
-    #define XMLCheckResult(a_eResult) if (a_eResult != XML_SUCCESS) { return false; }
-#endif
-
 #ifndef XMLCheckExist
     #define XMLCheckExist(eResult) if(eResult == nullptr){return false;}
 #endif
 
 struct DisplaySettings
 {
-    int GPUAdapter = 0;
     int Monitor = 0;
     int ResolutionWidth = 640;
     int ResolutionHeight = 480;
@@ -44,6 +39,13 @@ struct AudioSettings
     int fill;
 };
 
+struct Misc
+{
+    std::string AdapterName;
+
+
+};
+
 
 struct Settings
 {
@@ -52,17 +54,22 @@ struct Settings
     GraphicSettings graphicSettings;
     GameplaySettings gameplaySettings;
     AudioSettings audioSettings;
+    Misc miscSettings;
 };
 
 class SettingsLoader
 {
+private:
+    Settings settings;
+
 public:
-    SettingsLoader() {};
+    SettingsLoader() { settings.miscSettings.AdapterName = ""; };
     ~SettingsLoader() {};
 
     bool loadSettings(const std::string& path);
     std::shared_ptr<Settings> get();
 
 private:
-    Settings settings;
+    bool setSetting(tinyxml2::XMLElement* r, const char* id, int* target);
+    bool setSetting(tinyxml2::XMLElement* r, const char* id, float* target);
 };

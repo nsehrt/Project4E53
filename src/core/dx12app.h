@@ -9,17 +9,17 @@
 #pragma comment(lib, "dxgi.lib")
 
 
-class Dx12Init
+class DX12App
 {
 protected:
-    Dx12Init(HINSTANCE hInstance);
-    Dx12Init(const Dx12Init& rhs) = delete;
-    Dx12Init& operator=(const Dx12Init& rhs) = delete;
-    virtual ~Dx12Init();
+    DX12App(HINSTANCE hInstance);
+    DX12App(const DX12App& rhs) = delete;
+    DX12App& operator=(const DX12App& rhs) = delete;
+    virtual ~DX12App();
 
 public:
 
-    static Dx12Init* getApp();
+    static DX12App* getApp();
 
     HINSTANCE getAppInst() const;
     HWND getMainWindowHandle()const;
@@ -53,12 +53,12 @@ protected:
     void calculateFrameStats();
 
     void logAdapters();
-    void logAdapterOutputs(IDXGIAdapter* adapter);
-    void logOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
+    //void logAdapterOutputs(IDXGIAdapter* adapter);
+    //void logOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
 
 protected:
-    static Dx12Init* dx12Init;
+    static DX12App* dx12App;
 
     HINSTANCE mAppInst = nullptr;
     HWND mMainWindow = nullptr;
