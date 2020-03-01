@@ -20,6 +20,12 @@
     <Filter Include="Source Files\src\extern">
       <UniqueIdentifier>{cd8896ff-a8d0-4f9f-990f-43cbd0f742ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\input">
+      <UniqueIdentifier>{586c675f-06fe-4481-9179-53dce4570422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\audio">
+      <UniqueIdentifier>{98b8481c-54ca-4183-a5aa-34c976a56c01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\util\settings.h">
@@ -46,6 +52,12 @@
     <ClInclude Include="src\core\dx12app.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\input\ControllerInput.h">
+      <Filter>Source Files\src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\InputManager.h">
+      <Filter>Source Files\src\input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -71,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="src\core\dx12app.cpp">
       <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\ControllerInput.cpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\InputManager.cpp">
+      <Filter>Source Files\src\input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
