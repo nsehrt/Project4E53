@@ -97,7 +97,7 @@ class ControllerInput{
         ControllerInput();
         ~ControllerInput();
 
-        void Update(float deltaTime);
+        void Update();
         void Enable();
         void Disable();
         bool isConnected(int index);
@@ -107,7 +107,7 @@ class ControllerInput{
 
     private:
         ControllerState controllers[MAX_CONTROLLERS];
-        void Update_Internal(float deltaTime, bool init);
+        void Update_Internal(bool init);
         void resetControllerData(int index);
 
         float cTimer;

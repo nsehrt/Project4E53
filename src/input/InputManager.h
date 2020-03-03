@@ -2,6 +2,9 @@
 
 #include "ControllerInput.h"
 #include <vector>
+#include <atomic>
+#include <mutex>
+#include "../util/serviceprovider.h"
 
 #define BUTTON_COUNT 14
 #define TRIGGER_COUNT 6
@@ -35,14 +38,20 @@
 #define THUMB_RX 4
 #define THUMB_RY 5
 
+#define RING_SIZE 3
+
+struct InputS
+{
+    bool buttons[BUTTON_COUNT];
+    float trigger[TRIGGER_COUNT];
+};
 
 
 struct InputData
 {
     int type;
-    bool isConnected;
-    bool buttons[BUTTON_COUNT];
-    float trigger[TRIGGER_COUNT]; /* value between -1 - +1 or 0 - +1*/
+    InputS current;
+    InputS previous;
 };
 
 class InputManager
@@ -53,28 +62,30 @@ public:
     InputManager();
     ~InputManager();
 
-    void Update(float deltaTime);
-    void UpdateMouse(POINT& p);
-    void SetMouseSense(float sense);
+    void Loop();
+    void Stop();
 
-    InputData* getInput(int index);
-    InputData* getPrevInput(int index);
+    void Lock();
+    void Unlock();
+
+    void Update();
+
+    InputData* getInput();
     
-    bool ButtonPressed(int index, int button);
-    bool ButtonReleased(int index, int button);
-
-    void addUsedInput(int a);
-    void clearUsedInput();
     bool usedInputActive = false;
+
 private:
-    ControllerInput* controller;
 
-    InputData data[INPUT_MAX];
-    InputData prevData[INPUT_MAX];
-    std::vector<int> usedInputs;
+    std::atomic<bool> looped;
+    std::mutex lockUsage;
 
-    bool isUsedInput(int a);
-    int charToVKey(char c);
-    POINT mouseDelta;
-    float mouseSense;
+    std::unique_ptr<ControllerInput> controller;
+
+    std::vector<InputData*> inputData;
+    InputS prevData;
+
+    int currentWorkedOn;
+    int lastFinished;
+    int inUse;
+
 };

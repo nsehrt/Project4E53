@@ -28,19 +28,13 @@ void ControllerInput::resetControllerData(int index) {
 }
 
 /*poll all controller input*/
-void ControllerInput::Update(float deltaTime) {
+void ControllerInput::Update() {
 
-    Update_Internal(deltaTime, isInit);
+    Update_Internal(isInit);
     isInit = true;
 }
 
-void ControllerInput::Update_Internal(float deltaTime, bool init) {
-
-    /*cycle to next controller if needed*/
-    cTimer += deltaTime;
-    currentUpdate = (currentUpdate + 1) % 4;
-    cTimer -= CAP_BATTERY_POLL_TIME;
-
+void ControllerInput::Update_Internal(bool init) {
 
     DWORD res;
     for (DWORD i = 0; i < MAX_CONTROLLERS; i++) {
@@ -71,18 +65,6 @@ void ControllerInput::Update_Internal(float deltaTime, bool init) {
             {
                 controllers[i].state.Gamepad.sThumbRX = 0;
                 controllers[i].state.Gamepad.sThumbRY = 0;
-            }
-
-            /*capabilites and battery information*/
-
-            if (init == false || isNewConnection || (i == currentUpdate && cTimer >= CAP_BATTERY_POLL_TIME)) {
-
-
-                res = XInputGetCapabilities(i, XINPUT_FLAG_GAMEPAD, &controllers[i].capabilities);
-
-                if (res == ERROR_SUCCESS && controllers[i].capabilities.Flags == XINPUT_CAPS_WIRELESS) {
-                    XInputGetBatteryInformation(i, BATTERY_DEVTYPE_GAMEPAD, &controllers[i].batteryInfo);
-                }
             }
 
         }else {

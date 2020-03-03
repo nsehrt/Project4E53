@@ -22,6 +22,8 @@ private:
 	virtual void draw(const GameTime& gt)override;
 
 	int vsyncIntervall;
+
+	std::unique_ptr<std::thread> inputThread;
 };
 
 
@@ -37,6 +39,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 {
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 #endif
 
 	auto startTime = std::chrono::system_clock::now();
@@ -57,6 +60,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	if (!settingsLoader.loadSettings(SETTINGS_FILE))
 	{
 		ServiceProvider::getVSLogger()->print<Severity::Error>("Failed to load settings.xml!");
+		MessageBox(nullptr, L"Failed to load settings.xml!", L"Error", MB_OK);
 		return -1;
 	}
 	ServiceProvider::setSettings(settingsLoader.get());
@@ -112,8 +116,8 @@ P_4E53::P_4E53(HINSTANCE hInstance)
 
 P_4E53::~P_4E53()
 {
-
-
+	ServiceProvider::getInputManager()->Stop();
+	inputThread->join();
 }
 
 bool P_4E53::Initialize()
@@ -123,6 +127,13 @@ bool P_4E53::Initialize()
 
 	/**copy settings **/
 	vsyncIntervall = ServiceProvider::getSettings()->displaySettings.VSync;
+
+
+	/*initialize input manager*/
+	std::shared_ptr<InputManager> inputManager(new InputManager());
+	ServiceProvider::setInputManager(inputManager);
+
+	inputThread = std::make_unique<std::thread>(&InputManager::Loop, inputManager);
 
 	return true;
 }

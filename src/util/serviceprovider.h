@@ -2,6 +2,11 @@
 
 #include "log.h"
 #include "settings.h"
+#include "../input/InputManager.h"
+
+/*forward declaration*/
+class InputManager;
+
 
 class ServiceProvider
 {
@@ -11,6 +16,8 @@ private:
     static std::shared_ptr<Logger<VSLogPolicy>> vsLogger;
 
     static std::shared_ptr<Settings> settings;
+
+    static std::shared_ptr<InputManager> input;
 
 public:
     static Logger<FileLogPolicy>* getFileLogger() { return fileLogger.get(); }
@@ -26,4 +33,6 @@ public:
     static Settings* getSettings() { return settings.get(); }
     static void setSettings(std::shared_ptr<Settings> providedSettings);
 
+    static InputManager* getInputManager() { return input.get(); }
+    static void setInputManager(std::shared_ptr<InputManager> providedInputManager);
 };
