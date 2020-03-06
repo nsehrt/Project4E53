@@ -38,20 +38,29 @@
 #define THUMB_RX 4
 #define THUMB_RY 5
 
-#define RING_SIZE 3
-
-struct InputS
-{
-    bool buttons[BUTTON_COUNT];
-    float trigger[TRIGGER_COUNT];
-};
-
+#define RING_SIZE 12
 
 struct InputData
 {
     int type;
-    InputS current;
-    InputS previous;
+    bool buttons[BUTTON_COUNT];
+    float trigger[TRIGGER_COUNT];
+};
+
+struct InputSet
+{
+    InputData current;
+    InputData previous;
+
+    bool Pressed(int button)
+    {
+        return current.buttons[button] && !previous.buttons[button];
+    }
+
+    bool Released(int button)
+    {
+        return !current.buttons[button] && previous.buttons[button];
+    }
 };
 
 class InputManager
@@ -65,27 +74,24 @@ public:
     void Loop();
     void Stop();
 
-    void Lock();
-    void Unlock();
-
     void Update();
 
-    InputData* getInput();
-    
+    InputSet& getInput();
+    void setPrevious(InputData data);
+
+    void releaseInput();
+
     bool usedInputActive = false;
 
 private:
 
     std::atomic<bool> looped;
-    std::mutex lockUsage;
+    std::atomic<int> inUse, lastFinished, currentWorkedOn;
 
     std::unique_ptr<ControllerInput> controller;
 
-    std::vector<InputData*> inputData;
-    InputS prevData;
+    std::vector<InputData> inputData;
+    InputSet inputSet = {};
 
-    int currentWorkedOn;
-    int lastFinished;
-    int inUse;
-
+    const struct InputData EmptyInputData = {};
 };

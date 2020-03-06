@@ -167,8 +167,8 @@ void Logger<LogPolicy>::print(std::stringstream stream)
 
     if (logLineNumber != 0)
         logStream << "\r\n";
-    logStream << logLineNumber++ << ": " << localTime.wDay << "/" << localTime.wMonth << "/" << localTime.wYear <<
-        " " << std::setfill('0') << std::setw(2) << localTime.wHour << ":" << std::setw(2) << localTime.wMinute << ":" << std::setw(2) << localTime.wSecond << "\t";
+    logStream << std::setfill('0') << std::setw(3) << logLineNumber++ << ": " << localTime.wDay << "/" << localTime.wMonth << "/" << localTime.wYear <<
+        " " << std::setw(2) << localTime.wHour << ":" << std::setw(2) << localTime.wMinute << ":" << std::setw(2) << localTime.wSecond << "\t";
 
     switch (severity)
     {

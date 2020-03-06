@@ -23,6 +23,8 @@ private:
 
 	int vsyncIntervall;
 
+	bool TEST = false;
+
 	std::unique_ptr<std::thread> inputThread;
 };
 
@@ -95,6 +97,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 		MessageBox(nullptr, e.toString().c_str(), L"HR Failed", MB_OK);
 		status = -1;
+
 		return status;
 	}
 
@@ -147,7 +150,17 @@ void P_4E53::onResize()
 
 void P_4E53::update(const GameTime& gt)
 {
+	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
 
+	if (inputData.Pressed(BUTTON_A))
+	{
+		TEST = !TEST;
+
+	}
+
+
+	ServiceProvider::getInputManager()->setPrevious(inputData.current);
+	ServiceProvider::getInputManager()->releaseInput();
 }
 
 void P_4E53::draw(const GameTime& gt)
@@ -169,7 +182,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 
 	// Clear the back buffer and depth buffer.
-	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::DarkBlue, 0, nullptr);
+	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), TEST? Colors::GhostWhite : Colors::Beige, 0, nullptr);
 	mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
