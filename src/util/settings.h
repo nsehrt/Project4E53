@@ -21,27 +21,29 @@ struct DisplaySettings
 
 struct InputSettings
 {
-    int fill;
+    int fill = 0;
 };
 
 struct GraphicSettings
 {
-    int fill;
+    int fill = 0;
 };
 
 struct GameplaySettings
 {
-    int fill;
+    int fill = 0;
 };
 
 struct AudioSettings
 {
-    int fill;
+    float MasterVolume = 1.0f;
+    float EffectVolume = 1.0f;
+    float MusicVolume = 1.0f;
 };
 
 struct Misc
 {
-    std::string AdapterName;
+    std::string AdapterName = "";
 
 
 };
@@ -63,7 +65,7 @@ private:
     Settings settings;
 
 public:
-    SettingsLoader() { settings.miscSettings.AdapterName = ""; };
+    SettingsLoader() {};
     ~SettingsLoader() {};
 
     bool loadSettings(const std::string& path);

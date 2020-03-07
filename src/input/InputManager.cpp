@@ -7,11 +7,12 @@ InputManager::InputManager()
     for (int i = 0; i < RING_SIZE; i++)
     {
         inputData.push_back(InputData());
+        inputData[i].type = TYPE_GAMEPAD;
     }
 
     looped = true;
     inUse = -1;
-    
+
 }
 
 InputManager::~InputManager()
@@ -67,6 +68,7 @@ void InputManager::releaseInput()
 
 void InputManager::Update()
 {
+    int currentWorkedOn = 0;
 
     //read controller
     controller->Update();
@@ -80,6 +82,7 @@ void InputManager::Update()
         if (tInUse != i && tLastFinished != i)
         {
             currentWorkedOn = i;
+            break;
         }
     }
 
@@ -168,5 +171,5 @@ void InputManager::Update()
 
 
     /*mark as finished*/
-    lastFinished = currentWorkedOn.load();
+    lastFinished = currentWorkedOn;
 }

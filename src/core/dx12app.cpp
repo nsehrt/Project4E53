@@ -375,6 +375,13 @@ bool DX12App::initMainWindow()
         return false;
     }
 
+    CreateMutexA(0, false, "___dx12app___");
+    if (GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        MessageBox(mMainWindow, L"Application already running!", L"Error", MB_OK);
+        return 0;
+    }
+
     ShowWindow(mMainWindow, SW_SHOW);
     UpdateWindow(mMainWindow);
 

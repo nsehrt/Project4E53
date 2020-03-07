@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <Audio />
+    <Audio>
+        <MasterVolume>0.6</MasterVolume>
+        <EffectVolume>0.8</EffectVolume>
+        <MusicVolume>0.75</MusicVolume>
+    </Audio>
     <Display>
         <BufferFrames>3</BufferFrames>
         <Monitor>0</Monitor>
@@ -11,11 +15,15 @@
         <WindowMode>0</WindowMode>
     </Display>
 
-    <Gameplay />
+    <Gameplay
+    
+    ></Gameplay>
 
     <Graphic>
 
     </Graphic>
 
-    <Input />
+    <Input>
+
+    </Input>
 </root>

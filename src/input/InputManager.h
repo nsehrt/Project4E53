@@ -5,6 +5,7 @@
 #include <atomic>
 #include <mutex>
 #include "../util/serviceprovider.h"
+#include "../core/gametime.hpp"
 
 #define BUTTON_COUNT 14
 #define TRIGGER_COUNT 6
@@ -14,7 +15,7 @@
 #define TYPE_KEYBOARD 0
 #define TYPE_GAMEPAD 1
 
-/*buttons*/
+/*14 buttons*/
 #define BUTTON_A 0
 #define BUTTON_B 1
 #define BUTTON_X 2
@@ -30,7 +31,7 @@
 #define LEFT_THUMB 12
 #define RIGHT_THUMB 13
 
-/*triggers*/
+/*6 triggers*/
 #define LEFT_TRIGGER 0
 #define RIGHT_TRIGGER 1
 #define THUMB_LX 2
@@ -43,8 +44,9 @@
 struct InputData
 {
     int type;
-    bool buttons[BUTTON_COUNT];
-    float trigger[TRIGGER_COUNT];
+    bool buttons[BUTTON_COUNT] = {};
+
+    float trigger[TRIGGER_COUNT] = {};
 };
 
 struct InputSet
@@ -52,12 +54,12 @@ struct InputSet
     InputData current;
     InputData previous;
 
-    bool Pressed(int button)
+    bool Pressed(int button) const
     {
         return current.buttons[button] && !previous.buttons[button];
     }
 
-    bool Released(int button)
+    bool Released(int button) const
     {
         return !current.buttons[button] && previous.buttons[button];
     }
@@ -81,12 +83,10 @@ public:
 
     void releaseInput();
 
-    bool usedInputActive = false;
-
 private:
 
     std::atomic<bool> looped;
-    std::atomic<int> inUse, lastFinished, currentWorkedOn;
+    std::atomic<int> inUse, lastFinished;
 
     std::unique_ptr<ControllerInput> controller;
 

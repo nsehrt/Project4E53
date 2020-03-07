@@ -5,7 +5,7 @@ std::shared_ptr<Logger<CLILogPolicy>>ServiceProvider::cliLogger = NULL;
 std::shared_ptr<Logger<VSLogPolicy>>ServiceProvider::vsLogger = NULL;
 
 std::shared_ptr<Settings>ServiceProvider::settings = NULL;
-
+std::shared_ptr<SoundEngine>ServiceProvider::audio = NULL;
 std::shared_ptr<InputManager>ServiceProvider::input = NULL;
 
 
@@ -26,10 +26,14 @@ void ServiceProvider::setVSLoggingService(std::shared_ptr<Logger<VSLogPolicy>> p
     vsLogger = providedFileLogger;
 }
 
-
 void ServiceProvider::setSettings(std::shared_ptr<Settings> providedSettings)
 {
     settings = providedSettings;
+}
+
+void ServiceProvider::setAudioEngine(std::shared_ptr<SoundEngine> providedSound)
+{
+    audio = providedSound;
 }
 
 void ServiceProvider::setInputManager(std::shared_ptr<InputManager> providedInputManager)

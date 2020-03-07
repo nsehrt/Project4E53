@@ -58,6 +58,9 @@
     <ClInclude Include="src\input\InputManager.h">
       <Filter>Source Files\src\input</Filter>
     </ClInclude>
+    <ClInclude Include="src\audio\soundengine.h">
+      <Filter>Source Files\src\audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="src\input\InputManager.cpp">
       <Filter>Source Files\src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\soundengine.cpp">
+      <Filter>Source Files\src\audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

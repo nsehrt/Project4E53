@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\audio\soundengine.cpp" />
     <ClCompile Include="src\core\4E53.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\gametime.hpp" />
     <ClInclude Include="src\extern\tinyxml2.h" />

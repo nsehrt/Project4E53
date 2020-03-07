@@ -20,6 +20,15 @@ bool SettingsLoader::loadSettings(const std::string& path)
     XMLElement* pAudio = pRoot->FirstChildElement("Audio");
     XMLCheckExist(pAudio);
 
+    if (!setSetting(pAudio, "MasterVolume", &settings.audioSettings.MasterVolume))
+        return false;
+
+    if (!setSetting(pAudio, "EffectVolume", &settings.audioSettings.EffectVolume))
+        return false;
+
+    if (!setSetting(pAudio, "MusicVolume", &settings.audioSettings.MusicVolume))
+        return false;
+
     /*load display settings*/
     XMLElement* pDisplay = pRoot->FirstChildElement("Display");
     XMLCheckExist(pDisplay);

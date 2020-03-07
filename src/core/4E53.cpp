@@ -23,11 +23,12 @@ private:
 
 	int vsyncIntervall;
 
-	bool TEST = false;
+	//bool TEST = false;
+	//GameTime gTest;
 
 	std::unique_ptr<std::thread> inputThread;
+	std::unique_ptr<std::thread> audioThread;
 };
-
 
 
 
@@ -119,8 +120,14 @@ P_4E53::P_4E53(HINSTANCE hInstance)
 
 P_4E53::~P_4E53()
 {
+	/*clean up*/
+
 	ServiceProvider::getInputManager()->Stop();
 	inputThread->join();
+
+	ServiceProvider::getAudio()->Stop();
+	audioThread->join();
+
 }
 
 bool P_4E53::Initialize()
@@ -138,6 +145,13 @@ bool P_4E53::Initialize()
 
 	inputThread = std::make_unique<std::thread>(&InputManager::Loop, inputManager);
 
+	/*initialize audio engine*/
+	std::shared_ptr<SoundEngine> soundEngine(new SoundEngine());
+	ServiceProvider::setAudioEngine(soundEngine);
+
+	audioThread = std::make_unique<std::thread>(&SoundEngine::run, soundEngine);
+
+
 	return true;
 }
 
@@ -148,21 +162,41 @@ void P_4E53::onResize()
 
 }
 
+
+/*=====================*/
+/*  Update  */
+/*=====================*/
 void P_4E53::update(const GameTime& gt)
 {
+	//gTest.Tick();
+
 	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
 
-	if (inputData.Pressed(BUTTON_A))
-	{
-		TEST = !TEST;
+	//if (gTest.TotalTime() > 4.0)
+	//{
+	//	TEST = !TEST;
+	//	gTest.Reset();
+	//}
 
-	}
+	//if (inputData.Pressed(BUTTON_A))
+	//{
+	//	gTest.Start();
+	//}
+
+	//if (!inputData.current.buttons[BUTTON_A])
+	//{
+	//	gTest.Reset();
+	//}
 
 
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
 	ServiceProvider::getInputManager()->releaseInput();
 }
 
+
+/*=====================*/
+/*  Draw  */
+/*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
 	// Reuse the memory associated with command recording.
@@ -182,7 +216,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 
 	// Clear the back buffer and depth buffer.
-	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), TEST? Colors::GhostWhite : Colors::Beige, 0, nullptr);
+	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::LimeGreen, 0, nullptr);
 	mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.

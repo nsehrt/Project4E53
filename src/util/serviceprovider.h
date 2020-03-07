@@ -3,10 +3,11 @@
 #include "log.h"
 #include "settings.h"
 #include "../input/InputManager.h"
+#include "../audio/soundengine.h"
 
 /*forward declaration*/
 class InputManager;
-
+class SoundEngine;
 
 class ServiceProvider
 {
@@ -16,7 +17,7 @@ private:
     static std::shared_ptr<Logger<VSLogPolicy>> vsLogger;
 
     static std::shared_ptr<Settings> settings;
-
+    static std::shared_ptr<SoundEngine> audio;
     static std::shared_ptr<InputManager> input;
 
 public:
@@ -29,9 +30,11 @@ public:
     static Logger<VSLogPolicy>* getVSLogger() { return vsLogger.get(); }
     static void setVSLoggingService(std::shared_ptr<Logger<VSLogPolicy>> providedFileLogger);
 
-
     static Settings* getSettings() { return settings.get(); }
     static void setSettings(std::shared_ptr<Settings> providedSettings);
+
+    static SoundEngine* getAudio() { return audio.get(); }
+    static void setAudioEngine(std::shared_ptr<SoundEngine> providedAudio);
 
     static InputManager* getInputManager() { return input.get(); }
     static void setInputManager(std::shared_ptr<InputManager> providedInputManager);
