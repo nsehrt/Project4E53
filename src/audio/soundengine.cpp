@@ -1,13 +1,9 @@
 #include "soundengine.h"
 #include "../util/serviceprovider.h"
 
-void SoundEngine::run()
+void SoundEngine::init()
 {
-    /* in init*/
-    ServiceProvider::getVSLogger()->setThreadName("audioThread");
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Starting the audio engine.");
-
-    HRESULT hr =  CoInitialize(0);
+    HRESULT hr = CoInitialize(0);
 
     if (hr != S_OK)
     {
@@ -30,17 +26,12 @@ void SoundEngine::run()
         channels.push_back(new SoundChannel());
     }
 
-    /*Main loop*/
-
-    while (looped)
-    {
-        update();
-    }
+    isInit = true;
+}
 
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Shutting down audio engine.");
-
-    /*in uninit*/
+void SoundEngine::uninit()
+{
     for (auto& i : soundCollection)
     {
         delete i.second;
@@ -56,6 +47,35 @@ void SoundEngine::run()
     xaudioMain->StopEngine();
 
     CoUninitialize();
+
+    isInit = false;
+}
+
+
+void SoundEngine::run()
+{
+    /*logger*/
+    ServiceProvider::getVSLogger()->setThreadName("audioThread");
+    ServiceProvider::getVSLogger()->print<Severity::Info>("Starting the audio engine.");
+
+    if (!isInit)
+    {
+        ServiceProvider::getVSLogger()->print<Severity::Critical>("Sound engine is not initialized!");
+        return;
+    }
+
+    /*Main loop*/
+
+    while (looped)
+    {
+        audioTimer.Tick();
+
+        update();
+    }
+
+
+    ServiceProvider::getVSLogger()->print<Severity::Info>("Shutting down audio engine.");
+
 }
 
 void SoundEngine::Stop()
@@ -165,46 +185,78 @@ void SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
     soundCollection.insert(std::make_pair(id, data));
 }
 
-bool SoundEngine::add(const std::string& id, bool loop)
+void SoundEngine::add(unsigned int audioGuid, const std::string& fileId)
 {
-    int usedChannel = -1;
+    std::lock_guard<std::mutex> lock(queueLock);
 
-    /*sound in collection ?*/
-    if (soundCollection.find(id) == soundCollection.end())
-    {
-        MessageBox(NULL, L"Missing sound file!", NULL, MB_OK | MB_ICONERROR);
-        return -1;
-    }
-
-    /*find open voice channel*/
-    for (int i = 0; i < MAX_CHANNELS; i++)
-    {
-        if (channels[i]->available)
-        {
-            usedChannel = i;
-            channels[i]->available = false;
-            break;
-        }
-    }
-
-    if (usedChannel == -1)
-    {
-        //DBOUT("SOUND CHANNELS FULL!");
-        return -1;
-    }
-
-    /*push data in voice*/
-    channels[usedChannel]->audio = soundCollection[id];
-    channels[usedChannel]->timePlaying = 0.f;
-    HRESULT hr = xaudioMain->CreateSourceVoice(&channels[usedChannel]->srcVoice, &channels[usedChannel]->audio->waveFormat);
-    if (FAILED(hr))
-        std::cerr << "Failed to create Source Voice\n";
-
-    return usedChannel;
+    AudioInData data(audioGuid, fileId);
+    addQueue.push_back(std::move(data));
 }
+
 
 void SoundEngine::update()
 {
+    std::lock_guard<std::mutex> lock(channelLock);
+
+    unsigned int usedChannel = MAX_CHANNELS + 1;
+
+    /*check newly added queue*/
+    queueLock.lock();
+
+    if (!addQueue.size() == 0)
+    {
+        AudioInData data = addQueue.front();
+        addQueue.pop_front();
+
+        queueLock.unlock();
+
+
+        if (soundCollection.find(data.fileId) == soundCollection.end() || data.id == 0)
+        {
+            std::stringstream str;
+            str << "Trying to play unknown audio file: " << data.fileId << "!";
+
+            ServiceProvider::getVSLogger()->print<Severity::Warning>(str.str().c_str());
+        }
+        else
+        {
+
+            /*find open voice channel*/
+            for (int i = 0; i < MAX_CHANNELS; i++)
+            {
+                if (channels[i]->available)
+                {
+                    usedChannel = i;
+                    channels[i]->available = false;
+                    break;
+                }
+            }
+
+            if (usedChannel == MAX_CHANNELS + 1)
+            {
+                ServiceProvider::getVSLogger()->print<Severity::Warning>("All sound channels in use!");
+            }
+            else
+            {
+                /* add data to channel */
+                channels[usedChannel]->identifier = data.id;
+                channels[usedChannel]->audio = soundCollection[data.fileId];
+                channels[usedChannel]->timePlaying = 0.f;
+                HRESULT hr = xaudioMain->CreateSourceVoice(&channels[usedChannel]->srcVoice, &channels[usedChannel]->audio->waveFormat);
+                if (FAILED(hr))
+                {
+                    ServiceProvider::getVSLogger()->print<Severity::Warning>("Failed to create xaudio2 source voice!");
+                }
+            }
+
+        }
+    }
+    else
+    {
+        queueLock.unlock();
+    }
+    
+
     /*check queue and play if necessary*/
 
     for (auto& c : channels)
@@ -213,7 +265,7 @@ void SoundEngine::update()
         if (c->available == false)
         {
 
-            c->timePlaying += 1.0;// deltaTime;
+            c->timePlaying += audioTimer.DeltaTime();
 
             if (c->isPlaying == false)
             {
@@ -222,11 +274,11 @@ void SoundEngine::update()
                 /*custom volume per type*/
                 if (c->audio->soundType == SoundType::Music)
                 {
-                    c->srcVoice->SetVolume(0.6f);
+                    c->srcVoice->SetVolume(ServiceProvider::getSettings()->audioSettings.MusicVolume);
                 }
                 else if (c->audio->soundType == SoundType::Effect)
                 {
-                    c->srcVoice->SetVolume(0.9f);
+                    c->srcVoice->SetVolume(ServiceProvider::getSettings()->audioSettings.EffectVolume);
                 }
 
                 c->srcVoice->Start();
@@ -252,26 +304,19 @@ void SoundEngine::update()
 }
 
 
-void SoundEngine::forceStop(unsigned char channel)
+void SoundEngine::forceStop(unsigned int audioGuid)
 {
-    if (channel > MAX_CHANNELS) return;
+    std::lock_guard<std::mutex> lock(channelLock);
 
-    if (channels[channel]->isPlaying)
+    for (auto& c : channels)
     {
-        channels[channel]->available = true;
-        channels[channel]->srcVoice->Stop();
-        channels[channel]->audio = nullptr;
-        channels[channel]->timePlaying = 0;
-        channels[channel]->isPlaying = false;
+        if (c->identifier == audioGuid)
+        {
+            c->available = true;
+            c->srcVoice->Stop();
+            c->audio = nullptr;
+            c->timePlaying = 0;
+            c->isPlaying = false;
+        }
     }
-
-}
-
-SoundEngine::SoundEngine()
-{
-}
-
-SoundEngine::~SoundEngine()
-{
-
 }

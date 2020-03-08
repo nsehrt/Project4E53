@@ -23,9 +23,6 @@ private:
 
 	int vsyncIntervall;
 
-	//bool TEST = false;
-	//GameTime gTest;
-
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
 };
@@ -48,6 +45,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	auto startTime = std::chrono::system_clock::now();
 
 	int status = 0;
+
+	/*rand*/
+	srand(time(NULL));
 
 	/*create logger*/
 	std::shared_ptr<Logger<VSLogPolicy>> vsLogger(new Logger<VSLogPolicy>(L""));
@@ -128,6 +128,7 @@ P_4E53::~P_4E53()
 	ServiceProvider::getAudio()->Stop();
 	audioThread->join();
 
+	ServiceProvider::getAudio()->uninit();
 }
 
 bool P_4E53::Initialize()
@@ -149,6 +150,12 @@ bool P_4E53::Initialize()
 	std::shared_ptr<SoundEngine> soundEngine(new SoundEngine());
 	ServiceProvider::setAudioEngine(soundEngine);
 
+	soundEngine->init();
+
+	/*load all sound files*/
+	soundEngine->loadFile(L"data\\sound\\action.wav", SoundType::Effect);
+
+	/*start the audio thread*/
 	audioThread = std::make_unique<std::thread>(&SoundEngine::run, soundEngine);
 
 
@@ -168,27 +175,20 @@ void P_4E53::onResize()
 /*=====================*/
 void P_4E53::update(const GameTime& gt)
 {
-	//gTest.Tick();
-
+	/*get input*/
 	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
 
-	//if (gTest.TotalTime() > 4.0)
-	//{
-	//	TEST = !TEST;
-	//	gTest.Reset();
-	//}
-
-	//if (inputData.Pressed(BUTTON_A))
-	//{
-	//	gTest.Start();
-	//}
-
-	//if (!inputData.current.buttons[BUTTON_A])
-	//{
-	//	gTest.Reset();
-	//}
 
 
+	if (inputData.Pressed(BUTTON_A))
+	{
+		ServiceProvider::getAudio()->add(rand() % 100 +2, "action");
+	}
+
+
+
+
+	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
 	ServiceProvider::getInputManager()->releaseInput();
 }

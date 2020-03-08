@@ -176,16 +176,16 @@ void Logger<LogPolicy>::print(std::stringstream stream)
             logStream << "INFO:    ";
             break;
         case Severity::Debug:
-            logStream << "DEBUG:    ";
+            logStream << "DBUG:    ";
             break;
         case Severity::Warning:
-            logStream << "WARNING:    ";
+            logStream << "WARN:    ";
             break;
         case Severity::Critical:
-            logStream << "CRITICAL:    ";
+            logStream << "CRIT:    ";
             break;
         case Severity::Error:
-            logStream << "ERROR:    ";
+            logStream << "ERROR:   ";
             break;
     };
 

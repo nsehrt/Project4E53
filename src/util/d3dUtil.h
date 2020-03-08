@@ -20,6 +20,7 @@
 #include <locale>
 #include <codecvt>
 #include <chrono>
+#include <random>
 #include "../extern/d3dx12.h"
 #include "../extern/DDSTextureLoader.h"
 

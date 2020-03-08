@@ -8,6 +8,9 @@
 #include <vector>
 #include <string>
 #include <atomic>
+#include <mutex>
+#include <deque>
+#include "../core/gametime.hpp"
 
 #pragma comment(lib, "mfreadwrite.lib")
 #pragma comment(lib, "mfplat.lib")
@@ -23,6 +26,16 @@ enum class SoundType
     Effect
 };
 
+struct AudioInData
+{
+    unsigned int id = 0;
+    std::string fileId = "";
+
+    AudioInData(unsigned int _id, const std::string& _fileId) :
+        id(_id), fileId(_fileId) {}
+    AudioInData() : id(0), fileId(""){}
+};
+
 struct AudioData
 {
     tWAVEFORMATEX waveFormat;
@@ -36,6 +49,7 @@ struct AudioData
 class SoundChannel
 {
 private:
+    unsigned int identifier = 0;
     IXAudio2SourceVoice* srcVoice = nullptr;
     AudioData* audio = nullptr;
     float timePlaying = 0;
@@ -51,29 +65,49 @@ public:
 class SoundEngine
 {
 public:
-    SoundEngine();
-    ~SoundEngine();
+    SoundEngine() = default;
+    ~SoundEngine() = default;
 
+    /*load files into the collection before calling run*/
     void loadFile(const std::wstring& _fileName, SoundType _soundType);
-    bool add(const std::string& id, bool loop = false);
 
+    /*request to play audio*/
+    void add(unsigned int _audioGuid, const std::string& _fileId);
+
+    void init();
+    void uninit();
     void run();
     void Stop();
 
-    void forceStop(unsigned char channel);
+    void forceStop(unsigned int audioGuid);
 
 private:
 
     void update();
     void loadFile(const std::wstring& _fileName, std::vector<BYTE>& _data, WAVEFORMATEX** formatEx, unsigned int& length);
 
+    /*holds all loaded audio files*/
     std::unordered_map<std::string, AudioData*> soundCollection;
+
+    /*holds all the channels*/
     std::vector<SoundChannel*> channels;
 
+    /*holds items that will be added to the actual channels*/
+    std::deque<AudioInData> addQueue;
+    std::mutex queueLock;
+    std::mutex channelLock;
+
+    /*use for update delta time*/
+    GameTime audioTimer;
+
+    /*xaudio2 specific*/
     IXAudio2* xaudioMain = nullptr;
     IXAudio2MasteringVoice* masterVoice = nullptr;
-
     IMFAttributes* srcReaderConfig = nullptr;
 
+    /*run the engine while this is true*/
     std::atomic<bool> looped = true;
+
+    /*bool whether audio engine is initialized*/
+    std::atomic<bool> isInit = false;
 };
