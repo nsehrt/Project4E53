@@ -8,6 +8,10 @@ std::shared_ptr<Settings>ServiceProvider::settings = NULL;
 std::shared_ptr<SoundEngine>ServiceProvider::audio = NULL;
 std::shared_ptr<InputManager>ServiceProvider::input = NULL;
 
+std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
+
+std::mutex ServiceProvider::audioLock;
+
 
 
 void ServiceProvider::setFileLoggingService(std::shared_ptr<Logger<FileLogPolicy>> providedFileLogger)

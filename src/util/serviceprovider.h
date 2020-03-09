@@ -20,6 +20,9 @@ private:
     static std::shared_ptr<SoundEngine> audio;
     static std::shared_ptr<InputManager> input;
 
+    static std::atomic<unsigned int> audioGuid;
+    static std::mutex audioLock;
+
 public:
     static Logger<FileLogPolicy>* getFileLogger() { return fileLogger.get(); }
     static void setFileLoggingService(std::shared_ptr<Logger<FileLogPolicy>> providedFileLogger);
@@ -38,4 +41,20 @@ public:
 
     static InputManager* getInputManager() { return input.get(); }
     static void setInputManager(std::shared_ptr<InputManager> providedInputManager);
+
+    static unsigned int getAudioGuid()
+    {
+        std::lock_guard<std::mutex> lock(ServiceProvider::audioLock);
+
+        unsigned int ret = audioGuid.load();
+        audioGuid++;
+
+        if (audioGuid == 0)
+        {
+            audioGuid++;
+        }
+
+        return ret;
+    }
+
 };

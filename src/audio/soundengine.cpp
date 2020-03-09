@@ -183,6 +183,11 @@ void SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
     data->soundType = st;
 
     soundCollection.insert(std::make_pair(id, data));
+
+    std::stringstream str;
+    str << "Loaded file '" << id << ext << "' as " << (st == SoundType::Effect ? "effect" : "music") << ".";
+
+    ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
 }
 
 void SoundEngine::add(unsigned int audioGuid, const std::string& fileId)

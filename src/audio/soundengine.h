@@ -74,12 +74,20 @@ public:
     /*request to play audio*/
     void add(unsigned int _audioGuid, const std::string& _fileId);
 
-    void init();
-    void uninit();
-    void run();
-    void Stop();
-
+    /*stop a sound with the id given in add*/
     void forceStop(unsigned int audioGuid);
+
+    /*call this before run*/
+    void init();
+
+    /*call this after stop*/
+    void uninit();
+
+    /* call this in its own thread*/
+    void run();
+
+    /*use this to stop the engine/run loop*/
+    void Stop();
 
 private:
 

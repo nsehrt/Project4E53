@@ -2,8 +2,12 @@
 #include "dx12app.h"
 #include "../util/settings.h"
 #include "../util/serviceprovider.h"
+#include <filesystem>
 
 #define SETTINGS_FILE "cfg/settings.xml"
+
+#define SOUND_PATH_MUSIC "data/sound/music"
+#define SOUND_PATH_EFFECTS "data/sound/effects"
 
 using namespace DirectX;
 
@@ -153,7 +157,16 @@ bool P_4E53::Initialize()
 	soundEngine->init();
 
 	/*load all sound files*/
-	soundEngine->loadFile(L"data\\sound\\action.wav", SoundType::Effect);
+
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_MUSIC)))
+	{
+		soundEngine->loadFile(entry.path().c_str(), SoundType::Music);
+	}
+
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_EFFECTS)))
+	{
+		soundEngine->loadFile(entry.path().c_str(), SoundType::Effect);
+	}
 
 	/*start the audio thread*/
 	audioThread = std::make_unique<std::thread>(&SoundEngine::run, soundEngine);
@@ -182,7 +195,7 @@ void P_4E53::update(const GameTime& gt)
 
 	if (inputData.Pressed(BUTTON_A))
 	{
-		ServiceProvider::getAudio()->add(rand() % 100 +2, "action");
+		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 	}
 
 
