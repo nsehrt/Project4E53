@@ -516,8 +516,12 @@ void DX12App::flushCommandQueue()
 
         ThrowIfFailed(mFence->SetEventOnCompletion(mCurrentFence, eventHandle));
 
-        WaitForSingleObject(eventHandle, INFINITE);
-        CloseHandle(eventHandle);
+        if (eventHandle != NULL)
+        {
+            WaitForSingleObject(eventHandle, INFINITE);
+            CloseHandle(eventHandle);
+        }
+
     }
 }
 
