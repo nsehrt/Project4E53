@@ -67,6 +67,8 @@ bool SettingsLoader::loadSettings(const std::string& path)
     XMLElement* pGraphic = pRoot->FirstChildElement("Graphic");
     XMLCheckExist(pGraphic);
 
+    if (!setSetting(pGraphic, "NumFrameResources", &settings.graphicSettings.numFrameResources))
+        return false;
 
     /*load input settings*/
     XMLElement* pInput = pRoot->FirstChildElement("Input");

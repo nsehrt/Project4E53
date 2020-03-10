@@ -52,7 +52,7 @@
 #define ASSERT(expr) //nothing
 #endif
 
-extern const int gNumFrameResources;
+extern int gNumFrameResources;
 
 inline std::wstring AnsiToWString(const std::string& cstr)
 {

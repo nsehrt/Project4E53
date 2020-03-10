@@ -407,7 +407,8 @@ bool DX12App::initDirect3D()
     HRESULT hardwareResult = D3D12CreateDevice(
         nullptr,             // default adapter
         D3D_FEATURE_LEVEL_11_0,
-        IID_PPV_ARGS(&mDevice));
+        IID_PPV_ARGS(&mDevice)
+    );
 
     // Fallback to WARP device.
     if (FAILED(hardwareResult))

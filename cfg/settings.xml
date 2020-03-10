@@ -20,7 +20,7 @@
     ></Gameplay>
 
     <Graphic>
-
+        <NumFrameResources>3</NumFrameResources>
     </Graphic>
 
     <Input>

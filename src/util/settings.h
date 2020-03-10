@@ -26,7 +26,8 @@ struct InputSettings
 
 struct GraphicSettings
 {
-    int fill = 0;
+    bool WireFrameMode = false;
+    int numFrameResources = 3;
 };
 
 struct GameplaySettings
