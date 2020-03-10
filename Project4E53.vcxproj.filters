@@ -61,6 +61,15 @@
     <ClInclude Include="src\audio\soundengine.h">
       <Filter>Source Files\src\audio</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\mathhelper.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\frameresource.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\uploadbuffer.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -95,6 +104,12 @@
     </ClCompile>
     <ClCompile Include="src\audio\soundengine.cpp">
       <Filter>Source Files\src\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\mathhelper.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\frameresource.cpp">
+      <Filter>Source Files\src\render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

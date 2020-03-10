@@ -155,8 +155,10 @@
     <ClCompile Include="src\extern\tinyxml2.cpp" />
     <ClCompile Include="src\input\ControllerInput.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />
+    <ClCompile Include="src\render\frameresource.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\log.cpp" />
+    <ClCompile Include="src\util\mathhelper.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
     <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
@@ -167,9 +169,12 @@
     <ClInclude Include="src\extern\tinyxml2.h" />
     <ClInclude Include="src\input\ControllerInput.h" />
     <ClInclude Include="src\input\InputManager.h" />
+    <ClInclude Include="src\render\frameresource.h" />
+    <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\expected.h" />
     <ClInclude Include="src\util\log.h" />
+    <ClInclude Include="src\util\mathhelper.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
     <ClInclude Include="src\util\settings.h" />
   </ItemGroup>

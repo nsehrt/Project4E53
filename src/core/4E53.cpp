@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include "dx12app.h"
 #include "../util/settings.h"
+#include "../render/frameresource.h"
 #include "../util/serviceprovider.h"
 #include <filesystem>
 
@@ -25,7 +26,9 @@ private:
 	virtual void update(const GameTime& gt)override;
 	virtual void draw(const GameTime& gt)override;
 
-	int vsyncIntervall;
+	int vsyncIntervall = 0;
+	int gNumFrameResources = 3; 
+
 
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
