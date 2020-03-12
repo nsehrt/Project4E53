@@ -70,6 +70,9 @@
     <ClInclude Include="src\render\uploadbuffer.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\renderresource.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -109,6 +112,9 @@
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\render\frameresource.cpp">
+      <Filter>Source Files\src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\renderresource.cpp">
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
   </ItemGroup>

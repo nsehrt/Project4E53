@@ -144,6 +144,9 @@ P_4E53::~P_4E53()
 	audioThread->join();
 
 	ServiceProvider::getAudio()->uninit();
+
+	if (mDevice != nullptr)
+		flushCommandQueue();
 }
 
 bool P_4E53::Initialize()
