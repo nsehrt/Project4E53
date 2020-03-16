@@ -3,6 +3,7 @@
 #include "../util/settings.h"
 #include "../render/frameresource.h"
 #include "../util/serviceprovider.h"
+#include "../render/renderresource.h"
 #include <filesystem>
 
 #define SETTINGS_FILE "cfg/settings.xml"
@@ -35,11 +36,10 @@ private:
 	int mCurrentFrameResourceIndex = 0;
 
 
-	UINT mCbvSrvDescriptorSize = 0;
-
-
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
+
+	RenderResource renderResource;
 };
 
 
@@ -190,7 +190,22 @@ bool P_4E53::Initialize()
 
 
 	/*build dx12 resources*/
+	std::filesystem::path texturePath(TEXTURE_PATH);
+	std::filesystem::path modelPath(MODEL_PATH);
 
+	if (!std::filesystem::exists(texturePath))
+	{
+		ServiceProvider::getVSLogger()->print<Severity::Critical>("Unable to access texture folder!");
+		return false;
+	}
+
+	if (!std::filesystem::exists(modelPath))
+	{
+		ServiceProvider::getVSLogger()->print<Severity::Critical>("Unable to access model folder!");
+		return false;
+	}
+
+	renderResource.init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath);
 
 	/*build frame resources*/
 	for (int i = 0; i < gNumFrameResources; i++)

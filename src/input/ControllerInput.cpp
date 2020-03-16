@@ -1,4 +1,4 @@
-#include "ControllerInput.h"
+#include "controllerinput.h"
 
 ControllerInput::ControllerInput() {
 

@@ -52,12 +52,6 @@
     <ClInclude Include="src\core\dx12app.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\input\ControllerInput.h">
-      <Filter>Source Files\src\input</Filter>
-    </ClInclude>
-    <ClInclude Include="src\input\InputManager.h">
-      <Filter>Source Files\src\input</Filter>
-    </ClInclude>
     <ClInclude Include="src\audio\soundengine.h">
       <Filter>Source Files\src\audio</Filter>
     </ClInclude>
@@ -70,8 +64,20 @@
     <ClInclude Include="src\render\uploadbuffer.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\renderstructs.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\controllerinput.h">
+      <Filter>Source Files\src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\inputmanager.h">
+      <Filter>Source Files\src\input</Filter>
+    </ClInclude>
     <ClInclude Include="src\render\renderresource.h">
       <Filter>Source Files\src\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\DDSTextureLoader.h">
+      <Filter>Source Files\src\extern</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,12 +105,6 @@
     <ClCompile Include="src\core\dx12app.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\input\ControllerInput.cpp">
-      <Filter>Source Files\src\input</Filter>
-    </ClCompile>
-    <ClCompile Include="src\input\InputManager.cpp">
-      <Filter>Source Files\src\input</Filter>
-    </ClCompile>
     <ClCompile Include="src\audio\soundengine.cpp">
       <Filter>Source Files\src\audio</Filter>
     </ClCompile>
@@ -114,8 +114,17 @@
     <ClCompile Include="src\render\frameresource.cpp">
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\input\controllerinput.cpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\inputmanager.cpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClCompile>
     <ClCompile Include="src\render\renderresource.cpp">
       <Filter>Source Files\src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\DDSTextureLoader.cpp">
+      <Filter>Source Files\src\extern</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
