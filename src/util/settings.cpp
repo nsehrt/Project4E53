@@ -70,6 +70,9 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pGraphic, "NumFrameResources", &settings.graphicSettings.numFrameResources))
         return false;
 
+    if (!setSetting(pGraphic, "AnisotropicFiltering", &settings.graphicSettings.AnisotropicFiltering))
+        return false;
+
     /*load input settings*/
     XMLElement* pInput = pRoot->FirstChildElement("Input");
     XMLCheckExist(pInput);

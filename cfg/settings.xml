@@ -21,6 +21,7 @@
 
     <Graphic>
         <NumFrameResources>3</NumFrameResources>
+        <AnisotropicFiltering>16</AnisotropicFiltering>
     </Graphic>
 
     <Input>

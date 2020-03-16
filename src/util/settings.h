@@ -28,6 +28,7 @@ struct GraphicSettings
 {
     bool WireFrameMode = false;
     int numFrameResources = 3;
+    int AnisotropicFiltering = 16;
 };
 
 struct GameplaySettings

@@ -45,4 +45,8 @@ private:
     /*private init functions*/
     bool loadTexture(const std::string& file);
     bool loadModel(const std::string& file);
+
+    bool buildRootSignature();
+    bool buildDescriptorHeap();
+    std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 };
