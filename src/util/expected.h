@@ -154,7 +154,7 @@ public:
             new(&spam) std::exception_ptr(e.spam);
     }
 
-    Expected(Expected&& o) : spam(std::move(o.spam)) {}
+    Expected(Expected&& o) noexcept : spam(std::move(o.spam)) {}
     Expected() : spam() {}
 
     /*operator overload*/

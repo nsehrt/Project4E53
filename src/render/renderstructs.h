@@ -112,6 +112,11 @@ struct Material
     DirectX::XMFLOAT4X4 MaterialTransform = MathHelper::identity4x4();
 };
 
+enum class TextureType
+{
+    Texture2D,
+    TextureCube
+};
 
 struct Texture
 {
@@ -119,4 +124,5 @@ struct Texture
     std::wstring Filename;
     Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;
+    TextureType Type = TextureType::Texture2D;
 };

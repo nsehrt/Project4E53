@@ -43,7 +43,7 @@ private:
 
 
     /*private init functions*/
-    bool loadTexture(const std::string& file);
+    bool loadTexture(const std::string& file, TextureType type = TextureType::Texture2D);
     bool loadModel(const std::string& file);
 
     bool buildRootSignature();

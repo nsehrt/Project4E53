@@ -9,23 +9,54 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     int textureCounter = 0;
     int modelCounter = 0;
 
+    mHeapDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+    if (!buildRootSignature())
+        return;
+
+    const UINT texTypes = 2;
+    std::stringstream tstr[texTypes];
+    tstr[0] << _texturePath.string() << "/tex2d";
+    tstr[1] << _texturePath.string() << "/texcube";
+
+    int texCounter[texTypes] = {0};
+
+    int tC = 0;
+
     /*load all textures*/
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(_texturePath))
+    for (auto const& s : tstr)
     {
-        if (loadTexture(entry.path().u8string()))
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
         {
-            textureCounter++;
+            if (loadTexture(entry.path().u8string(), static_cast<TextureType>(tC)))
+            {
+                textureCounter++;
+                texCounter[tC]++;
+            }
+            else
+            {
+                std::stringstream str;
+                str << "Failed to load texture " << entry.path().u8string() << "!";
+                ServiceProvider::getVSLogger()->print<Severity::Warning>(str.str().c_str());
+            }
         }
-        else
-        {
-            std::stringstream str;
-            str << "Failed to load texture " << entry.path().u8string() << "!";
-            ServiceProvider::getVSLogger()->print<Severity::Warning>(str.str().c_str());
-        }
+        tC++;
     }
 
+
+    buildDescriptorHeap();
+
+    /*list loaded textures*/
     std::stringstream str;
-    str << "Successfully loaded " << textureCounter << " textures.";
+    str << "Successfully loaded " << textureCounter << " textures. (";
+    for (UINT i = 0; i < texTypes; i++)
+    {
+        str << texCounter[i];
+        if (i != texTypes - 1)
+            str << ", ";
+    }
+    str << ")";
+
     ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
 
 
@@ -44,17 +75,18 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         }
     }
 
-    std::stringstream str;
+    str.str("");
     str << "Successfully loaded " << modelCounter << " models.";
     ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
 
 }
 
-bool RenderResource::loadTexture(const std::string& file)
+bool RenderResource::loadTexture(const std::string& file, TextureType type)
 {
     auto texMap = std::make_unique<Texture>();
     texMap->Name = file;
     texMap->Filename = AnsiToWString(file);
+    texMap->Type = type;
 
     HRESULT hr = DirectX::CreateDDSTextureFromFile12(device, cmdList, texMap->Filename.c_str(), texMap->Resource, texMap->UploadHeap);
     mTextures[texMap->Name] = std::move(texMap);
@@ -69,12 +101,116 @@ bool RenderResource::loadModel(const std::string& file)
 
 bool RenderResource::buildRootSignature()
 {
-    return false;
+    /*5 root parameter*/
+    CD3DX12_ROOT_PARAMETER rootParameter[5];
+
+    /*1 texture in register 0*/
+    CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
+    textureTableReg0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0);
+
+    /*10 textures in register 1*/
+    CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
+    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 10, 1, 0);
+
+    /*constant buffer views in register b0 and b1*/
+    rootParameter[0].InitAsConstantBufferView(0);
+    rootParameter[1].InitAsConstantBufferView(1);
+
+    /*material data in reg 0 space 1*/
+    rootParameter[2].InitAsShaderResourceView(0, 1);
+
+    /*t0,t1 visible for pixel shader*/
+    rootParameter[3].InitAsDescriptorTable(1, &textureTableReg0, D3D12_SHADER_VISIBILITY_PIXEL);
+    rootParameter[4].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_PIXEL);
+
+    /*get the static samplers and bind them to root signature description*/
+    auto staticSamplers = GetStaticSamplers();
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDescription(5, rootParameter, (UINT)staticSamplers.size(),
+                                                         staticSamplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+    /*create root signature using the description*/
+    ComPtr<ID3DBlob> serializedRootSignature = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
+
+    HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDescription, D3D_ROOT_SIGNATURE_VERSION_1,
+                                             serializedRootSignature.GetAddressOf(), errorBlob.GetAddressOf());
+
+    if (errorBlob != nullptr)
+    {
+        std::stringstream str;
+        str << "Error serializing root signature: " << (char*)errorBlob->GetBufferPointer();
+        ServiceProvider::getVSLogger()->print<Severity::Error>(str.str().c_str());
+        ThrowIfFailed(hr);
+        return false;
+    }
+
+    hr = device->CreateRootSignature(
+        0,
+        serializedRootSignature->GetBufferPointer(),
+        serializedRootSignature->GetBufferSize(),
+        IID_PPV_ARGS(mMainRootSignature.GetAddressOf())
+        );
+
+    if (hr != S_OK)
+    {
+        ServiceProvider::getVSLogger()->print<Severity::Error>("Error creating root signature!");
+        ThrowIfFailed(hr);
+        return false;
+    }
+
+    return true;
 }
 
 bool RenderResource::buildDescriptorHeap()
 {
-    return false;
+    /*SRV heap description*/
+    D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+    srvHeapDesc.NumDescriptors = (UINT)mTextures.size();
+    srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+    ThrowIfFailed(device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
+
+    /*fill the descriptor*/
+    CD3DX12_CPU_DESCRIPTOR_HANDLE handleDescriptor(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+
+    /*first add all Textures2D*/
+    for (auto const& t : mTextures)
+    {
+        if (t.second->Type != TextureType::Texture2D) continue;
+
+        srvDesc.Format = t.second->Resource->GetDesc().Format;
+        srvDesc.Texture2D.MipLevels = t.second->Resource->GetDesc().MipLevels;
+        device->CreateShaderResourceView(t.second->Resource.Get(), &srvDesc, handleDescriptor);
+
+        handleDescriptor.Offset(1, mHeapDescriptorSize);
+    }
+
+    /*after that all TextureCubes*/
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+    srvDesc.TextureCube.MostDetailedMip = 0;
+    srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+
+    for (auto const& t : mTextures)
+    {
+        if (t.second->Type != TextureType::TextureCube)continue;
+
+        srvDesc.Format = t.second->Resource->GetDesc().Format;
+        srvDesc.TextureCube.MipLevels = t.second->Resource->GetDesc().MipLevels;
+        device->CreateShaderResourceView(t.second->Resource.Get(), &srvDesc, handleDescriptor);
+
+        handleDescriptor.Offset(1, mHeapDescriptorSize);
+    }
+
+
+    return true;
 }
 
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSamplers()
