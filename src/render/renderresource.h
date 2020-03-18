@@ -33,7 +33,7 @@ private:
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
 
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
-    std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayouts;
+    std::unordered_map <std::string, std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
     
     std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
 
@@ -49,4 +49,9 @@ private:
     bool buildRootSignature();
     bool buildDescriptorHeap();
     std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
+
+    void buildShaders();
+    void buildInputLayouts();
+
+    void generateDefaultShapes();
 };

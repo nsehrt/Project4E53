@@ -14,16 +14,22 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     if (!buildRootSignature())
         return;
 
+    buildShaders();
+    buildInputLayouts();
+
+
+
+    /*load all textures*/
+
     const UINT texTypes = 2;
     std::stringstream tstr[texTypes];
     tstr[0] << _texturePath.string() << "/tex2d";
     tstr[1] << _texturePath.string() << "/texcube";
 
-    int texCounter[texTypes] = {0};
+    int texCounter[texTypes] = { 0 };
 
     int tC = 0;
 
-    /*load all textures*/
     for (auto const& s : tstr)
     {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
@@ -78,6 +84,12 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     str.str("");
     str << "Successfully loaded " << modelCounter << " models.";
     ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
+
+
+    /*also generate some default shapes*/
+
+    generateDefaultShapes();
+
 
 }
 
@@ -265,4 +277,35 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         pointWrap, pointClamp,
         linearWrap, linearClamp,
         anisotropicWrap, anisotropicClamp };
+}
+
+void RenderResource::buildShaders()
+{
+    
+    const D3D_SHADER_MACRO alphaTestDefines[] =
+    {
+        "ALPHA_TEST", "1",
+        NULL, NULL
+    };
+
+
+    mShaders["standardVS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["standardPS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "PS", "ps_5_1");
+
+}
+
+void RenderResource::buildInputLayouts()
+{
+
+    mInputLayouts["standard"] = {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    };
+
+}
+
+void RenderResource::generateDefaultShapes()
+{
 }
