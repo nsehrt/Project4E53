@@ -159,6 +159,7 @@
     <ClCompile Include="src\render\frameresource.cpp" />
     <ClCompile Include="src\render\renderresource.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
+    <ClCompile Include="src\util\geogen.cpp" />
     <ClCompile Include="src\util\log.cpp" />
     <ClCompile Include="src\util\mathhelper.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\expected.h" />
+    <ClInclude Include="src\util\geogen.h" />
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\mathhelper.h" />
     <ClInclude Include="src\util\serviceprovider.h" />

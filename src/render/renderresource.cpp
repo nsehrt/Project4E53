@@ -308,4 +308,12 @@ void RenderResource::buildInputLayouts()
 
 void RenderResource::generateDefaultShapes()
 {
+    GeoGenerator geo;
+
+    GeoGenerator::MeshData box = geo.createBoxMesh(1.0f, 1.0f, 1.0f, 0);
+    GeoGenerator::MeshData grid = geo.createGrid(10.f, 10.f, 10, 10);
+    GeoGenerator::MeshData sphere = geo.createSphereMesh(0.5f, 16, 16);
+    
+
+
 }

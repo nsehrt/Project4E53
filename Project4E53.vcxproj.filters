@@ -79,6 +79,9 @@
     <ClInclude Include="src\extern\DDSTextureLoader.h">
       <Filter>Source Files\src\extern</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\geogen.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -125,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="src\extern\DDSTextureLoader.cpp">
       <Filter>Source Files\src\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\geogen.cpp">
+      <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

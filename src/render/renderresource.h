@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../util/d3dUtil.h"
+#include "../util/geogen.h"
 #include <filesystem>
 
 #define MODEL_PATH "data/models"
