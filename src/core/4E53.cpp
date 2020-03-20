@@ -30,7 +30,7 @@ private:
 	int vsyncIntervall = 0;
 
 	/*frame resources*/
-	int gNumFrameResources = 3;
+	
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrentFrameResource = nullptr;
 	int mCurrentFrameResourceIndex = 0;
@@ -42,8 +42,7 @@ private:
 	RenderResource renderResource;
 };
 
-
-
+int gNumFrameResources = 3;
 
 /*******/
 /*main entry point*/

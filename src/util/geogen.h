@@ -51,12 +51,12 @@ public:
         {
             if (mIndices16.empty())
             {
-                mIndices16.reserve(Indices32.size());
-                for (size_t i = 0; i < Indices32.size(); i++)
-                {
+                mIndices16.resize(Indices32.size());
+                for (size_t i = 0; i < Indices32.size(); ++i)
                     mIndices16[i] = static_cast<unsigned short>(Indices32[i]);
-                }
             }
+
+            return mIndices16;
         }
 
     private:

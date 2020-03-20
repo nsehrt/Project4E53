@@ -11,12 +11,9 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     mHeapDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-    if (!buildRootSignature())
-        return;
-
+    buildRootSignature();
     buildShaders();
     buildInputLayouts();
-
 
 
     /*load all textures*/
@@ -89,7 +86,9 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     /*also generate some default shapes*/
 
     generateDefaultShapes();
-
+    buildPSOs();
+    buildMaterials();
+    buildRenderItems();
 
 }
 
@@ -262,7 +261,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
         D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressW
         0.0f,                             // mipLODBias
-        ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering);                               // maxAnisotropy
+        8);                               // maxAnisotropy
 
     const CD3DX12_STATIC_SAMPLER_DESC anisotropicClamp(
         5, // shaderRegister
@@ -271,7 +270,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
         D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressW
         0.0f,                              // mipLODBias
-        ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering);                                // maxAnisotropy
+        8);                                // maxAnisotropy
 
     return {
         pointWrap, pointClamp,
@@ -289,15 +288,15 @@ void RenderResource::buildShaders()
     };
 
 
-    mShaders["standardVS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["standardPS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "PS", "ps_5_1");
 
 }
 
 void RenderResource::buildInputLayouts()
 {
 
-    mInputLayouts["standard"] = {
+    mInputLayouts["default"] = {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -314,6 +313,176 @@ void RenderResource::generateDefaultShapes()
     GeoGenerator::MeshData grid = geo.createGrid(10.f, 10.f, 10, 10);
     GeoGenerator::MeshData sphere = geo.createSphereMesh(0.5f, 16, 16);
     
+    /*all default shapes in one vertex buffer*/
 
+    UINT boxVertexOffset = 0;
+    UINT gridVertexOffset = (UINT)box.Vertices.size();
+    UINT sphereVertexOffset = (UINT)gridVertexOffset + (UINT)grid.Vertices.size();
+
+    UINT boxIndexOffset = 0;
+    UINT gridIndexOffset = (UINT)box.Indices32.size();
+    UINT sphereIndexOffset = gridIndexOffset + (UINT)grid.Indices32.size();
+
+    SubMesh boxSubmesh;
+    boxSubmesh.BaseVertexLocation = boxVertexOffset;
+    boxSubmesh.StartIndexLocation = boxIndexOffset;
+    boxSubmesh.IndexCount = (UINT)box.Indices32.size();
+
+    SubMesh gridSubmesh;
+    gridSubmesh.BaseVertexLocation = gridVertexOffset;
+    gridSubmesh.StartIndexLocation = gridIndexOffset;
+    gridSubmesh.IndexCount = (UINT)grid.Indices32.size();
+
+    SubMesh sphereSubmesh;
+    sphereSubmesh.BaseVertexLocation = sphereVertexOffset;
+    sphereSubmesh.StartIndexLocation = sphereIndexOffset;
+    sphereSubmesh.IndexCount = (UINT)sphere.Indices32.size();
+
+    size_t totalVertices = box.Vertices.size() + grid.Vertices.size() + sphere.Vertices.size();
+
+
+    std::vector<Vertex> vertices(totalVertices);
+
+    UINT k = 0;
+    for (size_t i = 0; i < box.Vertices.size(); i++, k++)
+    {
+        vertices[k].Pos = box.Vertices[i].Position;
+        vertices[k].Normal = box.Vertices[i].Normal;
+        vertices[k].TexC = box.Vertices[i].TexC;
+        vertices[k].TangentU = box.Vertices[i].TangentU;
+    }
+
+    for (size_t i = 0; i < box.Vertices.size(); i++, k++)
+    {
+        vertices[k].Pos = grid.Vertices[i].Position;
+        vertices[k].Normal = grid.Vertices[i].Normal;
+        vertices[k].TexC = grid.Vertices[i].TexC;
+        vertices[k].TangentU = grid.Vertices[i].TangentU;
+    }
+
+    for (size_t i = 0; i < box.Vertices.size(); i++, k++)
+    {
+        vertices[k].Pos = sphere.Vertices[i].Position;
+        vertices[k].Normal = sphere.Vertices[i].Normal;
+        vertices[k].TexC = sphere.Vertices[i].TexC;
+        vertices[k].TangentU = sphere.Vertices[i].TangentU;
+    }
+
+    std::vector<unsigned short> indices;
+    indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
+    indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+    indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
+
+
+    /*buffersize in bytes*/
+    const UINT vertexByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    const UINT indexByteSize = (UINT)indices.size() * sizeof(unsigned short);
+
+    auto geoMesh = std::make_unique<Mesh>();
+    geoMesh->name = "default";
+
+    ThrowIfFailed(D3DCreateBlob(vertexByteSize, &geoMesh->VertexBufferCPU));
+    CopyMemory(geoMesh->VertexBufferCPU->GetBufferPointer(), vertices.data(), vertexByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(indexByteSize, &geoMesh->IndexBufferCPU));
+    CopyMemory(geoMesh->IndexBufferCPU->GetBufferPointer(), indices.data(), indexByteSize);
+
+    geoMesh->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device, cmdList, vertices.data(), vertexByteSize, geoMesh->VertexBufferUploader);
+    geoMesh->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device, cmdList, indices.data(), indexByteSize, geoMesh->IndexBufferUploader);
+
+
+    geoMesh->VertexByteStride = sizeof(Vertex);
+    geoMesh->VertexBufferByteSize = vertexByteSize;
+    geoMesh->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoMesh->IndexBufferByteSize = indexByteSize;
+
+    geoMesh->DrawArgs["box"] = boxSubmesh;
+    geoMesh->DrawArgs["grid"] = gridSubmesh;
+    geoMesh->DrawArgs["sphere"] = sphereSubmesh;
+
+    mMeshes[geoMesh->name] = std::move(geoMesh);
+}
+
+
+void RenderResource::buildPSOs()
+{
+    /*default PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultPSODesc;
+
+    ZeroMemory(&defaultPSODesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+    defaultPSODesc.InputLayout = { mInputLayouts["default"].data(), (UINT)mInputLayouts["default"].size() };
+    defaultPSODesc.pRootSignature = mMainRootSignature.Get();
+    defaultPSODesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["defaultVS"]->GetBufferPointer()),
+        mShaders["defaultVS"]->GetBufferSize()
+    };
+    defaultPSODesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["defaultPS"]->GetBufferPointer()),
+        mShaders["defaultPS"]->GetBufferSize()
+    };
+    defaultPSODesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+    defaultPSODesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+    defaultPSODesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+    defaultPSODesc.SampleMask = UINT_MAX;
+    defaultPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    defaultPSODesc.NumRenderTargets = 1;
+    defaultPSODesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+    defaultPSODesc.SampleDesc.Count = 1;
+    defaultPSODesc.SampleDesc.Quality =  0;
+    defaultPSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs["default"])));
+
+    /*sky sphere PSO*/
+    //D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
+
+    //skyPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    //skyPSODesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+    //skyPSODesc.VS =
+    //{
+    //    reinterpret_cast<BYTE*>(mShaders["skyVS"]->GetBufferPointer()),
+    //    mShaders["skyVS"]->GetBufferSize()
+    //};
+    //skyPSODesc.PS =
+    //{
+    //    reinterpret_cast<BYTE*>(mShaders["skyPS"]->GetBufferPointer()),
+    //    mShaders["skyPS"]->GetBufferSize()
+    //};
+    //ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs["sky"])));
+
+}
+
+void RenderResource::buildMaterials()
+{
+
+    auto defaultMat = std::make_unique<Material>();
+    defaultMat->Name = "defaultMat";
+    defaultMat->MaterialCBIndex = 0;
+    defaultMat->DiffuseSrvHeapIndex = 0;
+    defaultMat->NormalSrvHeapIndex = 1;
+    defaultMat->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    defaultMat->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+    defaultMat->Roughness = 0.3f;
+
+    mMaterials["defaultMat"] = std::move(defaultMat);
+}
+
+void RenderResource::buildRenderItems()
+{
+
+    //auto boxRitem = std::make_unique<RenderItem>();
+    //XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
+    //XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
+    //boxRitem->ObjCBIndex = 1;
+    //boxRitem->Mat = mMaterials["bricks0"].get();
+    //boxRitem->Geo = mGeometries["shapeGeo"].get();
+    //boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    //boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
+    //boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
+    //boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+
+    //mRitemLayer[(int)RenderLayer::Opaque].push_back(boxRitem.get());
+    //mAllRitems.push_back(std::move(boxRitem));
 
 }

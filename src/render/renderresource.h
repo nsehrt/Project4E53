@@ -2,7 +2,9 @@
 
 #include "../util/d3dUtil.h"
 #include "../util/geogen.h"
+#include "frameresource.h"
 #include <filesystem>
+
 
 #define MODEL_PATH "data/models"
 #define TEXTURE_PATH "data/textures"
@@ -55,4 +57,8 @@ private:
     void buildInputLayouts();
 
     void generateDefaultShapes();
+
+    void buildPSOs();
+    void buildMaterials();
+    void buildRenderItems();
 };
