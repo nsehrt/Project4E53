@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="src\audio\soundengine.cpp" />
     <ClCompile Include="src\core\4E53.cpp" />
+    <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio\soundengine.h" />
+    <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\gametime.hpp" />
     <ClInclude Include="src\extern\d3dx12.h" />

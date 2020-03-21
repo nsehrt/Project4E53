@@ -4,6 +4,7 @@
 #include "../render/frameresource.h"
 #include "../util/serviceprovider.h"
 #include "../render/renderresource.h"
+#include "../core/camera.h"
 #include <filesystem>
 
 #define SETTINGS_FILE "cfg/settings.xml"
