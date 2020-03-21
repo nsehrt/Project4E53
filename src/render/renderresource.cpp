@@ -302,6 +302,8 @@ void RenderResource::buildShaders()
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "PS", "ps_5_1");
 
+    mShaders["skyVS"] = d3dUtil::CompileShader(L"shader\\skysphere.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["skyPS"] = d3dUtil::CompileShader(L"shader\\skysphere.hlsl", nullptr, "PS", "ps_5_1");
 }
 
 void RenderResource::buildInputLayouts()
@@ -446,21 +448,21 @@ void RenderResource::buildPSOs()
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs["default"])));
 
     /*sky sphere PSO*/
-    //D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
 
-    //skyPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-    //skyPSODesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-    //skyPSODesc.VS =
-    //{
-    //    reinterpret_cast<BYTE*>(mShaders["skyVS"]->GetBufferPointer()),
-    //    mShaders["skyVS"]->GetBufferSize()
-    //};
-    //skyPSODesc.PS =
-    //{
-    //    reinterpret_cast<BYTE*>(mShaders["skyPS"]->GetBufferPointer()),
-    //    mShaders["skyPS"]->GetBufferSize()
-    //};
-    //ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs["sky"])));
+    skyPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    skyPSODesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+    skyPSODesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["skyVS"]->GetBufferPointer()),
+        mShaders["skyVS"]->GetBufferSize()
+    };
+    skyPSODesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["skyPS"]->GetBufferPointer()),
+        mShaders["skyPS"]->GetBufferSize()
+    };
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs["sky"])));
 
 }
 
