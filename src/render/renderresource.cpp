@@ -1,7 +1,7 @@
 #include "renderresource.h"
 #include "../util/serviceprovider.h"
 
-void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath)
+bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath)
 {
     device = _device;
     cmdList = _cmdList;
@@ -31,7 +31,7 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
         {
-            if (loadTexture(entry.path().u8string(), static_cast<TextureType>(tC)))
+            if (loadTexture(entry, static_cast<TextureType>(tC)))
             {
                 textureCounter++;
                 texCounter[tC]++;
@@ -87,16 +87,22 @@ void RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     generateDefaultShapes();
     buildPSOs();
-    buildMaterials();
+
+    if (!buildMaterials())
+    {
+        return false;
+    }
+
     buildRenderItems();
 
+    return true;
 }
 
-bool RenderResource::loadTexture(const std::string& file, TextureType type)
+bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, TextureType type)
 {
     auto texMap = std::make_unique<Texture>();
-    texMap->Name = file;
-    texMap->Filename = AnsiToWString(file);
+    texMap->Name = file.path().filename().u8string();
+    texMap->Filename = AnsiToWString(file.path().u8string());
     texMap->Type = type;
 
     HRESULT hr = DirectX::CreateDDSTextureFromFile12(device, cmdList, texMap->Filename.c_str(), texMap->Resource, texMap->UploadHeap);
@@ -175,6 +181,8 @@ bool RenderResource::buildRootSignature()
 
 bool RenderResource::buildDescriptorHeap()
 {
+    UINT texIndex = 0;
+
     /*SRV heap description*/
     D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
     srvHeapDesc.NumDescriptors = (UINT)mTextures.size();
@@ -196,12 +204,14 @@ bool RenderResource::buildDescriptorHeap()
     for (auto const& t : mTextures)
     {
         if (t.second->Type != TextureType::Texture2D) continue;
-
+        t.second->index = texIndex;
         srvDesc.Format = t.second->Resource->GetDesc().Format;
         srvDesc.Texture2D.MipLevels = t.second->Resource->GetDesc().MipLevels;
         device->CreateShaderResourceView(t.second->Resource.Get(), &srvDesc, handleDescriptor);
 
         handleDescriptor.Offset(1, mHeapDescriptorSize);
+
+        texIndex++;
     }
 
     /*after that all TextureCubes*/
@@ -212,12 +222,13 @@ bool RenderResource::buildDescriptorHeap()
     for (auto const& t : mTextures)
     {
         if (t.second->Type != TextureType::TextureCube)continue;
-
+        t.second->index = texIndex;
         srvDesc.Format = t.second->Resource->GetDesc().Format;
         srvDesc.TextureCube.MipLevels = t.second->Resource->GetDesc().MipLevels;
         device->CreateShaderResourceView(t.second->Resource.Get(), &srvDesc, handleDescriptor);
 
         handleDescriptor.Offset(1, mHeapDescriptorSize);
+        texIndex++;
     }
 
 
@@ -453,19 +464,55 @@ void RenderResource::buildPSOs()
 
 }
 
-void RenderResource::buildMaterials()
+bool RenderResource::buildMaterials()
 {
+    std::ifstream inputJson;
+    json matData;
 
-    auto defaultMat = std::make_unique<Material>();
-    defaultMat->Name = "defaultMat";
-    defaultMat->MaterialCBIndex = 0;
-    defaultMat->DiffuseSrvHeapIndex = 0;
-    defaultMat->NormalSrvHeapIndex = 1;
-    defaultMat->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    defaultMat->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
-    defaultMat->Roughness = 0.3f;
+    try
+    {
+        inputJson.open("data/materials/mat.json");
+        matData = json::parse(inputJson);
+        inputJson.close();
+    }
+    catch (...)
+    {
+        ServiceProvider::getVSLogger()->print<Severity::Error>("Failed to parse material file");
+        return false;
+    }
 
-    mMaterials["defaultMat"] = std::move(defaultMat);
+    int matCounter = 0;
+
+    for (auto const& i : matData["Materials"])
+    {
+        auto material = std::make_unique<Material>();
+        material->Name = i["Name"];
+        material->MaterialCBIndex = matCounter;
+
+        material->DiffuseAlbedo = XMFLOAT4(i["DiffuseAlbedo"][0], i["DiffuseAlbedo"][1],
+                                 i["DiffuseAlbedo"][2], i["DiffuseAlbedo"][3]);
+        material->FresnelR0 = XMFLOAT3(i["FresnelR0"][0], i["FresnelR0"][1], i["FresnelR0"][2]);
+        material->Roughness = i["Roughness"];
+
+        std::string texName = std::string(i["Texture"]) + ".dds";
+        std::string norName = std::string(i["NormalMap"]) + ".dds";
+
+        if (mTextures.find(texName) == mTextures.end() || mTextures.find(norName) == mTextures.end())
+        {
+            std::stringstream str;
+            str << "Can't create material " << material->Name << " due to missing textures!";
+            ServiceProvider::getVSLogger()->print<Severity::Critical>(str.str().c_str());
+            return false;
+        }
+
+        material->DiffuseSrvHeapIndex = mTextures[texName]->index;
+        material->NormalSrvHeapIndex = mTextures[norName]->index;
+        mMaterials[material->Name] = std::move(material);
+
+        matCounter++;
+    }
+
+    return true;
 }
 
 void RenderResource::buildRenderItems()

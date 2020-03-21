@@ -82,6 +82,12 @@
     <ClInclude Include="src\util\geogen.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\extern\d3dx12.h">
+      <Filter>Source Files\src\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\json.hpp">
+      <Filter>Source Files\src\extern</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">

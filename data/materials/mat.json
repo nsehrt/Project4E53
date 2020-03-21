@@ -1,0 +1,23 @@
+{
+    "Materials" :[
+
+    {
+        "Name" : "default",
+        "Texture" : "default",
+        "NormalMap" : "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.3
+    },
+
+    {
+        "Name" : "brick0",
+        "Texture" : "bricks",
+        "NormalMap" : "bricks_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.8
+    }
+
+    ]
+}

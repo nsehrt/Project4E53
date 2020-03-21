@@ -169,7 +169,9 @@
     <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\gametime.hpp" />
+    <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
+    <ClInclude Include="src\extern\json.hpp" />
     <ClInclude Include="src\extern\tinyxml2.h" />
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />

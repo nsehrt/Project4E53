@@ -22,7 +22,7 @@ public:
     RenderResource(const RenderResource& rhs) = delete;
     RenderResource& operator=(const RenderResource& rhs) = delete;
 
-    void init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
+    bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
 
 private:
     ID3D12Device* device = nullptr;
@@ -46,7 +46,7 @@ private:
 
 
     /*private init functions*/
-    bool loadTexture(const std::string& file, TextureType type = TextureType::Texture2D);
+    bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);
     bool loadModel(const std::string& file);
 
     bool buildRootSignature();
@@ -59,6 +59,6 @@ private:
     void generateDefaultShapes();
 
     void buildPSOs();
-    void buildMaterials();
+    bool buildMaterials();
     void buildRenderItems();
 };

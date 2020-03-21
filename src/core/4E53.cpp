@@ -204,7 +204,11 @@ bool P_4E53::Initialize()
 		return false;
 	}
 
-	renderResource.init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath);
+	if (!renderResource.init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath))
+	{
+		ServiceProvider::getVSLogger()->print<Severity::Error>("Initialising render resouce failed!");
+		return false;
+	}
 
 	/*build frame resources*/
 	for (int i = 0; i < gNumFrameResources; i++)

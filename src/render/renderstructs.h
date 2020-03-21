@@ -11,6 +11,9 @@
 #include <string>
 #include <unordered_map>
 #include "../util/mathhelper.h"
+#include "../extern/json.hpp"
+
+using json = nlohmann::json;
 
 /*structs for materials, textures etc.*/
 
@@ -110,6 +113,7 @@ struct Material
     float Roughness = 0.2f;
 
     DirectX::XMFLOAT4X4 MaterialTransform = MathHelper::identity4x4();
+
 };
 
 enum class TextureType
@@ -125,4 +129,6 @@ struct Texture
     Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;
     TextureType Type = TextureType::Texture2D;
+
+    UINT index = -1;
 };
