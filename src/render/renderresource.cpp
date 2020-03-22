@@ -355,11 +355,11 @@ void RenderResource::buildShaders()
     };
 
 
-    mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\default.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["defaultVS"] = d3dUtil::CompileShader(L"data\\shader\\default.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["defaultPS"] = d3dUtil::CompileShader(L"data\\shader\\default.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["skyVS"] = d3dUtil::CompileShader(L"shader\\skysphere.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["skyPS"] = d3dUtil::CompileShader(L"shader\\skysphere.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\skysphere.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["skyPS"] = d3dUtil::CompileShader(L"data\\shader\\skysphere.hlsl", nullptr, "PS", "ps_5_1");
 }
 
 void RenderResource::buildInputLayouts()
