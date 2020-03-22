@@ -10,7 +10,7 @@
 #include <atomic>
 #include <mutex>
 #include <deque>
-#include "../core/gametime.hpp"
+#include "../core/gametime.h"
 
 #pragma comment(lib, "mfreadwrite.lib")
 #pragma comment(lib, "mfplat.lib")

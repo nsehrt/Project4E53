@@ -1,7 +1,6 @@
 #include <Windows.h>
 #include "dx12app.h"
 #include "../util/settings.h"
-#include "../render/frameresource.h"
 #include "../util/serviceprovider.h"
 #include "../render/renderresource.h"
 #include "../core/camera.h"
@@ -29,13 +28,6 @@ private:
 	virtual void draw(const GameTime& gt)override;
 
 	int vsyncIntervall = 0;
-
-	/*frame resources*/
-	
-	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-	FrameResource* mCurrentFrameResource = nullptr;
-	int mCurrentFrameResourceIndex = 0;
-
 
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
@@ -211,13 +203,6 @@ bool P_4E53::Initialize()
 		return false;
 	}
 
-	/*build frame resources*/
-	for (int i = 0; i < gNumFrameResources; i++)
-	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(mDevice.Get(), 5, 5, 5, 5)); /* TO DO !!!!*/
-	}
-
-
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
 	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
@@ -233,7 +218,6 @@ void P_4E53::onResize()
 {
 	DX12App::onResize();
 
-
 }
 
 
@@ -244,9 +228,9 @@ void P_4E53::update(const GameTime& gt)
 {
 	/******************************/
 	/*cycle to next frame resource*/
-	mCurrentFrameResourceIndex = (mCurrentFrameResourceIndex + 1) % gNumFrameResources;
-	mCurrentFrameResource = mFrameResources[mCurrentFrameResourceIndex].get();
+	renderResource.incFrameResource();
 
+	FrameResource* mCurrentFrameResource = renderResource.getCurrentFrameResource();
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -255,6 +239,7 @@ void P_4E53::update(const GameTime& gt)
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
+
 	/****************************/
 
 
@@ -271,6 +256,7 @@ void P_4E53::update(const GameTime& gt)
 
 
 
+	renderResource.update(gt);
 
 	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
@@ -283,12 +269,14 @@ void P_4E53::update(const GameTime& gt)
 /*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
+	auto mCurrentFrameResource = renderResource.getCurrentFrameResource();
+
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
 
 	mCommandList->Reset(
 		cmdListAlloc.Get(),
-		nullptr
+		renderResource.mPSOs["default"].Get()
 	);
 
 	mCommandList->RSSetViewports(1, &mScreenViewport);
@@ -304,16 +292,21 @@ void P_4E53::draw(const GameTime& gt)
 	/*set render target*/
 	mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
 
+	ID3D12DescriptorHeap* descHeap[] = { renderResource.mSrvDescriptorHeap.Get() };
+	mCommandList->SetDescriptorHeaps(_countof(descHeap), descHeap);
+
 	/*set used root signature*/
-	//mCommandList->SetGraphicsRootSignature();
+	mCommandList->SetGraphicsRootSignature(renderResource.mMainRootSignature.Get());
 
 	/*set per pass constant buffer*/
+	auto passCB = mCurrentFrameResource->MaterialBuffer->getResource();
+	mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
 
+	mCommandList->SetGraphicsRootDescriptorTable(4, renderResource.mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	/*draw everything*/
-
-
-
+	renderResource.draw();
+	
 	/*to resource stage*/
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
 								  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -330,7 +323,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	/*advance fence on gpu to signal that this frame is finished*/
-	mCurrentFrameResource->Fence = ++mCurrentFence;
+	renderResource.getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 }

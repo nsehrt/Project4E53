@@ -43,9 +43,6 @@
     <ClInclude Include="src\extern\tinyxml2.h">
       <Filter>Source Files\src\extern</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\gametime.hpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\d3dUtil.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
@@ -89,6 +86,9 @@
       <Filter>Source Files\src\extern</Filter>
     </ClInclude>
     <ClInclude Include="src\core\camera.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\gametime.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
   </ItemGroup>

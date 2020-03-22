@@ -94,8 +94,64 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     }
 
     buildRenderItems();
+    buildFrameResources();
+
+    testCamera.setPosition(0.0f, 3.0f, -20.f);
+
+    activeCamera = &testCamera;
+    activeCamera->updateViewMatrix();
 
     return true;
+}
+
+void RenderResource::draw()
+{
+
+    UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+
+    auto objectCB = mCurrentFrameResource->ObjectCB->getResource();
+
+    // For each render item...
+    for (auto const& ri : mAllRitems)
+    {
+
+        cmdList->IASetVertexBuffers(0, 1, &ri->Geo->getVertexBufferView());
+        cmdList->IASetIndexBuffer(&ri->Geo->getIndexBufferView());
+        cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
+
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex * objCBByteSize;
+
+        cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+
+        cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
+    }
+
+
+}
+
+void RenderResource::incFrameResource()
+{
+
+    mCurrentFrameResourceIndex = (mCurrentFrameResourceIndex + 1) % gNumFrameResources;
+    mCurrentFrameResource = mFrameResources[mCurrentFrameResourceIndex].get();
+
+}
+
+void RenderResource::update(const GameTime& gt)
+{
+    updateObjectCBs(gt);
+    updateMaterialBuffers(gt);
+    updatePassCBs(gt);
+}
+
+int RenderResource::getCurrentFrameResourceIndex()
+{
+    return mCurrentFrameResourceIndex;
+}
+
+FrameResource* RenderResource::getCurrentFrameResource()
+{
+    return mCurrentFrameResource;
 }
 
 bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, TextureType type)
@@ -517,21 +573,125 @@ bool RenderResource::buildMaterials()
     return true;
 }
 
+bool RenderResource::buildFrameResources()
+{
+    /*build frame resources*/
+    for (int i = 0; i < gNumFrameResources; i++)
+    {
+        mFrameResources.push_back(std::make_unique<FrameResource>(device,1, (UINT)mAllRitems.size(), 0, (UINT)mMaterials.size()));
+    }
+    return true;
+}
+
 void RenderResource::buildRenderItems()
 {
 
-    //auto boxRitem = std::make_unique<RenderItem>();
-    //XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-    //XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
-    //boxRitem->ObjCBIndex = 1;
-    //boxRitem->Mat = mMaterials["bricks0"].get();
-    //boxRitem->Geo = mGeometries["shapeGeo"].get();
-    //boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    //boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
-    //boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
-    //boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+    auto boxRitem = std::make_unique<RenderItem>();
+    XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
+    XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
+    boxRitem->ObjCBIndex = 1;
+    boxRitem->Mat = mMaterials["default"].get();
+    boxRitem->Geo = mMeshes["default"].get();
+    boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
+    boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
+    boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
 
-    //mRitemLayer[(int)RenderLayer::Opaque].push_back(boxRitem.get());
-    //mAllRitems.push_back(std::move(boxRitem));
+    mAllRitems.push_back(std::move(boxRitem));
+}
+
+void RenderResource::updateObjectCBs(const GameTime& gt)
+{
+
+    auto currObjectCB = mCurrentFrameResource->ObjectCB.get();
+    for (auto& e : mAllRitems)
+    {
+        // Only update the cbuffer data if the constants have changed.  
+        if (e->NumFramesDirty > 0)
+        {
+            XMMATRIX world = XMLoadFloat4x4(&e->World);
+            XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
+
+            ObjectConstants objConstants;
+            XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
+            XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
+            objConstants.MaterialIndex = e->Mat->MaterialCBIndex;
+
+            currObjectCB->copyData(e->ObjCBIndex, objConstants);
+
+            // Next FrameResource need to be updated too.
+            e->NumFramesDirty--;
+        }
+    }
+
+}
+
+void RenderResource::updatePassCBs(const GameTime& gt)
+{
+
+    XMMATRIX view = activeCamera->getView();
+    XMMATRIX proj = activeCamera->getProj();
+
+    XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+    XMStoreFloat4x4(&mMainPassConstants.View, XMMatrixTranspose(view));
+    XMStoreFloat4x4(&mMainPassConstants.InvView, XMMatrixTranspose(invView));
+    XMStoreFloat4x4(&mMainPassConstants.Proj, XMMatrixTranspose(proj));
+    XMStoreFloat4x4(&mMainPassConstants.InvProj, XMMatrixTranspose(invProj));
+    XMStoreFloat4x4(&mMainPassConstants.ViewProj, XMMatrixTranspose(viewProj));
+    XMStoreFloat4x4(&mMainPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
+    mMainPassConstants.EyePosW = activeCamera->getPosition3f();
+
+    
+
+    mMainPassConstants.RenderTargetSize = XMFLOAT2((float)ServiceProvider::getSettings()->displaySettings.ResolutionWidth, (float)ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
+    mMainPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
+    mMainPassConstants.NearZ = 1.0f;
+    mMainPassConstants.FarZ = 1000.0f;
+    mMainPassConstants.TotalTime = gt.TotalTime();
+    mMainPassConstants.DeltaTime = gt.DeltaTime();
+    mMainPassConstants.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+    mMainPassConstants.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
+    mMainPassConstants.Lights[0].Strength = { 0.8f, 0.8f, 0.8f };
+    mMainPassConstants.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
+    mMainPassConstants.Lights[1].Strength = { 0.4f, 0.4f, 0.4f };
+    mMainPassConstants.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
+    mMainPassConstants.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
+
+    auto currPassCB = mCurrentFrameResource->PassCB.get();
+    currPassCB->copyData(0, mMainPassConstants);
+
+}
+
+void RenderResource::updateMaterialBuffers(const GameTime& gt)
+{
+
+    auto currMaterialBuffer = mCurrentFrameResource->MaterialBuffer.get();
+    for (auto& e : mMaterials)
+    {
+        // Only update the cbuffer data if the constants have changed.  If the cbuffer
+        // data changes, it needs to be updated for each FrameResource.
+        Material* mat = e.second.get();
+        if (mat->NumFramesDirty > 0)
+        {
+            XMMATRIX matTransform = XMLoadFloat4x4(&mat->MaterialTransform);
+
+            MaterialData matData;
+            matData.DiffuseAlbedo = mat->DiffuseAlbedo;
+            matData.FresnelR0 = mat->FresnelR0;
+            matData.Roughness = mat->Roughness;
+            XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
+            matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
+            matData.NormalMapIndex = mat->NormalSrvHeapIndex;
+
+            currMaterialBuffer->copyData(mat->MaterialCBIndex, matData);
+
+            // Next FrameResource need to be updated too.
+            mat->NumFramesDirty--;
+        }
+    }
 
 }

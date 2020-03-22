@@ -10,7 +10,7 @@ FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCo
     //SsaoCB = std::make_unique<UploadBuffer<SsaoConstants>>(device, 1, true);
     MaterialBuffer = std::make_unique<UploadBuffer<MaterialData>>(device, materialCount, false);
     ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
-    SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
+    //SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
 }
 
 FrameResource::~FrameResource()

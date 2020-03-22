@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../util/d3dUtil.h"
-#include "gametime.hpp"
+#include "gametime.h"
 
 /*d3d12 libraries*/
 #pragma comment(lib, "d3dcompiler.lib")

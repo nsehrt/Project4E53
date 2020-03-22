@@ -170,7 +170,7 @@
     <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />
-    <ClInclude Include="src\core\gametime.hpp" />
+    <ClInclude Include="src\core\gametime.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
     <ClInclude Include="src\extern\json.hpp" />

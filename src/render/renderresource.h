@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../util/d3dUtil.h"
-#include "../util/geogen.h"
+#include "../util/geogen.h" 
+#include "../core/camera.h"
+#include "../core/gametime.h"
 #include "frameresource.h"
 #include <filesystem>
 
@@ -24,12 +26,19 @@ public:
 
     bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
 
-private:
-    ID3D12Device* device = nullptr;
-    ID3D12GraphicsCommandList* cmdList = nullptr;
+    void draw();
+
+    void incFrameResource();
+    void update(const GameTime& gt);
+    int getCurrentFrameResourceIndex();
+    FrameResource* getCurrentFrameResource();
+
+    Camera* activeCamera = nullptr;
 
     ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
+
+    std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
 
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
     std::unordered_map<std::string, std::unique_ptr<Mesh>> mMeshes;
@@ -37,13 +46,22 @@ private:
 
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
     std::unordered_map <std::string, std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
-    
-    std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
+    std::vector<std::unique_ptr<RenderItem>> mAllRitems;
+
+private:
+    ID3D12Device* device = nullptr;
+    ID3D12GraphicsCommandList* cmdList = nullptr;
+
 
     UINT mHeapDescriptorSize = 0;
 
     /*frame resource, camera, pass constants ??*/
+    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
+    FrameResource* mCurrentFrameResource = nullptr;
+    int mCurrentFrameResourceIndex = 0;
 
+    Camera testCamera;
+    PassConstants mMainPassConstants;
 
     /*private init functions*/
     bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);
@@ -60,5 +78,11 @@ private:
 
     void buildPSOs();
     bool buildMaterials();
+    bool buildFrameResources();
     void buildRenderItems();
+
+
+    void updateObjectCBs(const GameTime& gt);
+    void updatePassCBs(const GameTime& gt);
+    void updateMaterialBuffers(const GameTime& gt);
 };

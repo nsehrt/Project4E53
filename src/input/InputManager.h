@@ -5,7 +5,7 @@
 #include <atomic>
 #include <mutex>
 #include "../util/serviceprovider.h"
-#include "../core/gametime.hpp"
+#include "../core/gametime.h"
 
 #define BUTTON_COUNT 14
 #define TRIGGER_COUNT 6
