@@ -254,8 +254,6 @@ void P_4E53::update(const GameTime& gt)
 		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 	}
 
-
-
 	renderResource.update(gt);
 
 	/*save input for next frame*/
@@ -299,8 +297,11 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->SetGraphicsRootSignature(renderResource.mMainRootSignature.Get());
 
 	/*set per pass constant buffer*/
-	auto passCB = mCurrentFrameResource->MaterialBuffer->getResource();
+	auto passCB = mCurrentFrameResource->PassCB->getResource();
 	mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
+
+	auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
+	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
 
 	mCommandList->SetGraphicsRootDescriptorTable(4, renderResource.mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 

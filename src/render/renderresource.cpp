@@ -587,10 +587,10 @@ void RenderResource::buildRenderItems()
 {
 
     auto boxRitem = std::make_unique<RenderItem>();
-    XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-    XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
-    boxRitem->ObjCBIndex = 1;
-    boxRitem->Mat = mMaterials["default"].get();
+    XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+    XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
+    boxRitem->ObjCBIndex = 0;
+    boxRitem->Mat = mMaterials["brick0"].get();
     boxRitem->Geo = mMeshes["default"].get();
     boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
@@ -649,7 +649,7 @@ void RenderResource::updatePassCBs(const GameTime& gt)
 
     mMainPassConstants.RenderTargetSize = XMFLOAT2((float)ServiceProvider::getSettings()->displaySettings.ResolutionWidth, (float)ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
     mMainPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
-    mMainPassConstants.NearZ = 1.0f;
+    mMainPassConstants.NearZ = 0.01f;
     mMainPassConstants.FarZ = 1000.0f;
     mMainPassConstants.TotalTime = gt.TotalTime();
     mMainPassConstants.DeltaTime = gt.DeltaTime();
