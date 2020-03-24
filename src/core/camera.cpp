@@ -1,11 +1,15 @@
 #include "camera.h"
+#include "../util/serviceprovider.h"
 
 using namespace DirectX;
 
 Camera::Camera()
 {
     /*0.25 * pi = 90° fov*/
-    setLens(0.2f * MathHelper::Pi, 1.0f, 0.01f, 1000.0f);
+    setLens(0.2f * MathHelper::Pi,
+			static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+			0.01f,
+			1000.0f);
 }
 
 XMVECTOR Camera::getPosition()const

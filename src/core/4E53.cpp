@@ -217,7 +217,7 @@ bool P_4E53::Initialize()
 void P_4E53::onResize()
 {
 	DX12App::onResize();
-
+	
 }
 
 
