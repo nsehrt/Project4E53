@@ -106,8 +106,8 @@ protected:
     D3D_DRIVER_TYPE mDriverType = D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE;
     DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    int mWindowWidth = 800;
-    int mWindowHeight = 600;
+    int mWindowWidth = 1280;
+    int mWindowHeight = 720;
 
     int priResX = 0;
     int priResY = 0;

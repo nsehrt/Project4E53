@@ -256,6 +256,8 @@ void P_4E53::update(const GameTime& gt)
 
 	renderResource.update(gt);
 
+	renderResource.activeCamera->updateViewMatrix();
+
 	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
 	ServiceProvider::getInputManager()->releaseInput();

@@ -27,8 +27,6 @@ struct PassConstants
     DirectX::XMFLOAT4X4 InvProj = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 ViewProj = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 InvViewProj = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 ViewProjTex = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 ShadowTransform = MathHelper::identity4x4();
     DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
     float cbPerObjectPad1 = 0.0f;
     DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
@@ -53,6 +51,7 @@ struct MaterialData
     DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
     float Roughness = 0.5f;
 
+    // Used in texture mapping.
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
 
     UINT DiffuseMapIndex = 0;
@@ -91,7 +90,7 @@ public:
     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc;
     std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
     std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
-    std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
+    //std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
     //std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
     std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
 

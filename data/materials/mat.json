@@ -14,7 +14,7 @@
         "Name" : "brick0",
         "Texture" : "bricks",
         "NormalMap" : "bricks_nmap",
-        "DiffuseAlbedo" : [1.0,0.0,1.0,1.0],
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
     }
