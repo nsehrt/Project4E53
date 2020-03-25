@@ -21,7 +21,9 @@ struct DisplaySettings
 
 struct InputSettings
 {
-    int fill = 0;
+    int InvertYAxis = 0;
+    float Sensitivity = 1.0f;
+    float FPSCameraSpeed = 1.0f;
 };
 
 struct GraphicSettings

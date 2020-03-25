@@ -77,6 +77,19 @@ bool SettingsLoader::loadSettings(const std::string& path)
     XMLElement* pInput = pRoot->FirstChildElement("Input");
     XMLCheckExist(pInput);
 
+    if (!setSetting(pInput, "InvertYAxis", &settings.inputSettings.InvertYAxis))
+        return false;
+
+    if (settings.inputSettings.InvertYAxis != 0)
+    {
+        settings.inputSettings.InvertYAxis = 1;
+    }
+
+    if (!setSetting(pInput, "Sensitivity", &settings.inputSettings.Sensitivity))
+        return false;
+
+    if (!setSetting(pInput, "FPSCameraSpeed", &settings.inputSettings.FPSCameraSpeed))
+        return false;
 
     return true;
 }

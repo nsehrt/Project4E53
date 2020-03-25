@@ -252,7 +252,7 @@ void P_4E53::update(const GameTime& gt)
 
 	/*get input*/
 	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
-
+	Settings* settingsData = ServiceProvider::getSettings();
 
 
 	if (inputData.Pressed(BUTTON_A))
@@ -262,12 +262,12 @@ void P_4E53::update(const GameTime& gt)
 
 	/*fps camera controls*/
 
-	float lx = inputData.current.trigger[THUMB_LX] * 10;
-	float ly = inputData.current.trigger[THUMB_LY] * 10;
-	float rx = inputData.current.trigger[THUMB_RX] * 4;
-	float ry = inputData.current.trigger[THUMB_RY] * 4;
+	float lx = inputData.current.trigger[THUMB_LX] * settingsData->inputSettings.FPSCameraSpeed;
+	float ly = inputData.current.trigger[THUMB_LY] * settingsData->inputSettings.FPSCameraSpeed;
+	float rx = inputData.current.trigger[THUMB_RX] * settingsData->inputSettings.Sensitivity;
+	float ry = (settingsData->inputSettings.InvertYAxis ? -1 : 1) * inputData.current.trigger[THUMB_RY] * settingsData->inputSettings.Sensitivity;
 
-	renderResource.activeCamera->pitch(-ry * gt.DeltaTime());
+	renderResource.activeCamera->pitch(ry * gt.DeltaTime());
 	renderResource.activeCamera->rotateY(rx * gt.DeltaTime());
 
 	renderResource.activeCamera->walk(ly * gt.DeltaTime());
