@@ -217,7 +217,13 @@ bool P_4E53::Initialize()
 void P_4E53::onResize()
 {
 	DX12App::onResize();
-	
+	if (renderResource.activeCamera)
+	{
+		renderResource.activeCamera->setLens(0.2f * MathHelper::Pi,
+											 static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+											 0.01f,
+											 1000.0f);
+	}
 }
 
 
@@ -254,9 +260,22 @@ void P_4E53::update(const GameTime& gt)
 		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 	}
 
-	renderResource.update(gt);
+	/*fps camera controls*/
+
+	float lx = inputData.current.trigger[THUMB_LX] * 10;
+	float ly = inputData.current.trigger[THUMB_LY] * 10;
+	float rx = inputData.current.trigger[THUMB_RX] * 4;
+	float ry = inputData.current.trigger[THUMB_RY] * 4;
+
+	renderResource.activeCamera->pitch(-ry * gt.DeltaTime());
+	renderResource.activeCamera->rotateY(rx * gt.DeltaTime());
+
+	renderResource.activeCamera->walk(ly * gt.DeltaTime());
+	renderResource.activeCamera->strafe(lx * gt.DeltaTime());
 
 	renderResource.activeCamera->updateViewMatrix();
+	renderResource.update(gt);
+	
 
 	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
@@ -305,6 +324,12 @@ void P_4E53::draw(const GameTime& gt)
 	auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
 	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
 
+	/*cubemap*/
+	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(renderResource.mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	skyTexDescriptor.Offset(renderResource.mTextures["grasscube1024.dds"]->index, renderResource.mHeapDescriptorSize);
+	mCommandList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
+
+	/*textures (array)*/
 	mCommandList->SetGraphicsRootDescriptorTable(4, renderResource.mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	/*draw everything*/

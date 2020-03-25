@@ -48,12 +48,11 @@ public:
     std::unordered_map <std::string, std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
     std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
+    UINT mHeapDescriptorSize = 0;
+
 private:
     ID3D12Device* device = nullptr;
     ID3D12GraphicsCommandList* cmdList = nullptr;
-
-
-    UINT mHeapDescriptorSize = 0;
 
     /*frame resource, camera, pass constants ??*/
     std::vector<std::unique_ptr<FrameResource>> mFrameResources;

@@ -25,6 +25,7 @@
     </Graphic>
 
     <Input>
-
+        <InvertYAxis>1</InvertYAxis>
+        <Sensitivity>4.0</Sensitivity>
     </Input>
 </root>

@@ -2,6 +2,8 @@
 
 #include "../util/d3dUtil.h"
 
+#define CAMERA_RESTRICTION_ANGLE 5.f
+
 class Camera
 {
 public:
@@ -66,6 +68,7 @@ private:
     DirectX::XMFLOAT3 mUp = { 0.0f, 1.0f, 0.0f };
     DirectX::XMFLOAT3 mLook = { 0.0f, 0.0f, 1.0f };
 
+    DirectX::XMVECTOR yAxis;
     float mNearZ = 0.0f;
     float mFarZ = 0.0f;
     float mAspect = 0.0f;

@@ -17,6 +17,33 @@
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
+    },
+
+    {
+        "Name" : "tile0",
+        "Texture" : "tile",
+        "NormalMap" : "tile_nmap",
+        "DiffuseAlbedo" : [0.9,0.9,0.9,1.0],
+        "FresnelR0" : [0.2,0.2,0.2],
+        "Roughness" : 0.1
+    },
+
+    {
+        "Name" : "mirror0",
+        "Texture" : "checkboard",
+        "NormalMap" : "checkboard_nmap",
+        "DiffuseAlbedo" : [0.0,0.0,0.0,1.0],
+        "FresnelR0" : [0.98,0.97,0.95],
+        "Roughness" : 0.1
+    },
+
+    {
+        "Name" : "sky",
+        "Texture" : "default",
+        "NormalMap" : "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.3
     }
 
     ]

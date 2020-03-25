@@ -114,6 +114,8 @@ void RenderResource::draw()
     // For each render item...
     for (auto const& ri : mAllRitems)
     {
+        if(ri->renderType == RenderType::Sky)
+            cmdList->SetPipelineState(mPSOs["sky"].Get());
 
         cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
         cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
@@ -129,19 +131,20 @@ void RenderResource::draw()
 
 }
 
+void RenderResource::update(const GameTime& gt)
+{
+    updateObjectCBs(gt);
+    updateMaterialBuffers(gt);
+    updatePassCBs(gt);
+}
+
+
 void RenderResource::incFrameResource()
 {
 
     mCurrentFrameResourceIndex = (mCurrentFrameResourceIndex + 1) % gNumFrameResources;
     mCurrentFrameResource = mFrameResources[mCurrentFrameResourceIndex].get();
 
-}
-
-void RenderResource::update(const GameTime& gt)
-{
-    updateObjectCBs(gt);
-    updateMaterialBuffers(gt);
-    updatePassCBs(gt);
 }
 
 int RenderResource::getCurrentFrameResourceIndex()
@@ -162,9 +165,17 @@ bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, T
     texMap->Type = type;
 
     HRESULT hr = DirectX::CreateDDSTextureFromFile12(device, cmdList, texMap->Filename.c_str(), texMap->Resource, texMap->UploadHeap);
-    mTextures[texMap->Name] = std::move(texMap);
 
-    return hr == S_OK;
+    if (hr == S_OK)
+    {
+        mTextures[texMap->Name] = std::move(texMap);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 }
 
 bool RenderResource::loadModel(const std::string& file)
@@ -181,9 +192,9 @@ bool RenderResource::buildRootSignature()
     CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
     textureTableReg0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0);
 
-    /*10 textures in register 1*/
+    /*x textures in register 1*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
-    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 10, 1, 0);
+    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, 0);
 
     /*constant buffer views in register b0 and b1*/
     rootParameter[0].InitAsConstantBufferView(0);
@@ -588,9 +599,11 @@ bool RenderResource::buildMaterials()
         if (mTextures.find(texName) == mTextures.end() || mTextures.find(norName) == mTextures.end())
         {
             std::stringstream str;
-            str << "Can't create material " << material->Name << " due to missing textures!";
+            str << "Can't create material " << material->Name << " due to missing textures! Using default.";
             ServiceProvider::getVSLogger()->print<Severity::Critical>(str.str().c_str());
-            return false;
+            
+            texName = "default.dds";
+            norName = "defaultNormal.dds";
         }
 
         material->DiffuseSrvHeapIndex = mTextures[texName]->index;
@@ -620,7 +633,7 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
     XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
     boxRitem->ObjCBIndex = 0;
-    boxRitem->Mat = mMaterials["default"].get();
+    boxRitem->Mat = mMaterials["brick0"].get();
     boxRitem->Geo = mMeshes["default"].get();
     boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
@@ -633,7 +646,7 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&globeRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 2.0f, 0.0f));
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
-    globeRitem->Mat = mMaterials["default"].get();
+    globeRitem->Mat = mMaterials["mirror0"].get();
     globeRitem->Geo = mMeshes["default"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     globeRitem->IndexCount = globeRitem->Geo->DrawArgs["sphere"].IndexCount;
@@ -646,7 +659,7 @@ void RenderResource::buildRenderItems()
     gridRitem->World = MathHelper::identity4x4();
     XMStoreFloat4x4(&gridRitem->TexTransform, XMMatrixScaling(8.0f, 8.0f, 1.0f));
     gridRitem->ObjCBIndex = 2;
-    gridRitem->Mat = mMaterials["default"].get();
+    gridRitem->Mat = mMaterials["tile0"].get();
     gridRitem->Geo = mMeshes["default"].get();
     gridRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
@@ -673,7 +686,7 @@ void RenderResource::buildRenderItems()
         XMStoreFloat4x4(&leftCylRitem->World, rightCylWorld);
         XMStoreFloat4x4(&leftCylRitem->TexTransform, brickTexTransform);
         leftCylRitem->ObjCBIndex = objCBIndex++;
-        leftCylRitem->Mat = mMaterials["default"].get();
+        leftCylRitem->Mat = mMaterials["brick0"].get();
         leftCylRitem->Geo = mMeshes["default"].get();
         leftCylRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         leftCylRitem->IndexCount = leftCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
@@ -693,7 +706,7 @@ void RenderResource::buildRenderItems()
         XMStoreFloat4x4(&leftSphereRitem->World, leftSphereWorld);
         leftSphereRitem->TexTransform = MathHelper::identity4x4();
         leftSphereRitem->ObjCBIndex = objCBIndex++;
-        leftSphereRitem->Mat = mMaterials["default"].get();
+        leftSphereRitem->Mat = mMaterials["mirror0"].get();
         leftSphereRitem->Geo = mMeshes["default"].get();
         leftSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
@@ -703,7 +716,7 @@ void RenderResource::buildRenderItems()
         XMStoreFloat4x4(&rightSphereRitem->World, rightSphereWorld);
         rightSphereRitem->TexTransform = MathHelper::identity4x4();
         rightSphereRitem->ObjCBIndex = objCBIndex++;
-        rightSphereRitem->Mat = mMaterials["default"].get();
+        rightSphereRitem->Mat = mMaterials["mirror0"].get();
         rightSphereRitem->Geo = mMeshes["default"].get();
         rightSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
@@ -716,34 +729,19 @@ void RenderResource::buildRenderItems()
         mAllRitems.push_back(std::move(rightSphereRitem));
     }
 
- 
-    /*
-        auto boxRitem = std::make_unique<RenderItem>();
-    XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-    XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
-    boxRitem->ObjCBIndex = 0;
-    boxRitem->Mat = mMaterials["brick0"].get();
-    boxRitem->Geo = mMeshes["default"].get();
-    boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
-    boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
-    boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+    auto skyRitem = std::make_unique<RenderItem>();
+    XMStoreFloat4x4(&skyRitem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.0f));
+    skyRitem->TexTransform = MathHelper::identity4x4();
+    skyRitem->ObjCBIndex = objCBIndex;
+    skyRitem->Mat = mMaterials["sky"].get();
+    skyRitem->Geo = mMeshes["default"].get();
+    skyRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    skyRitem->IndexCount = skyRitem->Geo->DrawArgs["sphere"].IndexCount;
+    skyRitem->StartIndexLocation = skyRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
+    skyRitem->BaseVertexLocation = skyRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+    skyRitem->renderType = RenderType::Sky;
 
-    mAllRitems.push_back(std::move(boxRitem));
-
-    auto gridRitem = std::make_unique<RenderItem>();
-    gridRitem->World = MathHelper::identity4x4();
-    XMStoreFloat4x4(&gridRitem->TexTransform, XMMatrixScaling(8.0f, 8.0f, 1.0f));
-    gridRitem->ObjCBIndex = 1;
-    gridRitem->Mat = mMaterials["default"].get();
-    gridRitem->Geo = mMeshes["default"].get();
-    gridRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
-    gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
-    gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
-
-    mAllRitems.push_back(std::move(gridRitem));
-    */
+    mAllRitems.push_back(std::move(skyRitem));
 }
 
 void RenderResource::updateObjectCBs(const GameTime& gt)

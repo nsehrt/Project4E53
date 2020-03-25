@@ -153,6 +153,11 @@ struct Texture
     UINT index = -1;
 };
 
+enum class RenderType
+{
+    Opaque,
+    Sky
+};
 
 struct RenderItem
 {
@@ -177,4 +182,6 @@ struct RenderItem
     UINT IndexCount = 0;
     UINT StartIndexLocation = 0;
     int BaseVertexLocation = 0;
+
+    RenderType renderType = RenderType::Opaque;
 };

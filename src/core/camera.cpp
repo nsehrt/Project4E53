@@ -10,6 +10,8 @@ Camera::Camera()
 			static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
 			0.01f,
 			1000.0f);
+
+	yAxis = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 }
 
 XMVECTOR Camera::getPosition()const
@@ -200,6 +202,14 @@ void Camera::pitch(float angle)
 	// Rotate up and look vector about the right vector.
 
 	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
+
+	XMVECTOR t = XMVector3TransformNormal(XMLoadFloat3(&mLook), R);
+	XMVECTOR a = XMVector3AngleBetweenNormals(yAxis, t);
+
+	float convertedAngle = XMConvertToDegrees(XMVectorGetX(a));
+
+	if (convertedAngle < CAMERA_RESTRICTION_ANGLE || convertedAngle >(180.f - CAMERA_RESTRICTION_ANGLE))
+		return;
 
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
