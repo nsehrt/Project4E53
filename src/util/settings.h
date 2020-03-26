@@ -14,6 +14,7 @@ struct DisplaySettings
     int ResolutionWidth = 640;
     int ResolutionHeight = 480;
     float RefreshRate = 60.0;
+    int FOV = 90;
     int VSync = 0;
     int WindowMode = 0;
     int BufferFrames = 3;

@@ -35,6 +35,7 @@ public:
 
     // Set frustum.
     void setLens(float fovY, float aspect, float zn, float zf);
+    void setLens();
 
     // Define camera space via LookAt parameters.
     void lookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp);
@@ -75,6 +76,9 @@ private:
     float mFovY = 0.0f;
     float mNearWindowHeight = 0.0f;
     float mFarWindowHeight = 0.0f;
+
+    float stdNear = 0.01f;
+    float stdFar = 1000.0f;
 
     bool mViewDirty = true;
 

@@ -59,6 +59,15 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pDisplay, "RefreshRate", &settings.displaySettings.RefreshRate))
         return false;
 
+    if (!setSetting(pDisplay, "FOV", &settings.displaySettings.FOV))
+        return false;
+
+    if (settings.displaySettings.FOV < 30)
+        settings.displaySettings.FOV = 30;
+
+    if (settings.displaySettings.FOV > 240)
+        settings.displaySettings.FOV = 240;
+
     /*load gameplay settings*/
     XMLElement* pGameplay = pRoot->FirstChildElement("Gameplay");
     XMLCheckExist(pGameplay);

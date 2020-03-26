@@ -5,11 +5,7 @@ using namespace DirectX;
 
 Camera::Camera()
 {
-    /*0.25 * pi = 90° fov*/
-    setLens(0.2f * MathHelper::Pi,
-			static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
-			0.01f,
-			1000.0f);
+	setLens();
 
 	yAxis = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 }
@@ -125,6 +121,16 @@ void Camera::setLens(float fovY, float aspect, float zn, float zf)
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
 	XMStoreFloat4x4(&mProj, P);
+}
+
+void Camera::setLens()
+{
+	float fovRad = ServiceProvider::getSettings()->displaySettings.FOV / 360.f * MathHelper::Pi;
+
+	setLens(fovRad,
+			static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+			stdNear,
+			stdFar);
 }
 
 void Camera::lookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)

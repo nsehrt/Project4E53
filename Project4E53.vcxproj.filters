@@ -91,6 +91,9 @@
     <ClInclude Include="src\core\gametime.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\fpscamera.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -142,6 +145,9 @@
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\core\camera.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\fpscamera.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>

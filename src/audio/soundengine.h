@@ -92,6 +92,7 @@ public:
     /*use this to stop the engine/run loop*/
     void Stop();
 
+    /*check if loading the audio data is finished*/
     bool loadingFinished()
     {
         return isLoaded;

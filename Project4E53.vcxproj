@@ -152,6 +152,7 @@
     <ClCompile Include="src\core\4E53.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
+    <ClCompile Include="src\core\fpscamera.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
     <ClCompile Include="src\extern\tinyxml2.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />
+    <ClInclude Include="src\core\fpscamera.h" />
     <ClInclude Include="src\core\gametime.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />

@@ -4,6 +4,7 @@
 #include "../util/serviceprovider.h"
 #include "../render/renderresource.h"
 #include "../core/camera.h"
+#include "../core/fpscamera.h"
 #include <filesystem>
 
 #define SETTINGS_FILE "cfg/settings.xml"
@@ -30,6 +31,7 @@ private:
 	std::unique_ptr<std::thread> audioThread;
 
 	RenderResource renderResource;
+	FPSCamera fpsCamera;
 };
 
 int gNumFrameResources = 3;
@@ -82,7 +84,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			return 0;
 		}
 
-		/*wait for is audio loading*/
+		/*wait for audio loading*/
 		while (!ServiceProvider::getAudio()->loadingFinished())
 			Sleep(5);
 
@@ -189,6 +191,12 @@ bool P_4E53::Initialize()
 		return false;
 	}
 
+	/*init fpscamera*/
+	fpsCamera.setLens();
+	fpsCamera.setPosition(0.0f, 2.f, -10.f);
+	
+	renderResource.activeCamera = &fpsCamera;
+
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
 	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
@@ -247,17 +255,8 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*fps camera controls*/
+	fpsCamera.updateFPSCamera(inputData.current, gt);
 
-	float lx = inputData.current.trigger[THUMB_LX] * settingsData->inputSettings.FPSCameraSpeed;
-	float ly = inputData.current.trigger[THUMB_LY] * settingsData->inputSettings.FPSCameraSpeed;
-	float rx = inputData.current.trigger[THUMB_RX] * settingsData->inputSettings.Sensitivity;
-	float ry = (settingsData->inputSettings.InvertYAxis ? -1 : 1) * inputData.current.trigger[THUMB_RY] * settingsData->inputSettings.Sensitivity;
-
-	renderResource.activeCamera->pitch(ry * gt.DeltaTime());
-	renderResource.activeCamera->rotateY(rx * gt.DeltaTime());
-
-	renderResource.activeCamera->walk(ly * gt.DeltaTime());
-	renderResource.activeCamera->strafe(lx * gt.DeltaTime());
 
 	renderResource.activeCamera->updateViewMatrix();
 	renderResource.update(gt);
