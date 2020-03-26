@@ -7,7 +7,7 @@ void SoundEngine::init()
 
     if (hr != S_OK)
     {
-        ServiceProvider::getVSLogger()->print<Severity::Warning>("Failed to initialize COM.");
+        ServiceProvider::getLogger()->print<Severity::Warning>("Failed to initialize COM.");
         return;
     }
 
@@ -55,12 +55,12 @@ void SoundEngine::uninit()
 void SoundEngine::run()
 {
     /*logger*/
-    ServiceProvider::getVSLogger()->setThreadName("audioThread");
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Starting the audio engine.");
+    ServiceProvider::getLogger()->setThreadName("audioThread");
+    ServiceProvider::getLogger()->print<Severity::Info>("Starting the audio engine.");
 
     if (!isInit)
     {
-        ServiceProvider::getVSLogger()->print<Severity::Critical>("Sound engine is not initialized!");
+        ServiceProvider::getLogger()->print<Severity::Critical>("Sound engine is not initialized!");
         return;
     }
 
@@ -74,7 +74,7 @@ void SoundEngine::run()
     }
 
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Shutting down audio engine.");
+    ServiceProvider::getLogger()->print<Severity::Info>("Shutting down audio engine.");
 
 }
 
@@ -187,7 +187,7 @@ void SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
     std::stringstream str;
     str << "Loaded file '" << id << ext << "' as " << (st == SoundType::Effect ? "effect" : "music") << ".";
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
+    ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
 }
 
 void SoundEngine::add(unsigned int audioGuid, const std::string& fileId)
@@ -221,7 +221,7 @@ void SoundEngine::update()
             std::stringstream str;
             str << "Trying to play unknown audio file: " << data.fileId << "!";
 
-            ServiceProvider::getVSLogger()->print<Severity::Warning>(str.str().c_str());
+            ServiceProvider::getLogger()->print<Severity::Warning>(str.str().c_str());
         }
         else
         {
@@ -239,7 +239,7 @@ void SoundEngine::update()
 
             if (usedChannel == MAX_CHANNELS + 1)
             {
-                ServiceProvider::getVSLogger()->print<Severity::Warning>("All sound channels in use!");
+                ServiceProvider::getLogger()->print<Severity::Warning>("All sound channels in use!");
             }
             else
             {
@@ -250,7 +250,7 @@ void SoundEngine::update()
                 HRESULT hr = xaudioMain->CreateSourceVoice(&channels[usedChannel]->srcVoice, &channels[usedChannel]->audio->waveFormat);
                 if (FAILED(hr))
                 {
-                    ServiceProvider::getVSLogger()->print<Severity::Warning>("Failed to create xaudio2 source voice!");
+                    ServiceProvider::getLogger()->print<Severity::Warning>("Failed to create xaudio2 source voice!");
                 }
             }
 

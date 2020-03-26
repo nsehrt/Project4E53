@@ -57,11 +57,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	srand((unsigned int)time(NULL));
 
 	/*create logger*/
-	std::shared_ptr<Logger<VSLogPolicy>> vsLogger(new Logger<VSLogPolicy>(L""));
+	std::shared_ptr<Logger<LogPolicy>> vsLogger(new Logger<LogPolicy>(L""));
 	vsLogger->setThreadName("mainThread");
-	ServiceProvider::setVSLoggingService(vsLogger);
+	ServiceProvider::setLoggingService(vsLogger);
 
-	ServiceProvider::getVSLogger()->print<Severity::Info>("Logger started successfully.");
+	ServiceProvider::getLogger()->print<Severity::Info>("Logger started successfully.");
 
 
 	/*load settings file*/
@@ -69,13 +69,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 	if (!settingsLoader.loadSettings(SETTINGS_FILE))
 	{
-		ServiceProvider::getVSLogger()->print<Severity::Error>("Failed to load settings.xml!");
+		ServiceProvider::getLogger()->print<Severity::Error>("Failed to load settings.xml!");
 		MessageBox(nullptr, L"Failed to load settings.xml!", L"Error", MB_OK);
 		return -1;
 	}
 	ServiceProvider::setSettings(settingsLoader.get());
 
-	ServiceProvider::getVSLogger()->print<Severity::Info>("Settings file loaded successfully.");
+	ServiceProvider::getLogger()->print<Severity::Info>("Settings file loaded successfully.");
 
 	/*initialize main window and directx12*/
 	try
@@ -91,17 +91,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		std::stringstream outStr;
 		outStr << "Game initialization was successful. (" << elapsedTime.count() << " seconds)";
 
-		ServiceProvider::getVSLogger()->print<Severity::Info>(outStr.str());
+		ServiceProvider::getLogger()->print<Severity::Info>(outStr.str());
 
 		status = app.run();
 
-		ServiceProvider::getVSLogger()->print<Severity::Info>("Game loop has been quit!");
+		ServiceProvider::getLogger()->print<Severity::Info>("Game loop has been quit!");
 
 		return 0;
 	}
 	catch (DxException & e)
 	{
-		ServiceProvider::getVSLogger()->print<Severity::Critical>("Exception thrown!");
+		ServiceProvider::getLogger()->print<Severity::Critical>("Exception thrown!");
 
 		MessageBox(nullptr, e.toString().c_str(), L"HR Failed", MB_OK);
 		status = -1;
@@ -187,19 +187,19 @@ bool P_4E53::Initialize()
 
 	if (!std::filesystem::exists(texturePath))
 	{
-		ServiceProvider::getVSLogger()->print<Severity::Critical>("Unable to access texture folder!");
+		ServiceProvider::getLogger()->print<Severity::Critical>("Unable to access texture folder!");
 		return false;
 	}
 
 	if (!std::filesystem::exists(modelPath))
 	{
-		ServiceProvider::getVSLogger()->print<Severity::Critical>("Unable to access model folder!");
+		ServiceProvider::getLogger()->print<Severity::Critical>("Unable to access model folder!");
 		return false;
 	}
 
 	if (!renderResource.init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath))
 	{
-		ServiceProvider::getVSLogger()->print<Severity::Error>("Initialising render resouce failed!");
+		ServiceProvider::getLogger()->print<Severity::Error>("Initialising render resouce failed!");
 		return false;
 	}
 

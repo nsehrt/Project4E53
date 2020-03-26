@@ -64,14 +64,14 @@ void DX12App::setFullscreen(bool value)
         if (adapter->EnumOutputs(ServiceProvider::getSettings()->displaySettings.Monitor, &output) == DXGI_ERROR_NOT_FOUND)
         {
             mSwapChain->SetFullscreenState(true, nullptr);
-            ServiceProvider::getVSLogger()->print<Severity::Info>("Switching to fullscreen mode on standard monitor. (Setting ignored)");
+            ServiceProvider::getLogger()->print<Severity::Info>("Switching to fullscreen mode on standard monitor. (Setting ignored)");
         }
         else
         {
             mSwapChain->SetFullscreenState(true, output);
             std::stringstream stream;
             stream << "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".";
-            ServiceProvider::getVSLogger()->print<Severity::Info>(stream.str());
+            ServiceProvider::getLogger()->print<Severity::Info>(stream.str());
         }
 
     }
@@ -79,7 +79,7 @@ void DX12App::setFullscreen(bool value)
     {
         mSwapChain->SetFullscreenState(false, nullptr);
 
-        ServiceProvider::getVSLogger()->print<Severity::Info>("Leaving fullscreen mode.");
+        ServiceProvider::getLogger()->print<Severity::Info>("Leaving fullscreen mode.");
     }
 
 }
@@ -128,7 +128,7 @@ int DX12App::run()
 
     }
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Main window has been flagged for destruction.");
+    ServiceProvider::getLogger()->print<Severity::Info>("Main window has been flagged for destruction.");
 
     if (mFullscreenState)
     {
@@ -143,23 +143,23 @@ bool DX12App::Initialize()
 {
     if (!initMainWindow())
     {
-        ServiceProvider::getVSLogger()->print<Severity::Error>("Failed to create main window!");
+        ServiceProvider::getLogger()->print<Severity::Error>("Failed to create main window!");
         return false;
     }
     else
     {
-        ServiceProvider::getVSLogger()->print<Severity::Info>("Created main window successfully.");
+        ServiceProvider::getLogger()->print<Severity::Info>("Created main window successfully.");
     }
         
 
     if (!initDirect3D())
     {
-        ServiceProvider::getVSLogger()->print<Severity::Error>("Failed to initialize DirectX 12!");
+        ServiceProvider::getLogger()->print<Severity::Error>("Failed to initialize DirectX 12!");
         return false;
     }
     else
     {
-        ServiceProvider::getVSLogger()->print<Severity::Info>("DirectX 12 was set up successfully.");
+        ServiceProvider::getLogger()->print<Severity::Info>("DirectX 12 was set up successfully.");
     }
 
     /*fullscreen state*/
@@ -208,7 +208,7 @@ void DX12App::onResize()
 
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Resizing DX12 resources.");
+    ServiceProvider::getLogger()->print<Severity::Info>("Resizing DX12 resources.");
 
     /*release the previous resources*/
     for (int i = 0; i < SwapChainBufferCount; ++i)
@@ -413,7 +413,7 @@ bool DX12App::initDirect3D()
     // Fallback to WARP device.
     if (FAILED(hardwareResult))
     {
-        ServiceProvider::getVSLogger()->print<Severity::Warning>("Failed to create graphics device, falling back to Warp!");
+        ServiceProvider::getLogger()->print<Severity::Warning>("Failed to create graphics device, falling back to Warp!");
 
         ComPtr<IDXGIAdapter> pWarpAdapter;
         ThrowIfFailed(mdxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pWarpAdapter)));
@@ -439,7 +439,7 @@ bool DX12App::initDirect3D()
     std::stringstream adapterInfo;
     adapterInfo << "Using graphic adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".";
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>(adapterInfo.str());
+    ServiceProvider::getLogger()->print<Severity::Info>(adapterInfo.str());
 
     createCommandObjects();
     createSwapChain();

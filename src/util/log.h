@@ -32,42 +32,42 @@ public:
 };
 
 /*implements file logger*/
-class FileLogPolicy : public LogPolicyAbstract
-{
-private:
-    std::ofstream outputStream;
-
-public:
-    FileLogPolicy() : outputStream() {};
-    ~FileLogPolicy() {};
-
-    bool openOutputStream(const std::wstring& name) override;
-    void closeOutputStream() override;
-    void write(const std::string& msg) override;
-};
-
-/*implement cout logger*/
-class CLILogPolicy : public LogPolicyAbstract
-{
-private:
-
-public:
-    CLILogPolicy() {};
-    ~CLILogPolicy() {};
-
-    bool openOutputStream(const std::wstring& name) override;
-    void closeOutputStream() override;
-    void write(const std::string& msg) override;
-};
+//class FileLogPolicy : public LogPolicyAbstract
+//{
+//private:
+//    std::ofstream outputStream;
+//
+//public:
+//    FileLogPolicy() : outputStream() {};
+//    ~FileLogPolicy() {};
+//
+//    bool openOutputStream(const std::wstring& name) override;
+//    void closeOutputStream() override;
+//    void write(const std::string& msg) override;
+//};
+//
+///*implement cout logger*/
+//class CLILogPolicy : public LogPolicyAbstract
+//{
+//private:
+//
+//public:
+//    CLILogPolicy() {};
+//    ~CLILogPolicy() {};
+//
+//    bool openOutputStream(const std::wstring& name) override;
+//    void closeOutputStream() override;
+//    void write(const std::string& msg) override;
+//};
 
 /*implements vs output logger*/
-class VSLogPolicy : public LogPolicyAbstract
+class LogPolicy : public LogPolicyAbstract
 {
 private:
 
 public:
-    VSLogPolicy() {};
-    ~VSLogPolicy() {};
+    LogPolicy() {};
+    ~LogPolicy() {};
 
     bool openOutputStream(const std::wstring& name) override;
     void closeOutputStream() override;

@@ -40,7 +40,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
             {
                 std::stringstream str;
                 str << "Failed to load texture " << entry.path().u8string() << "!";
-                ServiceProvider::getVSLogger()->print<Severity::Warning>(str.str().c_str());
+                ServiceProvider::getLogger()->print<Severity::Warning>(str.str().c_str());
             }
         }
         tC++;
@@ -60,7 +60,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     }
     str << ")";
 
-    ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
+    ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
 
 
     /*load all models*/
@@ -74,13 +74,13 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         {
             std::stringstream str;
             str << "Failed to load model " << entry.path().u8string() << "!";
-            ServiceProvider::getVSLogger()->print<Severity::Warning>(str.str().c_str());
+            ServiceProvider::getLogger()->print<Severity::Warning>(str.str().c_str());
         }
     }
 
     str.str("");
     str << "Successfully loaded " << modelCounter << " models.";
-    ServiceProvider::getVSLogger()->print<Severity::Info>(str.str().c_str());
+    ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
 
 
     /*also generate some default shapes*/
@@ -224,7 +224,7 @@ bool RenderResource::buildRootSignature()
     {
         std::stringstream str;
         str << "Error serializing root signature: " << (char*)errorBlob->GetBufferPointer();
-        ServiceProvider::getVSLogger()->print<Severity::Error>(str.str().c_str());
+        ServiceProvider::getLogger()->print<Severity::Error>(str.str().c_str());
         ThrowIfFailed(hr);
         return false;
     }
@@ -238,7 +238,7 @@ bool RenderResource::buildRootSignature()
 
     if (hr != S_OK)
     {
-        ServiceProvider::getVSLogger()->print<Severity::Error>("Error creating root signature!");
+        ServiceProvider::getLogger()->print<Severity::Error>("Error creating root signature!");
         ThrowIfFailed(hr);
         return false;
     }
@@ -576,7 +576,7 @@ bool RenderResource::buildMaterials()
     }
     catch (...)
     {
-        ServiceProvider::getVSLogger()->print<Severity::Error>("Failed to parse material file");
+        ServiceProvider::getLogger()->print<Severity::Error>("Failed to parse material file");
         return false;
     }
 
@@ -600,7 +600,7 @@ bool RenderResource::buildMaterials()
         {
             std::stringstream str;
             str << "Can't create material " << material->Name << " due to missing textures! Using default.";
-            ServiceProvider::getVSLogger()->print<Severity::Critical>(str.str().c_str());
+            ServiceProvider::getLogger()->print<Severity::Critical>(str.str().c_str());
             
             texName = "default.dds";
             norName = "defaultNormal.dds";

@@ -22,14 +22,14 @@ InputManager::~InputManager()
 
 void InputManager::Loop()
 {
-    ServiceProvider::getVSLogger()->setThreadName("inputThread");
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Starting the input manager.");
+    ServiceProvider::getLogger()->setThreadName("inputThread");
+    ServiceProvider::getLogger()->print<Severity::Info>("Starting the input manager.");
 
     HRESULT hr = CoInitialize(0);
 
     if (hr != S_OK)
     {
-        ServiceProvider::getVSLogger()->print<Severity::Warning>("Failed to initialize COM!");
+        ServiceProvider::getLogger()->print<Severity::Warning>("Failed to initialize COM!");
     }
 
     while (looped)
@@ -38,7 +38,7 @@ void InputManager::Loop()
     }
 
     CoUninitialize();
-    ServiceProvider::getVSLogger()->print<Severity::Info>("Stopping the input manager.");
+    ServiceProvider::getLogger()->print<Severity::Info>("Stopping the input manager.");
 
 }
 
@@ -93,7 +93,7 @@ void InputManager::Update()
 
     if (!cs->isConnected)
     {
-        ServiceProvider::getVSLogger()->print<Severity::Warning>("Unable to find active xinput controller!");
+        ServiceProvider::getLogger()->print<Severity::Warning>("Unable to find active xinput controller!");
         return;
     }
 
