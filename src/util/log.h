@@ -11,6 +11,18 @@
 #include <map>
 #include <iomanip>
 
+
+/*USAGE: 
+ LOG(Severity::Info, "Var a = " << a);
+*/
+#define LOG(sev, s )           \
+{                            \
+   std::stringstream os_;    \
+   os_ << s;                   \
+   ServiceProvider::getLogger()->print<sev>(os_.str().c_str());  \
+}
+
+
 enum Severity
 {
     Info = 0,
@@ -31,40 +43,14 @@ public:
     virtual void write(const std::string& msg) = 0;
 };
 
-/*implements file logger*/
-//class FileLogPolicy : public LogPolicyAbstract
-//{
-//private:
-//    std::ofstream outputStream;
-//
-//public:
-//    FileLogPolicy() : outputStream() {};
-//    ~FileLogPolicy() {};
-//
-//    bool openOutputStream(const std::wstring& name) override;
-//    void closeOutputStream() override;
-//    void write(const std::string& msg) override;
-//};
-//
-///*implement cout logger*/
-//class CLILogPolicy : public LogPolicyAbstract
-//{
-//private:
-//
-//public:
-//    CLILogPolicy() {};
-//    ~CLILogPolicy() {};
-//
-//    bool openOutputStream(const std::wstring& name) override;
-//    void closeOutputStream() override;
-//    void write(const std::string& msg) override;
-//};
 
 /*implements vs output logger*/
 class LogPolicy : public LogPolicyAbstract
 {
 private:
-
+#ifndef _DEBUG
+    std::ofstream outputStream;
+#endif
 public:
     LogPolicy() {};
     ~LogPolicy() {};

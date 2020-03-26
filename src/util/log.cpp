@@ -7,70 +7,50 @@
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "Pathcch.lib")
 
-//bool FileLogPolicy::openOutputStream(const std::wstring& filename)
-//{
-//    PWSTR docPath = NULL;
-//    HRESULT hr = SHGetKnownFolderPath(FOLDERID_Documents, NULL, NULL, &docPath);
-//
-//    if (FAILED(hr))
-//        return false;
-//
-//    std::wstringstream path;
-//    path << docPath << L"\\4E53\\logs\\";
-//
-//    ::CoTaskMemFree(static_cast<void*>(docPath));
-//
-//    hr = SHCreateDirectory(NULL, path.str().c_str());
-//
-//    if (FAILED(hr))
-//        return false;
-//
-//    path << filename.c_str();
-//
-//    outputStream.open(path.str().c_str(), std::ios_base::binary | std::ios_base::out);
-//
-//    if (!outputStream.is_open())
-//        return false;
-//
-//    outputStream.precision(20);
-//
-//    return true;
-//}
-//
-//void FileLogPolicy::closeOutputStream()
-//{
-//    outputStream.close();
-//}
-//
-//void FileLogPolicy::write(const std::string& msg)
-//{
-//    outputStream << msg << std::endl;
-//}
-//
-//bool CLILogPolicy::openOutputStream(const std::wstring& /*name*/)
-//{
-//    return true;
-//}
-//
-//void CLILogPolicy::closeOutputStream()
-//{
-//}
-//
-//void CLILogPolicy::write(const std::string& msg)
-//{
-//    std::cout << msg << std::endl;
-//}
 
 bool LogPolicy::openOutputStream(const std::wstring& name)
 {
+#ifndef _DEBUG
+
+    TCHAR NPath[MAX_PATH];
+    GetCurrentDirectory(MAX_PATH, NPath);
+
+    std::wstringstream path;
+    path << NPath <<  L"\\logs";
+
+    HRESULT hr = SHCreateDirectory(NULL, path.str().c_str());
+
+    if (FAILED(hr))
+        return false;
+
+    path << L"\\game.log";
+
+    outputStream.open(path.str().c_str(), std::ios_base::binary | std::ios_base::out);
+
+    if (!outputStream.is_open())
+        return false;
+
+    outputStream.precision(20);
+#endif // !_DEBUG
+
+
     return true;
 }
 
 void LogPolicy::closeOutputStream()
 {
+#ifndef _DEBUG
+    if(outputStream.is_open())
+        outputStream.close();
+#endif // !_DEBUG
+
 }
 
 void LogPolicy::write(const std::string& msg)
 {
+#ifdef _DEBUG
     OutputDebugStringA(msg.c_str());
+#else
+    outputStream << msg;
+#endif
 }

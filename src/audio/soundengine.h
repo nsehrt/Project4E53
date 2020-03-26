@@ -20,6 +20,9 @@
 #define MAX_CHANNELS 64
 #define SAMPLE_RATE 11025 //??
 
+#define SOUND_PATH_MUSIC "data/sound/music"
+#define SOUND_PATH_EFFECTS "data/sound/effects"
+
 enum class SoundType
 {
     Music,
@@ -89,6 +92,11 @@ public:
     /*use this to stop the engine/run loop*/
     void Stop();
 
+    bool loadingFinished()
+    {
+        return isLoaded;
+    }
+
 private:
 
     void update();
@@ -118,4 +126,5 @@ private:
 
     /*bool whether audio engine is initialized*/
     std::atomic<bool> isInit = false;
+    std::atomic<bool> isLoaded = false;
 };

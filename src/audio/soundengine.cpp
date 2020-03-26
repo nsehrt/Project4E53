@@ -1,5 +1,6 @@
 #include "soundengine.h"
 #include "../util/serviceprovider.h"
+#include <filesystem>
 
 void SoundEngine::init()
 {
@@ -63,6 +64,20 @@ void SoundEngine::run()
         ServiceProvider::getLogger()->print<Severity::Critical>("Sound engine is not initialized!");
         return;
     }
+
+    /*load all files*/
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_MUSIC)))
+    {
+        loadFile(entry.path().c_str(), SoundType::Music);
+    }
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_EFFECTS)))
+    {
+        loadFile(entry.path().c_str(), SoundType::Effect);
+    }
+
+    isLoaded = true;
 
     /*Main loop*/
 
@@ -184,10 +199,7 @@ void SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
 
     soundCollection.insert(std::make_pair(id, data));
 
-    std::stringstream str;
-    str << "Loaded file '" << id << ext << "' as " << (st == SoundType::Effect ? "effect" : "music") << ".";
-
-    ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
+    LOG(Severity::Info, "Loaded file '" << id << ext << "' as " << (st == SoundType::Effect ? "effect" : "music") << ".");
 }
 
 void SoundEngine::add(unsigned int audioGuid, const std::string& fileId)
@@ -218,10 +230,9 @@ void SoundEngine::update()
 
         if (soundCollection.find(data.fileId) == soundCollection.end() || data.id == 0)
         {
-            std::stringstream str;
-            str << "Trying to play unknown audio file: " << data.fileId << "!";
 
-            ServiceProvider::getLogger()->print<Severity::Warning>(str.str().c_str());
+            LOG(Severity::Warning, "Trying to play unknown audio file: " << data.fileId << "!");
+
         }
         else
         {

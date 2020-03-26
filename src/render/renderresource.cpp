@@ -38,9 +38,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
             }
             else
             {
-                std::stringstream str;
-                str << "Failed to load texture " << entry.path().u8string() << "!";
-                ServiceProvider::getLogger()->print<Severity::Warning>(str.str().c_str());
+                LOG(Severity::Warning, "Failed to load texture " << entry.path().u8string() << "!");
             }
         }
         tC++;
@@ -78,10 +76,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         }
     }
 
-    str.str("");
-    str << "Successfully loaded " << modelCounter << " models.";
-    ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
-
+    LOG(Severity::Info, "Successfully loaded " << modelCounter << " models.");
 
     /*also generate some default shapes*/
 
@@ -222,9 +217,7 @@ bool RenderResource::buildRootSignature()
 
     if (errorBlob != nullptr)
     {
-        std::stringstream str;
-        str << "Error serializing root signature: " << (char*)errorBlob->GetBufferPointer();
-        ServiceProvider::getLogger()->print<Severity::Error>(str.str().c_str());
+        LOG(Severity::Error, "Error serializing root signature: " << (char*)errorBlob->GetBufferPointer());
         ThrowIfFailed(hr);
         return false;
     }
@@ -598,10 +591,9 @@ bool RenderResource::buildMaterials()
 
         if (mTextures.find(texName) == mTextures.end() || mTextures.find(norName) == mTextures.end())
         {
-            std::stringstream str;
-            str << "Can't create material " << material->Name << " due to missing textures! Using default.";
-            ServiceProvider::getLogger()->print<Severity::Critical>(str.str().c_str());
-            
+       
+            LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing textures! Using default.");
+
             texName = "default.dds";
             norName = "defaultNormal.dds";
         }

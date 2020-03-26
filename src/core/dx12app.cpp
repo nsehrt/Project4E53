@@ -69,9 +69,8 @@ void DX12App::setFullscreen(bool value)
         else
         {
             mSwapChain->SetFullscreenState(true, output);
-            std::stringstream stream;
-            stream << "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".";
-            ServiceProvider::getLogger()->print<Severity::Info>(stream.str());
+
+            LOG(Severity::Info, "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".");
         }
 
     }
@@ -436,10 +435,7 @@ bool DX12App::initDirect3D()
 
     logAdapters();
 
-    std::stringstream adapterInfo;
-    adapterInfo << "Using graphic adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".";
-
-    ServiceProvider::getLogger()->print<Severity::Info>(adapterInfo.str());
+    LOG(Severity::Info, "Using graphic adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".");
 
     createCommandObjects();
     createSwapChain();

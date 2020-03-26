@@ -8,9 +8,6 @@
 
 #define SETTINGS_FILE "cfg/settings.xml"
 
-#define SOUND_PATH_MUSIC "data/sound/music"
-#define SOUND_PATH_EFFECTS "data/sound/effects"
-
 using namespace DirectX;
 
 class P_4E53 : public DX12App
@@ -63,7 +60,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 	ServiceProvider::getLogger()->print<Severity::Info>("Logger started successfully.");
 
-
 	/*load settings file*/
 	SettingsLoader settingsLoader;
 
@@ -86,12 +82,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			return 0;
 		}
 
+		/*wait for is audio loading*/
+		while (!ServiceProvider::getAudio()->loadingFinished())
+			Sleep(5);
+
 		auto endTime = std::chrono::system_clock::now();
 		std::chrono::duration<double> elapsedTime = endTime - startTime;
-		std::stringstream outStr;
-		outStr << "Game initialization was successful. (" << elapsedTime.count() << " seconds)";
 
-		ServiceProvider::getLogger()->print<Severity::Info>(outStr.str());
+		LOG(Severity::Info, "Game initialization was successful. (" << elapsedTime.count() << " seconds)");
 
 		status = app.run();
 
@@ -164,18 +162,6 @@ bool P_4E53::Initialize()
 	ServiceProvider::setAudioEngine(soundEngine);
 
 	soundEngine->init();
-
-	/*load all sound files*/
-
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_MUSIC)))
-	{
-		soundEngine->loadFile(entry.path().c_str(), SoundType::Music);
-	}
-
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_EFFECTS)))
-	{
-		soundEngine->loadFile(entry.path().c_str(), SoundType::Effect);
-	}
 
 	/*start the audio thread*/
 	audioThread = std::make_unique<std::thread>(&SoundEngine::run, soundEngine);
