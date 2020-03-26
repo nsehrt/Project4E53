@@ -70,9 +70,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         }
         else
         {
-            std::stringstream str;
-            str << "Failed to load model " << entry.path().u8string() << "!";
-            ServiceProvider::getLogger()->print<Severity::Warning>(str.str().c_str());
+            LOG(Severity::Warning, "Failed to load model " << entry.path().u8string() << "!");
         }
     }
 

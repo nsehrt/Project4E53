@@ -17,7 +17,7 @@ DX12App* DX12App::getApp()
     return dx12App;
 }
 
-DX12App::DX12App(HINSTANCE hInstance)
+DX12App::DX12App(HINSTANCE /*hInstance*/)
 {
     assert(dx12App == nullptr);
     dx12App = this;

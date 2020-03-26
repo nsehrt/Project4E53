@@ -150,7 +150,7 @@ struct Texture
     Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;
     TextureType Type = TextureType::Texture2D;
 
-    UINT index = -1;
+    UINT index = 0;
 };
 
 enum class RenderType
@@ -170,7 +170,7 @@ struct RenderItem
     int NumFramesDirty = gNumFrameResources;
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
-    UINT ObjCBIndex = -1;
+    UINT ObjCBIndex = 0;
 
     Material* Mat = nullptr;
     Mesh* Geo = nullptr;

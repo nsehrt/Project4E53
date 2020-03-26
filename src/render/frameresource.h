@@ -8,10 +8,10 @@ struct ObjectConstants
 {
     DirectX::XMFLOAT4X4 World = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 TexTransform = MathHelper::identity4x4();
-    unsigned int MaterialIndex;
-    unsigned int OnjPad0;
-    unsigned int OnjPad1;
-    unsigned int OnjPad2;
+    unsigned int MaterialIndex = -1;
+    unsigned int OnjPad0 = 0;
+    unsigned int OnjPad1 = 0;
+    unsigned int OnjPad2 = 0;
 };
 
 struct SkinnedConstants
@@ -56,8 +56,8 @@ struct MaterialData
 
     UINT DiffuseMapIndex = 0;
     UINT NormalMapIndex = 0;
-    UINT MaterialPad1;
-    UINT MaterialPad2;
+    UINT MaterialPad1 = 0;
+    UINT MaterialPad2 = 0;
 };
 
 struct Vertex

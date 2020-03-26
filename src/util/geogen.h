@@ -11,6 +11,7 @@ public:
 	using uint16 = std::uint16_t;
 	using uint32 = std::uint32_t;
 
+#pragma warning(disable:26495)
 	struct Vertex
 	{
 		Vertex() {}
@@ -42,6 +43,7 @@ public:
 		DirectX::XMFLOAT3 TangentU;
 		DirectX::XMFLOAT2 TexC;
 	};
+#pragma warning(default:26495)
 
 	struct MeshData
 	{
