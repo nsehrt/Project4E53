@@ -36,6 +36,11 @@ struct Mesh
 {
     std::string name;
 
+    /*associated resources*/
+    std::string dTexture;
+    std::string dNormal;
+    std::string dBump;
+
     // System memory copies.  Use Blobs because the vertex/index format can be generic.
     // It is up to the client to cast appropriately.  
     Microsoft::WRL::ComPtr<ID3DBlob> VertexBufferCPU = nullptr;

@@ -1,4 +1,5 @@
 #include "renderresource.h"
+#include "../util/modelloader.h"
 #include "../util/serviceprovider.h"
 
 bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath)
@@ -62,11 +63,15 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
 
     /*load all models*/
+    ModelLoader mLoader(device, cmdList);
+
     for (const auto& entry : std::filesystem::recursive_directory_iterator(_modelPath))
     {
-        if (loadModel(entry.path().u8string()))
+        ModelReturn mRet = mLoader.loadB3D(entry);
+        if (mRet.errorCode == 0)
         {
             modelCounter++;
+            mMeshes[mRet.mesh->name] = std::move(mRet.mesh);
         }
         else
         {
@@ -637,11 +642,11 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
     globeRitem->Mat = mMaterials["mirror0"].get();
-    globeRitem->Geo = mMeshes["default"].get();
+    globeRitem->Geo = mMeshes["plant.b3d"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    globeRitem->IndexCount = globeRitem->Geo->DrawArgs["sphere"].IndexCount;
-    globeRitem->StartIndexLocation = globeRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
-    globeRitem->BaseVertexLocation = globeRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+    globeRitem->IndexCount = globeRitem->Geo->DrawArgs["default"].IndexCount;
+    globeRitem->StartIndexLocation = globeRitem->Geo->DrawArgs["default"].StartIndexLocation;
+    globeRitem->BaseVertexLocation = globeRitem->Geo->DrawArgs["default"].BaseVertexLocation;
 
     mAllRitems.push_back(std::move(globeRitem));
 
