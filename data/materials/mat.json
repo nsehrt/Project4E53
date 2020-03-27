@@ -38,6 +38,24 @@
     },
 
     {
+        "Name" : "plant",
+        "Texture" : "indoor plant_2_COL",
+        "NormalMap" : "indoor plant_2_NOR",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.3
+    },
+
+    {
+        "Name" : "man",
+        "Texture" : "OMO1",
+        "NormalMap" : "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.3
+    },
+
+    {
         "Name" : "sky",
         "Texture" : "default",
         "NormalMap" : "defaultNormal",

@@ -55,25 +55,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     for (char i = 0; i < 1; i++)
     {
 
-        /*read material*/
-        float dummy[10];
-        //file.read((char*)(&m->meshes[i]->material.Ambient.x), sizeof(float));
-        //file.read((char*)(&m->meshes[i]->material.Ambient.y), sizeof(float));
-        //file.read((char*)(&m->meshes[i]->material.Ambient.z), sizeof(float));
-        //m->meshes[i]->material.Ambient.w = 0.f;
-
-        //file.read((char*)(&m->meshes[i]->material.Diffuse.x), sizeof(float));
-        //file.read((char*)(&m->meshes[i]->material.Diffuse.y), sizeof(float));
-        //file.read((char*)(&m->meshes[i]->material.Diffuse.z), sizeof(float));
-        //m->meshes[i]->material.Diffuse.w = 0.f;
-
-        //file.read((char*)(&m->meshes[i]->material.Specular.x), sizeof(float));
-        //file.read((char*)(&m->meshes[i]->material.Specular.y), sizeof(float));
-        //file.read((char*)(&m->meshes[i]->material.Specular.z), sizeof(float));
-
-        //file.read((char*)(&m->meshes[i]->material.Specular.w), sizeof(float));
-        file.read((char*)(&dummy), sizeof(float)* 10);
-
         /*read map strings*/
 
         short slen = 0;
@@ -86,14 +67,14 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* nmap = new char[(int)(slen)+1];
+        char* nmap = new char[(int)(slen) + 1];
         file.read(nmap, slen);
         nmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* bmap = new char[(int)(slen)+1];
+        char* bmap = new char[(int)(slen) + 1];
         file.read(bmap, slen);
         bmap[slen] = '\0';
 
@@ -127,6 +108,11 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
             file.read((char*)(&vertices[j].TangentU.x), sizeof(float));
             file.read((char*)(&vertices[j].TangentU.y), sizeof(float));
             file.read((char*)(&vertices[j].TangentU.z), sizeof(float));
+
+            /*fix for fbx loading*/
+            //XMStoreFloat3(&vertices[j].Pos, XMVector3Transform(XMLoadFloat3(&vertices[j].Pos), XMMatrixRotationX(MathHelper::Pi / 2.f)));
+            //XMStoreFloat3(&vertices[j].Normal, XMVector3Transform(XMLoadFloat3(&vertices[j].Normal), XMMatrixRotationX(MathHelper::Pi / 2.f)));
+            //XMStoreFloat3(&vertices[j].TangentU, XMVector3Transform(XMLoadFloat3(&vertices[j].TangentU), XMMatrixRotationX(MathHelper::Pi / 2.f)));
 
             /*collision box related*/
             XMVECTOR P = XMLoadFloat3(&vertices[j].Pos);
@@ -173,7 +159,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         mRet.mesh->IndexBufferByteSize = ibByteSize;
         mRet.mesh->DrawArgs["default"].StartIndexLocation = 0;
         mRet.mesh->DrawArgs["default"].BaseVertexLocation = 0;
-        mRet.mesh->DrawArgs["default"].IndexCount = indices.size();
+        mRet.mesh->DrawArgs["default"].IndexCount = (UINT)indices.size();
     }
 
     /*finalize collision*/

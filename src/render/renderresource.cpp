@@ -638,11 +638,11 @@ void RenderResource::buildRenderItems()
     mAllRitems.push_back(std::move(boxRitem));
 
     auto globeRitem = std::make_unique<RenderItem>();
-    XMStoreFloat4x4(&globeRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 2.0f, 0.0f));
+    XMStoreFloat4x4(&globeRitem->World, XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
-    globeRitem->Mat = mMaterials["mirror0"].get();
-    globeRitem->Geo = mMeshes["plant.b3d"].get();
+    globeRitem->Mat = mMaterials["man"].get();
+    globeRitem->Geo = mMeshes["man.b3d"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     globeRitem->IndexCount = globeRitem->Geo->DrawArgs["default"].IndexCount;
     globeRitem->StartIndexLocation = globeRitem->Geo->DrawArgs["default"].StartIndexLocation;
