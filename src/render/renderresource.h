@@ -28,6 +28,11 @@ public:
 
     void draw();
 
+    void useDefaultCamera()
+    {
+        activeCamera = &defaultCamera;
+    }
+
     void incFrameResource();
     void update(const GameTime& gt);
     int getCurrentFrameResourceIndex();
@@ -59,7 +64,7 @@ private:
     FrameResource* mCurrentFrameResource = nullptr;
     int mCurrentFrameResourceIndex = 0;
 
-    Camera testCamera;
+    Camera defaultCamera;
     PassConstants mMainPassConstants;
 
     /*private init functions*/

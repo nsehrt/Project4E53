@@ -107,6 +107,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +141,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,6 +168,7 @@
     <ClCompile Include="src\util\geogen.cpp" />
     <ClCompile Include="src\util\log.cpp" />
     <ClCompile Include="src\util\mathhelper.cpp" />
+    <ClCompile Include="src\util\modelloader.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
     <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
@@ -188,6 +193,7 @@
     <ClInclude Include="src\util\geogen.h" />
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\mathhelper.h" />
+    <ClInclude Include="src\util\modelloader.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
     <ClInclude Include="src\util\settings.h" />
   </ItemGroup>

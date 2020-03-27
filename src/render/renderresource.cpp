@@ -89,9 +89,9 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     buildRenderItems();
     buildFrameResources();
 
-    testCamera.setPosition(0.0f, 5.0f, -20.f);
+    defaultCamera.setPosition(0.0f, 5.0f, -20.f);
+    useDefaultCamera();
 
-    activeCamera = &testCamera;
     activeCamera->updateViewMatrix();
 
     return true;

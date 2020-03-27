@@ -11,6 +11,7 @@
 #include "../render/renderresource.h"
 #include "../core/camera.h"
 #include "../core/fpscamera.h"
+#include "../util/modelloader.h"
 #include <filesystem>
 
 #define SETTINGS_FILE "cfg/settings.xml"
@@ -38,6 +39,7 @@ private:
 
 	RenderResource renderResource;
 	FPSCamera fpsCamera;
+	bool fpsCameraMode = false;
 };
 
 int gNumFrameResources = 3;
@@ -199,9 +201,7 @@ bool P_4E53::Initialize()
 
 	/*init fpscamera*/
 	fpsCamera.setLens();
-	fpsCamera.setPosition(0.0f, 2.f, -10.f);
-	
-	renderResource.activeCamera = &fpsCamera;
+	fpsCamera.setPosition(0.0f, 5.0f, -20.f);
 
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
@@ -250,9 +250,10 @@ void P_4E53::update(const GameTime& gt)
 
 
 
-	/*get input*/
+	/*get input and settings*/
 	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
 	Settings* settingsData = ServiceProvider::getSettings();
+	/***********************/
 
 
 	if (inputData.Pressed(BUTTON_A))
@@ -261,9 +262,27 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*fps camera controls*/
-	fpsCamera.updateFPSCamera(inputData.current, gt);
+	if (inputData.Released(LEFT_THUMB))
+	{
+		fpsCameraMode = !fpsCameraMode;
 
+		if (fpsCameraMode)
+		{
+			renderResource.activeCamera = &fpsCamera;
+		}
+		else
+		{
+			renderResource.useDefaultCamera();
+		}
+	}
 
+	if (fpsCameraMode)
+	{
+		fpsCamera.updateFPSCamera(inputData.current, gt);
+	}
+		
+
+	/*camera and frame resource/constant buffer update*/
 	renderResource.activeCamera->updateViewMatrix();
 	renderResource.update(gt);
 	
