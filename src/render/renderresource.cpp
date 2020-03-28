@@ -27,11 +27,14 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     int texCounter[texTypes] = { 0 };
 
     int tC = 0;
+    int texTotal = 0;
 
     for (auto const& s : tstr)
     {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
         {
+            texTotal++;
+
             if (loadTexture(entry, static_cast<TextureType>(tC)))
             {
                 textureCounter++;
@@ -50,7 +53,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     /*list loaded textures*/
     std::stringstream str;
-    str << "Successfully loaded " << textureCounter << " textures. (";
+    str << "Successfully loaded " << textureCounter << "/" << texTotal << " textures. (";
     for (UINT i = 0; i < texTypes; i++)
     {
         str << texCounter[i];
@@ -120,7 +123,7 @@ void RenderResource::draw()
         cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex * objCBByteSize;
-
+        
         cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
         cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
@@ -641,8 +644,8 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&globeRitem->World, XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
-    globeRitem->Mat = mMaterials["man"].get();
-    globeRitem->Geo = mMeshes["man.b3d"].get();
+    globeRitem->Mat = mMaterials["plant"].get();
+    globeRitem->Geo = mMeshes["plant.b3d"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     globeRitem->IndexCount = globeRitem->Geo->DrawArgs["default"].IndexCount;
     globeRitem->StartIndexLocation = globeRitem->Geo->DrawArgs["default"].StartIndexLocation;

@@ -66,16 +66,34 @@ void SoundEngine::run()
     }
 
     /*load all files*/
+    int effectCounter = 0, musicCounter = 0;
+    
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_MUSIC)))
     {
-        loadFile(entry.path().c_str(), SoundType::Music);
+        if (loadFile(entry.path().c_str(), SoundType::Music))
+        {
+            musicCounter++;
+        }
+        else
+        {
+            LOG(Severity::Warning, "Failed to load music file " << entry.path().c_str() << "!");
+        }
     }
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_EFFECTS)))
     {
-        loadFile(entry.path().c_str(), SoundType::Effect);
+        if (loadFile(entry.path().c_str(), SoundType::Effect))
+        {
+            effectCounter++;
+        }
+        else
+        {
+            LOG(Severity::Warning, "Failed to load effect file " << entry.path().c_str() <<"!");
+        }
     }
+
+    LOG(Severity::Info, "Successfully loaded " << musicCounter << " music and " << effectCounter << " effect files.");
 
     isLoaded = true;
 
@@ -100,14 +118,18 @@ void SoundEngine::Stop()
 
 
 
-void SoundEngine::loadFile(const std::wstring& file, std::vector<BYTE>& data, WAVEFORMATEX** formatEx, unsigned int& length)
+bool SoundEngine::loadFile(const std::wstring& file, std::vector<BYTE>& data, WAVEFORMATEX** formatEx, unsigned int& length)
 {
 
     DWORD streamIndex = (DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM;
 
     /*open audio file*/
     IMFSourceReader* reader;
-    MFCreateSourceReaderFromURL(file.c_str(), srcReaderConfig, &reader);
+    HRESULT hr = MFCreateSourceReaderFromURL(file.c_str(), srcReaderConfig, &reader);
+
+    if (hr != S_OK)
+        return false;
+
     reader->SetStreamSelection(streamIndex, true);
 
     /*get data type*/
@@ -166,15 +188,19 @@ void SoundEngine::loadFile(const std::wstring& file, std::vector<BYTE>& data, WA
         localAudioData = nullptr;
     }
 
-    return;
+    return true;
 }
 
 
-void SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
+bool SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
 {
     AudioData* data = new AudioData();
     WAVEFORMATEX* wfx;
-    loadFile(fileName, data->data, &wfx, data->waveLength);
+    if (!loadFile(fileName, data->data, &wfx, data->waveLength))
+    {
+        delete data;
+        return false;
+    }
 
     char id[128];
     char ext[8];
@@ -199,7 +225,7 @@ void SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
 
     soundCollection.insert(std::make_pair(id, data));
 
-    LOG(Severity::Info, "Loaded file '" << id << ext << "' as " << (st == SoundType::Effect ? "effect" : "music") << ".");
+    return true;
 }
 
 void SoundEngine::add(unsigned int audioGuid, const std::string& fileId)

@@ -25,11 +25,6 @@ struct SubMesh
     UINT StartIndexLocation = 0;
     INT BaseVertexLocation = 0;
 
-    // Bounding box of the geometry defined by this submesh. 
-    // This is used in later chapters of the book.
-    DirectX::BoundingBox Bounds;
-
-    DirectX::BoundingSphere Sphere;
 };
 
 struct Mesh
@@ -40,6 +35,9 @@ struct Mesh
     std::string dTexture;
     std::string dNormal;
     std::string dBump;
+
+    DirectX::BoundingBox Bounds;
+    DirectX::BoundingSphere Sphere;
 
     // System memory copies.  Use Blobs because the vertex/index format can be generic.
     // It is up to the client to cast appropriately.  
@@ -90,6 +88,15 @@ struct Mesh
         IndexBufferUploader = nullptr;
     }
 
+};
+
+
+struct Model
+{
+    std::vector<std::unique_ptr<Mesh>> meshes;
+
+    DirectX::BoundingBox boundingBox;
+    DirectX::BoundingSphere boundingSphere;
 };
 
 

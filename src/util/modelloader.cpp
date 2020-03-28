@@ -60,21 +60,21 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* dmap = new char[(int)(slen)+1];
+        char* dmap = new char[(static_cast<int>(slen))+1];
         file.read(dmap, slen);
         dmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* nmap = new char[(int)(slen) + 1];
+        char* nmap = new char[ (static_cast<int>(slen)) + 1];
         file.read(nmap, slen);
         nmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* bmap = new char[(int)(slen) + 1];
+        char* bmap = new char[ (static_cast<int>(slen)) + 1];
         file.read(bmap, slen);
         bmap[slen] = '\0';
 
@@ -108,11 +108,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
             file.read((char*)(&vertices[j].TangentU.x), sizeof(float));
             file.read((char*)(&vertices[j].TangentU.y), sizeof(float));
             file.read((char*)(&vertices[j].TangentU.z), sizeof(float));
-
-            /*fix for fbx loading*/
-            //XMStoreFloat3(&vertices[j].Pos, XMVector3Transform(XMLoadFloat3(&vertices[j].Pos), XMMatrixRotationX(MathHelper::Pi / 2.f)));
-            //XMStoreFloat3(&vertices[j].Normal, XMVector3Transform(XMLoadFloat3(&vertices[j].Normal), XMMatrixRotationX(MathHelper::Pi / 2.f)));
-            //XMStoreFloat3(&vertices[j].TangentU, XMVector3Transform(XMLoadFloat3(&vertices[j].TangentU), XMMatrixRotationX(MathHelper::Pi / 2.f)));
 
             /*collision box related*/
             XMVECTOR P = XMLoadFloat3(&vertices[j].Pos);

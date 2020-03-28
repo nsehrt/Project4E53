@@ -41,10 +41,10 @@ struct AudioInData
 
 struct AudioData
 {
-    tWAVEFORMATEX waveFormat;
+    tWAVEFORMATEX waveFormat = {};
     unsigned int waveLength = 0;
     std::vector<BYTE> data;
-    XAUDIO2_BUFFER audioBuffer;
+    XAUDIO2_BUFFER audioBuffer = {};
     double length = 0;
     SoundType soundType = SoundType::Effect;
 };
@@ -70,9 +70,6 @@ class SoundEngine
 public:
     SoundEngine() = default;
     ~SoundEngine() = default;
-
-    /*load files into the collection before calling run*/
-    void loadFile(const std::wstring& _fileName, SoundType _soundType);
 
     /*request to play audio*/
     void add(unsigned int _audioGuid, const std::string& _fileId);
@@ -101,7 +98,10 @@ public:
 private:
 
     void update();
-    void loadFile(const std::wstring& _fileName, std::vector<BYTE>& _data, WAVEFORMATEX** formatEx, unsigned int& length);
+    bool loadFile(const std::wstring& _fileName, std::vector<BYTE>& _data, WAVEFORMATEX** formatEx, unsigned int& length);
+
+    /*load files into the collection before calling run*/
+    bool loadFile(const std::wstring& _fileName, SoundType _soundType);
 
     /*holds all loaded audio files*/
     std::unordered_map<std::string, AudioData*> soundCollection;
