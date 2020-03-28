@@ -74,7 +74,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         if (mRet.errorCode == 0)
         {
             modelCounter++;
-            mMeshes[mRet.mesh->name] = std::move(mRet.mesh);
+            mModels[mRet.model->name] = std::move(mRet.model);
         }
         else
         {
@@ -113,20 +113,32 @@ void RenderResource::draw()
     auto objectCB = mCurrentFrameResource->ObjectCB->getResource();
 
     // For each render item...
-    for (auto const& ri : mAllRitems)
+    for (auto const& ari : mAllRitems)
     {
-        if(ri->renderType == RenderType::Sky)
+        for (auto const& ri : ari->Model->meshes)
+        {
+
+        if(ari->renderType == RenderType::Sky)
             cmdList->SetPipelineState(mPSOs["sky"].Get());
+        
+        cmdList->IASetVertexBuffers(0, 1, &ri.second->VertexBufferView());
+        cmdList->IASetIndexBuffer(&ri.second->IndexBufferView());
+        cmdList->IASetPrimitiveTopology(ari->PrimitiveType);
 
-        cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
-        cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
-        cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
-
-        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex * objCBByteSize;
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ari->ObjCBIndex * objCBByteSize;
         
         cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
-        cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
+        if (ari->drawSubmesh)
+        {
+            cmdList->DrawIndexedInstanced(ari->IndexCount, 1, ari->StartIndexLocation, ari->BaseVertexLocation, 0);
+        }
+        else
+        {
+            cmdList->DrawIndexedInstanced(ri.second->DrawArgs["all"].IndexCount, 1, ri.second->DrawArgs["all"].StartIndexLocation, ri.second->DrawArgs["all"].BaseVertexLocation, 0);
+        }
+        
+        }
     }
 
 
@@ -509,7 +521,11 @@ void RenderResource::generateDefaultShapes()
     geo->DrawArgs["sphere"] = sphereSubmesh;
     geo->DrawArgs["cylinder"] = cylinderSubmesh;
 
-    mMeshes[geo->name] = std::move(geo);
+    std::unique_ptr<Model> m = std::make_unique<Model>();
+    m->name = "default";
+    m->meshes["default"] = std::move(geo);
+
+    mModels["default"] = std::move(m);
 }
 
 
@@ -632,11 +648,11 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
     boxRitem->ObjCBIndex = 0;
     boxRitem->Mat = mMaterials["brick0"].get();
-    boxRitem->Geo = mMeshes["default"].get();
+    boxRitem->Model = mModels["default"].get();
     boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
-    boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
-    boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+    boxRitem->IndexCount = boxRitem->Model->meshes["default"]->DrawArgs["box"].IndexCount;
+    boxRitem->StartIndexLocation = boxRitem->Model->meshes["default"]->DrawArgs["box"].StartIndexLocation;
+    boxRitem->BaseVertexLocation = boxRitem->Model->meshes["default"]->DrawArgs["box"].BaseVertexLocation;
 
     mAllRitems.push_back(std::move(boxRitem));
 
@@ -645,11 +661,9 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
     globeRitem->Mat = mMaterials["plant"].get();
-    globeRitem->Geo = mMeshes["plant.b3d"].get();
+    globeRitem->Model = mModels["plant.b3d"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    globeRitem->IndexCount = globeRitem->Geo->DrawArgs["default"].IndexCount;
-    globeRitem->StartIndexLocation = globeRitem->Geo->DrawArgs["default"].StartIndexLocation;
-    globeRitem->BaseVertexLocation = globeRitem->Geo->DrawArgs["default"].BaseVertexLocation;
+    globeRitem->drawSubmesh = false;
 
     mAllRitems.push_back(std::move(globeRitem));
 
@@ -658,11 +672,11 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&gridRitem->TexTransform, XMMatrixScaling(8.0f, 8.0f, 1.0f));
     gridRitem->ObjCBIndex = 2;
     gridRitem->Mat = mMaterials["tile0"].get();
-    gridRitem->Geo = mMeshes["default"].get();
+    gridRitem->Model = mModels["default"].get();
     gridRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
-    gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
-    gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
+    gridRitem->IndexCount = gridRitem->Model->meshes["default"]->DrawArgs["grid"].IndexCount;
+    gridRitem->StartIndexLocation = gridRitem->Model->meshes["default"]->DrawArgs["grid"].StartIndexLocation;
+    gridRitem->BaseVertexLocation = gridRitem->Model->meshes["default"]->DrawArgs["grid"].BaseVertexLocation;
 
     mAllRitems.push_back(std::move(gridRitem));
 
@@ -685,41 +699,41 @@ void RenderResource::buildRenderItems()
         XMStoreFloat4x4(&leftCylRitem->TexTransform, brickTexTransform);
         leftCylRitem->ObjCBIndex = objCBIndex++;
         leftCylRitem->Mat = mMaterials["brick0"].get();
-        leftCylRitem->Geo = mMeshes["default"].get();
+        leftCylRitem->Model = mModels["default"].get();
         leftCylRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-        leftCylRitem->IndexCount = leftCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
-        leftCylRitem->StartIndexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocation;
-        leftCylRitem->BaseVertexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
+        leftCylRitem->IndexCount = leftCylRitem->Model->meshes["default"]->DrawArgs["cylinder"].IndexCount;
+        leftCylRitem->StartIndexLocation = leftCylRitem->Model->meshes["default"]->DrawArgs["cylinder"].StartIndexLocation;
+        leftCylRitem->BaseVertexLocation = leftCylRitem->Model->meshes["default"]->DrawArgs["cylinder"].BaseVertexLocation;
 
         XMStoreFloat4x4(&rightCylRitem->World, leftCylWorld);
         XMStoreFloat4x4(&rightCylRitem->TexTransform, brickTexTransform);
         rightCylRitem->ObjCBIndex = objCBIndex++;
         rightCylRitem->Mat = mMaterials["brick0"].get();
-        rightCylRitem->Geo = mMeshes["default"].get();
+        rightCylRitem->Model = mModels["default"].get();
         rightCylRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-        rightCylRitem->IndexCount = rightCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
-        rightCylRitem->StartIndexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocation;
-        rightCylRitem->BaseVertexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
+        rightCylRitem->IndexCount = rightCylRitem->Model->meshes["default"]->DrawArgs["cylinder"].IndexCount;
+        rightCylRitem->StartIndexLocation = rightCylRitem->Model->meshes["default"]->DrawArgs["cylinder"].StartIndexLocation;
+        rightCylRitem->BaseVertexLocation = rightCylRitem->Model->meshes["default"]->DrawArgs["cylinder"].BaseVertexLocation;
 
         XMStoreFloat4x4(&leftSphereRitem->World, leftSphereWorld);
         leftSphereRitem->TexTransform = MathHelper::identity4x4();
         leftSphereRitem->ObjCBIndex = objCBIndex++;
         leftSphereRitem->Mat = mMaterials["mirror0"].get();
-        leftSphereRitem->Geo = mMeshes["default"].get();
+        leftSphereRitem->Model = mModels["default"].get();
         leftSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-        leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
-        leftSphereRitem->StartIndexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
-        leftSphereRitem->BaseVertexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+        leftSphereRitem->IndexCount = leftSphereRitem->Model->meshes["default"]->DrawArgs["sphere"].IndexCount;
+        leftSphereRitem->StartIndexLocation = leftSphereRitem->Model->meshes["default"]->DrawArgs["sphere"].StartIndexLocation;
+        leftSphereRitem->BaseVertexLocation = leftSphereRitem->Model->meshes["default"]->DrawArgs["sphere"].BaseVertexLocation;
 
         XMStoreFloat4x4(&rightSphereRitem->World, rightSphereWorld);
         rightSphereRitem->TexTransform = MathHelper::identity4x4();
         rightSphereRitem->ObjCBIndex = objCBIndex++;
         rightSphereRitem->Mat = mMaterials["mirror0"].get();
-        rightSphereRitem->Geo = mMeshes["default"].get();
+        rightSphereRitem->Model = mModels["default"].get();
         rightSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-        rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
-        rightSphereRitem->StartIndexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
-        rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+        rightSphereRitem->IndexCount = rightSphereRitem->Model->meshes["default"]->DrawArgs["sphere"].IndexCount;
+        rightSphereRitem->StartIndexLocation = rightSphereRitem->Model->meshes["default"]->DrawArgs["sphere"].StartIndexLocation;
+        rightSphereRitem->BaseVertexLocation = rightSphereRitem->Model->meshes["default"]->DrawArgs["sphere"].BaseVertexLocation;
 
         mAllRitems.push_back(std::move(leftCylRitem));
         mAllRitems.push_back(std::move(rightCylRitem));
@@ -732,11 +746,11 @@ void RenderResource::buildRenderItems()
     skyRitem->TexTransform = MathHelper::identity4x4();
     skyRitem->ObjCBIndex = objCBIndex;
     skyRitem->Mat = mMaterials["sky"].get();
-    skyRitem->Geo = mMeshes["default"].get();
+    skyRitem->Model = mModels["default"].get();
     skyRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    skyRitem->IndexCount = skyRitem->Geo->DrawArgs["sphere"].IndexCount;
-    skyRitem->StartIndexLocation = skyRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
-    skyRitem->BaseVertexLocation = skyRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+    skyRitem->IndexCount = skyRitem->Model->meshes["default"]->DrawArgs["sphere"].IndexCount;
+    skyRitem->StartIndexLocation = skyRitem->Model->meshes["default"]->DrawArgs["sphere"].StartIndexLocation;
+    skyRitem->BaseVertexLocation = skyRitem->Model->meshes["default"]->DrawArgs["sphere"].BaseVertexLocation;
     skyRitem->renderType = RenderType::Sky;
 
     mAllRitems.push_back(std::move(skyRitem));

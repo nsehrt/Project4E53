@@ -46,7 +46,8 @@ public:
     std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
 
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
-    std::unordered_map<std::string, std::unique_ptr<Mesh>> mMeshes;
+    //std::unordered_map<std::string, std::unique_ptr<Mesh>> mMeshes;
+    std::unordered_map<std::string, std::unique_ptr<Model>> mModels;
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
 
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;

@@ -93,7 +93,9 @@ struct Mesh
 
 struct Model
 {
-    std::vector<std::unique_ptr<Mesh>> meshes;
+    std::string name;
+
+    std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingBox boundingBox;
     DirectX::BoundingSphere boundingSphere;
@@ -185,7 +187,7 @@ struct RenderItem
     UINT ObjCBIndex = 0;
 
     Material* Mat = nullptr;
-    Mesh* Geo = nullptr;
+    Model* Model = nullptr;
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -194,6 +196,8 @@ struct RenderItem
     UINT IndexCount = 0;
     UINT StartIndexLocation = 0;
     int BaseVertexLocation = 0;
+
+    bool drawSubmesh = true;
 
     RenderType renderType = RenderType::Opaque;
 };

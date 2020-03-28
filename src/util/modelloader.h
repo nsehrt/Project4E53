@@ -9,7 +9,7 @@
 struct ModelReturn
 {
     int errorCode = 0;
-    std::unique_ptr<Mesh> mesh;
+    std::unique_ptr<Model> model;
 };
 
 class ModelLoader

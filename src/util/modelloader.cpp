@@ -44,7 +44,8 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
     //m->meshes.reserve((size_t)numMeshes);
 
-    mRet.mesh = std::make_unique<Mesh>();
+    mRet.model = std::make_unique<Model>();
+    mRet.model->name = fileName.path().filename().string();
 
     XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
     XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -52,35 +53,36 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     XMVECTOR vMin = XMLoadFloat3(&cMin);
     XMVECTOR vMax = XMLoadFloat3(&cMax);
 
-    for (char i = 0; i < 1; i++)
+    for (char i = 0; i < numMeshes; i++)
     {
+        std::unique_ptr<Mesh> m = std::make_unique<Mesh>();
 
         /*read map strings*/
 
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* dmap = new char[(static_cast<int>(slen))+1];
+        char* dmap = new char[(static_cast<long>(slen))+1];
         file.read(dmap, slen);
         dmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* nmap = new char[ (static_cast<int>(slen)) + 1];
+        char* nmap = new char[ (static_cast<long>(slen)) + 1];
         file.read(nmap, slen);
         nmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* bmap = new char[ (static_cast<int>(slen)) + 1];
+        char* bmap = new char[ (static_cast<long>(slen)) + 1];
         file.read(bmap, slen);
         bmap[slen] = '\0';
 
-        mRet.mesh->dTexture = dmap;
-        mRet.mesh->dNormal = nmap;
-        mRet.mesh->dBump = bmap;
+        m->dTexture = dmap;
+        m->dNormal = nmap;
+        m->dBump = bmap;
 
         delete[] dmap; delete[] nmap; delete[] bmap;
 
@@ -134,36 +136,34 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 
-        mRet.mesh->name = fileName.path().filename().string();
 
-        ThrowIfFailed(D3DCreateBlob(vbByteSize, &mRet.mesh->VertexBufferCPU));
-        CopyMemory(mRet.mesh->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+        ThrowIfFailed(D3DCreateBlob(vbByteSize, &m->VertexBufferCPU));
+        CopyMemory(m->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
-        ThrowIfFailed(D3DCreateBlob(ibByteSize, &mRet.mesh->IndexBufferCPU));
-        CopyMemory(mRet.mesh->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+        ThrowIfFailed(D3DCreateBlob(ibByteSize, &m->IndexBufferCPU));
+        CopyMemory(m->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-        mRet.mesh->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                            cmdList, vertices.data(), vbByteSize, mRet.mesh->VertexBufferUploader);
+        m->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                            cmdList, vertices.data(), vbByteSize, m->VertexBufferUploader);
 
-        mRet.mesh->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                           cmdList, indices.data(), ibByteSize, mRet.mesh->IndexBufferUploader);
+        m->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                           cmdList, indices.data(), ibByteSize, m->IndexBufferUploader);
 
-        mRet.mesh->VertexByteStride = sizeof(Vertex);
-        mRet.mesh->VertexBufferByteSize = vbByteSize;
-        mRet.mesh->IndexFormat = DXGI_FORMAT_R16_UINT;
-        mRet.mesh->IndexBufferByteSize = ibByteSize;
-        mRet.mesh->DrawArgs["default"].StartIndexLocation = 0;
-        mRet.mesh->DrawArgs["default"].BaseVertexLocation = 0;
-        mRet.mesh->DrawArgs["default"].IndexCount = (UINT)indices.size();
+        m->VertexByteStride = sizeof(Vertex);
+        m->VertexBufferByteSize = vbByteSize;
+        m->IndexFormat = DXGI_FORMAT_R16_UINT;
+        m->IndexBufferByteSize = ibByteSize;
+        m->DrawArgs["all"].StartIndexLocation = 0;
+        m->DrawArgs["all"].BaseVertexLocation = 0;
+        m->DrawArgs["all"].IndexCount = (UINT)indices.size();
+        
+        mRet.model->meshes[std::to_string(i)] = std::move(m);
     }
 
     /*finalize collision*/
 
     //XMStoreFloat3(&m->collisionBox.Center, 0.5f * (vMin + vMax));
     //XMStoreFloat3(&m->collisionBox.Extents, 0.5f * (vMax - vMin));
-
-    /*gpu upload and saving in ram for cpu*/
-
-
+    
     return mRet;
 }
