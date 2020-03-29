@@ -33,6 +33,11 @@ public:
         activeCamera = &defaultCamera;
     }
 
+    void toggleHitBoxDraw()
+    {
+        drawHitbox = !drawHitbox;
+    }
+
     void incFrameResource();
     void update(const GameTime& gt);
     int getCurrentFrameResourceIndex();
@@ -46,7 +51,6 @@ public:
     std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
 
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
-    //std::unordered_map<std::string, std::unique_ptr<Mesh>> mMeshes;
     std::unordered_map<std::string, std::unique_ptr<Model>> mModels;
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
 
@@ -55,6 +59,7 @@ public:
     std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
     UINT mHeapDescriptorSize = 0;
+
 
 private:
     ID3D12Device* device = nullptr;
@@ -70,7 +75,6 @@ private:
 
     /*private init functions*/
     bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);
-    bool loadModel(const std::string& file);
 
     bool buildRootSignature();
     bool buildDescriptorHeap();
@@ -90,4 +94,6 @@ private:
     void updateObjectCBs(const GameTime& gt);
     void updatePassCBs(const GameTime& gt);
     void updateMaterialBuffers(const GameTime& gt);
+
+    bool drawHitbox = false;
 };

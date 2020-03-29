@@ -40,6 +40,7 @@ private:
 	RenderResource renderResource;
 	FPSCamera fpsCamera;
 	bool fpsCameraMode = false;
+
 };
 
 int gNumFrameResources = 3;
@@ -281,6 +282,10 @@ void P_4E53::update(const GameTime& gt)
 		fpsCamera.updateFPSCamera(inputData.current, gt);
 	}
 		
+	if (inputData.Released(RIGHT_THUMB))
+	{
+		renderResource.toggleHitBoxDraw();
+	}
 
 	/*camera and frame resource/constant buffer update*/
 	renderResource.activeCamera->updateViewMatrix();
