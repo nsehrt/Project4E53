@@ -229,9 +229,9 @@ void GeometryGenerator::Subdivide(MeshData& meshData)
 	uint32 numTris = (uint32)inputCopy.Indices32.size() / 3;
 	for (uint32 i = 0; i < numTris; ++i)
 	{
-		Vertex v0 = inputCopy.Vertices[inputCopy.Indices32[i * 3 + 0]];
-		Vertex v1 = inputCopy.Vertices[inputCopy.Indices32[i * 3 + 1]];
-		Vertex v2 = inputCopy.Vertices[inputCopy.Indices32[i * 3 + 2]];
+		Vertex v0 = inputCopy.Vertices[inputCopy.Indices32[(long long)i * 3 + 0]];
+		Vertex v1 = inputCopy.Vertices[inputCopy.Indices32[(long long)i * 3 + 1]];
+		Vertex v2 = inputCopy.Vertices[inputCopy.Indices32[(long long)i * 3 + 2]];
 
 		//
 		// Generate the midpoints.
@@ -572,13 +572,13 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float width, float dep
 		{
 			float x = -halfWidth + j * dx;
 
-			meshData.Vertices[i * n + j].Position = XMFLOAT3(x, 0.0f, z);
-			meshData.Vertices[i * n + j].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			meshData.Vertices[i * n + j].TangentU = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			meshData.Vertices[(long long)i * n + j].Position = XMFLOAT3(x, 0.0f, z);
+			meshData.Vertices[(long long)i * n + j].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			meshData.Vertices[(long long)i * n + j].TangentU = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
 			// Stretch texture over grid.
-			meshData.Vertices[i * n + j].TexC.x = j * du;
-			meshData.Vertices[i * n + j].TexC.y = i * dv;
+			meshData.Vertices[(long long)i * n + j].TexC.x = j * du;
+			meshData.Vertices[(long long)i * n + j].TexC.y = i * dv;
 		}
 	}
 
@@ -586,7 +586,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float width, float dep
 	// Create the indices.
 	//
 
-	meshData.Indices32.resize(faceCount * 3); // 3 indices per face
+	meshData.Indices32.resize((long long)faceCount * 3); // 3 indices per face
 
 	// Iterate over each quad and compute indices.
 	uint32 k = 0;
@@ -594,13 +594,13 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float width, float dep
 	{
 		for (uint32 j = 0; j < n - 1; ++j)
 		{
-			meshData.Indices32[k] = i * n + j;
-			meshData.Indices32[k + 1] = i * n + j + 1;
-			meshData.Indices32[k + 2] = (i + 1) * n + j;
+			meshData.Indices32[(long long)k] = i * n + j;
+			meshData.Indices32[(long long)k + 1] = i * n + j + 1;
+			meshData.Indices32[(long long)k + 2] = (i + 1) * n + j;
 
-			meshData.Indices32[k + 3] = (i + 1) * n + j;
-			meshData.Indices32[k + 4] = i * n + j + 1;
-			meshData.Indices32[k + 5] = (i + 1) * n + j + 1;
+			meshData.Indices32[(long long)k + 3] = (i + 1) * n + j;
+			meshData.Indices32[(long long)k + 4] = i * n + j + 1;
+			meshData.Indices32[(long long)k + 5] = (i + 1) * n + j + 1;
 
 			k += 6; // next quad
 		}

@@ -125,7 +125,7 @@ void RenderResource::draw()
             cmdList->IASetIndexBuffer(&ri.second->IndexBufferView());
             cmdList->IASetPrimitiveTopology(ari->PrimitiveType);
 
-            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ari->ObjCBIndex * objCBByteSize;
+            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)ari->ObjCBIndex * objCBByteSize;
         
             cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
@@ -143,7 +143,7 @@ void RenderResource::draw()
         cmdList->IASetIndexBuffer(&ari->Model->hitboxMesh->IndexBufferView());
         cmdList->IASetPrimitiveTopology(ari->PrimitiveType);
 
-        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ari->ObjCBIndex * objCBByteSize;
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)ari->ObjCBIndex * objCBByteSize;
 
         cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
@@ -657,6 +657,7 @@ void RenderResource::buildPSOs()
 
     hitboxPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
     hitboxPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    hitboxPSODesc.DepthStencilState.DepthEnable = false;
     hitboxPSODesc.VS =
     {
         reinterpret_cast<BYTE*>(mShaders["hitboxVS"]->GetBufferPointer()),
@@ -751,7 +752,7 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
     globeRitem->Mat = mMaterials["plant"].get();
-    globeRitem->Model = mModels["plant"].get();
+    globeRitem->Model = mModels["man"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     mAllRitems.push_back(std::move(globeRitem));

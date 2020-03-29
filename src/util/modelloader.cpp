@@ -60,21 +60,21 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* dmap = new char[(static_cast<long>(slen))+1];
+        char* dmap = new char[(long long)slen +1];
         file.read(dmap, slen);
         dmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* nmap = new char[ (static_cast<long>(slen)) + 1];
+        char* nmap = new char[(long long)slen + 1];
         file.read(nmap, slen);
         nmap[slen] = '\0';
 
         slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* bmap = new char[ (static_cast<long>(slen)) + 1];
+        char* bmap = new char[(long long)slen + 1];
         file.read(bmap, slen);
         bmap[slen] = '\0';
 
