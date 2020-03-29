@@ -1,4 +1,5 @@
 #include "modelloader.h"
+#include "geogen.h"
 
 using namespace DirectX;
 
@@ -41,8 +42,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     /*number of meshes*/
     char numMeshes = 0;
     file.read(&numMeshes, sizeof(numMeshes));
-
-    //m->meshes.reserve((size_t)numMeshes);
 
     mRet.model = std::make_unique<Model>();
 
@@ -157,10 +156,60 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         mRet.model->meshes[std::to_string(i)] = std::move(m);
     }
 
-    /*finalize collision*/
+    /*create AABB*/
+    XMStoreFloat3(&mRet.model->boundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mRet.model->boundingBox.Extents, 0.5f * (vMax - vMin));
 
-    //XMStoreFloat3(&m->collisionBox.Center, 0.5f * (vMin + vMax));
-    //XMStoreFloat3(&m->collisionBox.Extents, 0.5f * (vMax - vMin));
-    
+    GeometryGenerator geoGen;
+    GeometryGenerator::MeshData boxMesh = geoGen.CreateBox(mRet.model->boundingBox.Extents.x * 2.f,
+                                                           mRet.model->boundingBox.Extents.y * 2.f,
+                                                           mRet.model->boundingBox.Extents.z * 2.f,
+                                                           0);
+
+    std::vector<Vertex> vertices(boxMesh.Vertices.size());
+    std::vector<std::uint16_t> indices(boxMesh.Indices32.size());
+
+
+    for (size_t i = 0; i < boxMesh.Vertices.size(); i++)
+    {
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMesh.Vertices[i].Position), XMLoadFloat3(&mRet.model->boundingBox.Center)));
+        vertices[i].Normal = boxMesh.Vertices[i].Normal;
+        vertices[i].TexC = boxMesh.Vertices[i].TexC;
+        vertices[i].TangentU = boxMesh.Vertices[i].TangentU;
+    }
+
+    indices.insert(indices.end(), std::begin(boxMesh.GetIndices16()), std::end(boxMesh.GetIndices16()));
+
+    UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+
+
+    std::unique_ptr<Mesh> hitbox = std::make_unique<Mesh>();
+
+    hitbox->name = "hitbox";
+    hitbox->dTexture = "default";
+    hitbox->dNormal = "defaultNormal";
+    hitbox->IndexFormat = DXGI_FORMAT_R16_UINT;
+    hitbox->VertexByteStride = sizeof(Vertex);
+    hitbox->VertexBufferByteSize = vbByteSize;
+    hitbox->IndexBufferByteSize = ibByteSize;
+    hitbox->IndexCount = (UINT)indices.size();
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitbox->VertexBufferCPU));
+    CopyMemory(hitbox->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitbox->IndexBufferCPU));
+    CopyMemory(hitbox->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    hitbox->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                        cmdList, vertices.data(), vbByteSize, hitbox->VertexBufferUploader);
+
+    hitbox->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                       cmdList, indices.data(), ibByteSize, hitbox->IndexBufferUploader);
+
+
+    mRet.model->hitboxMesh = std::move(hitbox);
+
     return mRet;
 }

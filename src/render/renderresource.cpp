@@ -134,6 +134,21 @@ void RenderResource::draw()
         }
     }
 
+    cmdList->SetPipelineState(mPSOs["hitbox"].Get());
+    for (auto const& ari : mAllRitems)
+    {
+        if (ari->Model->hitboxMesh.get() == nullptr)continue;
+
+        cmdList->IASetVertexBuffers(0, 1, &ari->Model->hitboxMesh->VertexBufferView());
+        cmdList->IASetIndexBuffer(&ari->Model->hitboxMesh->IndexBufferView());
+        cmdList->IASetPrimitiveTopology(ari->PrimitiveType);
+
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ari->ObjCBIndex * objCBByteSize;
+
+        cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+
+        cmdList->DrawIndexedInstanced(ari->Model->hitboxMesh->IndexCount, 1, 0, 0, 0);
+    }
 
 }
 
@@ -343,7 +358,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
         D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressW
         0.0f,                             // mipLODBias
-        8);                               // maxAnisotropy
+        ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering);                               // maxAnisotropy
 
     const CD3DX12_STATIC_SAMPLER_DESC anisotropicClamp(
         5, // shaderRegister
@@ -352,7 +367,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
         D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressW
         0.0f,                              // mipLODBias
-        8);                                // maxAnisotropy
+        ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering);                                // maxAnisotropy
 
     return {
         pointWrap, pointClamp,
@@ -375,6 +390,9 @@ void RenderResource::buildShaders()
 
     mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["skyPS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
+
+    mShaders["hitboxVS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
 }
 
 void RenderResource::buildInputLayouts()
@@ -632,6 +650,24 @@ void RenderResource::buildPSOs()
         mShaders["skyPS"]->GetBufferSize()
     };
     ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs["sky"])));
+
+
+    /*hitbox PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC hitboxPSODesc = defaultPSODesc;
+
+    hitboxPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+    hitboxPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    hitboxPSODesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["hitboxVS"]->GetBufferPointer()),
+        mShaders["hitboxVS"]->GetBufferSize()
+    };
+    hitboxPSODesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["hitboxPS"]->GetBufferPointer()),
+        mShaders["hitboxPS"]->GetBufferSize()
+    };
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPSOs["hitbox"])));
 
 }
 

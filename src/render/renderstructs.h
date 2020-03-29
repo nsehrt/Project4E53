@@ -19,12 +19,6 @@ using json = nlohmann::json;
 
 extern int gNumFrameResources;
 
-struct SubMesh
-{
-
-
-};
-
 struct Mesh
 {
     std::string name;
@@ -33,9 +27,6 @@ struct Mesh
     std::string dTexture;
     std::string dNormal;
     std::string dBump;
-
-    DirectX::BoundingBox Bounds;
-    DirectX::BoundingSphere Sphere;
 
     // System memory copies.  Use Blobs because the vertex/index format can be generic.
     // It is up to the client to cast appropriately.  
@@ -91,7 +82,9 @@ struct Model
     std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingBox boundingBox;
-    DirectX::BoundingSphere boundingSphere;
+    //DirectX::BoundingSphere boundingSphere;
+
+    std::unique_ptr<Mesh> hitboxMesh = nullptr;
 };
 
 
