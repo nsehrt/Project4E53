@@ -21,9 +21,7 @@ extern int gNumFrameResources;
 
 struct SubMesh
 {
-    UINT IndexCount = 0;
-    UINT StartIndexLocation = 0;
-    INT BaseVertexLocation = 0;
+
 
 };
 
@@ -56,10 +54,7 @@ struct Mesh
     DXGI_FORMAT IndexFormat = DXGI_FORMAT_R16_UINT;
     UINT IndexBufferByteSize = 0;
 
-    // A MeshGeometry may store multiple geometries in one vertex/index buffer.
-    // Use this container to define the Submesh geometries so we can draw
-    // the Submeshes individually.
-    std::unordered_map<std::string, SubMesh> DrawArgs;
+    UINT IndexCount = 0;
 
     D3D12_VERTEX_BUFFER_VIEW VertexBufferView()const
     {
@@ -93,8 +88,6 @@ struct Mesh
 
 struct Model
 {
-    std::string name;
-
     std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingBox boundingBox;
@@ -191,13 +184,6 @@ struct RenderItem
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-    // DrawIndexedInstanced parameters.
-    UINT IndexCount = 0;
-    UINT StartIndexLocation = 0;
-    int BaseVertexLocation = 0;
-
-    bool drawSubmesh = true;
 
     RenderType renderType = RenderType::Opaque;
 };

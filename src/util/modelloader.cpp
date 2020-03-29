@@ -45,7 +45,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     //m->meshes.reserve((size_t)numMeshes);
 
     mRet.model = std::make_unique<Model>();
-    mRet.model->name = fileName.path().filename().string();
 
     XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
     XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -153,9 +152,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         m->VertexBufferByteSize = vbByteSize;
         m->IndexFormat = DXGI_FORMAT_R16_UINT;
         m->IndexBufferByteSize = ibByteSize;
-        m->DrawArgs["all"].StartIndexLocation = 0;
-        m->DrawArgs["all"].BaseVertexLocation = 0;
-        m->DrawArgs["all"].IndexCount = (UINT)indices.size();
+        m->IndexCount = (UINT)indices.size();
         
         mRet.model->meshes[std::to_string(i)] = std::move(m);
     }
