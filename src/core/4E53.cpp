@@ -93,6 +93,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 			return 0;
 		}
 
+		LOG(Severity::Info, "Debug Mode is " << (ServiceProvider::getSettings()->miscSettings.DebugEnabled ? "enabled" : "disabled") << ".");
+
 		/*wait for audio loading*/
 		while (!ServiceProvider::getAudio()->loadingFinished())
 			Sleep(5);
@@ -282,7 +284,7 @@ void P_4E53::update(const GameTime& gt)
 		fpsCamera.updateFPSCamera(inputData.current, gt);
 	}
 		
-	if (inputData.Released(RIGHT_THUMB))
+	if (inputData.Released(RIGHT_THUMB) && settingsData->miscSettings.DebugEnabled )
 	{
 		renderResource.toggleHitBoxDraw();
 	}

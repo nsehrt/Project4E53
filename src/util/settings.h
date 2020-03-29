@@ -49,7 +49,7 @@ struct AudioSettings
 struct Misc
 {
     std::string AdapterName = "";
-
+    int DebugEnabled = false;
 
 };
 

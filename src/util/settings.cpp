@@ -100,6 +100,18 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pInput, "FPSCameraSpeed", &settings.inputSettings.FPSCameraSpeed))
         return false;
 
+    /*load misc settings*/
+    XMLElement* pMisc = pRoot->FirstChildElement("Misc");
+    XMLCheckExist(pMisc);
+
+    if (!setSetting(pMisc, "DebugEnabled", &settings.miscSettings.DebugEnabled))
+        return false;
+
+    if (settings.miscSettings.DebugEnabled != 0)
+    {
+        settings.miscSettings.DebugEnabled = 1;
+    }  
+
     return true;
 }
 

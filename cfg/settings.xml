@@ -30,4 +30,8 @@
         <Sensitivity>4.0</Sensitivity>
         <FPSCameraSpeed>10.0</FPSCameraSpeed>
     </Input>
+
+    <Misc>
+        <DebugEnabled>1</DebugEnabled>
+    </Misc>
 </root>
