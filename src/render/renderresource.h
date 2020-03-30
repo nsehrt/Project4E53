@@ -8,8 +8,8 @@
 #include <filesystem>
 
 
-#define MODEL_PATH "data/models"
-#define TEXTURE_PATH "data/textures"
+#define MODEL_PATH "data/model"
+#define TEXTURE_PATH "data/texture"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;

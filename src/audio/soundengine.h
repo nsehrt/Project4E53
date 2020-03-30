@@ -21,7 +21,7 @@
 #define SAMPLE_RATE 11025 //??
 
 #define SOUND_PATH_MUSIC "data/sound/music"
-#define SOUND_PATH_EFFECTS "data/sound/effects"
+#define SOUND_PATH_EFFECTS "data/sound/effect"
 
 enum class SoundType
 {

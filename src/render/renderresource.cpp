@@ -21,8 +21,8 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     const UINT texTypes = 2;
     std::stringstream tstr[texTypes];
-    tstr[0] << _texturePath.string() << "/tex2d";
-    tstr[1] << _texturePath.string() << "/texcube";
+    tstr[0] << _texturePath.string() << "/texture2d";
+    tstr[1] << _texturePath.string() << "/texturecube";
 
     int texCounter[texTypes] = { 0 };
 
@@ -936,7 +936,7 @@ bool RenderResource::buildMaterials()
 
     try
     {
-        inputJson.open("data/materials/mat.json");
+        inputJson.open("data/material/mat.json");
         matData = json::parse(inputJson);
         inputJson.close();
     }
