@@ -209,7 +209,8 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
                                                        cmdList, indices.data(), ibByteSize, hitbox->IndexBufferUploader);
 
 
-    mRet.model->hitboxMesh = std::move(hitbox);
+    mRet.model->boundingBoxMesh = std::move(hitbox);
+    mRet.model->name = fileName.path().stem().string();
 
     return mRet;
 }

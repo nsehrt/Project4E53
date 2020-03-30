@@ -79,12 +79,14 @@ struct Mesh
 
 struct Model
 {
+    std::string name;
+
     std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingBox boundingBox;
     //DirectX::BoundingSphere boundingSphere;
 
-    std::unique_ptr<Mesh> hitboxMesh = nullptr;
+    std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };
 
 

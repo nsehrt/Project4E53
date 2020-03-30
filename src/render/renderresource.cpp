@@ -139,17 +139,17 @@ void RenderResource::draw()
     cmdList->SetPipelineState(mPSOs["hitbox"].Get());
     for (auto const& ari : mAllRitems)
     {
-        if (ari->Model->hitboxMesh.get() == nullptr)continue;
+        if (ari->Model->boundingBoxMesh.get() == nullptr)continue;
 
-        cmdList->IASetVertexBuffers(0, 1, &ari->Model->hitboxMesh->VertexBufferView());
-        cmdList->IASetIndexBuffer(&ari->Model->hitboxMesh->IndexBufferView());
+        cmdList->IASetVertexBuffers(0, 1, &ari->Model->boundingBoxMesh->VertexBufferView());
+        cmdList->IASetIndexBuffer(&ari->Model->boundingBoxMesh->IndexBufferView());
         cmdList->IASetPrimitiveTopology(ari->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)ari->ObjCBIndex * objCBByteSize;
 
         cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
-        cmdList->DrawIndexedInstanced(ari->Model->hitboxMesh->IndexCount, 1, 0, 0, 0);
+        cmdList->DrawIndexedInstanced(ari->Model->boundingBoxMesh->IndexCount, 1, 0, 0, 0);
     }
 
 }
@@ -372,6 +372,8 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         anisotropicWrap, anisotropicClamp };
 }
 
+#pragma region SHADER
+
 void RenderResource::buildShaders()
 {
     
@@ -385,12 +387,20 @@ void RenderResource::buildShaders()
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
+    mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
+    mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
+
+
     mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["skyPS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["hitboxVS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
+
+
 }
+
+#pragma endregion SHADER
 
 void RenderResource::buildInputLayouts()
 {
@@ -495,7 +505,7 @@ void RenderResource::generateDefaultShapes()
                                                           cmdList, indices.data(), ibByteSize, hitboxBox->IndexBufferUploader);
 
 
-    mModels["box"]->hitboxMesh = std::move(hitboxBox);
+    mModels["box"]->boundingBoxMesh = std::move(hitboxBox);
 
 
     /*grid*/
@@ -604,7 +614,7 @@ void RenderResource::generateDefaultShapes()
                                                                 cmdList, indices.data(), ibByteSize, hitboxGrid->IndexBufferUploader);
 
 
-    mModels["grid"]->hitboxMesh = std::move(hitboxGrid);
+    mModels["grid"]->boundingBoxMesh = std::move(hitboxGrid);
 
 
     /*sphere*/
@@ -714,7 +724,7 @@ void RenderResource::generateDefaultShapes()
                                                              cmdList, indices.data(), ibByteSize, hitboxSphere->IndexBufferUploader);
 
 
-    mModels["sphere"]->hitboxMesh = std::move(hitboxSphere);
+    mModels["sphere"]->boundingBoxMesh = std::move(hitboxSphere);
 
     /*cylinder*/
 
@@ -824,9 +834,11 @@ void RenderResource::generateDefaultShapes()
                                                                 cmdList, indices.data(), ibByteSize, hitboxCyl->IndexBufferUploader);
 
 
-    mModels["cylinder"]->hitboxMesh = std::move(hitboxCyl);
+    mModels["cylinder"]->boundingBoxMesh = std::move(hitboxCyl);
 }
 
+
+#pragma region PSO
 
 void RenderResource::buildPSOs()
 {
@@ -858,6 +870,24 @@ void RenderResource::buildPSOs()
     defaultPSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs["default"])));
 
+    /* default alpha PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultAlphaDesc = defaultPSODesc;
+
+    defaultAlphaDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+    defaultAlphaDesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["defaultAlphaVS"]->GetBufferPointer()),
+        mShaders["defaultAlphaVS"]->GetBufferSize()
+    };
+    defaultAlphaDesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["defaultAlphaPS"]->GetBufferPointer()),
+        mShaders["defaultAlphaPS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultAlphaDesc, IID_PPV_ARGS(&mPSOs["defaultAlpha"])));
+
     /*sky sphere PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
 
@@ -881,6 +911,8 @@ void RenderResource::buildPSOs()
 
     hitboxPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
     hitboxPSODesc.DepthStencilState.DepthEnable = false;
+    hitboxPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
     hitboxPSODesc.VS =
     {
         reinterpret_cast<BYTE*>(mShaders["hitboxVS"]->GetBufferPointer()),
@@ -894,6 +926,8 @@ void RenderResource::buildPSOs()
     ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPSOs["hitbox"])));
 
 }
+
+#pragma endregion PSO
 
 bool RenderResource::buildMaterials()
 {
@@ -975,7 +1009,7 @@ void RenderResource::buildRenderItems()
     XMStoreFloat4x4(&globeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
     globeRitem->ObjCBIndex = 1;
     globeRitem->Mat = mMaterials["plant"].get();
-    globeRitem->Model = mModels["man"].get();
+    globeRitem->Model = mModels["plant"].get();
     globeRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     mAllRitems.push_back(std::move(globeRitem));

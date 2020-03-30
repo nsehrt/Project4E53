@@ -264,6 +264,32 @@ void P_4E53::update(const GameTime& gt)
 		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 	}
 
+	/*TEST*/
+	for (auto const& i : renderResource.mAllRitems)
+	{
+		if (i->Model->name == "plant")
+		{
+			XMVECTOR a, b, c;
+			XMMatrixDecompose(&a, &b, &c, XMLoadFloat4x4(&i->World));
+			XMFLOAT3 t;
+			XMStoreFloat3(&t, c);
+			
+			t.x += inputData.current.trigger[THUMB_LX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+			t.y += inputData.current.trigger[THUMB_LY] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+			
+			XMFLOAT4 x;
+			XMStoreFloat4(&x, b);
+			x.y += inputData.current.trigger[THUMB_RX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+
+			XMMATRIX rot = XMMatrixRotationQuaternion(b);
+			XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+			XMMATRIX pos = XMMatrixTranslation(t.x, t.y, t.z);
+
+			XMStoreFloat4x4(&i->World, rot*scale*pos);
+			i->NumFramesDirty = gNumFrameResources;
+		}
+	}
+
 	/*fps camera controls*/
 	if (inputData.Released(LEFT_THUMB))
 	{
