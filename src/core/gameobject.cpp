@@ -7,14 +7,6 @@ GameObject::GameObject(const json& objectJson, int index)
     /*Name*/
     name = objectJson["Name"];
 
-    /*RenderItem*/
-
-    auto rItem = std::make_unique<RenderItem>();
-
-    rItem->ObjCBIndex = index;
-
-    renderItem = std::move(rItem);
-
     /*Transforms*/
     Position.x = objectJson["Position"][0];
     Position.y = objectJson["Position"][1];
@@ -32,4 +24,55 @@ GameObject::GameObject(const json& objectJson, int index)
     isCollisionEnabled = objectJson["CollisionEnabled"];
     isDrawEnabled = objectJson["DrawEnabled"];
     isShadowEnabled = objectJson["ShadowEnabled"];
+
+
+    /*RenderItem*/
+
+    auto renderResource = ServiceProvider::getRenderResource();
+
+    auto rItem = std::make_unique<RenderItem>();
+
+    rItem->ObjCBIndex = index;
+
+    XMMATRIX translationMatrix = XMMatrixTranslation(Position.x, Position.y, Position.z);
+    XMMATRIX scaleMatrix = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+    XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
+
+    XMStoreFloat4x4(&rItem->World, rotationMatrix * scaleMatrix * translationMatrix);
+    XMStoreFloat4x4(&rItem->TexTransform, XMMatrixScaling(1.0f,1.0f,1.0f));
+
+    if (renderResource->mModels.find(objectJson["Model"]) == renderResource->mModels.end())
+    {
+        LOG(Severity::Warning, "GameObject " << name << " specified not loaded model " << objectJson["Model"] << "!");
+
+        rItem->Model = renderResource->mModels["box"].get();
+    }
+    else
+    {
+        rItem->Model = renderResource->mModels[objectJson["Model"]].get();
+    }
+
+    if (renderResource->mMaterials.find(objectJson["Material"]) == renderResource->mMaterials.end())
+    {
+        LOG(Severity::Warning, "GameObject " << name << " specified not loaded material " << objectJson["Material"] << "!");
+
+        rItem->Mat = renderResource->mMaterials["default"].get();
+    }
+    else
+    {
+        rItem->Mat = renderResource->mMaterials[objectJson["Material"]].get();
+    }
+
+    if (objectJson["RenderType"] == "DefaultAlpha")
+    {
+        rItem->renderType = RenderType::DefaultAlpha;
+    }
+    else
+    {
+        rItem->renderType = RenderType::Default;
+    }
+
+    renderItem = std::move(rItem);
+
+
 }

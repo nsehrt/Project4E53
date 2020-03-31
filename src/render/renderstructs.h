@@ -157,7 +157,8 @@ struct Texture
 
 enum class RenderType
 {
-    Opaque,
+    Default,
+    DefaultAlpha,
     Sky
 };
 
@@ -180,5 +181,5 @@ struct RenderItem
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-    RenderType renderType = RenderType::Opaque;
+    RenderType renderType = RenderType::Default;
 };

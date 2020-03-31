@@ -1,4 +1,7 @@
 {
+    "Sky" : {
+        "Cubemap" : "grass"
+    },
 
     "Camera" : [
         {
@@ -31,6 +34,7 @@
                 45,
                 20
             ],
+            "RenderType" : "Default",
             "CollisionEnabled" : true,
             "DrawEnabled" : true,
             "ShadowEnabled" : true

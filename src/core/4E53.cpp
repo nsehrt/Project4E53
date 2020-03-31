@@ -12,6 +12,7 @@
 #include "../core/camera.h"
 #include "../core/fpscamera.h"
 #include "../util/modelloader.h"
+#include "../core/level.h"
 #include <filesystem>
 
 #define SETTINGS_FILE "cfg/settings.xml"
@@ -39,6 +40,9 @@ private:
 
 	FPSCamera fpsCamera;
 	bool fpsCameraMode = false;
+
+	std::vector<std::unique_ptr<Level>> mLevel;
+	Level* activeLevel;
 
 };
 
@@ -151,6 +155,11 @@ P_4E53::~P_4E53()
 		flushCommandQueue();
 }
 
+
+
+/*****************/
+/*  Initalize   */
+/****************/
 bool P_4E53::Initialize()
 {
 	if (!DX12App::Initialize())
@@ -205,6 +214,17 @@ bool P_4E53::Initialize()
 	}
 	
 	ServiceProvider::setRenderResource(renderResource);
+
+	/*load first level*/
+	auto level = std::make_unique<Level>();
+
+	if (!level->load("0.level"))
+	{
+		return 0;
+	}
+
+	mLevel.push_back(std::move(level));
+	activeLevel = mLevel[mLevel.size()-1].get();
 
 	/*init fpscamera*/
 	fpsCamera.setLens();

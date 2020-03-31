@@ -15,6 +15,8 @@ public:
 
     bool load(const std::string& levelFile);
 
+    void update(const GameTime& gt);
+    void draw();
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
     std::vector<std::unique_ptr<Camera>> mCameras;

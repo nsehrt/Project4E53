@@ -43,7 +43,17 @@ bool Level::load(const std::string& levelFile)
     }
 
 
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully.");
+
     return true;
+}
+
+void Level::update(const GameTime& gt)
+{
+}
+
+void Level::draw()
+{
 }
 
 bool Level::parseCameras(const json& cameraJson)
@@ -59,6 +69,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
         if (!exists(entryJson, "Name") ||
             !exists(entryJson, "Model") ||
             !exists(entryJson, "Material") ||
+            !exists(entryJson, "RenderType") ||
             !exists(entryJson, "Position") ||
             !exists(entryJson, "Rotation") ||
             !exists(entryJson, "Scale") ||
