@@ -259,7 +259,7 @@ void P_4E53::update(const GameTime& gt)
 	/***********************/
 
 
-	if (inputData.Pressed(BUTTON_A))
+	if (inputData.Pressed(BTN::A))
 	{
 		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 	}
@@ -274,12 +274,12 @@ void P_4E53::update(const GameTime& gt)
 			XMFLOAT3 t;
 			XMStoreFloat3(&t, c);
 			
-			t.x += inputData.current.trigger[THUMB_LX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
-			t.y += inputData.current.trigger[THUMB_LY] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+			t.x += inputData.current.trigger[TRG::THUMB_LX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+			t.y += inputData.current.trigger[TRG::THUMB_LY] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
 			
 			XMFLOAT4 x;
 			XMStoreFloat4(&x, b);
-			x.y += inputData.current.trigger[THUMB_RX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+			x.y += inputData.current.trigger[TRG::THUMB_RX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
 
 			XMMATRIX rot = XMMatrixRotationQuaternion(b);
 			XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
@@ -291,7 +291,7 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*fps camera controls*/
-	if (inputData.Released(LEFT_THUMB))
+	if (inputData.Released(BTN::LEFT_THUMB))
 	{
 		fpsCameraMode = !fpsCameraMode;
 
@@ -310,7 +310,7 @@ void P_4E53::update(const GameTime& gt)
 		fpsCamera.updateFPSCamera(inputData.current, gt);
 	}
 		
-	if (inputData.Released(RIGHT_THUMB) && settingsData->miscSettings.DebugEnabled )
+	if (inputData.Released(BTN::RIGHT_THUMB) && settingsData->miscSettings.DebugEnabled )
 	{
 		renderResource.toggleHitBoxDraw();
 	}

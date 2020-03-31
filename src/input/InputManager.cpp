@@ -103,71 +103,71 @@ void InputManager::Update()
     {
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_A)
         {
-            inputData[currentWorkedOn].buttons[BUTTON_A] = true;
+            inputData[currentWorkedOn].buttons[BTN::A] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_B)
         {
-            inputData[currentWorkedOn].buttons[BUTTON_B] = true;
+            inputData[currentWorkedOn].buttons[BTN::B] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_X)
         {
-            inputData[currentWorkedOn].buttons[BUTTON_X] = true;
+            inputData[currentWorkedOn].buttons[BTN::X] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_Y)
         {
-            inputData[currentWorkedOn].buttons[BUTTON_Y] = true;
+            inputData[currentWorkedOn].buttons[BTN::Y] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
         {
-            inputData[currentWorkedOn].buttons[DPAD_UP] = true;
+            inputData[currentWorkedOn].buttons[BTN::DPAD_UP] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
         {
-            inputData[currentWorkedOn].buttons[DPAD_DOWN] = true;
+            inputData[currentWorkedOn].buttons[BTN::DPAD_DOWN] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
         {
-            inputData[currentWorkedOn].buttons[DPAD_LEFT] = true;
+            inputData[currentWorkedOn].buttons[BTN::DPAD_LEFT] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
         {
-            inputData[currentWorkedOn].buttons[DPAD_RIGHT] = true;
+            inputData[currentWorkedOn].buttons[BTN::DPAD_RIGHT] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
         {
-            inputData[currentWorkedOn].buttons[LEFT_SHOULDER] = true;
+            inputData[currentWorkedOn].buttons[BTN::LEFT_SHOULDER] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
         {
-            inputData[currentWorkedOn].buttons[RIGHT_SHOULDER] = true;
+            inputData[currentWorkedOn].buttons[BTN::RIGHT_SHOULDER] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_START)
         {
-            inputData[currentWorkedOn].buttons[START] = true;
+            inputData[currentWorkedOn].buttons[BTN::START] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
         {
-            inputData[currentWorkedOn].buttons[BACK] = true;
+            inputData[currentWorkedOn].buttons[BTN::BACK] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)
         {
-            inputData[currentWorkedOn].buttons[LEFT_THUMB] = true;
+            inputData[currentWorkedOn].buttons[BTN::LEFT_THUMB] = true;
         }
         if (cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
         {
-            inputData[currentWorkedOn].buttons[RIGHT_THUMB] = true;
+            inputData[currentWorkedOn].buttons[BTN::RIGHT_THUMB] = true;
         }
     }
 
     /*triggers*/
 
-    inputData[currentWorkedOn].trigger[LEFT_TRIGGER] = controller->normalizeTriggers(cs->state.Gamepad.bLeftTrigger);
-    inputData[currentWorkedOn].trigger[RIGHT_TRIGGER] = controller->normalizeTriggers(cs->state.Gamepad.bRightTrigger);
+    inputData[currentWorkedOn].trigger[TRG::LEFT_TRIGGER] = controller->normalizeTriggers(cs->state.Gamepad.bLeftTrigger);
+    inputData[currentWorkedOn].trigger[TRG::RIGHT_TRIGGER] = controller->normalizeTriggers(cs->state.Gamepad.bRightTrigger);
 
-    inputData[currentWorkedOn].trigger[THUMB_LX] = controller->normalizeThumbs(cs->state.Gamepad.sThumbLX);
-    inputData[currentWorkedOn].trigger[THUMB_LY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbLY);
-    inputData[currentWorkedOn].trigger[THUMB_RX] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRX);
-    inputData[currentWorkedOn].trigger[THUMB_RY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRY);
+    inputData[currentWorkedOn].trigger[TRG::THUMB_LX] = controller->normalizeThumbs(cs->state.Gamepad.sThumbLX);
+    inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbLY);
+    inputData[currentWorkedOn].trigger[TRG::THUMB_RX] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRX);
+    inputData[currentWorkedOn].trigger[TRG::THUMB_RY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRY);
 
 
     /*mark as finished*/
