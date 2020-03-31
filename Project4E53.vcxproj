@@ -157,7 +157,9 @@
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\fpscamera.cpp" />
+    <ClCompile Include="src\core\gameobject.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
+    <ClCompile Include="src\core\level.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
     <ClCompile Include="src\extern\tinyxml2.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
@@ -177,7 +179,9 @@
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\fpscamera.h" />
+    <ClInclude Include="src\core\gameobject.h" />
     <ClInclude Include="src\core\gametime.h" />
+    <ClInclude Include="src\core\level.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
     <ClInclude Include="src\extern\json.hpp" />

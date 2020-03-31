@@ -37,7 +37,6 @@ private:
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
 
-	RenderResource renderResource;
 	FPSCamera fpsCamera;
 	bool fpsCameraMode = false;
 
@@ -196,11 +195,16 @@ bool P_4E53::Initialize()
 		return false;
 	}
 
-	if (!renderResource.init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath))
+	/*initialize and register render resource*/
+	std::shared_ptr<RenderResource> renderResource(new RenderResource());
+
+	if (!renderResource->init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath))
 	{
 		ServiceProvider::getLogger()->print<Severity::Error>("Initialising render resouce failed!");
 		return false;
 	}
+	
+	ServiceProvider::setRenderResource(renderResource);
 
 	/*init fpscamera*/
 	fpsCamera.setLens();
@@ -220,13 +224,13 @@ bool P_4E53::Initialize()
 void P_4E53::onResize()
 {
 	DX12App::onResize();
-	if (renderResource.activeCamera)
-	{
-		renderResource.activeCamera->setLens(0.2f * MathHelper::Pi,
-											 static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
-											 0.01f,
-											 1000.0f);
-	}
+	//if (renderResource.activeCamera)
+	//{
+	//	renderResource.activeCamera->setLens(0.2f * MathHelper::Pi,
+	//										 static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+	//										 0.01f,
+	//										 1000.0f);
+	//}
 }
 
 
@@ -237,9 +241,11 @@ void P_4E53::update(const GameTime& gt)
 {
 	/******************************/
 	/*cycle to next frame resource*/
-	renderResource.incFrameResource();
+	auto renderResource = ServiceProvider::getRenderResource();
 
-	FrameResource* mCurrentFrameResource = renderResource.getCurrentFrameResource();
+	renderResource->incFrameResource();
+
+	FrameResource* mCurrentFrameResource = renderResource->getCurrentFrameResource();
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -265,7 +271,7 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*TEST*/
-	for (auto const& i : renderResource.mAllRitems)
+	for (auto const& i : renderResource->mAllRitems)
 	{
 		if (i->Model->name == "plant")
 		{
@@ -297,11 +303,11 @@ void P_4E53::update(const GameTime& gt)
 
 		if (fpsCameraMode)
 		{
-			renderResource.activeCamera = &fpsCamera;
+			renderResource->activeCamera = &fpsCamera;
 		}
 		else
 		{
-			renderResource.useDefaultCamera();
+			renderResource->useDefaultCamera();
 		}
 	}
 
@@ -312,12 +318,12 @@ void P_4E53::update(const GameTime& gt)
 		
 	if (inputData.Released(BTN::RIGHT_THUMB) && settingsData->miscSettings.DebugEnabled )
 	{
-		renderResource.toggleHitBoxDraw();
+		renderResource->toggleHitBoxDraw();
 	}
 
 	/*camera and frame resource/constant buffer update*/
-	renderResource.activeCamera->updateViewMatrix();
-	renderResource.update(gt);
+	renderResource->activeCamera->updateViewMatrix();
+	renderResource->update(gt);
 	
 
 	/*save input for next frame*/
@@ -331,14 +337,14 @@ void P_4E53::update(const GameTime& gt)
 /*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
-	auto mCurrentFrameResource = renderResource.getCurrentFrameResource();
+	auto mCurrentFrameResource = ServiceProvider::getRenderResource()->getCurrentFrameResource();
 
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
 
 	mCommandList->Reset(
 		cmdListAlloc.Get(),
-		renderResource.mPSOs["default"].Get()
+		ServiceProvider::getRenderResource()->mPSOs["default"].Get()
 	);
 
 	mCommandList->RSSetViewports(1, &mScreenViewport);
@@ -354,11 +360,11 @@ void P_4E53::draw(const GameTime& gt)
 	/*set render target*/
 	mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
 
-	ID3D12DescriptorHeap* descHeap[] = { renderResource.mSrvDescriptorHeap.Get() };
+	ID3D12DescriptorHeap* descHeap[] = { ServiceProvider::getRenderResource()->mSrvDescriptorHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descHeap), descHeap);
 
 	/*set used root signature*/
-	mCommandList->SetGraphicsRootSignature(renderResource.mMainRootSignature.Get());
+	mCommandList->SetGraphicsRootSignature(ServiceProvider::getRenderResource()->mMainRootSignature.Get());
 
 	/*set per pass constant buffer*/
 	auto passCB = mCurrentFrameResource->PassCB->getResource();
@@ -368,15 +374,15 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
 
 	/*cubemap*/
-	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(renderResource.mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	skyTexDescriptor.Offset(renderResource.mTextures["grasscube1024.dds"]->index, renderResource.mHeapDescriptorSize);
+	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	skyTexDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["grasscube1024.dds"]->index, ServiceProvider::getRenderResource()->mHeapDescriptorSize);
 	mCommandList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
 
 	/*textures (array)*/
-	mCommandList->SetGraphicsRootDescriptorTable(4, renderResource.mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	/*draw everything*/
-	renderResource.draw();
+	ServiceProvider::getRenderResource()->draw();
 	
 	/*to resource stage*/
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
@@ -394,7 +400,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	/*advance fence on gpu to signal that this frame is finished*/
-	renderResource.getCurrentFrameResource()->Fence = ++mCurrentFence;
+	ServiceProvider::getRenderResource()->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 }

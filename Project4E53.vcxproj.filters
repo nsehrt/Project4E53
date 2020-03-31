@@ -97,6 +97,12 @@
     <ClInclude Include="src\util\modelloader.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\gameobject.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\level.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -155,6 +161,12 @@
     </ClCompile>
     <ClCompile Include="src\util\modelloader.cpp">
       <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\gameobject.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\level.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

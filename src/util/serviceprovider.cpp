@@ -6,6 +6,7 @@ std::shared_ptr<Logger<LogPolicy>>ServiceProvider::vsLogger = NULL;
 std::shared_ptr<Settings>ServiceProvider::settings = NULL;
 std::shared_ptr<SoundEngine>ServiceProvider::audio = NULL;
 std::shared_ptr<InputManager>ServiceProvider::input = NULL;
+std::shared_ptr<RenderResource>ServiceProvider::renderResource = NULL;
 
 std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 
@@ -31,4 +32,9 @@ void ServiceProvider::setAudioEngine(std::shared_ptr<SoundEngine> providedSound)
 void ServiceProvider::setInputManager(std::shared_ptr<InputManager> providedInputManager)
 {
     input = providedInputManager;
+}
+
+void ServiceProvider::setRenderResource(std::shared_ptr<RenderResource> providedRenderResource)
+{
+    renderResource = providedRenderResource;
 }

@@ -1,0 +1,42 @@
+{
+
+    "Camera" : [
+        {
+            "ID":0,
+            "Position":[
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+
+    "GameObject" : [
+        {
+            "Name" : "obj1",
+            "Model" : "plant",
+            "Material" : "plant",
+            "Position" : [
+                10.0,
+                5.0,
+                3.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                90,
+                45,
+                20
+            ],
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        }
+
+
+    ]
+
+}
