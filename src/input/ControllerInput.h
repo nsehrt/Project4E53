@@ -21,7 +21,7 @@ polls input and status data from up to 4 controllers
 #define MAX_CONTROLLERS 1
 #define INPUT_DEADZONE (0.24f* float(0x7FFF))
 /*time between checking capabilites/battery level
-  same controller is polled every CAP_BATTERY_POLL_TIME * 4*/
+  same controller is polled every CAP_BATTERY_POLL_TIME * COUNTOFCONTROLLER*/
 #define CAP_BATTERY_POLL_TIME 60.f
 
 struct ControllerState {
@@ -30,6 +30,8 @@ struct ControllerState {
     XINPUT_CAPABILITIES capabilities;
     bool isConnected;
 };
+
+/*XINPUT DOCU*/
 
 /*state.wbuttons
     check these values with cs->state.Gamepad.wButtons & XINPUT_GAMEPAD_A

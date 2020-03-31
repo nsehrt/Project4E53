@@ -15,6 +15,8 @@
 #define TYPE_KEYBOARD 0
 #define TYPE_GAMEPAD 1
 
+#define RING_SIZE 12
+
 /*14 buttons*/
 
 enum BTN : int
@@ -35,6 +37,8 @@ enum BTN : int
     RIGHT_THUMB
 };
 
+/*6 triggers*/
+
 enum TRG : int
 {
     LEFT_TRIGGER = 0,
@@ -44,31 +48,6 @@ enum TRG : int
     THUMB_RX,
     THUMB_RY
 };
-
-//#define BUTTON_A 0
-//#define BUTTON_B 1
-//#define BUTTON_X 2
-//#define BUTTON_Y 3
-//#define DPAD_UP 4
-//#define DPAD_DOWN 5
-//#define DPAD_LEFT 6
-//#define DPAD_RIGHT 7
-//#define LEFT_SHOULDER 8
-//#define RIGHT_SHOULDER 9
-//#define START 10
-//#define BACK 11
-//#define LEFT_THUMB 12
-//#define RIGHT_THUMB 13
-//
-///*6 triggers*/
-//#define LEFT_TRIGGER 0
-//#define RIGHT_TRIGGER 1
-//#define THUMB_LX 2
-//#define THUMB_LY 3
-//#define THUMB_RX 4
-//#define THUMB_RY 5
-
-#define RING_SIZE 12
 
 struct InputData
 {
