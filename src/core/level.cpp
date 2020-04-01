@@ -2,12 +2,16 @@
 
 bool Level::load(const std::string& levelFile)
 {
+    auto startTime = std::chrono::system_clock::now();
+
+    LOG(Severity::Info, "Loading level " << levelFile << "...");
+
     /*open and parse the level file*/
     std::ifstream levelStream (LEVEL_PATH + std::string("/") + levelFile);
 
     if (!levelStream.is_open())
     {
-        LOG(Severity::Critical, "Unable to open the level file " << levelFile << "!");
+        LOG(Severity::Critical, "Unable to open the level file!");
         return false;
     }
 
@@ -18,13 +22,18 @@ bool Level::load(const std::string& levelFile)
         levelJson = json::parse(levelStream);
     }
     catch(...){
-        LOG(Severity::Critical, "Error while parsing level file " << levelFile << "! Check JSON validity!")
+        LOG(Severity::Critical, "Error while parsing level file! Check JSON validity!")
         return false;
     }
 
     levelStream.close();
 
-    LOG(Severity::Info, "Parsing of level file " << levelFile << " successful");
+    /*parse sky*/
+    if (!parseSky(levelJson["Sky"]))
+    {
+        LOG(Severity::Critical, "Failed to load sky sphere properties!");
+        return false;
+    }
 
     /*parse cameras*/
     auto defaultCamera = std::make_unique<Camera>();
@@ -37,7 +46,8 @@ bool Level::load(const std::string& levelFile)
 
     if (!parseCameras(levelJson["Camera"]))
     {
-
+        LOG(Severity::Critical, "Failed to load cameras!");
+        return false;
     }
 
     /*parse terrain*/
@@ -47,12 +57,16 @@ bool Level::load(const std::string& levelFile)
     /*parse game objects*/
     if (!parseGameObjects(levelJson["GameObject"]))
     {
-
+        LOG(Severity::Critical, "Failed to load Game Objects!");
+        return false;
     }
 
     buildFrameResource();
 
-    LOG(Severity::Info, "Loaded level " << levelFile << " successfully.");
+    auto endTime = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsedTime = endTime - startTime;
+
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << amountGameObjects << " GameObjects)");
 
     return true;
 }
@@ -82,6 +96,33 @@ void Level::draw()
     {
         const auto gObjRenderItem = gameObject.second->renderItem.get();
 
+        if (gObjRenderItem->renderType == RenderType::Sky) continue;
+
+        for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+        {
+            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
+            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
+            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
+
+            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+
+            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
+        }
+
+    }
+
+    /*draw sky sphere*/
+
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
+
+    for (const auto& gameObject : mGameObjects)
+    {
+        const auto gObjRenderItem = gameObject.second->renderItem.get();
+
+        if (gObjRenderItem->renderType != RenderType::Sky) continue;
+
         for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
         {
             renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
@@ -106,18 +147,18 @@ void Level::draw()
     {
         const auto gObjRenderItem = gameObject.second->renderItem.get();
 
-        for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
-        {
-            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
-            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
+        if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) continue;
+
+
+            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjRenderItem->Model->boundingBoxMesh.get()->VertexBufferView());
+            renderResource->cmdList->IASetIndexBuffer(&gObjRenderItem->Model->boundingBoxMesh.get()->IndexBufferView());
             renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
             D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
 
             renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
-            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
-        }
+            renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
 
     }
 
@@ -139,6 +180,33 @@ FrameResource* Level::getCurrentFrameResource()
     return mCurrentFrameResource;
 }
 
+bool Level::parseSky(const json& skyJson)
+{
+    if (!exists(skyJson, "Material"))
+    {
+        return false;
+    }
+
+    auto renderResource = ServiceProvider::getRenderResource();
+    auto gameObject = std::make_unique<GameObject>();
+
+    auto rItem = std::make_unique<RenderItem>();
+
+    XMStoreFloat4x4(&rItem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.f));
+    rItem->TexTransform = MathHelper::identity4x4();
+    rItem->ObjCBIndex = amountGameObjects++;
+    rItem->Mat = renderResource->mMaterials[skyJson["Material"]].get();
+    rItem->Model = renderResource->mModels["sphere"].get();
+    rItem->renderType = RenderType::Sky;
+
+    gameObject->name = "SkySphere";
+    gameObject->renderItem = std::move(rItem);
+
+    mGameObjects[gameObject->name] = std::move(gameObject);
+
+    return true;
+}
+
 bool Level::parseCameras(const json& cameraJson)
 {
     return true;
@@ -148,9 +216,13 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 {
     for (auto const& entryJson : gameObjectJson)
     {
+        if (!exists(entryJson, "Name"))
+        {
+            LOG(Severity::Warning, "GameObject is missing the name property!");
+            continue;
+        }
 
-        if (!exists(entryJson, "Name") ||
-            !exists(entryJson, "Model") ||
+        if (!exists(entryJson, "Model") ||
             !exists(entryJson, "Material") ||
             !exists(entryJson, "RenderType") ||
             !exists(entryJson, "Position") ||
@@ -160,8 +232,14 @@ bool Level::parseGameObjects(const json& gameObjectJson)
             !exists(entryJson, "DrawEnabled") ||
             !exists(entryJson, "ShadowEnabled") )
         {
-            LOG(Severity::Warning, "Skipping game object due to missing properties!");
+            LOG(Severity::Warning, "Skipping GameObject " << entryJson["Name"] << "due to missing properties!");
             continue;
+        }
+
+        if (mGameObjects.find(entryJson["Name"]) != mGameObjects.end())
+        {
+            LOG(Severity::Warning, "GameObject " << entryJson["Name"] << " already exists!");
+            return false;
         }
 
         auto gameObject = std::make_unique<GameObject>(entryJson, amountGameObjects++);

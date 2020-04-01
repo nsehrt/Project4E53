@@ -1,6 +1,6 @@
 {
     "Sky" : {
-        "Cubemap" : "grass"
+        "Material" : "sky"
     },
 
     "Camera" : [

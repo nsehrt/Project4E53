@@ -12,6 +12,7 @@ class GameObject
 public:
 
     explicit GameObject(const json& objectJson, int index);
+    explicit GameObject() = default;
     ~GameObject() = default;
 
 

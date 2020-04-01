@@ -13,10 +13,16 @@ public:
     explicit Level() = default;
     ~Level() = default;
 
+    /* load a level file in data/level/ */
     bool load(const std::string& levelFile);
 
+    /* update all game objects in the level */
     void update(const GameTime& gt);
+
+    /* update constant buffers for the gpu */
     void updateBuffers(const GameTime& gt);
+
+    /* draw the level */
     void draw();
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
@@ -25,14 +31,22 @@ public:
     Camera* activeCamera = nullptr;
 
     /*frame resource related*/
+
+    /*use next frame resource (start of new frame) */
     void cycleFrameResource();
+
+    /*return the index of the current frame resource */
     int getCurrentFrameResourceIndex();
+
+    /* return pointer to the current frame resource */
     FrameResource* getCurrentFrameResource();
 
 private:
 
+    /* total amount of game objects in the level, includes sky sphere*/
     int amountGameObjects = 0;
 
+    bool parseSky(const json& skyJson);
     bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
     

@@ -220,6 +220,7 @@ bool P_4E53::Initialize()
 
 	if (!level->load("0.level"))
 	{
+		
 		return 0;
 	}
 
