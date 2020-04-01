@@ -38,6 +38,11 @@ public:
         drawHitbox = !drawHitbox;
     }
 
+    bool isHitBoxDrawEnabled() const
+    {
+        return drawHitbox;
+    }
+
     void incFrameResource();
     void update(const GameTime& gt);
     int getCurrentFrameResourceIndex();
@@ -60,10 +65,10 @@ public:
 
     UINT mHeapDescriptorSize = 0;
 
-
-private:
     ID3D12Device* device = nullptr;
     ID3D12GraphicsCommandList* cmdList = nullptr;
+
+private:
 
     /*frame resource, camera, pass constants ??*/
     std::vector<std::unique_ptr<FrameResource>> mFrameResources;

@@ -41,6 +41,7 @@ GameObject::GameObject(const json& objectJson, int index)
     XMStoreFloat4x4(&rItem->World, rotationMatrix * scaleMatrix * translationMatrix);
     XMStoreFloat4x4(&rItem->TexTransform, XMMatrixScaling(1.0f,1.0f,1.0f));
 
+    /*check model exists*/
     if (renderResource->mModels.find(objectJson["Model"]) == renderResource->mModels.end())
     {
         LOG(Severity::Warning, "GameObject " << name << " specified not loaded model " << objectJson["Model"] << "!");
@@ -52,6 +53,7 @@ GameObject::GameObject(const json& objectJson, int index)
         rItem->Model = renderResource->mModels[objectJson["Model"]].get();
     }
 
+    /*check material exists*/
     if (renderResource->mMaterials.find(objectJson["Material"]) == renderResource->mMaterials.end())
     {
         LOG(Severity::Warning, "GameObject " << name << " specified not loaded material " << objectJson["Material"] << "!");
@@ -63,6 +65,7 @@ GameObject::GameObject(const json& objectJson, int index)
         rItem->Mat = renderResource->mMaterials[objectJson["Material"]].get();
     }
 
+    /*render type*/
     if (objectJson["RenderType"] == "DefaultAlpha")
     {
         rItem->renderType = RenderType::DefaultAlpha;
