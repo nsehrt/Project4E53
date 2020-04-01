@@ -26,12 +26,12 @@ public:
 
     bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
 
-    void draw();
+    //void draw();
 
-    void useDefaultCamera()
-    {
-        activeCamera = &defaultCamera;
-    }
+    //void useDefaultCamera()
+    //{
+    //    activeCamera = &defaultCamera;
+    //}
 
     void toggleHitBoxDraw()
     {
@@ -43,12 +43,12 @@ public:
         return drawHitbox;
     }
 
-    void incFrameResource();
-    void update(const GameTime& gt);
-    int getCurrentFrameResourceIndex();
-    FrameResource* getCurrentFrameResource();
+    //void incFrameResource();
+    //void update(const GameTime& gt);
+    //int getCurrentFrameResourceIndex();
+    //FrameResource* getCurrentFrameResource();
 
-    Camera* activeCamera = nullptr;
+    //Camera* activeCamera = nullptr;
 
     ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
@@ -61,7 +61,7 @@ public:
 
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
     std::unordered_map <std::string, std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
-    std::vector<std::unique_ptr<RenderItem>> mAllRitems;
+    //std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
     UINT mHeapDescriptorSize = 0;
 
@@ -71,12 +71,12 @@ public:
 private:
 
     /*frame resource, camera, pass constants ??*/
-    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-    FrameResource* mCurrentFrameResource = nullptr;
-    int mCurrentFrameResourceIndex = 0;
+    //std::vector<std::unique_ptr<FrameResource>> mFrameResources;
+    //FrameResource* mCurrentFrameResource = nullptr;
+    //int mCurrentFrameResourceIndex = 0;
 
-    Camera defaultCamera;
-    PassConstants mMainPassConstants;
+    //Camera defaultCamera;
+    //PassConstants mMainPassConstants;
 
     /*private init functions*/
     bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);
@@ -92,13 +92,13 @@ private:
 
     void buildPSOs();
     bool buildMaterials();
-    bool buildFrameResources();
-    void buildRenderItems();
+    //bool buildFrameResources();
+    //void buildRenderItems();
 
 
-    void updateObjectCBs(const GameTime& gt);
-    void updatePassCBs(const GameTime& gt);
-    void updateMaterialBuffers(const GameTime& gt);
+    //void updateObjectCBs(const GameTime& gt);
+    //void updatePassCBs(const GameTime& gt);
+    //void updateMaterialBuffers(const GameTime& gt);
 
     bool drawHitbox = false;
 };

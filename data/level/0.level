@@ -38,6 +38,31 @@
             "CollisionEnabled" : true,
             "DrawEnabled" : true,
             "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj2",
+            "Model" : "plant",
+            "Material" : "plant",
+            "Position" : [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
         }
 
 

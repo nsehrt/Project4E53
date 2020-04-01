@@ -263,9 +263,11 @@ void P_4E53::update(const GameTime& gt)
 	/*cycle to next frame resource*/
 	auto renderResource = ServiceProvider::getRenderResource();
 
-	renderResource->incFrameResource();
+	activeLevel->cycleFrameResource();
 
-	FrameResource* mCurrentFrameResource = renderResource->getCurrentFrameResource();
+	//renderResource->incFrameResource();
+
+	FrameResource* mCurrentFrameResource = activeLevel->getCurrentFrameResource(); //renderResource->getCurrentFrameResource();
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -291,30 +293,31 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*TEST*/
-	for (auto const& i : renderResource->mAllRitems)
-	{
-		if (i->Model->name == "plant")
-		{
-			XMVECTOR a, b, c;
-			XMMatrixDecompose(&a, &b, &c, XMLoadFloat4x4(&i->World));
-			XMFLOAT3 t;
-			XMStoreFloat3(&t, c);
-			
-			t.x += inputData.current.trigger[TRG::THUMB_LX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
-			t.y += inputData.current.trigger[TRG::THUMB_LY] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
-			
-			XMFLOAT4 x;
-			XMStoreFloat4(&x, b);
-			x.y += inputData.current.trigger[TRG::THUMB_RX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+	
+	//for (auto const& i : renderResource->mAllRitems)
+	//{
+	//	if (i->Model->name == "plant")
+	//	{
+	//		XMVECTOR a, b, c;
+	//		XMMatrixDecompose(&a, &b, &c, XMLoadFloat4x4(&i->World));
+	//		XMFLOAT3 t;
+	//		XMStoreFloat3(&t, c);
+	//		
+	//		t.x += inputData.current.trigger[TRG::THUMB_LX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+	//		t.y += inputData.current.trigger[TRG::THUMB_LY] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
+	//		
+	//		XMFLOAT4 x;
+	//		XMStoreFloat4(&x, b);
+	//		x.y += inputData.current.trigger[TRG::THUMB_RX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
 
-			XMMATRIX rot = XMMatrixRotationQuaternion(b);
-			XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-			XMMATRIX pos = XMMatrixTranslation(t.x, t.y, t.z);
+	//		XMMATRIX rot = XMMatrixRotationQuaternion(b);
+	//		XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//		XMMATRIX pos = XMMatrixTranslation(t.x, t.y, t.z);
 
-			XMStoreFloat4x4(&i->World, rot*scale*pos);
-			i->NumFramesDirty = gNumFrameResources;
-		}
-	}
+	//		XMStoreFloat4x4(&i->World, rot*scale*pos);
+	//		i->NumFramesDirty = gNumFrameResources;
+	//	}
+	//}
 
 	/*fps camera controls*/
 	if (inputData.Released(BTN::LEFT_THUMB))
@@ -323,11 +326,13 @@ void P_4E53::update(const GameTime& gt)
 
 		if (fpsCameraMode)
 		{
-			renderResource->activeCamera = &fpsCamera;
+			activeLevel->activeCamera = &fpsCamera;
+			//renderResource->activeCamera = &fpsCamera;
 		}
 		else
 		{
-			renderResource->useDefaultCamera();
+			activeLevel->activeCamera = activeLevel->mCameras[0].get();
+			//renderResource->useDefaultCamera();
 		}
 	}
 
@@ -342,9 +347,12 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*camera and frame resource/constant buffer update*/
-	renderResource->activeCamera->updateViewMatrix();
-	renderResource->update(gt);
+	//renderResource->activeCamera->updateViewMatrix();
+	//renderResource->update(gt);
 	
+	activeLevel->activeCamera->updateViewMatrix();
+	activeLevel->updateBuffers(gt);
+
 
 	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
@@ -357,7 +365,7 @@ void P_4E53::update(const GameTime& gt)
 /*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
-	auto mCurrentFrameResource = ServiceProvider::getRenderResource()->getCurrentFrameResource();
+	auto mCurrentFrameResource = activeLevel->getCurrentFrameResource(); //ServiceProvider::getRenderResource()->getCurrentFrameResource();
 
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
@@ -402,8 +410,10 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	/*draw everything*/
-	ServiceProvider::getRenderResource()->draw();
+	//ServiceProvider::getRenderResource()->draw();
 	
+	activeLevel->draw();
+
 	/*to resource stage*/
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
 								  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -420,7 +430,8 @@ void P_4E53::draw(const GameTime& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	/*advance fence on gpu to signal that this frame is finished*/
-	ServiceProvider::getRenderResource()->getCurrentFrameResource()->Fence = ++mCurrentFence;
+	activeLevel->getCurrentFrameResource()->Fence = ++mCurrentFence;
+	//ServiceProvider::getRenderResource()->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 }
