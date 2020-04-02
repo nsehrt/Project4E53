@@ -79,3 +79,28 @@ GameObject::GameObject(const json& objectJson, int index)
 
 
 }
+
+void GameObject::draw()
+{
+    //if (!isDrawEnabled) return;
+
+    //const auto gObjRenderItem = renderItem.get();
+
+    //if (gObjRenderItem->renderType == RenderType::Sky) continue;
+
+    //for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+    //{
+    //    renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
+    //    renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
+    //    renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+    //    D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
+
+    //    /*only if changed*/
+    //    renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+
+    //    renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
+    //}
+
+
+}

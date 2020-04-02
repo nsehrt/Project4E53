@@ -12,9 +12,10 @@ class GameObject
 public:
 
     explicit GameObject(const json& objectJson, int index);
-    explicit GameObject() = default;
+    GameObject() = default;
     ~GameObject() = default;
 
+    void draw();
 
     std::string name;
     std::unique_ptr<RenderItem> renderItem;

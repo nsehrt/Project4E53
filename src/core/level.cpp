@@ -94,6 +94,7 @@ void Level::draw()
 
     for (const auto& gameObject : mGameObjects)
     {
+
         const auto gObjRenderItem = gameObject.second->renderItem.get();
 
         if (gObjRenderItem->renderType == RenderType::Sky) continue;
@@ -106,6 +107,7 @@ void Level::draw()
 
             D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
 
+            /*only if changed*/
             renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
             renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);

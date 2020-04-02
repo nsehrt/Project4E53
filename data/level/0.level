@@ -20,9 +20,9 @@
             "Model" : "plant",
             "Material" : "plant",
             "Position" : [
-                10.0,
-                5.0,
-                3.0
+                2.0,
+                1.0,
+                5.0
             ],
             "Scale" : [
                 1.0,
@@ -30,7 +30,7 @@
                 1.0
             ],
             "Rotation" : [
-                90,
+                0,
                 45,
                 20
             ],
@@ -46,7 +46,157 @@
             "Material" : "plant",
             "Position" : [
                 0.0,
+                1.0,
+                0.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj3",
+            "Model" : "box",
+            "Material" : "brick0",
+            "Position" : [
                 0.0,
+                0.5,
+                0.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj4",
+            "Model" : "grid",
+            "Material" : "default",
+            "Position" : [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale" : [
+                2.0,
+                1.0,
+                2.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj5",
+            "Model" : "cylinder",
+            "Material" : "brick0",
+            "Position" : [
+                -5.0,
+                1,
+                0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj6",
+            "Model" : "cylinder",
+            "Material" : "tile0",
+            "Position" : [
+                5.0,
+                1.0,
+                0.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj7",
+            "Model" : "sphere",
+            "Material" : "mirror0",
+            "Position" : [
+                -5.0,
+                2.5,
+                0.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "obj8",
+            "Model" : "sphere",
+            "Material" : "mirror0",
+            "Position" : [
+                5.0,
+                2.5,
                 0.0
             ],
             "Scale" : [
@@ -64,7 +214,6 @@
             "DrawEnabled" : true,
             "ShadowEnabled" : true
         }
-
 
     ]
 
