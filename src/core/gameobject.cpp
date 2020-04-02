@@ -75,32 +75,93 @@ GameObject::GameObject(const json& objectJson, int index)
         rItem->renderType = RenderType::Default;
     }
 
+    objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+
     renderItem = std::move(rItem);
+
+    updateTransforms();
+}
+
+void GameObject::update(const GameTime& gt)
+{
+    if (renderItem->renderType != RenderType::Default) return;
+    if (name != "obj2")return;
+    XMFLOAT3 pos = getPosition();
+    pos.y -= 0.25f * gt.DeltaTime();
+    setPosition(pos);
+}
+
+void GameObject::draw(RenderType _renderType, ID3D12Resource* objectCB)
+{
+    const auto gObjRenderItem = renderItem.get();
+
+    if (gObjRenderItem->renderType != _renderType) return;
+    if (!isDrawEnabled) return;
+
+    const auto renderResource = ServiceProvider::getRenderResource();
+
+    D3D12_GPU_VIRTUAL_ADDRESS cachedObjCBAddress = 0;
+
+    for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+    {
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
+        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
+        renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objectCBSize;
+
+        /*only if changed*/
+        if (cachedObjCBAddress != objCBAddress)
+        {
+            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+            cachedObjCBAddress = objCBAddress;
+        }
+
+        renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
+    }
 
 
 }
 
-void GameObject::draw()
+void GameObject::drawHitbox(RenderType _renderType, ID3D12Resource* objectCB)
 {
-    //if (!isDrawEnabled) return;
 
-    //const auto gObjRenderItem = renderItem.get();
+    const auto gObjRenderItem = renderItem.get();
 
-    //if (gObjRenderItem->renderType == RenderType::Sky) continue;
+    if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) return;
 
-    //for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
-    //{
-    //    renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
-    //    renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
-    //    renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+    if (gObjRenderItem->renderType != _renderType) return;
+    if (!isDrawEnabled) return;
 
-    //    D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
+    const auto renderResource = ServiceProvider::getRenderResource();
 
-    //    /*only if changed*/
-    //    renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
-    //    renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
-    //}
+    renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjRenderItem->Model->boundingBoxMesh.get()->VertexBufferView());
+    renderResource->cmdList->IASetIndexBuffer(&gObjRenderItem->Model->boundingBoxMesh.get()->IndexBufferView());
+    renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
+    D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objectCBSize;
+
+    renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+
+    renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
+
+
+
+}
+
+void GameObject::updateTransforms()
+{
+
+    /*update transforms for constant buffer*/
+    XMStoreFloat4x4(&renderItem->World, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
+                    XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+                    XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
+
+    /*update hitbox*/
+    
+    renderItem->Model->boundingBox.Transform(hitBox, Scale.x, XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)), XMLoadFloat3(&Position));
+
+    renderItem->NumFramesDirty = gNumFrameResources;
 
 }

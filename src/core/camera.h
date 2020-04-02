@@ -3,6 +3,7 @@
 #include "../util/d3dUtil.h"
 
 #define CAMERA_RESTRICTION_ANGLE 5.f
+#define CAMERA_HITBOX_SIZE_EXTENTS 0.001f
 
 class Camera
 {
@@ -61,10 +62,16 @@ public:
     // After modifying camera position/orientation, call to rebuild the view matrix.
     void updateViewMatrix();
 
+    bool isCollisionEnabled = true;
+
+    DirectX::BoundingBox hitbox;
 
 private:
 
+    DirectX::BoundingBox baseHitbox;
+
     DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT3 mHitboxRotation = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 mRight = { 1.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mUp = { 0.0f, 1.0f, 0.0f };
     DirectX::XMFLOAT3 mLook = { 0.0f, 0.0f, 1.0f };
@@ -84,5 +91,10 @@ private:
 
     DirectX::XMFLOAT4X4 mView = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 mProj = MathHelper::identity4x4();
+
+    void updateHitbox()
+    {
+        baseHitbox.Transform(hitbox,1.f, DirectX::XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&mHitboxRotation)), XMLoadFloat3(&mPosition));
+    }
 
 };

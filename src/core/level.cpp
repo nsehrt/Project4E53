@@ -73,6 +73,44 @@ bool Level::load(const std::string& levelFile)
 
 void Level::update(const GameTime& gt)
 {
+
+    for (auto& gameObj : mGameObjects)
+    {
+        gameObj.second->update(gt);
+    }
+
+    /*Collision test*/
+
+    for (const auto& gameObj : mGameObjects)
+    {
+        if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
+
+        if (activeCamera->hitbox.Intersects(gameObj.second->hitBox))
+        {
+            LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
+        }
+
+    }
+
+
+    //for (auto& gameObj : mGameObjects)
+    //{
+    //    if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
+
+    //    auto h = gameObj.second->hitBox;
+
+    //    for (auto& gameObj2 : mGameObjects)
+    //    {
+    //        if (gameObj == gameObj2) continue;
+    //        if (gameObj2.second->gameObjectType != GameObjectType::Static) continue;
+
+    //        if (h.Intersects(gameObj2.second->hitBox))
+    //        {
+    //            LOG(Severity::Info, "Collision between " << gameObj.second->name << " and " << gameObj2.second->name);
+    //        }
+    //    }
+    //}
+
 }
 
 void Level::updateBuffers(const GameTime& gt)
@@ -95,72 +133,28 @@ void Level::draw()
     for (const auto& gameObject : mGameObjects)
     {
 
-        const auto gObjRenderItem = gameObject.second->renderItem.get();
-
-        if (gObjRenderItem->renderType == RenderType::Sky) continue;
-
-        for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
-        {
-            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
-            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
-            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
-
-            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
-
-            /*only if changed*/
-            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-
-            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
-        }
+        gameObject.second->draw(RenderType::Default, objectCB);
 
     }
 
     /*draw sky sphere*/
-
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
 
     for (const auto& gameObject : mGameObjects)
     {
-        const auto gObjRenderItem = gameObject.second->renderItem.get();
-
-        if (gObjRenderItem->renderType != RenderType::Sky) continue;
-
-        for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
-        {
-            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
-            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
-            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
-
-            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
-
-            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-
-            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
-        }
-
+        gameObject.second->draw(RenderType::Sky, objectCB);
     }
 
     /* Draw the hitboxes of the GameObjects if enabled */
-    if (renderResource->isHitBoxDrawEnabled() == false)return;
-
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["hitbox"].Get());
-
-    for (const auto& gameObject : mGameObjects)
+    if (renderResource->isHitBoxDrawEnabled())
     {
-        const auto gObjRenderItem = gameObject.second->renderItem.get();
 
-        if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) continue;
+        renderResource->cmdList->SetPipelineState(renderResource->mPSOs["hitbox"].Get());
 
-
-            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjRenderItem->Model->boundingBoxMesh.get()->VertexBufferView());
-            renderResource->cmdList->IASetIndexBuffer(&gObjRenderItem->Model->boundingBoxMesh.get()->IndexBufferView());
-            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
-
-            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objCBByteSize;
-
-            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-
-            renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
+        for (const auto& gameObject : mGameObjects)
+        {
+            gameObject.second->drawHitbox(RenderType::Default, objectCB);
+        }
 
     }
 
@@ -203,6 +197,7 @@ bool Level::parseSky(const json& skyJson)
 
     gameObject->name = "SkySphere";
     gameObject->renderItem = std::move(rItem);
+    gameObject->gameObjectType = GameObjectType::Sky;
 
     mGameObjects[gameObject->name] = std::move(gameObject);
 

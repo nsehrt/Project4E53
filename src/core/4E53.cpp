@@ -268,7 +268,7 @@ void P_4E53::update(const GameTime& gt)
 
 	//renderResource->incFrameResource();
 
-	FrameResource* mCurrentFrameResource = activeLevel->getCurrentFrameResource(); //renderResource->getCurrentFrameResource();
+	FrameResource* mCurrentFrameResource = activeLevel->getCurrentFrameResource();
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -288,37 +288,12 @@ void P_4E53::update(const GameTime& gt)
 	/***********************/
 
 
+	activeLevel->update(gt);
+
 	if (inputData.Pressed(BTN::A))
 	{
 		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 	}
-
-	/*TEST*/
-	
-	//for (auto const& i : renderResource->mAllRitems)
-	//{
-	//	if (i->Model->name == "plant")
-	//	{
-	//		XMVECTOR a, b, c;
-	//		XMMatrixDecompose(&a, &b, &c, XMLoadFloat4x4(&i->World));
-	//		XMFLOAT3 t;
-	//		XMStoreFloat3(&t, c);
-	//		
-	//		t.x += inputData.current.trigger[TRG::THUMB_LX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
-	//		t.y += inputData.current.trigger[TRG::THUMB_LY] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
-	//		
-	//		XMFLOAT4 x;
-	//		XMStoreFloat4(&x, b);
-	//		x.y += inputData.current.trigger[TRG::THUMB_RX] * settingsData->inputSettings.Sensitivity * gt.DeltaTime();
-
-	//		XMMATRIX rot = XMMatrixRotationQuaternion(b);
-	//		XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	//		XMMATRIX pos = XMMatrixTranslation(t.x, t.y, t.z);
-
-	//		XMStoreFloat4x4(&i->World, rot*scale*pos);
-	//		i->NumFramesDirty = gNumFrameResources;
-	//	}
-	//}
 
 	/*fps camera controls*/
 	if (inputData.Released(BTN::LEFT_THUMB))
@@ -328,12 +303,10 @@ void P_4E53::update(const GameTime& gt)
 		if (fpsCameraMode)
 		{
 			activeLevel->activeCamera = &fpsCamera;
-			//renderResource->activeCamera = &fpsCamera;
 		}
 		else
 		{
 			activeLevel->activeCamera = activeLevel->mCameras[0].get();
-			//renderResource->useDefaultCamera();
 		}
 	}
 
@@ -347,10 +320,6 @@ void P_4E53::update(const GameTime& gt)
 		renderResource->toggleHitBoxDraw();
 	}
 
-	/*camera and frame resource/constant buffer update*/
-	//renderResource->activeCamera->updateViewMatrix();
-	//renderResource->update(gt);
-	
 	activeLevel->activeCamera->updateViewMatrix();
 	activeLevel->updateBuffers(gt);
 
@@ -366,7 +335,7 @@ void P_4E53::update(const GameTime& gt)
 /*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
-	auto mCurrentFrameResource = activeLevel->getCurrentFrameResource(); //ServiceProvider::getRenderResource()->getCurrentFrameResource();
+	auto mCurrentFrameResource = activeLevel->getCurrentFrameResource();
 
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
@@ -411,7 +380,6 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	/*draw everything*/
-	//ServiceProvider::getRenderResource()->draw();
 	
 	activeLevel->draw();
 
@@ -432,7 +400,6 @@ void P_4E53::draw(const GameTime& gt)
 
 	/*advance fence on gpu to signal that this frame is finished*/
 	activeLevel->getCurrentFrameResource()->Fence = ++mCurrentFence;
-	//ServiceProvider::getRenderResource()->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 }

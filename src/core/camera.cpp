@@ -6,8 +6,12 @@ using namespace DirectX;
 Camera::Camera()
 {
 	setLens();
-
+	setPosition(0, 0, 0);
 	yAxis = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
+
+	baseHitbox = DirectX::BoundingBox(XMFLOAT3(0, 0, 0), XMFLOAT3(CAMERA_HITBOX_SIZE_EXTENTS,
+									  CAMERA_HITBOX_SIZE_EXTENTS,
+									  CAMERA_HITBOX_SIZE_EXTENTS));
 }
 
 XMVECTOR Camera::getPosition()const
@@ -23,12 +27,14 @@ XMFLOAT3 Camera::getPosition3f()const
 void Camera::setPosition(float x, float y, float z)
 {
 	mPosition = XMFLOAT3(x, y, z);
+	updateHitbox();
 	mViewDirty = true;
 }
 
 void Camera::setPosition(const XMFLOAT3& v)
 {
 	mPosition = v;
+	updateHitbox();
 	mViewDirty = true;
 }
 
@@ -121,6 +127,7 @@ void Camera::setLens(float fovY, float aspect, float zn, float zf)
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
 	XMStoreFloat4x4(&mProj, P);
+	updateHitbox();
 }
 
 void Camera::setLens()
@@ -188,6 +195,7 @@ void Camera::strafe(float d)
 	XMVECTOR r = XMLoadFloat3(&mRight);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
+	updateHitbox();
 
 	mViewDirty = true;
 }
@@ -199,6 +207,7 @@ void Camera::walk(float d)
 	XMVECTOR l = XMLoadFloat3(&mLook);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
+	updateHitbox();
 
 	mViewDirty = true;
 }

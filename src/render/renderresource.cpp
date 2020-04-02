@@ -481,9 +481,10 @@ void RenderResource::generateDefaultShapes()
     mModels["grid"] = std::move(mGr);
 
 
-    /*sphere hitbox*/
+    /*grid hitbox*/
 
     XMStoreFloat3(&mModels["grid"]->boundingBox.Center, 0.5f * (vMin + vMax));
+
     XMStoreFloat3(&mModels["grid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
 
     GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->boundingBox.Extents.x * 2.f,
