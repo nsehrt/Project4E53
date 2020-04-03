@@ -33,8 +33,8 @@ public:
 
 
     void update(const GameTime &gt);
-    void draw(RenderType _renderType, ID3D12Resource* objectCB);
-    void drawHitbox(RenderType _renderType, ID3D12Resource* objectCB);
+    bool draw(ID3D12Resource* objectCB);
+    void drawHitbox(ID3D12Resource* objectCB);
 
     std::string name;
     std::unique_ptr<RenderItem> renderItem;
@@ -125,6 +125,7 @@ public:
     bool isCollisionEnabled = true;
     bool isDrawEnabled = true;
     bool isShadowEnabled = true;
+    bool isFrustumCulled = true;
 
 private:
 

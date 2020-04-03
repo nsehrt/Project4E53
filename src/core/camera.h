@@ -59,6 +59,12 @@ public:
 
     void roll(float angle);
 
+
+    DirectX::BoundingFrustum getFrustum() const
+    {
+        return camFrustum;
+    }
+
     // After modifying camera position/orientation, call to rebuild the view matrix.
     void updateViewMatrix();
 
@@ -69,6 +75,7 @@ public:
 private:
 
     DirectX::BoundingBox baseHitbox;
+    DirectX::BoundingFrustum camFrustum;
 
     DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mHitboxRotation = { 0.0f,0.0f,0.0f };

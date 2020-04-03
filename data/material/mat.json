@@ -20,6 +20,15 @@
     },
 
     {
+        "Name" : "wire",
+        "Texture" : "WireFence",
+        "NormalMap" : "tile_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.2
+    },
+
+    {
         "Name" : "tile0",
         "Texture" : "tile",
         "NormalMap" : "tile_nmap",

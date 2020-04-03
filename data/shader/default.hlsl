@@ -70,7 +70,15 @@ float4 PS(VertexOut pin) : SV_Target
 	float  roughness = matData.Roughness;
 	uint diffuseMapIndex = matData.DiffuseMapIndex;
 	uint normalMapIndex = matData.NormalMapIndex;
-	
+
+	// Dynamically look up the texture in the array.
+	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+
+
+#ifdef ALPHA_TEST
+    clip(diffuseAlbedo.a - 0.1f);
+#endif
+
 	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
 	
@@ -79,9 +87,6 @@ float4 PS(VertexOut pin) : SV_Target
 
 	// Uncomment to turn off normal mapping.
 	bumpedNormalW = pin.NormalW;
-
-	// Dynamically look up the texture in the array.
-	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
 
     // Vector from point being lit to eye. 
     float3 toEyeW = normalize(gEyePosW - pin.PosW);

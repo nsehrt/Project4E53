@@ -94,19 +94,20 @@
                 4.0
             ],
             "RenderType" : "Default",
-            "TexScale" : [5.0,5.0,1.0]
+            "TexScale" : [5.0,5.0,1.0],
+            "FrustumCulled" : false
         },
 
         {
             "Name" : "obj5",
             "Model" : "cylinder",
-            "Material" : "brick0",
+            "Material" : "wire",
             "Position" : [
                 -5.0,
                 1.1,
                 0
             ],
-            "RenderType" : "Default"
+            "RenderType" : "DefaultAlpha"
         },
 
         {

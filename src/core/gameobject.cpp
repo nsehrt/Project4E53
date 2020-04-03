@@ -94,6 +94,11 @@ GameObject::GameObject(const json& objectJson, int index)
         isShadowEnabled = objectJson["ShadowEnabled"];
     }
 
+    if (exists(objectJson, "FrustumCulled"))
+    {
+        isFrustumCulled = objectJson["FrustumCulled"];
+    }
+
     /*RenderItem*/
 
     auto renderResource = ServiceProvider::getRenderResource();
@@ -161,12 +166,34 @@ void GameObject::update(const GameTime& gt)
     setRotation(rot);
 }
 
-void GameObject::draw(RenderType _renderType, ID3D12Resource* objectCB)
+bool GameObject::draw(ID3D12Resource* objectCB)
 {
     const auto gObjRenderItem = renderItem.get();
 
-    if (gObjRenderItem->renderType != _renderType) return;
-    if (!isDrawEnabled) return;
+    if (!isDrawEnabled) return false;
+
+
+    /*frustum culling check*/
+    if (isFrustumCulled)
+    {
+        auto cam = ServiceProvider::getActiveCamera();
+
+        XMMATRIX world = XMLoadFloat4x4(&gObjRenderItem->World);
+        XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
+
+        XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
+
+        XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
+
+        BoundingFrustum localSpaceFrustum;
+        cam->getFrustum().Transform(localSpaceFrustum, viewToLocal);
+
+        if (localSpaceFrustum.Contains(renderItem->Model->boundingBox) == DirectX::DISJOINT)
+        {
+            return false;
+        }
+    }
+
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -190,18 +217,15 @@ void GameObject::draw(RenderType _renderType, ID3D12Resource* objectCB)
         renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
     }
 
-
+    return true;
 }
 
-void GameObject::drawHitbox(RenderType _renderType, ID3D12Resource* objectCB)
+void GameObject::drawHitbox(ID3D12Resource* objectCB)
 {
 
     const auto gObjRenderItem = renderItem.get();
 
     if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) return;
-
-    if (gObjRenderItem->renderType != _renderType) return;
-    if (!isDrawEnabled) return;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 

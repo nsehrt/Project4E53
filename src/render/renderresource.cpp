@@ -333,429 +333,6 @@ void RenderResource::buildInputLayouts()
 
 }
 
-void RenderResource::generateDefaultShapes()
-{
-    /*create the shapes*/
-    GeometryGenerator geoGen;
-    GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
-    GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
-    GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
-    GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
-
-    /*copy to box model*/
-    std::vector<Vertex> vertices(box.Vertices.size());
-    std::vector<std::uint16_t> indices(box.Indices32.size());
-
-    XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
-    XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-    XMVECTOR vMin = XMLoadFloat3(&cMin);
-    XMVECTOR vMax = XMLoadFloat3(&cMax);
-
-    for (size_t i = 0; i < box.Vertices.size(); i++)
-    {
-        vertices[i].Pos = box.Vertices[i].Position;
-        vertices[i].Normal = box.Vertices[i].Normal;
-        vertices[i].TexC = box.Vertices[i].TexC;
-        vertices[i].TangentU = box.Vertices[i].TangentU;
-
-        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
-
-        vMin = XMVectorMin(vMin, P);
-        vMax = XMVectorMax(vMax, P);
-    }
-
-    indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
-
-    UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-    UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    auto geo = std::make_unique<Mesh>();
-    geo->name = "box";
-    
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                        cmdList, vertices.data(), vbByteSize, geo->VertexBufferUploader);
-
-    geo->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                       cmdList, indices.data(), ibByteSize, geo->IndexBufferUploader);
-
-    geo->VertexByteStride = sizeof(Vertex);
-    geo->VertexBufferByteSize = vbByteSize;
-    geo->IndexFormat = DXGI_FORMAT_R16_UINT;
-    geo->IndexBufferByteSize = ibByteSize;
-    geo->IndexCount = (UINT)indices.size();
-
-    std::unique_ptr<Model> m = std::make_unique<Model>();
-
-    m->meshes["box"] = std::move(geo);
-    mModels["box"] = std::move(m);
-
-    /*box hitbox*/
-    XMStoreFloat3(&mModels["box"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["box"]->boundingBox.Extents, 0.5f * (vMax - vMin));
-
-    std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
-
-    hitboxBox->name = "hitbox";
-    hitboxBox->dTexture = "default";
-    hitboxBox->dNormal = "defaultNormal";
-    hitboxBox->IndexFormat = DXGI_FORMAT_R16_UINT;
-    hitboxBox->VertexByteStride = sizeof(Vertex);
-    hitboxBox->VertexBufferByteSize = vbByteSize;
-    hitboxBox->IndexBufferByteSize = ibByteSize;
-    hitboxBox->IndexCount = (UINT)indices.size();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxBox->VertexBufferCPU));
-    CopyMemory(hitboxBox->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxBox->IndexBufferCPU));
-    CopyMemory(hitboxBox->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    hitboxBox->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                           cmdList, vertices.data(), vbByteSize, hitboxBox->VertexBufferUploader);
-
-    hitboxBox->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                          cmdList, indices.data(), ibByteSize, hitboxBox->IndexBufferUploader);
-
-
-    mModels["box"]->boundingBoxMesh = std::move(hitboxBox);
-
-
-    /*grid*/
-    vertices.clear();
-    vertices.resize(grid.Vertices.size());
-    indices.clear();
-    indices.resize(grid.Indices32.size());
-
-    vMin = XMLoadFloat3(&cMin);
-    vMax = XMLoadFloat3(&cMax);
-
-    for (size_t i = 0; i < grid.Vertices.size(); i++)
-    {
-        vertices[i].Pos = grid.Vertices[i].Position;
-        vertices[i].Normal = grid.Vertices[i].Normal;
-        vertices[i].TexC = grid.Vertices[i].TexC;
-        vertices[i].TangentU = grid.Vertices[i].TangentU;
-
-        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
-
-        vMin = XMVectorMin(vMin, P);
-        vMax = XMVectorMax(vMax, P);
-    }
-
-    indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
-
-     vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    auto geoGrid = std::make_unique<Mesh>();
-    geoGrid->name = "grid";
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoGrid->VertexBufferCPU));
-    CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoGrid->IndexBufferCPU));
-    CopyMemory(geoGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    geoGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                        cmdList, vertices.data(), vbByteSize, geoGrid->VertexBufferUploader);
-
-    geoGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                       cmdList, indices.data(), ibByteSize, geoGrid->IndexBufferUploader);
-
-    geoGrid->VertexByteStride = sizeof(Vertex);
-    geoGrid->VertexBufferByteSize = vbByteSize;
-    geoGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
-    geoGrid->IndexBufferByteSize = ibByteSize;
-    geoGrid->IndexCount = (UINT)indices.size();
-
-    std::unique_ptr<Model> mGr = std::make_unique<Model>();
-
-    mGr->meshes["grid"] = std::move(geoGrid);
-    mModels["grid"] = std::move(mGr);
-
-
-    /*grid hitbox*/
-
-    XMStoreFloat3(&mModels["grid"]->boundingBox.Center, 0.5f * (vMin + vMax));
-
-    XMStoreFloat3(&mModels["grid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
-
-    GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->boundingBox.Extents.x * 2.f,
-                                                             mModels["grid"]->boundingBox.Extents.y * 2.f,
-                                                             mModels["grid"]->boundingBox.Extents.z * 2.f,
-                                                             0);
-    vertices.clear();
-    vertices.resize(boxMeshGrid.Vertices.size());
-    indices.clear();
-    indices.resize(boxMeshGrid.Indices32.size());
-
-
-    for (size_t i = 0; i < boxMeshGrid.Vertices.size(); i++)
-    {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshGrid.Vertices[i].Position), XMLoadFloat3(&mModels["grid"]->boundingBox.Center)));
-        vertices[i].Normal = boxMeshGrid.Vertices[i].Normal;
-        vertices[i].TexC = boxMeshGrid.Vertices[i].TexC;
-        vertices[i].TangentU = boxMeshGrid.Vertices[i].TangentU;
-    }
-
-    indices.insert(indices.end(), std::begin(boxMeshGrid.GetIndices16()), std::end(boxMeshGrid.GetIndices16()));
-
-    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    std::unique_ptr<Mesh> hitboxGrid = std::make_unique<Mesh>();
-
-    hitboxGrid->name = "hitbox";
-    hitboxGrid->dTexture = "default";
-    hitboxGrid->dNormal = "defaultNormal";
-    hitboxGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
-    hitboxGrid->VertexByteStride = sizeof(Vertex);
-    hitboxGrid->VertexBufferByteSize = vbByteSize;
-    hitboxGrid->IndexBufferByteSize = ibByteSize;
-    hitboxGrid->IndexCount = (UINT)indices.size();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxGrid->VertexBufferCPU));
-    CopyMemory(hitboxGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxGrid->IndexBufferCPU));
-    CopyMemory(hitboxGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    hitboxGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                                 cmdList, vertices.data(), vbByteSize, hitboxGrid->VertexBufferUploader);
-
-    hitboxGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                                cmdList, indices.data(), ibByteSize, hitboxGrid->IndexBufferUploader);
-
-
-    mModels["grid"]->boundingBoxMesh = std::move(hitboxGrid);
-
-
-    /*sphere*/
-
-
-    vertices.clear();
-    vertices.resize(sphere.Vertices.size());
-    indices.clear();
-    indices.resize(sphere.Indices32.size());
-
-    vMin = XMLoadFloat3(&cMin);
-    vMax = XMLoadFloat3(&cMax);
-
-    for (size_t i = 0; i < sphere.Vertices.size(); i++)
-    {
-        vertices[i].Pos = sphere.Vertices[i].Position;
-        vertices[i].Normal = sphere.Vertices[i].Normal;
-        vertices[i].TexC = sphere.Vertices[i].TexC;
-        vertices[i].TangentU = sphere.Vertices[i].TangentU;
-
-        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
-
-        vMin = XMVectorMin(vMin, P);
-        vMax = XMVectorMax(vMax, P);
-    }
-
-    indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
-
-     vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    auto geoSphere = std::make_unique<Mesh>();
-    geoSphere->name = "sphere";
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoSphere->VertexBufferCPU));
-    CopyMemory(geoSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoSphere->IndexBufferCPU));
-    CopyMemory(geoSphere->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    geoSphere->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                            cmdList, vertices.data(), vbByteSize, geoSphere->VertexBufferUploader);
-
-    geoSphere->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                           cmdList, indices.data(), ibByteSize, geoSphere->IndexBufferUploader);
-
-    geoSphere->VertexByteStride = sizeof(Vertex);
-    geoSphere->VertexBufferByteSize = vbByteSize;
-    geoSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
-    geoSphere->IndexBufferByteSize = ibByteSize;
-    geoSphere->IndexCount = (UINT)indices.size();
-
-    std::unique_ptr<Model> mSp = std::make_unique<Model>();
-
-    mSp->meshes["sphere"] = std::move(geoSphere);
-    mModels["sphere"] = std::move(mSp);
-
-    /*sphere hitbox*/
-
-    XMStoreFloat3(&mModels["sphere"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["sphere"]->boundingBox.Extents, 0.5f * (vMax - vMin));
-
-    GeometryGenerator::MeshData boxMeshSp = geoGen.CreateBox(mModels["sphere"]->boundingBox.Extents.x * 2.f,
-                                                           mModels["sphere"]->boundingBox.Extents.y * 2.f,
-                                                           mModels["sphere"]->boundingBox.Extents.z * 2.f,
-                                                           0);
-    vertices.clear();
-    vertices.resize(boxMeshSp.Vertices.size());
-    indices.clear();
-    indices.resize(boxMeshSp.Indices32.size());
-
-
-    for (size_t i = 0; i < boxMeshSp.Vertices.size(); i++)
-    {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshSp.Vertices[i].Position), XMLoadFloat3(&mModels["sphere"]->boundingBox.Center)));
-        vertices[i].Normal = boxMeshSp.Vertices[i].Normal;
-        vertices[i].TexC = boxMeshSp.Vertices[i].TexC;
-        vertices[i].TangentU = boxMeshSp.Vertices[i].TangentU;
-    }
-
-    indices.insert(indices.end(), std::begin(boxMeshSp.GetIndices16()), std::end(boxMeshSp.GetIndices16()));
-
-    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    std::unique_ptr<Mesh> hitboxSphere = std::make_unique<Mesh>();
-
-    hitboxSphere->name = "hitbox";
-    hitboxSphere->dTexture = "default";
-    hitboxSphere->dNormal = "defaultNormal";
-    hitboxSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
-    hitboxSphere->VertexByteStride = sizeof(Vertex);
-    hitboxSphere->VertexBufferByteSize = vbByteSize;
-    hitboxSphere->IndexBufferByteSize = ibByteSize;
-    hitboxSphere->IndexCount = (UINT)indices.size();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxSphere->VertexBufferCPU));
-    CopyMemory(hitboxSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxSphere->IndexBufferCPU));
-    CopyMemory(hitboxSphere->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    hitboxSphere->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                              cmdList, vertices.data(), vbByteSize, hitboxSphere->VertexBufferUploader);
-
-    hitboxSphere->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                             cmdList, indices.data(), ibByteSize, hitboxSphere->IndexBufferUploader);
-
-
-    mModels["sphere"]->boundingBoxMesh = std::move(hitboxSphere);
-
-    /*cylinder*/
-
-
-    vertices.clear();
-    vertices.resize(cylinder.Vertices.size());
-    indices.clear();
-    indices.resize(cylinder.Indices32.size());
-
-    vMin = XMLoadFloat3(&cMin);
-    vMax = XMLoadFloat3(&cMax);
-
-    for (size_t i = 0; i < cylinder.Vertices.size(); i++)
-    {
-        vertices[i].Pos = cylinder.Vertices[i].Position;
-        vertices[i].Normal = cylinder.Vertices[i].Normal;
-        vertices[i].TexC = cylinder.Vertices[i].TexC;
-        vertices[i].TangentU = cylinder.Vertices[i].TangentU;
-
-        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
-
-        vMin = XMVectorMin(vMin, P);
-        vMax = XMVectorMax(vMax, P);
-    }
-
-    indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
-
-     vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    auto geoCyl = std::make_unique<Mesh>();
-    geoCyl->name = "cylinder";
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoCyl->VertexBufferCPU));
-    CopyMemory(geoCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoCyl->IndexBufferCPU));
-    CopyMemory(geoCyl->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    geoCyl->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                              cmdList, vertices.data(), vbByteSize, geoCyl->VertexBufferUploader);
-
-    geoCyl->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                             cmdList, indices.data(), ibByteSize, geoCyl->IndexBufferUploader);
-
-    geoCyl->VertexByteStride = sizeof(Vertex);
-    geoCyl->VertexBufferByteSize = vbByteSize;
-    geoCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
-    geoCyl->IndexBufferByteSize = ibByteSize;
-    geoCyl->IndexCount = (UINT)indices.size();
-
-    std::unique_ptr<Model> mCyl = std::make_unique<Model>();
-
-    mCyl->meshes["cylinder"] = std::move(geoCyl);
-    mModels["cylinder"] = std::move(mCyl);
-
-
-    /*cylinder hitbox*/
-
-    XMStoreFloat3(&mModels["cylinder"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["cylinder"]->boundingBox.Extents, 0.5f * (vMax - vMin));
-
-    GeometryGenerator::MeshData boxMeshCyl = geoGen.CreateBox(mModels["cylinder"]->boundingBox.Extents.x * 2.f,
-                                                             mModels["cylinder"]->boundingBox.Extents.y * 2.f,
-                                                             mModels["cylinder"]->boundingBox.Extents.z * 2.f,
-                                                             0);
-    vertices.clear();
-    vertices.resize(boxMeshCyl.Vertices.size());
-    indices.clear();
-    indices.resize(boxMeshCyl.Indices32.size());
-
-
-    for (size_t i = 0; i < boxMeshCyl.Vertices.size(); i++)
-    {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshCyl.Vertices[i].Position), XMLoadFloat3(&mModels["cylinder"]->boundingBox.Center)));
-        vertices[i].Normal = boxMeshCyl.Vertices[i].Normal;
-        vertices[i].TexC = boxMeshCyl.Vertices[i].TexC;
-        vertices[i].TangentU = boxMeshCyl.Vertices[i].TangentU;
-    }
-
-    indices.insert(indices.end(), std::begin(boxMeshCyl.GetIndices16()), std::end(boxMeshCyl.GetIndices16()));
-
-    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    std::unique_ptr<Mesh> hitboxCyl = std::make_unique<Mesh>();
-
-    hitboxCyl->name = "hitbox";
-    hitboxCyl->dTexture = "default";
-    hitboxCyl->dNormal = "defaultNormal";
-    hitboxCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
-    hitboxCyl->VertexByteStride = sizeof(Vertex);
-    hitboxCyl->VertexBufferByteSize = vbByteSize;
-    hitboxCyl->IndexBufferByteSize = ibByteSize;
-    hitboxCyl->IndexCount = (UINT)indices.size();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxCyl->VertexBufferCPU));
-    CopyMemory(hitboxCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxCyl->IndexBufferCPU));
-    CopyMemory(hitboxCyl->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    hitboxCyl->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                                 cmdList, vertices.data(), vbByteSize, hitboxCyl->VertexBufferUploader);
-
-    hitboxCyl->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                                cmdList, indices.data(), ibByteSize, hitboxCyl->IndexBufferUploader);
-
-
-    mModels["cylinder"]->boundingBoxMesh = std::move(hitboxCyl);
-}
 
 
 #pragma region PSO
@@ -899,4 +476,436 @@ bool RenderResource::buildMaterials()
     }
 
     return true;
+}
+
+
+
+
+
+
+
+
+
+void RenderResource::generateDefaultShapes()
+{
+    /*create the shapes*/
+    GeometryGenerator geoGen;
+    GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
+    GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
+    GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
+    GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
+
+    /*copy to box model*/
+    std::vector<Vertex> vertices(box.Vertices.size());
+    std::vector<std::uint16_t> indices(box.Indices32.size());
+
+    XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
+    XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+    XMVECTOR vMin = XMLoadFloat3(&cMin);
+    XMVECTOR vMax = XMLoadFloat3(&cMax);
+
+    for (size_t i = 0; i < box.Vertices.size(); i++)
+    {
+        vertices[i].Pos = box.Vertices[i].Position;
+        vertices[i].Normal = box.Vertices[i].Normal;
+        vertices[i].TexC = box.Vertices[i].TexC;
+        vertices[i].TangentU = box.Vertices[i].TangentU;
+
+        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
+
+        vMin = XMVectorMin(vMin, P);
+        vMax = XMVectorMax(vMax, P);
+    }
+
+    indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
+
+    UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    auto geo = std::make_unique<Mesh>();
+    geo->name = "box";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                        cmdList, vertices.data(), vbByteSize, geo->VertexBufferUploader);
+
+    geo->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                       cmdList, indices.data(), ibByteSize, geo->IndexBufferUploader);
+
+    geo->VertexByteStride = sizeof(Vertex);
+    geo->VertexBufferByteSize = vbByteSize;
+    geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geo->IndexBufferByteSize = ibByteSize;
+    geo->IndexCount = (UINT)indices.size();
+
+    std::unique_ptr<Model> m = std::make_unique<Model>();
+
+    m->meshes["box"] = std::move(geo);
+    mModels["box"] = std::move(m);
+
+    /*box hitbox*/
+    XMStoreFloat3(&mModels["box"]->boundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["box"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+
+    std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
+
+    hitboxBox->name = "hitbox";
+    hitboxBox->dTexture = "default";
+    hitboxBox->dNormal = "defaultNormal";
+    hitboxBox->IndexFormat = DXGI_FORMAT_R16_UINT;
+    hitboxBox->VertexByteStride = sizeof(Vertex);
+    hitboxBox->VertexBufferByteSize = vbByteSize;
+    hitboxBox->IndexBufferByteSize = ibByteSize;
+    hitboxBox->IndexCount = (UINT)indices.size();
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxBox->VertexBufferCPU));
+    CopyMemory(hitboxBox->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxBox->IndexBufferCPU));
+    CopyMemory(hitboxBox->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    hitboxBox->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                              cmdList, vertices.data(), vbByteSize, hitboxBox->VertexBufferUploader);
+
+    hitboxBox->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                             cmdList, indices.data(), ibByteSize, hitboxBox->IndexBufferUploader);
+
+
+    mModels["box"]->boundingBoxMesh = std::move(hitboxBox);
+
+
+    /*grid*/
+    vertices.clear();
+    vertices.resize(grid.Vertices.size());
+    indices.clear();
+    indices.resize(grid.Indices32.size());
+
+    vMin = XMLoadFloat3(&cMin);
+    vMax = XMLoadFloat3(&cMax);
+
+    for (size_t i = 0; i < grid.Vertices.size(); i++)
+    {
+        vertices[i].Pos = grid.Vertices[i].Position;
+        vertices[i].Normal = grid.Vertices[i].Normal;
+        vertices[i].TexC = grid.Vertices[i].TexC;
+        vertices[i].TangentU = grid.Vertices[i].TangentU;
+
+        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
+
+        vMin = XMVectorMin(vMin, P);
+        vMax = XMVectorMax(vMax, P);
+    }
+
+    indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    auto geoGrid = std::make_unique<Mesh>();
+    geoGrid->name = "grid";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoGrid->VertexBufferCPU));
+    CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoGrid->IndexBufferCPU));
+    CopyMemory(geoGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    geoGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                            cmdList, vertices.data(), vbByteSize, geoGrid->VertexBufferUploader);
+
+    geoGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                           cmdList, indices.data(), ibByteSize, geoGrid->IndexBufferUploader);
+
+    geoGrid->VertexByteStride = sizeof(Vertex);
+    geoGrid->VertexBufferByteSize = vbByteSize;
+    geoGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoGrid->IndexBufferByteSize = ibByteSize;
+    geoGrid->IndexCount = (UINT)indices.size();
+
+    std::unique_ptr<Model> mGr = std::make_unique<Model>();
+
+    mGr->meshes["grid"] = std::move(geoGrid);
+    mModels["grid"] = std::move(mGr);
+
+
+    /*grid hitbox*/
+
+    XMStoreFloat3(&mModels["grid"]->boundingBox.Center, 0.5f * (vMin + vMax));
+
+    XMStoreFloat3(&mModels["grid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+
+    GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->boundingBox.Extents.x * 2.f,
+                                                               mModels["grid"]->boundingBox.Extents.y * 2.f,
+                                                               mModels["grid"]->boundingBox.Extents.z * 2.f,
+                                                               0);
+    vertices.clear();
+    vertices.resize(boxMeshGrid.Vertices.size());
+    indices.clear();
+    indices.resize(boxMeshGrid.Indices32.size());
+
+
+    for (size_t i = 0; i < boxMeshGrid.Vertices.size(); i++)
+    {
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshGrid.Vertices[i].Position), XMLoadFloat3(&mModels["grid"]->boundingBox.Center)));
+        vertices[i].Normal = boxMeshGrid.Vertices[i].Normal;
+        vertices[i].TexC = boxMeshGrid.Vertices[i].TexC;
+        vertices[i].TangentU = boxMeshGrid.Vertices[i].TangentU;
+    }
+
+    indices.insert(indices.end(), std::begin(boxMeshGrid.GetIndices16()), std::end(boxMeshGrid.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    std::unique_ptr<Mesh> hitboxGrid = std::make_unique<Mesh>();
+
+    hitboxGrid->name = "hitbox";
+    hitboxGrid->dTexture = "default";
+    hitboxGrid->dNormal = "defaultNormal";
+    hitboxGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
+    hitboxGrid->VertexByteStride = sizeof(Vertex);
+    hitboxGrid->VertexBufferByteSize = vbByteSize;
+    hitboxGrid->IndexBufferByteSize = ibByteSize;
+    hitboxGrid->IndexCount = (UINT)indices.size();
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxGrid->VertexBufferCPU));
+    CopyMemory(hitboxGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxGrid->IndexBufferCPU));
+    CopyMemory(hitboxGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    hitboxGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                               cmdList, vertices.data(), vbByteSize, hitboxGrid->VertexBufferUploader);
+
+    hitboxGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                              cmdList, indices.data(), ibByteSize, hitboxGrid->IndexBufferUploader);
+
+
+    mModels["grid"]->boundingBoxMesh = std::move(hitboxGrid);
+
+
+    /*sphere*/
+
+
+    vertices.clear();
+    vertices.resize(sphere.Vertices.size());
+    indices.clear();
+    indices.resize(sphere.Indices32.size());
+
+    vMin = XMLoadFloat3(&cMin);
+    vMax = XMLoadFloat3(&cMax);
+
+    for (size_t i = 0; i < sphere.Vertices.size(); i++)
+    {
+        vertices[i].Pos = sphere.Vertices[i].Position;
+        vertices[i].Normal = sphere.Vertices[i].Normal;
+        vertices[i].TexC = sphere.Vertices[i].TexC;
+        vertices[i].TangentU = sphere.Vertices[i].TangentU;
+
+        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
+
+        vMin = XMVectorMin(vMin, P);
+        vMax = XMVectorMax(vMax, P);
+    }
+
+    indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    auto geoSphere = std::make_unique<Mesh>();
+    geoSphere->name = "sphere";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoSphere->VertexBufferCPU));
+    CopyMemory(geoSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoSphere->IndexBufferCPU));
+    CopyMemory(geoSphere->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    geoSphere->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                              cmdList, vertices.data(), vbByteSize, geoSphere->VertexBufferUploader);
+
+    geoSphere->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                             cmdList, indices.data(), ibByteSize, geoSphere->IndexBufferUploader);
+
+    geoSphere->VertexByteStride = sizeof(Vertex);
+    geoSphere->VertexBufferByteSize = vbByteSize;
+    geoSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoSphere->IndexBufferByteSize = ibByteSize;
+    geoSphere->IndexCount = (UINT)indices.size();
+
+    std::unique_ptr<Model> mSp = std::make_unique<Model>();
+
+    mSp->meshes["sphere"] = std::move(geoSphere);
+    mModels["sphere"] = std::move(mSp);
+
+    /*sphere hitbox*/
+
+    XMStoreFloat3(&mModels["sphere"]->boundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["sphere"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+
+    GeometryGenerator::MeshData boxMeshSp = geoGen.CreateBox(mModels["sphere"]->boundingBox.Extents.x * 2.f,
+                                                             mModels["sphere"]->boundingBox.Extents.y * 2.f,
+                                                             mModels["sphere"]->boundingBox.Extents.z * 2.f,
+                                                             0);
+    vertices.clear();
+    vertices.resize(boxMeshSp.Vertices.size());
+    indices.clear();
+    indices.resize(boxMeshSp.Indices32.size());
+
+
+    for (size_t i = 0; i < boxMeshSp.Vertices.size(); i++)
+    {
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshSp.Vertices[i].Position), XMLoadFloat3(&mModels["sphere"]->boundingBox.Center)));
+        vertices[i].Normal = boxMeshSp.Vertices[i].Normal;
+        vertices[i].TexC = boxMeshSp.Vertices[i].TexC;
+        vertices[i].TangentU = boxMeshSp.Vertices[i].TangentU;
+    }
+
+    indices.insert(indices.end(), std::begin(boxMeshSp.GetIndices16()), std::end(boxMeshSp.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    std::unique_ptr<Mesh> hitboxSphere = std::make_unique<Mesh>();
+
+    hitboxSphere->name = "hitbox";
+    hitboxSphere->dTexture = "default";
+    hitboxSphere->dNormal = "defaultNormal";
+    hitboxSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
+    hitboxSphere->VertexByteStride = sizeof(Vertex);
+    hitboxSphere->VertexBufferByteSize = vbByteSize;
+    hitboxSphere->IndexBufferByteSize = ibByteSize;
+    hitboxSphere->IndexCount = (UINT)indices.size();
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxSphere->VertexBufferCPU));
+    CopyMemory(hitboxSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxSphere->IndexBufferCPU));
+    CopyMemory(hitboxSphere->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    hitboxSphere->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                                 cmdList, vertices.data(), vbByteSize, hitboxSphere->VertexBufferUploader);
+
+    hitboxSphere->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                                cmdList, indices.data(), ibByteSize, hitboxSphere->IndexBufferUploader);
+
+
+    mModels["sphere"]->boundingBoxMesh = std::move(hitboxSphere);
+
+    /*cylinder*/
+
+
+    vertices.clear();
+    vertices.resize(cylinder.Vertices.size());
+    indices.clear();
+    indices.resize(cylinder.Indices32.size());
+
+    vMin = XMLoadFloat3(&cMin);
+    vMax = XMLoadFloat3(&cMax);
+
+    for (size_t i = 0; i < cylinder.Vertices.size(); i++)
+    {
+        vertices[i].Pos = cylinder.Vertices[i].Position;
+        vertices[i].Normal = cylinder.Vertices[i].Normal;
+        vertices[i].TexC = cylinder.Vertices[i].TexC;
+        vertices[i].TangentU = cylinder.Vertices[i].TangentU;
+
+        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
+
+        vMin = XMVectorMin(vMin, P);
+        vMax = XMVectorMax(vMax, P);
+    }
+
+    indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    auto geoCyl = std::make_unique<Mesh>();
+    geoCyl->name = "cylinder";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoCyl->VertexBufferCPU));
+    CopyMemory(geoCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoCyl->IndexBufferCPU));
+    CopyMemory(geoCyl->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    geoCyl->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                           cmdList, vertices.data(), vbByteSize, geoCyl->VertexBufferUploader);
+
+    geoCyl->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                          cmdList, indices.data(), ibByteSize, geoCyl->IndexBufferUploader);
+
+    geoCyl->VertexByteStride = sizeof(Vertex);
+    geoCyl->VertexBufferByteSize = vbByteSize;
+    geoCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoCyl->IndexBufferByteSize = ibByteSize;
+    geoCyl->IndexCount = (UINT)indices.size();
+
+    std::unique_ptr<Model> mCyl = std::make_unique<Model>();
+
+    mCyl->meshes["cylinder"] = std::move(geoCyl);
+    mModels["cylinder"] = std::move(mCyl);
+
+
+    /*cylinder hitbox*/
+
+    XMStoreFloat3(&mModels["cylinder"]->boundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["cylinder"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+
+    GeometryGenerator::MeshData boxMeshCyl = geoGen.CreateBox(mModels["cylinder"]->boundingBox.Extents.x * 2.f,
+                                                              mModels["cylinder"]->boundingBox.Extents.y * 2.f,
+                                                              mModels["cylinder"]->boundingBox.Extents.z * 2.f,
+                                                              0);
+    vertices.clear();
+    vertices.resize(boxMeshCyl.Vertices.size());
+    indices.clear();
+    indices.resize(boxMeshCyl.Indices32.size());
+
+
+    for (size_t i = 0; i < boxMeshCyl.Vertices.size(); i++)
+    {
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshCyl.Vertices[i].Position), XMLoadFloat3(&mModels["cylinder"]->boundingBox.Center)));
+        vertices[i].Normal = boxMeshCyl.Vertices[i].Normal;
+        vertices[i].TexC = boxMeshCyl.Vertices[i].TexC;
+        vertices[i].TangentU = boxMeshCyl.Vertices[i].TangentU;
+    }
+
+    indices.insert(indices.end(), std::begin(boxMeshCyl.GetIndices16()), std::end(boxMeshCyl.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    std::unique_ptr<Mesh> hitboxCyl = std::make_unique<Mesh>();
+
+    hitboxCyl->name = "hitbox";
+    hitboxCyl->dTexture = "default";
+    hitboxCyl->dNormal = "defaultNormal";
+    hitboxCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
+    hitboxCyl->VertexByteStride = sizeof(Vertex);
+    hitboxCyl->VertexBufferByteSize = vbByteSize;
+    hitboxCyl->IndexBufferByteSize = ibByteSize;
+    hitboxCyl->IndexCount = (UINT)indices.size();
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxCyl->VertexBufferCPU));
+    CopyMemory(hitboxCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxCyl->IndexBufferCPU));
+    CopyMemory(hitboxCyl->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    hitboxCyl->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                              cmdList, vertices.data(), vbByteSize, hitboxCyl->VertexBufferUploader);
+
+    hitboxCyl->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                             cmdList, indices.data(), ibByteSize, hitboxCyl->IndexBufferUploader);
+
+
+    mModels["cylinder"]->boundingBoxMesh = std::move(hitboxCyl);
 }

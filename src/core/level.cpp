@@ -100,7 +100,7 @@ void Level::update(const GameTime& gt)
 
     if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
     {
-        LOG(Severity::Info, "Box collision");
+        //LOG(Severity::Info, "Box collision");
     }
 
     //for (auto& gameObj : mGameObjects)
@@ -138,21 +138,56 @@ void Level::draw()
     auto objectCB = mCurrentFrameResource->ObjectCB->getResource();
     auto renderResource = ServiceProvider::getRenderResource();
 
-    // For each render item...
+    /* TODO sort draw order of game objects*/
+
+
+    // draw the gameobjects
+    UINT objectsDrawn = 0;
 
     for (const auto& gameObject : mGameObjects)
     {
 
-        gameObject.second->draw(RenderType::Default, objectCB);
+        auto g = gameObject.second.get();
 
+        if (g->renderItem->renderType == RenderType::Default)
+        {
+            objectsDrawn += gameObject.second->draw(objectCB);
+        }
+        
     }
+
+
+
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["defaultAlpha"].Get());
+
+    for (const auto& gameObject : mGameObjects)
+    {
+        auto g = gameObject.second.get();
+
+        if (g->renderItem->renderType == RenderType::DefaultAlpha)
+        {
+            objectsDrawn += gameObject.second->draw(objectCB);
+        }
+    }
+
+
+
+    //LOG(Severity::Info, objectsDrawn << " objects drawn.");
+
+
 
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
 
     for (const auto& gameObject : mGameObjects)
     {
-        gameObject.second->draw(RenderType::Sky, objectCB);
+        auto g = gameObject.second.get();
+
+        if (g->renderItem->renderType == RenderType::Sky)
+        {
+            gameObject.second->draw(objectCB);
+        }
+        
     }
 
     /* Draw the hitboxes of the GameObjects if enabled */
@@ -163,7 +198,15 @@ void Level::draw()
 
         for (const auto& gameObject : mGameObjects)
         {
-            gameObject.second->drawHitbox(RenderType::Default, objectCB);
+            auto g = gameObject.second.get();
+
+            if (g->renderItem->renderType == RenderType::Default ||
+                g->renderItem->renderType == RenderType::DefaultAlpha
+                )
+            {
+                gameObject.second->drawHitbox(objectCB);
+            }
+            
         }
 
     }
