@@ -85,10 +85,10 @@ GameObject::GameObject(const json& objectJson, int index)
 void GameObject::update(const GameTime& gt)
 {
     if (renderItem->renderType != RenderType::Default) return;
-    if (name != "obj2")return;
-    XMFLOAT3 pos = getPosition();
-    pos.y -= 0.25f * gt.DeltaTime();
-    setPosition(pos);
+    if (name != "box2")return;
+    XMFLOAT3 rot = getRotation();
+    rot.y += 0.25f * gt.DeltaTime();
+    setRotation(rot);
 }
 
 void GameObject::draw(RenderType _renderType, ID3D12Resource* objectCB)

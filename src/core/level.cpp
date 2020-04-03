@@ -92,6 +92,10 @@ void Level::update(const GameTime& gt)
 
     }
 
+    if (mGameObjects["box1"]->hitBox.Intersects(mGameObjects["box2"]->hitBox))
+    {
+        LOG(Severity::Info, "Box collision");
+    }
 
     //for (auto& gameObj : mGameObjects)
     //{

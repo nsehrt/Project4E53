@@ -213,6 +213,56 @@
             "CollisionEnabled" : true,
             "DrawEnabled" : true,
             "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "box1",
+            "Model" : "box",
+            "Material" : "default",
+            "Position" : [
+                -1.0,
+                2,
+                -5.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
+        },
+
+        {
+            "Name" : "box2",
+            "Model" : "box",
+            "Material" : "default",
+            "Position" : [
+                0.2,
+                2,
+                -5.0
+            ],
+            "Scale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Rotation" : [
+                0,
+                0,
+                0
+            ],
+            "RenderType" : "Default",
+            "CollisionEnabled" : true,
+            "DrawEnabled" : true,
+            "ShadowEnabled" : true
         }
 
     ]
