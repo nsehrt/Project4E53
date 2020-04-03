@@ -15,8 +15,11 @@
 #include "../core/level.h"
 #include <filesystem>
 
+#ifndef _DEBUG
 #define SETTINGS_FILE "cfg/settings.xml"
-
+#else
+#define SETTINGS_FILE "cfg/dbg.xml"
+#endif
 using namespace DirectX;
 
 class P_4E53 : public DX12App
@@ -245,13 +248,11 @@ bool P_4E53::Initialize()
 void P_4E53::onResize()
 {
 	DX12App::onResize();
-	//if (renderResource.activeCamera)
-	//{
-	//	renderResource.activeCamera->setLens(0.2f * MathHelper::Pi,
-	//										 static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
-	//										 0.01f,
-	//										 1000.0f);
-	//}
+	if (ServiceProvider::getActiveCamera() != nullptr)
+	{
+		ServiceProvider::getActiveCamera()->setLens();
+	}
+
 }
 
 
