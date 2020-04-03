@@ -21,8 +21,13 @@ bool Level::load(const std::string& levelFile)
     {
         levelJson = json::parse(levelStream);
     }
-    catch(...){
+    catch(nlohmann::detail::parse_error){
         LOG(Severity::Critical, "Error while parsing level file! Check JSON validity!")
+        return false;
+    }
+    catch (...)
+    {
+        LOG(Severity::Critical, "Unknown error with level file!")
         return false;
     }
 
@@ -92,7 +97,7 @@ void Level::update(const GameTime& gt)
 
     }
 
-    if (mGameObjects["box1"]->hitBox.Intersects(mGameObjects["box2"]->hitBox))
+    if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
     {
         LOG(Severity::Info, "Box collision");
     }
@@ -225,13 +230,8 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
         if (!exists(entryJson, "Model") ||
             !exists(entryJson, "Material") ||
-            !exists(entryJson, "RenderType") ||
-            !exists(entryJson, "Position") ||
-            !exists(entryJson, "Rotation") ||
-            !exists(entryJson, "Scale") ||
-            !exists(entryJson, "CollisionEnabled") ||
-            !exists(entryJson, "DrawEnabled") ||
-            !exists(entryJson, "ShadowEnabled") )
+            !exists(entryJson, "RenderType")
+            )
         {
             LOG(Severity::Warning, "Skipping GameObject " << entryJson["Name"] << "due to missing properties!");
             continue;

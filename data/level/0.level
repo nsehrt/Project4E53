@@ -34,6 +34,21 @@
                 45,
                 20
             ],
+            "TexTranslation" : [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexRotation" :[
+                0,
+                0,
+                0
+            ],
             "RenderType" : "Default",
             "CollisionEnabled" : true,
             "DrawEnabled" : true,
@@ -49,20 +64,12 @@
                 6.25,
                 0.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
             "Rotation" : [
                 0,
                 0,
                 -45.0
             ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "RenderType" : "Default"
         },
 
         {
@@ -74,45 +81,20 @@
                 0.6,
                 0.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "RenderType" : "Default"
         },
 
         {
             "Name" : "grid",
             "Model" : "grid",
             "Material" : "default",
-            "Position" : [
-                0.0,
-                0.0,
-                0.0
-            ],
             "Scale" : [
                 4.0,
                 1.0,
                 4.0
             ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
             "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "TexScale" : [5.0,5.0,1.0]
         },
 
         {
@@ -124,20 +106,7 @@
                 1.1,
                 0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "RenderType" : "Default"
         },
 
         {
@@ -149,20 +118,8 @@
                 1.1,
                 0.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
             "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "TexScale" : [2.5,2.5,2.5]
         },
 
         {
@@ -174,20 +131,7 @@
                 3.25,
                 0.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "RenderType" : "Default"
         },
 
         {
@@ -199,20 +143,7 @@
                 3.25,
                 0.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "RenderType" : "Default"
         },
 
         {
@@ -224,20 +155,8 @@
                 2,
                 -5.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "TexScale" : [0.25,0.25,0.25],
+            "RenderType" : "Default"
         },
 
         {
@@ -249,20 +168,8 @@
                 2,
                 -5.0
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Rotation" : [
-                0,
-                0,
-                0
-            ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "TexScale" : [0.25,0.25,0.25],
+            "RenderType" : "Default"
         }
 
     ]

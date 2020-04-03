@@ -24,6 +24,10 @@ public:
         Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
         Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
         Scale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+        TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        TextureScale = XMFLOAT3(0.0f, 0.0f, 0.0f);
     };
     ~GameObject() = default;
 
@@ -36,6 +40,8 @@ public:
     std::unique_ptr<RenderItem> renderItem;
     GameObjectType gameObjectType = GameObjectType::Static;
 
+
+    /*Transform getter/setter*/
     void setPosition(XMFLOAT3 _pos)
     {
         Position = _pos;
@@ -72,13 +78,51 @@ public:
         return Rotation;
     }
 
+    /*Texture transform getter/setter*/
+    void setTextureTranslation(XMFLOAT3 _translation)
+    {
+        TextureTranslation = _translation;
+
+        updateTransforms();
+    }
+
+    void setTextureScale(XMFLOAT3 _scale)
+    {
+        TextureScale = _scale;
+
+        updateTransforms();
+    }
+
+    void setTextureRotation(XMFLOAT3 _rot)
+    {
+        TextureRotation = _rot;
+
+        updateTransforms();
+    }
+
+    DirectX::XMFLOAT3 getTextureTranslation() const
+    {
+        return TextureTranslation;
+    }
+
+    DirectX::XMFLOAT3 getTextureScale() const
+    {
+        return TextureScale;
+    }
+
+    DirectX::XMFLOAT3 getTextureRotation() const
+    {
+        return TextureRotation;
+    }
+
+
+    bool intersects(GameObject& obj);
     void updateTransforms();
 
     /*flags*/
     bool isCollisionEnabled = true;
     bool isDrawEnabled = true;
     bool isShadowEnabled = true;
-
 
     DirectX::BoundingBox hitBox;
 
@@ -87,7 +131,15 @@ private:
     /*transforms*/
     DirectX::XMFLOAT3 Position, Rotation, Scale;
 
+    DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
+
     UINT objectCBSize = 0;
+
+    bool exists(const nlohmann::json& j, const std::string& key)
+    {
+        return j.find(key) != j.end();
+    }
+
     friend class RenderResource;
 
 };

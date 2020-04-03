@@ -8,23 +8,91 @@ GameObject::GameObject(const json& objectJson, int index)
     name = objectJson["Name"];
 
     /*Transforms*/
-    Position.x = objectJson["Position"][0];
-    Position.y = objectJson["Position"][1];
-    Position.z = objectJson["Position"][2];
 
-    Scale.x = objectJson["Scale"][0];
-    Scale.y = objectJson["Scale"][1];
-    Scale.z = objectJson["Scale"][2];
+    if (exists(objectJson, "Position"))
+    {
+        Position.x = objectJson["Position"][0];
+        Position.y = objectJson["Position"][1];
+        Position.z = objectJson["Position"][2];
+    }
+    else
+    {
+        Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
 
-    Rotation.x = objectJson["Rotation"][0];
-    Rotation.y = objectJson["Rotation"][1];
-    Rotation.z = objectJson["Rotation"][2];
+    if (exists(objectJson, "Scale"))
+    {
+        Scale.x = objectJson["Scale"][0];
+        Scale.y = objectJson["Scale"][1];
+        Scale.z = objectJson["Scale"][2];
+    }
+    else
+    {
+        Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+    }
+
+    if (exists(objectJson, "Rotation"))
+    {
+        Rotation.x = objectJson["Rotation"][0];
+        Rotation.y = objectJson["Rotation"][1];
+        Rotation.z = objectJson["Rotation"][2];
+    }
+    else
+    {
+        Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
+
+
+    /*Texture Transforms*/
+
+    if (exists(objectJson, "TexTranslation"))
+    {
+        TextureTranslation.x = objectJson["TexTranslation"][0];
+        TextureTranslation.y = objectJson["TexTranslation"][1];
+        TextureTranslation.z = objectJson["TexTranslation"][2];
+    }
+    else
+    {
+        TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
+
+    if (exists(objectJson, "TexRotation"))
+    {
+        TextureRotation.x = objectJson["TexRotation"][0];
+        TextureRotation.y = objectJson["TexRotation"][1];
+        TextureRotation.z = objectJson["TexRotation"][2];
+    }
+    else
+    {
+        TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    }
+
+    if (exists(objectJson, "TexScale"))
+    {
+        TextureScale.x = objectJson["TexScale"][0];
+        TextureScale.y = objectJson["TexScale"][1];
+        TextureScale.z = objectJson["TexScale"][2];
+    }
+    else
+    {
+        TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+    }
 
     /*Flags*/
-    isCollisionEnabled = objectJson["CollisionEnabled"];
-    isDrawEnabled = objectJson["DrawEnabled"];
-    isShadowEnabled = objectJson["ShadowEnabled"];
+    if (exists(objectJson, "CollisionEnabled"))
+    {
+        isCollisionEnabled = objectJson["CollisionEnabled"];
+    }
 
+    if (exists(objectJson, "DrawEnabled"))
+    {
+        isDrawEnabled = objectJson["DrawEnabled"];
+    }
+
+    if (exists(objectJson, "ShadowEnabled"))
+    {
+        isShadowEnabled = objectJson["ShadowEnabled"];
+    }
 
     /*RenderItem*/
 
@@ -84,6 +152,8 @@ GameObject::GameObject(const json& objectJson, int index)
 
 void GameObject::update(const GameTime& gt)
 {
+
+    /*TEST*/
     if (renderItem->renderType != RenderType::Default) return;
     if (name != "box2")return;
     XMFLOAT3 rot = getRotation();
@@ -150,6 +220,16 @@ void GameObject::drawHitbox(RenderType _renderType, ID3D12Resource* objectCB)
 
 }
 
+bool GameObject::intersects(GameObject& obj)
+{
+    if (!isCollisionEnabled || !obj.isCollisionEnabled)
+    {
+        return false;
+    }
+
+    return hitBox.Intersects(obj.hitBox);
+}
+
 void GameObject::updateTransforms()
 {
 
@@ -157,6 +237,10 @@ void GameObject::updateTransforms()
     XMStoreFloat4x4(&renderItem->World, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
                     XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
                     XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
+
+    XMStoreFloat4x4(&renderItem->TexTransform, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
+                    XMMatrixScalingFromVector(XMLoadFloat3(&TextureScale)) *
+                    XMMatrixTranslationFromVector(XMLoadFloat3(&TextureTranslation)));
 
     /*update hitbox*/
     

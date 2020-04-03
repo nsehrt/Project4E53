@@ -339,8 +339,8 @@ void RenderResource::generateDefaultShapes()
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
-    GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 16, 16);
-    GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 16, 16);
+    GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
+    GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
 
     /*copy to box model*/
     std::vector<Vertex> vertices(box.Vertices.size());
