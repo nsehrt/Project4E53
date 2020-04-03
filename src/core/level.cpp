@@ -41,13 +41,14 @@ bool Level::load(const std::string& levelFile)
     }
 
     /*parse cameras*/
-    auto defaultCamera = std::make_unique<Camera>();
+    auto defaultCamera = std::make_shared<Camera>();
     defaultCamera->setPosition(0.0f, 5.0f, -20.f);
 
-    activeCamera = defaultCamera.get();
+    ServiceProvider::setActiveCamera(defaultCamera);
+
     mCameras.push_back(std::move(defaultCamera));
 
-    activeCamera->updateViewMatrix();
+    ServiceProvider::getActiveCamera()->updateViewMatrix();
 
     if (!parseCameras(levelJson["Camera"]))
     {
@@ -90,7 +91,7 @@ void Level::update(const GameTime& gt)
     {
         if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
 
-        if (activeCamera->hitbox.Intersects(gameObj.second->hitBox))
+        if (gameObj.second->intersects(ServiceProvider::getActiveCamera()->hitbox))
         {
             LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
         }
@@ -299,8 +300,8 @@ void Level::updateGameObjectConstantBuffers(const GameTime& gt)
 void Level::updateMainPassConstantBuffers(const GameTime& gt)
 {
     /*always update the camera light etc buffer*/
-    XMMATRIX view = activeCamera->getView();
-    XMMATRIX proj = activeCamera->getProj();
+    XMMATRIX view = ServiceProvider::getActiveCamera()->getView();
+    XMMATRIX proj = ServiceProvider::getActiveCamera()->getProj();
 
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
     XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
@@ -313,7 +314,7 @@ void Level::updateMainPassConstantBuffers(const GameTime& gt)
     XMStoreFloat4x4(&mMainPassConstants.InvProj, XMMatrixTranspose(invProj));
     XMStoreFloat4x4(&mMainPassConstants.ViewProj, XMMatrixTranspose(viewProj));
     XMStoreFloat4x4(&mMainPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
-    mMainPassConstants.EyePosW = activeCamera->getPosition3f();
+    mMainPassConstants.EyePosW = ServiceProvider::getActiveCamera()->getPosition3f();
 
 
 

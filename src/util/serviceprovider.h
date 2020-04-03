@@ -1,15 +1,23 @@
 #pragma once
 
+/*forward declaration*/
+class InputManager;
+class SoundEngine;
+class RenderResource;
+class Level;
+class Camera;
+class GameObject;
+
+
 #include "log.h"
 #include "settings.h"
 #include "../input/InputManager.h"
 #include "../audio/soundengine.h"
 #include "../render/renderresource.h"
+#include "../core/level.h"
+#include "../core/camera.h"
 
-/*forward declaration*/
-class InputManager;
-class SoundEngine;
-class RenderResource;
+
 
 class ServiceProvider
 {
@@ -21,6 +29,9 @@ private:
     static std::shared_ptr<SoundEngine> audio;
     static std::shared_ptr<InputManager> input;
     static std::shared_ptr<RenderResource> renderResource;
+
+    static std::shared_ptr<Level> activeLevel;
+    static std::shared_ptr<Camera> activeCamera;
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -41,6 +52,13 @@ public:
 
     static RenderResource* getRenderResource() { return renderResource.get(); }
     static void setRenderResource(std::shared_ptr<RenderResource> providedRenderResource);
+
+    static Level* getActiveLevel() { return activeLevel.get(); };
+    static void setActiveLevel(std::shared_ptr<Level> providedLevel);
+
+    static Camera* getActiveCamera() { return activeCamera.get(); };
+    static void setActiveCamera(std::shared_ptr<Camera> providedCamera);
+
 
     static unsigned int getAudioGuid()
     {

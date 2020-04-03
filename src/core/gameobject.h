@@ -117,6 +117,8 @@ public:
 
 
     bool intersects(GameObject& obj);
+    bool intersects(DirectX::BoundingBox& box);
+
     void updateTransforms();
 
     /*flags*/
@@ -124,14 +126,16 @@ public:
     bool isDrawEnabled = true;
     bool isShadowEnabled = true;
 
-    DirectX::BoundingBox hitBox;
-
 private:
 
     /*transforms*/
     DirectX::XMFLOAT3 Position, Rotation, Scale;
 
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
+
+    /*hitbox*/
+    DirectX::BoundingBox hitBox;
+
 
     UINT objectCBSize = 0;
 

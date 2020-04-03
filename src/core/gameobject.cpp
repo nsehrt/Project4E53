@@ -230,6 +230,16 @@ bool GameObject::intersects(GameObject& obj)
     return hitBox.Intersects(obj.hitBox);
 }
 
+bool GameObject::intersects(DirectX::BoundingBox& box)
+{
+    if (!isCollisionEnabled)
+    {
+        return false;
+    }
+
+    return hitBox.Intersects(box);
+}
+
 void GameObject::updateTransforms()
 {
 

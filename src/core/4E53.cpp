@@ -38,11 +38,10 @@ private:
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
 
-	FPSCamera fpsCamera;
+	std::shared_ptr<FPSCamera> fpsCamera;
 	bool fpsCameraMode = false;
 
-	std::vector<std::unique_ptr<Level>> mLevel;
-	Level* activeLevel;
+	std::vector<std::shared_ptr<Level>> mLevel;
 
 };
 
@@ -216,7 +215,7 @@ bool P_4E53::Initialize()
 	ServiceProvider::setRenderResource(renderResource);
 
 	/*load first level*/
-	auto level = std::make_unique<Level>();
+	auto level = std::make_shared<Level>();
 
 	if (!level->load("0.level"))
 	{
@@ -225,11 +224,12 @@ bool P_4E53::Initialize()
 	}
 
 	mLevel.push_back(std::move(level));
-	activeLevel = mLevel[mLevel.size()-1].get();
+	ServiceProvider::setActiveLevel(mLevel.back());
 
 	/*init fpscamera*/
-	fpsCamera.setLens();
-	fpsCamera.setPosition(0.0f, 5.0f, -20.f);
+	fpsCamera = std::make_shared<FPSCamera>();
+	fpsCamera->setLens();
+	fpsCamera->setPosition(0.0f, 5.0f, -20.f);
 
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
@@ -264,11 +264,11 @@ void P_4E53::update(const GameTime& gt)
 	/*cycle to next frame resource*/
 	auto renderResource = ServiceProvider::getRenderResource();
 
-	activeLevel->cycleFrameResource();
+	ServiceProvider::getActiveLevel()->cycleFrameResource();
 
 	//renderResource->incFrameResource();
 
-	FrameResource* mCurrentFrameResource = activeLevel->getCurrentFrameResource();
+	FrameResource* mCurrentFrameResource = ServiceProvider::getActiveLevel()->getCurrentFrameResource();
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -288,7 +288,7 @@ void P_4E53::update(const GameTime& gt)
 	/***********************/
 
 
-	activeLevel->update(gt);
+	ServiceProvider::getActiveLevel()->update(gt);
 
 	if (inputData.Pressed(BTN::A))
 	{
@@ -302,17 +302,17 @@ void P_4E53::update(const GameTime& gt)
 
 		if (fpsCameraMode)
 		{
-			activeLevel->activeCamera = &fpsCamera;
+			ServiceProvider::setActiveCamera(fpsCamera);
 		}
 		else
 		{
-			activeLevel->activeCamera = activeLevel->mCameras[0].get();
+			ServiceProvider::setActiveCamera(ServiceProvider::getActiveLevel()->mCameras[0]);
 		}
 	}
 
 	if (fpsCameraMode)
 	{
-		fpsCamera.updateFPSCamera(inputData.current, gt);
+		fpsCamera->updateFPSCamera(inputData.current, gt);
 	}
 		
 	if (inputData.Released(BTN::RIGHT_THUMB) && settingsData->miscSettings.DebugEnabled )
@@ -320,8 +320,8 @@ void P_4E53::update(const GameTime& gt)
 		renderResource->toggleHitBoxDraw();
 	}
 
-	activeLevel->activeCamera->updateViewMatrix();
-	activeLevel->updateBuffers(gt);
+	ServiceProvider::getActiveCamera()->updateViewMatrix();
+	ServiceProvider::getActiveLevel()->updateBuffers(gt);
 
 
 	/*save input for next frame*/
@@ -335,7 +335,7 @@ void P_4E53::update(const GameTime& gt)
 /*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
-	auto mCurrentFrameResource = activeLevel->getCurrentFrameResource();
+	auto mCurrentFrameResource = ServiceProvider::getActiveLevel()->getCurrentFrameResource();
 
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
@@ -381,7 +381,7 @@ void P_4E53::draw(const GameTime& gt)
 
 	/*draw everything*/
 	
-	activeLevel->draw();
+	ServiceProvider::getActiveLevel()->draw();
 
 	/*to resource stage*/
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
@@ -399,7 +399,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	/*advance fence on gpu to signal that this frame is finished*/
-	activeLevel->getCurrentFrameResource()->Fence = ++mCurrentFence;
+	ServiceProvider::getActiveLevel()->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 }

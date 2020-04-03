@@ -1,7 +1,8 @@
-#include "gameobject.h"
-#include "camera.h"
+#pragma once
+
 #include "../util/serviceprovider.h"
 #include "../extern/json.hpp"
+#include "gameobject.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -26,9 +27,9 @@ public:
     void draw();
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
-    std::vector<std::unique_ptr<Camera>> mCameras;
+    std::vector<std::shared_ptr<Camera>> mCameras;
 
-    Camera* activeCamera = nullptr;
+    //Camera* activeCamera = nullptr;
 
     /*frame resource related*/
 
