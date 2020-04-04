@@ -180,8 +180,6 @@ bool GameObject::draw(ID3D12Resource* objectCB)
         XMMATRIX world = XMLoadFloat4x4(&gObjRenderItem->World);
         XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
 
-        XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
-
         BoundingFrustum localSpaceFrustum;
         cam->getFrustum().Transform(localSpaceFrustum, invView);
 
@@ -192,6 +190,7 @@ bool GameObject::draw(ID3D12Resource* objectCB)
         {
             return false;
         }
+
     }
 
 

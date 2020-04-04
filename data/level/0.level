@@ -29,8 +29,8 @@
             ],
             "Rotation": [
                 0,
-                45,
-                20
+                0,
+                0
             ],
             "TexTranslation": [
                 0,
@@ -73,23 +73,23 @@
             "Model": "box",
             "Material": "default",
             "Position": [
-                1,
-                30,
-                1
+                10,
+                5,
+                0
             ],
             "RenderType": "Default",
             "TexScale": [
-                5,
-                5,
+                1,
+                1,
                 1
             ],
             "Scale": [
-                2,
                 1,
-                100
+                1,
+                1
             ],
             "Rotation": [
-                90,0,30
+                45,0,20
             ]
         },
         {
@@ -186,6 +186,30 @@
                 0.25,
                 0.25,
                 0.25
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "man1",
+            "Model": "ma",
+            "Material": "man",
+            "Position": [
+                -9,
+                2,
+                0
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "man2",
+            "Model": "man",
+            "Material": "man",
+            "Position": [
+                -11,
+                2,
+                -5
             ],
             "RenderType": "Default"
         }

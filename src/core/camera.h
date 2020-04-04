@@ -3,7 +3,7 @@
 #include "../util/d3dUtil.h"
 
 #define CAMERA_RESTRICTION_ANGLE 5.f
-#define CAMERA_HITBOX_SIZE_EXTENTS 0.001f
+#define CAMERA_HITBOX_SIZE_EXTENTS 0.1f
 
 class Camera
 {
@@ -71,13 +71,13 @@ public:
     bool isCollisionEnabled = true;
 
     DirectX::BoundingBox hitbox;
-
+    DirectX::XMFLOAT3 mPreviousPosition = { 0.0f,0.0f,0.0f };
 private:
 
     DirectX::BoundingBox baseHitbox;
     DirectX::BoundingFrustum camFrustum;
 
-    DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };   
     DirectX::XMFLOAT3 mHitboxRotation = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 mRight = { 1.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mUp = { 0.0f, 1.0f, 0.0f };

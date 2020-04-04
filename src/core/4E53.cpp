@@ -288,8 +288,7 @@ void P_4E53::update(const GameTime& gt)
 	Settings* settingsData = ServiceProvider::getSettings();
 	/***********************/
 
-
-	ServiceProvider::getActiveLevel()->update(gt);
+	ServiceProvider::getActiveCamera()->mPreviousPosition = ServiceProvider::getActiveCamera()->getPosition3f();
 
 	if (inputData.Pressed(BTN::A))
 	{
@@ -321,9 +320,10 @@ void P_4E53::update(const GameTime& gt)
 		renderResource->toggleHitBoxDraw();
 	}
 
+	ServiceProvider::getActiveLevel()->update(gt);
+
 	ServiceProvider::getActiveCamera()->updateViewMatrix();
 	ServiceProvider::getActiveLevel()->updateBuffers(gt);
-
 
 	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);

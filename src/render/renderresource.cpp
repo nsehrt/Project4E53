@@ -636,6 +636,15 @@ void RenderResource::generateDefaultShapes()
 
     /*grid hitbox*/
 
+    XMFLOAT3 v;
+    XMStoreFloat3(&v, vMin);
+    v.y = -0.05f;
+    vMin = XMLoadFloat3(&v);
+
+    XMStoreFloat3(&v, vMax);
+    v.y = 0.05f;
+    vMax = XMLoadFloat3(&v);
+
     XMStoreFloat3(&mModels["grid"]->boundingBox.Center, 0.5f * (vMin + vMax));
     XMStoreFloat3(&mModels["grid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
 

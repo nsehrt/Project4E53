@@ -247,7 +247,6 @@ void Camera::rotateY(float angle)
 	mViewDirty = true;
 }
 
-/*TODO*/
 void Camera::roll(float angle)
 {
 	XMVECTOR X = XMLoadFloat3(&mLook);

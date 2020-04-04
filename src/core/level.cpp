@@ -94,6 +94,7 @@ void Level::update(const GameTime& gt)
         if (gameObj.second->intersects(ServiceProvider::getActiveCamera()->hitbox))
         {
             LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
+            ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
         }
 
     }
