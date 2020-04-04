@@ -33,9 +33,9 @@ GameObject::GameObject(const json& objectJson, int index)
 
     if (exists(objectJson, "Rotation"))
     {
-        Rotation.x = objectJson["Rotation"][0];
-        Rotation.y = objectJson["Rotation"][1];
-        Rotation.z = objectJson["Rotation"][2];
+        Rotation.x = XMConvertToRadians(objectJson["Rotation"][0]);
+        Rotation.y = XMConvertToRadians(objectJson["Rotation"][1]);
+        Rotation.z = XMConvertToRadians(objectJson["Rotation"][2]);
     }
     else
     {
@@ -58,9 +58,9 @@ GameObject::GameObject(const json& objectJson, int index)
 
     if (exists(objectJson, "TexRotation"))
     {
-        TextureRotation.x = objectJson["TexRotation"][0];
-        TextureRotation.y = objectJson["TexRotation"][1];
-        TextureRotation.z = objectJson["TexRotation"][2];
+        TextureRotation.x = XMConvertToRadians(objectJson["TexRotation"][0]);
+        TextureRotation.y = XMConvertToRadians(objectJson["TexRotation"][1]);
+        TextureRotation.z = XMConvertToRadians(objectJson["TexRotation"][2]);
     }
     else
     {
@@ -172,7 +172,6 @@ bool GameObject::draw(ID3D12Resource* objectCB)
 
     if (!isDrawEnabled) return false;
 
-
     /*frustum culling check*/
     if (isFrustumCulled)
     {
@@ -183,12 +182,13 @@ bool GameObject::draw(ID3D12Resource* objectCB)
 
         XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
 
-        XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
-
         BoundingFrustum localSpaceFrustum;
-        cam->getFrustum().Transform(localSpaceFrustum, viewToLocal);
+        cam->getFrustum().Transform(localSpaceFrustum, invView);
 
-        if (localSpaceFrustum.Contains(renderItem->Model->boundingBox) == DirectX::DISJOINT)
+        DirectX::BoundingBox scaledBaseBox;
+        renderItem->Model->boundingBox.Transform(scaledBaseBox, world);
+
+        if (localSpaceFrustum.Contains(scaledBaseBox) == DirectX::DISJOINT)
         {
             return false;
         }
@@ -268,17 +268,16 @@ void GameObject::updateTransforms()
 {
 
     /*update transforms for constant buffer*/
-    XMStoreFloat4x4(&renderItem->World, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
-                    XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+    XMStoreFloat4x4(&renderItem->World, XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+                    XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
                     XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
 
-    XMStoreFloat4x4(&renderItem->TexTransform, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
-                    XMMatrixScalingFromVector(XMLoadFloat3(&TextureScale)) *
+    XMStoreFloat4x4(&renderItem->TexTransform, XMMatrixScalingFromVector(XMLoadFloat3(&TextureScale)) *
+                    XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
                     XMMatrixTranslationFromVector(XMLoadFloat3(&TextureTranslation)));
 
     /*update hitbox*/
-    
-    renderItem->Model->boundingBox.Transform(hitBox, Scale.x, XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)), XMLoadFloat3(&Position));
+    renderItem->Model->boundingBox.Transform(hitBox, XMLoadFloat4x4(&renderItem->World));
 
     renderItem->NumFramesDirty = gNumFrameResources;
 

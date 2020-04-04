@@ -172,9 +172,7 @@ void Level::draw()
 
 
 
-    //LOG(Severity::Info, objectsDrawn << " objects drawn.");
-
-
+    LOG(Severity::Info, objectsDrawn << " objects drawn.");
 
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
@@ -251,6 +249,7 @@ bool Level::parseSky(const json& skyJson)
     gameObject->name = "SkySphere";
     gameObject->renderItem = std::move(rItem);
     gameObject->gameObjectType = GameObjectType::Sky;
+    gameObject->isFrustumCulled = false;
 
     mGameObjects[gameObject->name] = std::move(gameObject);
 

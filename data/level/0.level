@@ -1,178 +1,193 @@
 {
-    "Sky" : {
-        "Material" : "sky"
+    "Sky": {
+        "Material": "sky"
     },
-
-    "Camera" : [
+    "Camera": [
         {
-            "ID":0,
-            "Position":[
-                0.0,
-                0.0,
-                0.0
+            "ID": 0,
+            "Position": [
+                0,
+                0,
+                0
             ]
         }
     ],
-
-    "GameObject" : [
+    "GameObject": [
         {
-            "Name" : "obj1",
-            "Model" : "plant",
-            "Material" : "plant",
-            "Position" : [
-                2.0,
+            "Name": "obj1",
+            "Model": "plant",
+            "Material": "plant",
+            "Position": [
+                2,
                 16.25,
-                5.0
+                5
             ],
-            "Scale" : [
-                1.0,
-                1.0,
-                1.0
+            "Scale": [
+                1,
+                1,
+                1
             ],
-            "Rotation" : [
+            "Rotation": [
                 0,
                 45,
                 20
             ],
-            "TexTranslation" : [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexRotation" :[
+            "TexTranslation": [
                 0,
                 0,
                 0
             ],
-            "RenderType" : "Default",
-            "CollisionEnabled" : true,
-            "DrawEnabled" : true,
-            "ShadowEnabled" : true
+            "TexScale": [
+                1,
+                1,
+                1
+            ],
+            "TexRotation": [
+                0,
+                0,
+                0
+            ],
+            "RenderType": "Default",
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "ShadowEnabled": true
         },
-
         {
-            "Name" : "plant2",
-            "Model" : "plant",
-            "Material" : "plant",
-            "Position" : [
-                -2.0,
+            "Name": "plant2",
+            "Model": "plant",
+            "Material": "plant",
+            "Position": [
+                -2,
                 6.25,
-                0.0
+                0
             ],
-            "Rotation" : [
+            "Rotation": [
                 0,
                 0,
-                -45.0
+                -45
             ],
-            "RenderType" : "Default"
+            "RenderType": "Default"
         },
-
         {
-            "Name" : "obj3",
-            "Model" : "box",
-            "Material" : "brick0",
-            "Position" : [
-                0.0,
-                0.6,
-                0.0
+            "Name": "obj3",
+            "Model": "box",
+            "Material": "default",
+            "Position": [
+                1,
+                30,
+                1
             ],
-            "RenderType" : "Default"
-        },
-
-        {
-            "Name" : "grid",
-            "Model" : "grid",
-            "Material" : "default",
-            "Scale" : [
-                4.0,
-                1.0,
-                4.0
+            "RenderType": "Default",
+            "TexScale": [
+                5,
+                5,
+                1
             ],
-            "RenderType" : "Default",
-            "TexScale" : [5.0,5.0,1.0],
-            "FrustumCulled" : false
+            "Scale": [
+                2,
+                1,
+                100
+            ],
+            "Rotation": [
+                90,0,30
+            ]
         },
-
         {
-            "Name" : "obj5",
-            "Model" : "cylinder",
-            "Material" : "wire",
-            "Position" : [
-                -5.0,
+            "Name": "grid",
+            "Model": "grid",
+            "Material": "default",
+            "Scale": [
+                10,
+                1,
+                10
+            ],
+            "RenderType": "Default",
+            "TexScale": [
+                5,
+                5,
+                1
+            ]
+        },
+        {
+            "Name": "obj5",
+            "Model": "cylinder",
+            "Material": "wire",
+            "Position": [
+                -5,
                 1.1,
                 0
             ],
-            "RenderType" : "DefaultAlpha"
+            "RenderType": "DefaultAlpha"
         },
-
         {
-            "Name" : "obj6",
-            "Model" : "cylinder",
-            "Material" : "tile0",
-            "Position" : [
-                15.0,
+            "Name": "obj6",
+            "Model": "cylinder",
+            "Material": "tile0",
+            "Position": [
+                15,
                 1.1,
-                0.0
+                0
             ],
-            "RenderType" : "Default",
-            "TexScale" : [2.5,2.5,2.5]
+            "RenderType": "Default",
+            "TexScale": [
+                2.5,
+                2.5,
+                2.5
+            ]
         },
-
         {
-            "Name" : "obj7",
-            "Model" : "sphere",
-            "Material" : "mirror0",
-            "Position" : [
-                -5.0,
+            "Name": "obj7",
+            "Model": "sphere",
+            "Material": "mirror0",
+            "Position": [
+                -5,
                 3.25,
-                0.0
+                0
             ],
-            "RenderType" : "Default"
+            "RenderType": "Default"
         },
-
         {
-            "Name" : "obj8",
-            "Model" : "sphere",
-            "Material" : "mirror0",
-            "Position" : [
-                15.0,
+            "Name": "obj8",
+            "Model": "sphere",
+            "Material": "mirror0",
+            "Position": [
+                15,
                 3.25,
-                0.0
+                0
             ],
-            "RenderType" : "Default"
+            "RenderType": "Default"
         },
-
         {
-            "Name" : "box1",
-            "Model" : "box",
-            "Material" : "default",
-            "Position" : [
-                -1.0,
+            "Name": "box1",
+            "Model": "box",
+            "Material": "default",
+            "Position": [
+                -1,
                 2,
-                -5.0
+                -5
             ],
-            "TexScale" : [0.25,0.25,0.25],
-            "RenderType" : "Default"
+            "TexScale": [
+                0.25,
+                0.25,
+                0.25
+            ],
+            "RenderType": "Default"
         },
-
         {
-            "Name" : "box2",
-            "Model" : "box",
-            "Material" : "default",
-            "Position" : [
+            "Name": "box2",
+            "Model": "box",
+            "Material": "default",
+            "Position": [
                 0.2,
                 2,
-                -5.0
+                -5
             ],
-            "TexScale" : [0.25,0.25,0.25],
-            "RenderType" : "Default"
+            "TexScale": [
+                0.25,
+                0.25,
+                0.25
+            ],
+            "RenderType": "Default"
         }
-
     ]
-
 }
