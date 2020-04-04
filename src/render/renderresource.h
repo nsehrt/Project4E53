@@ -60,7 +60,7 @@ private:
 
     bool buildRootSignature();
     bool buildDescriptorHeap();
-    std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
+    std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> GetStaticSamplers();
 
     void buildShaders();
     void buildInputLayouts();

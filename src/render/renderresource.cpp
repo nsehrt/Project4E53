@@ -127,11 +127,11 @@ bool RenderResource::buildRootSignature()
 
     /*1 texture in register 0*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
-    textureTableReg0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0);
+    textureTableReg0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0, 0);
 
     /*x textures in register 1*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
-    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, 0);
+    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, 0);
 
     /*constant buffer views in register b0 and b1*/
     rootParameter[0].InitAsConstantBufferView(0);
@@ -237,7 +237,7 @@ bool RenderResource::buildDescriptorHeap()
     return true;
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> RenderResource::GetStaticSamplers()
 {
     const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
         0, // shaderRegister
@@ -285,10 +285,22 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> RenderResource::GetStaticSample
         0.0f,                              // mipLODBias
         ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering);                                // maxAnisotropy
 
+    const CD3DX12_STATIC_SAMPLER_DESC shadow(
+        6,
+        D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
+        D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+        D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+        D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+        0.0f,
+        ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering,
+        D3D12_COMPARISON_FUNC_LESS_EQUAL,
+        D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK
+    );
+
     return {
         pointWrap, pointClamp,
         linearWrap, linearClamp,
-        anisotropicWrap, anisotropicClamp };
+        anisotropicWrap, anisotropicClamp, shadow };
 }
 
 #pragma region SHADER
@@ -315,6 +327,10 @@ void RenderResource::buildShaders()
 
     mShaders["hitboxVS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
+
+    mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadow.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["shadowPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadow.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadow.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
 
 }
