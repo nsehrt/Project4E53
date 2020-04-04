@@ -79,6 +79,10 @@ private:
 
     DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };   
     DirectX::XMFLOAT3 mHitboxRotation = { 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT3 mHitboxScale = { 1.0f,1.0f,1.0f };
+
+    DirectX::XMFLOAT4X4 mWorld;
+
     DirectX::XMFLOAT3 mRight = { 1.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mUp = { 0.0f, 1.0f, 0.0f };
     DirectX::XMFLOAT3 mLook = { 0.0f, 0.0f, 1.0f };
@@ -101,7 +105,11 @@ private:
 
     void updateHitbox()
     {
-        baseHitbox.Transform(hitbox,1.f, DirectX::XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&mHitboxRotation)), XMLoadFloat3(&mPosition));
+        DirectX::XMStoreFloat4x4(&mWorld, DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&mHitboxScale)) *
+                                 DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&mHitboxRotation)) *
+                                 DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&mPosition)));
+
+        baseHitbox.Transform(hitbox, DirectX::XMLoadFloat4x4(&mWorld));
     }
 
 };

@@ -162,7 +162,7 @@
             "Model": "box",
             "Material": "default",
             "Position": [
-                -1,
+                -1.15,
                 2,
                 -5
             ],
@@ -170,6 +170,9 @@
                 0.25,
                 0.25,
                 0.25
+            ],
+            "Rotation": [
+                0,0,45
             ],
             "RenderType": "Default"
         },
@@ -192,12 +195,12 @@
         ,
         {
             "Name": "man1",
-            "Model": "ma",
+            "Model": "man",
             "Material": "man",
             "Position": [
-                -9,
+                -11,
                 2,
-                0
+                -5
             ],
             "RenderType": "Default"
         }
@@ -207,8 +210,92 @@
             "Model": "man",
             "Material": "man",
             "Position": [
-                -11,
+                -13,
                 2,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "man3",
+            "Model": "man",
+            "Material": "man",
+            "Position": [
+                -15,
+                2,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "man4",
+            "Model": "man",
+            "Material": "man",
+            "Position": [
+                -17,
+                2,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "man5",
+            "Model": "man",
+            "Material": "man",
+            "Position": [
+                -19,
+                2,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "skull1",
+            "Model": "skull",
+            "Material": "",
+            "Position": [
+                -21,
+                8,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "skull2",
+            "Model": "skull",
+            "Material": "",
+            "Position": [
+                -21,
+                14,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "skull3",
+            "Model": "skull",
+            "Material": "",
+            "Position": [
+                -21,
+                20,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
+            "Name": "skull4",
+            "Model": "skull",
+            "Material": "",
+            "Position": [
+                -21,
+                26,
                 -5
             ],
             "RenderType": "Default"

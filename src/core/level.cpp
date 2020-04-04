@@ -85,7 +85,7 @@ void Level::update(const GameTime& gt)
         gameObj.second->update(gt);
     }
 
-    /*Collision test*/
+    /*TODO Collision test*/
 
     for (const auto& gameObj : mGameObjects)
     {
@@ -93,7 +93,7 @@ void Level::update(const GameTime& gt)
 
         if (gameObj.second->intersects(ServiceProvider::getActiveCamera()->hitbox))
         {
-            LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
+            //LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
             ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
         }
 
@@ -173,7 +173,7 @@ void Level::draw()
 
 
 
-    LOG(Severity::Info, objectsDrawn << " objects drawn.");
+    //LOG(Severity::Info, objectsDrawn << " objects drawn.");
 
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());

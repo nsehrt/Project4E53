@@ -166,6 +166,7 @@
     <ClCompile Include="src\input\inputmanager.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
     <ClCompile Include="src\render\renderresource.cpp" />
+    <ClCompile Include="src\render\shadowmap.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\geogen.cpp" />
     <ClCompile Include="src\util\log.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="src\render\frameresource.h" />
     <ClInclude Include="src\render\renderresource.h" />
     <ClInclude Include="src\render\renderstructs.h" />
+    <ClInclude Include="src\render\shadowmap.h" />
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\expected.h" />

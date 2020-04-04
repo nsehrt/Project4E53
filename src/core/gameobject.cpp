@@ -158,7 +158,7 @@ GameObject::GameObject(const json& objectJson, int index)
 void GameObject::update(const GameTime& gt)
 {
 
-    /*TEST*/
+    /*TODO*/
     if (renderItem->renderType != RenderType::Default) return;
     if (name != "box2")return;
     XMFLOAT3 rot = getRotation();
@@ -183,10 +183,7 @@ bool GameObject::draw(ID3D12Resource* objectCB)
         BoundingFrustum localSpaceFrustum;
         cam->getFrustum().Transform(localSpaceFrustum, invView);
 
-        DirectX::BoundingBox scaledBaseBox;
-        renderItem->Model->boundingBox.Transform(scaledBaseBox, world);
-
-        if (localSpaceFrustum.Contains(scaledBaseBox) == DirectX::DISJOINT)
+        if (localSpaceFrustum.Contains(hitBox) == DirectX::DISJOINT)
         {
             return false;
         }
