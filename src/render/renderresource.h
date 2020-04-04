@@ -51,7 +51,8 @@ public:
     ID3D12GraphicsCommandList* cmdList = nullptr;
     ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
-
+    ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
+    ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
 
 private:
 

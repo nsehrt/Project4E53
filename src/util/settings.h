@@ -8,6 +8,8 @@
     #define XMLCheckExist(eResult) if(eResult == nullptr){return false;}
 #endif
 
+static int shadowMapSizes[] = { 512, 1024,2048,4096 };
+
 struct DisplaySettings
 {
     int Monitor = 0;
@@ -32,6 +34,7 @@ struct GraphicSettings
     bool WireFrameMode = false;
     int numFrameResources = 3;
     int AnisotropicFiltering = 16;
+    int ShadowQuality = 3;
 };
 
 struct GameplaySettings

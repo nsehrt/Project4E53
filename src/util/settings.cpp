@@ -82,6 +82,29 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pGraphic, "AnisotropicFiltering", &settings.graphicSettings.AnisotropicFiltering))
         return false;
 
+    if (settings.graphicSettings.AnisotropicFiltering > 16)
+    {
+        settings.graphicSettings.AnisotropicFiltering = 16;
+    }
+    else if (settings.graphicSettings.AnisotropicFiltering < 0)
+    {
+        settings.graphicSettings.AnisotropicFiltering = 0;
+    }
+
+    if (!setSetting(pGraphic, "ShadowQuality", &settings.graphicSettings.ShadowQuality))
+        return false;
+
+    if (settings.graphicSettings.ShadowQuality > 3)
+    {
+        settings.graphicSettings.ShadowQuality = 3;
+    }
+    else if (settings.graphicSettings.ShadowQuality < 0)
+    {
+        settings.graphicSettings.ShadowQuality = 0;
+    }
+
+    settings.graphicSettings.ShadowQuality = shadowMapSizes[settings.graphicSettings.ShadowQuality];
+
     /*load input settings*/
     XMLElement* pInput = pRoot->FirstChildElement("Input");
     XMLCheckExist(pInput);

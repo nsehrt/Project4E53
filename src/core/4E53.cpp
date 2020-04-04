@@ -33,6 +33,8 @@ public:
 	virtual bool Initialize()override;
 
 private:
+
+	virtual void createRtvAndDsvDescriptorHeaps()override;
 	virtual void onResize()override;
 	virtual void update(const GameTime& gt)override;
 	virtual void draw(const GameTime& gt)override;
@@ -48,6 +50,10 @@ private:
 	std::vector<std::shared_ptr<Level>> mLevel;
 
 	std::shared_ptr<ShadowMap> mShadowMap;
+	UINT mNullCubeSrvIndex = 0;
+	UINT mNullTexSrvIndex = 0;
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 };
 
 int gNumFrameResources = 3;
@@ -236,6 +242,12 @@ bool P_4E53::Initialize()
 	fpsCamera->setLens();
 	fpsCamera->setPosition(0.0f, 5.0f, -20.f);
 
+	/*init shadow map*/
+	mShadowMap = std::make_shared<ShadowMap>(mDevice.Get(), (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
+											 (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
+
+	ServiceProvider::setShadowMap(mShadowMap);
+
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
 	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
@@ -245,6 +257,26 @@ bool P_4E53::Initialize()
 	flushCommandQueue();
 
 	return true;
+}
+
+void P_4E53::createRtvAndDsvDescriptorHeaps()
+{
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+	rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(mDevice->CreateDescriptorHeap(
+		&rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
+
+	// Add +1 DSV for shadow map.
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+	dsvHeapDesc.NumDescriptors = SwapChainBufferCount;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	dsvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(mDevice->CreateDescriptorHeap(
+		&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
 }
 
 void P_4E53::onResize()

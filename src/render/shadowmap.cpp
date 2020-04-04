@@ -1,5 +1,7 @@
 #include "shadowmap.h"
 
+using namespace DirectX;
+
 ShadowMap::ShadowMap(ID3D12Device* _device, UINT _width, UINT _height)
 {
     mDevice = _device;
@@ -13,7 +15,7 @@ ShadowMap::ShadowMap(ID3D12Device* _device, UINT _width, UINT _height)
     buildResource();
 
     sceneBounds.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-    sceneBounds.Radius = 500.0f;
+    sceneBounds.Radius = sqrtf(10.0f * 10.0f + 15.0f * 15.0f);
 }
 
 void ShadowMap::buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE _cpuSrv, CD3DX12_GPU_DESCRIPTOR_HANDLE _gpuSrv, CD3DX12_CPU_DESCRIPTOR_HANDLE _cpuDsv)
@@ -36,6 +38,50 @@ void ShadowMap::onResize(UINT _width, UINT _height)
         buildResource();
         buildDescriptors();
     }
+
+
+}
+
+void ShadowMap::updateShadowTransform()
+{
+
+    /*TODO use main light*/
+
+    XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
+    XMVECTOR lightPos = -2.0f * sceneBounds.Radius * lightDir;
+    XMVECTOR targetPos = XMLoadFloat3(&sceneBounds.Center);
+    XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);
+
+    XMStoreFloat3(&mLightPosW, lightPos);
+
+    // Transform bounding sphere to light space.
+    XMFLOAT3 sphereCenterLS;
+    XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, lightView));
+
+    // Ortho frustum in light space encloses scene.
+    float l = sphereCenterLS.x - sceneBounds.Radius;
+    float b = sphereCenterLS.y - sceneBounds.Radius;
+    float n = sphereCenterLS.z - sceneBounds.Radius;
+    float r = sphereCenterLS.x + sceneBounds.Radius;
+    float t = sphereCenterLS.y + sceneBounds.Radius;
+    float f = sphereCenterLS.z + sceneBounds.Radius;
+
+    mLightNearZ = n;
+    mLightFarZ = f;
+    XMMATRIX lightProj = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
+    // Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+    XMMATRIX T(
+        0.5f, 0.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.0f, 1.0f);
+
+    XMMATRIX S = lightView * lightProj * T;
+    XMStoreFloat4x4(&mLightView, lightView);
+    XMStoreFloat4x4(&mLightProj, lightProj);
+    XMStoreFloat4x4(&mShadowTransform, S);
 
 
 }

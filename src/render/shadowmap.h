@@ -52,7 +52,29 @@ public:
 
     void onResize(UINT _width, UINT _height);
 
+    void updateShadowTransform();
+
     DirectX::BoundingSphere sceneBounds;
+
+    UINT heapIndex = 0;
+
+    /*shadow transform*/
+    float mLightNearZ = 0.0f;
+    float mLightFarZ = 0.0f;
+    DirectX::XMFLOAT3 mLightPosW;
+    DirectX::XMFLOAT4X4 mLightView = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 mLightProj = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 mShadowTransform = MathHelper::identity4x4();
+
+    /*TODO*/
+    float mLightRotationAngle = 0.0f;
+    DirectX::XMFLOAT3 mBaseLightDirections[3] = {
+         DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f),
+         DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f),
+         DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f)
+    };
+    DirectX::XMFLOAT3 mRotatedLightDirections[3];
+
 
 private:
 

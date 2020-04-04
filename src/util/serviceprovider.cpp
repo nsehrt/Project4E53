@@ -9,6 +9,7 @@ std::shared_ptr<InputManager>ServiceProvider::input = nullptr;
 std::shared_ptr<RenderResource>ServiceProvider::renderResource = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
+std::shared_ptr<ShadowMap>ServiceProvider::shadowMap = nullptr;
 
 std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 
@@ -49,4 +50,9 @@ void ServiceProvider::setActiveLevel(std::shared_ptr<Level> providedLevel)
 void ServiceProvider::setActiveCamera(std::shared_ptr<Camera> providedCamera)
 {
     activeCamera = providedCamera;
+}
+
+void ServiceProvider::setShadowMap(std::shared_ptr<ShadowMap> providedShadowMap)
+{
+    shadowMap = providedShadowMap;
 }

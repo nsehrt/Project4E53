@@ -57,13 +57,14 @@ private:
     int mCurrentFrameResourceIndex = 0;
 
     PassConstants mMainPassConstants;
+    PassConstants mShadowPassConstants;
 
     void buildFrameResource();
 
     void updateGameObjectConstantBuffers(const GameTime& gt);
     void updateMainPassConstantBuffers(const GameTime& gt);
     void updateMaterialConstantBuffers(const GameTime& gt);
-
+    void updateShadowPassConstantBuffers(const GameTime& gt);
 
 
 

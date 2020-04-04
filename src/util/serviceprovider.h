@@ -7,6 +7,7 @@ class RenderResource;
 class Level;
 class Camera;
 class GameObject;
+class ShadowMap;
 
 
 #include "log.h"
@@ -16,7 +17,7 @@ class GameObject;
 #include "../render/renderresource.h"
 #include "../core/level.h"
 #include "../core/camera.h"
-
+#include "../render/shadowmap.h"
 
 
 class ServiceProvider
@@ -32,6 +33,8 @@ private:
 
     static std::shared_ptr<Level> activeLevel;
     static std::shared_ptr<Camera> activeCamera;
+
+    static std::shared_ptr<ShadowMap> shadowMap;
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -58,6 +61,9 @@ public:
 
     static Camera* getActiveCamera() { return activeCamera.get(); };
     static void setActiveCamera(std::shared_ptr<Camera> providedCamera);
+
+    static ShadowMap* getShadowMap() { return shadowMap.get(); };
+    static void setShadowMap(std::shared_ptr<ShadowMap> providedShadowMap);
 
 
     static unsigned int getAudioGuid()

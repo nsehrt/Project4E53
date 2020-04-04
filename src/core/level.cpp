@@ -128,7 +128,9 @@ void Level::updateBuffers(const GameTime& gt)
 {
     updateGameObjectConstantBuffers(gt);
     updateMaterialConstantBuffers(gt);
+    //ServiceProvider::getShadowMap()->updateShadowTransform();
     updateMainPassConstantBuffers(gt);
+    updateShadowPassConstantBuffers(gt);
 }
 
 void Level::draw()
@@ -340,6 +342,38 @@ void Level::updateGameObjectConstantBuffers(const GameTime& gt)
 
 }
 
+
+void Level::updateMaterialConstantBuffers(const GameTime& gt)
+{
+
+    auto currMaterialBuffer = mCurrentFrameResource->MaterialBuffer.get();
+    for (auto& e : ServiceProvider::getRenderResource()->mMaterials)
+    {
+        // Only update the cbuffer data if the constants have changed.  If the cbuffer
+        // data changes, it needs to be updated for each FrameResource.
+        Material* mat = e.second.get();
+        if (mat->NumFramesDirty > 0)
+        {
+            XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
+
+            MaterialData matData;
+            matData.DiffuseAlbedo = mat->DiffuseAlbedo;
+            matData.FresnelR0 = mat->FresnelR0;
+            matData.Roughness = mat->Roughness;
+            XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
+            matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
+            matData.NormalMapIndex = mat->NormalSrvHeapIndex;
+
+            currMaterialBuffer->copyData(mat->MatCBIndex, matData);
+
+            // Next FrameResource need to be updated too.
+            mat->NumFramesDirty--;
+        }
+    }
+
+}
+
+
 void Level::updateMainPassConstantBuffers(const GameTime& gt)
 {
     /*always update the camera light etc buffer*/
@@ -380,32 +414,37 @@ void Level::updateMainPassConstantBuffers(const GameTime& gt)
 
 }
 
-void Level::updateMaterialConstantBuffers(const GameTime& gt)
+void Level::updateShadowPassConstantBuffers(const GameTime& gt)
 {
+    auto sMap = ServiceProvider::getShadowMap();
 
-    auto currMaterialBuffer = mCurrentFrameResource->MaterialBuffer.get();
-    for (auto& e : ServiceProvider::getRenderResource()->mMaterials)
-    {
-        // Only update the cbuffer data if the constants have changed.  If the cbuffer
-        // data changes, it needs to be updated for each FrameResource.
-        Material* mat = e.second.get();
-        if (mat->NumFramesDirty > 0)
-        {
-            XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
+    /*TODO use main light*/
+    XMMATRIX view = XMLoadFloat4x4(&sMap->mLightView);
+    XMMATRIX proj = XMLoadFloat4x4(&sMap->mLightProj);
 
-            MaterialData matData;
-            matData.DiffuseAlbedo = mat->DiffuseAlbedo;
-            matData.FresnelR0 = mat->FresnelR0;
-            matData.Roughness = mat->Roughness;
-            XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
-            matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
-            matData.NormalMapIndex = mat->NormalSrvHeapIndex;
+    XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
-            currMaterialBuffer->copyData(mat->MatCBIndex, matData);
+    UINT w = sMap->getWidth();
+    UINT h = sMap->getHeight();
 
-            // Next FrameResource need to be updated too.
-            mat->NumFramesDirty--;
-        }
-    }
+    XMStoreFloat4x4(&mShadowPassConstants.View, XMMatrixTranspose(view));
+    XMStoreFloat4x4(&mShadowPassConstants.InvView, XMMatrixTranspose(invView));
+    XMStoreFloat4x4(&mShadowPassConstants.Proj, XMMatrixTranspose(proj));
+    XMStoreFloat4x4(&mShadowPassConstants.InvProj, XMMatrixTranspose(invProj));
+    XMStoreFloat4x4(&mShadowPassConstants.ViewProj, XMMatrixTranspose(viewProj));
+    XMStoreFloat4x4(&mShadowPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
+    mShadowPassConstants.EyePosW = sMap->mLightPosW;
+    mShadowPassConstants.RenderTargetSize = XMFLOAT2((float)w, (float)h);
+    mShadowPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / w, 1.0f / h);
+    mShadowPassConstants.NearZ = sMap->mLightNearZ;
+    mShadowPassConstants.FarZ = sMap->mLightFarZ;
+
+    auto currPassCB =  mCurrentFrameResource->PassCB.get();
+    currPassCB->copyData(1, mShadowPassConstants);
+
+
 
 }
