@@ -52,6 +52,8 @@ public:
 
     void onResize(UINT _width, UINT _height);
 
+    DirectX::BoundingSphere sceneBounds;
+
 private:
 
     ID3D12Device* mDevice = nullptr;

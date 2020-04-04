@@ -13,6 +13,7 @@
 #include "../core/fpscamera.h"
 #include "../util/modelloader.h"
 #include "../core/level.h"
+#include "../render/shadowmap.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -46,6 +47,7 @@ private:
 
 	std::vector<std::shared_ptr<Level>> mLevel;
 
+	std::shared_ptr<ShadowMap> mShadowMap;
 };
 
 int gNumFrameResources = 3;

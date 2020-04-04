@@ -11,6 +11,9 @@ ShadowMap::ShadowMap(ID3D12Device* _device, UINT _width, UINT _height)
     mScissor = { 0,0,(int)width, (int)height };
 
     buildResource();
+
+    sceneBounds.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    sceneBounds.Radius = 500.0f;
 }
 
 void ShadowMap::buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE _cpuSrv, CD3DX12_GPU_DESCRIPTOR_HANDLE _gpuSrv, CD3DX12_CPU_DESCRIPTOR_HANDLE _cpuDsv)
