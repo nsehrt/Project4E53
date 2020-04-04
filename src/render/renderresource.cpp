@@ -401,6 +401,42 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultAlphaDesc, IID_PPV_ARGS(&mPSOs["defaultAlpha"])));
 
+    /*shadow PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPSODesc = defaultPSODesc;
+
+    shadowPSODesc.RasterizerState.DepthBias = 100000;
+    shadowPSODesc.RasterizerState.DepthBiasClamp = 0.0f;
+    shadowPSODesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
+    shadowPSODesc.pRootSignature = mMainRootSignature.Get();
+
+    shadowPSODesc.VS = {
+        reinterpret_cast<BYTE*>(mShaders["shadowVS"]->GetBufferPointer()),
+        mShaders["shadowVS"]->GetBufferSize()
+    };
+
+    shadowPSODesc.PS = {
+        reinterpret_cast<BYTE*>(mShaders["shadowPS"]->GetBufferPointer()),
+        mShaders["shadowPS"]->GetBufferSize()
+    };
+
+    shadowPSODesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+    shadowPSODesc.NumRenderTargets = 0;
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&shadowPSODesc, IID_PPV_ARGS(&mPSOs["shadow"])));
+
+
+    /*shadow alpha clip pso*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowAlphaPSODesc = shadowPSODesc;
+
+    shadowAlphaPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+    shadowAlphaPSODesc.PS = {
+        reinterpret_cast<BYTE*>(mShaders["shadowAlphaPS"]->GetBufferPointer()),
+        mShaders["shadowAlphaPS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&shadowAlphaPSODesc, IID_PPV_ARGS(&mPSOs["shadowAlpha"])));
+
     /*sky sphere PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
 
