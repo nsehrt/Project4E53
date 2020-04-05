@@ -385,9 +385,9 @@ void RenderResource::buildShaders()
     mShaders["hitboxVS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadow.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["shadowPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadow.hlsl", nullptr, "PS", "ps_5_1");
-    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadow.hlsl", alphaTestDefines, "PS", "ps_5_1");
+    mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["shadowPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
 
 }
@@ -621,6 +621,18 @@ void RenderResource::updateBuffers(const GameTime& gt)
 {
     updateGameObjectConstantBuffers(gt);
     updateMaterialConstantBuffers(gt);
+
+    /*TODO*/
+    mShadowMap->mLightRotationAngle += 0.1f * gt.DeltaTime();
+
+    XMMATRIX R = XMMatrixRotationY(mShadowMap->mLightRotationAngle);
+    for (int i = 0; i < 3; ++i)
+    {
+        XMVECTOR lightDir = XMLoadFloat3(&mShadowMap->mBaseLightDirections[i]);
+        lightDir = XMVector3TransformNormal(lightDir, R);
+        XMStoreFloat3(&mShadowMap->mRotatedLightDirections[i], lightDir);
+    }
+
     mShadowMap->updateShadowTransform();
     updateMainPassConstantBuffers(gt);
     updateShadowPassConstantBuffers(gt);

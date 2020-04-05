@@ -170,14 +170,14 @@ void GameObject::update(const GameTime& gt)
     setRotation(rot);
 }
 
-bool GameObject::draw(ID3D12Resource* objectCB)
+bool GameObject::draw(ID3D12Resource* objectCB, int drawMode)
 {
     const auto gObjRenderItem = renderItem.get();
 
     if (!isDrawEnabled) return false;
 
     /*frustum culling check*/
-    if (isFrustumCulled)
+    if (isFrustumCulled || drawMode == 0)
     {
         auto cam = ServiceProvider::getActiveCamera();
 

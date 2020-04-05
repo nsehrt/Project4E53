@@ -146,6 +146,18 @@ void Level::draw(int drawMode)
     /* TODO sort draw order of game objects*/
 
 
+
+    if (drawMode == 1)
+    {
+        for (const auto& gO : mGameObjects)
+        {
+            //if(gO.second->renderItem->renderType)
+            gO.second->draw(objectCB, 1);
+        }
+            
+        return;
+    }
+
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
@@ -197,7 +209,7 @@ void Level::draw(int drawMode)
 
         if (g->renderItem->renderType == RenderType::Sky)
         {
-            gameObject.second->draw(objectCB);
+            gameObject.second->draw(objectCB,1);
         }
         
     }

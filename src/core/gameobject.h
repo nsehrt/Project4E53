@@ -33,7 +33,7 @@ public:
 
 
     void update(const GameTime &gt);
-    bool draw(ID3D12Resource* objectCB);
+    bool draw(ID3D12Resource* objectCB, int drawMode = 0);
     void drawHitbox(ID3D12Resource* objectCB);
 
     std::string name;
