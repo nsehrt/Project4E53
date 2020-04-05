@@ -115,6 +115,8 @@ struct Material
     // Unique material name for lookup.
     std::string Name;
 
+    bool usesNormalMapping = true;
+
     // Index into constant buffer corresponding to this material.
     int MatCBIndex = -1;
 
@@ -159,6 +161,7 @@ enum class RenderType
 {
     Default,
     DefaultAlpha,
+    DefaultNoNormal,
     Sky
 };
 

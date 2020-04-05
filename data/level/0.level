@@ -95,7 +95,7 @@
         {
             "Name": "grid",
             "Model": "grid",
-            "Material": "default",
+            "Material": "tile0",
             "Scale": [
                 10,
                 1,
@@ -256,49 +256,26 @@
         {
             "Name": "skull1",
             "Model": "skull",
-            "Material": "",
+            "Material": "skullMat",
             "Position": [
                 -21,
                 8,
                 -5
             ],
-            "RenderType": "Default"
+            "RenderType": "DefaultNoNormal"
         }
         ,
         {
             "Name": "skull2",
             "Model": "skull",
-            "Material": "",
+            "Material": "skullMat",
             "Position": [
                 -21,
                 14,
                 -5
             ],
-            "RenderType": "Default"
+            "RenderType": "DefaultNoNormal"
         }
-        ,
-        {
-            "Name": "skull3",
-            "Model": "skull",
-            "Material": "",
-            "Position": [
-                -21,
-                20,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "skull4",
-            "Model": "skull",
-            "Material": "",
-            "Position": [
-                -21,
-                26,
-                -5
-            ],
-            "RenderType": "Default"
-        }
+        
     ]
 }

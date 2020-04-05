@@ -50,10 +50,6 @@ private:
 	std::vector<std::shared_ptr<Level>> mLevel;
 
 	std::shared_ptr<ShadowMap> mShadowMap;
-	UINT mNullCubeSrvIndex = 0;
-	UINT mNullTexSrvIndex = 0;
-
-	CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 };
 
 int gNumFrameResources = 3;
@@ -371,6 +367,7 @@ void P_4E53::update(const GameTime& gt)
 void P_4E53::draw(const GameTime& gt)
 {
 	auto mCurrentFrameResource = ServiceProvider::getActiveLevel()->getCurrentFrameResource();
+	auto renderResource = ServiceProvider::getRenderResource();
 
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
@@ -380,6 +377,51 @@ void P_4E53::draw(const GameTime& gt)
 		ServiceProvider::getRenderResource()->mPSOs["default"].Get()
 	);
 
+	/**/
+	//ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
+	//mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+	//mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
+
+	//auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
+	//mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
+	//mCommandList->SetGraphicsRootDescriptorTable(3, mNullSrv);
+
+	//mCommandList->SetGraphicsRootDescriptorTable(4, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+
+
+	//mCommandList->RSSetViewports(1, &mShadowMap->getViewPort());
+	//mCommandList->RSSetScissorRects(1, &mShadowMap->getScissor());
+
+	//// Change to DEPTH_WRITE.
+	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->getResource(),
+	//							  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+
+	//UINT passCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(PassConstants));
+
+	//// Clear the back buffer and depth buffer.
+	//mCommandList->ClearDepthStencilView(mShadowMap->getDsv(),
+	//									D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+
+	//// Set null render target because we are only going to draw to
+	//// depth buffer.  Setting a null render target will disable color writes.
+	//// Note the active PSO also must specify a render target count of 0.
+	//mCommandList->OMSetRenderTargets(0, nullptr, false, &mShadowMap->getDsv());
+
+	//// Bind the pass constant buffer for the shadow map pass.
+	//auto passCB = mCurrentFrameResource->PassCB->getResource();
+	//D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
+	//mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
+
+	//mCommandList->SetPipelineState(renderResource->mPSOs["shadow"].Get());
+
+	//ServiceProvider::getActiveLevel()->draw();
+
+	//// Change back to GENERIC_READ so we can read the texture in a shader.
+	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->getResource(),
+	//							  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
+
+	/**/
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 

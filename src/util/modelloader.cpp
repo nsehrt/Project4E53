@@ -189,7 +189,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
     hitbox->name = "hitbox";
     hitbox->dTexture = "default";
-    hitbox->dNormal = "defaultNormal";
+    hitbox->dNormal = "default_nmap";
     hitbox->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitbox->VertexByteStride = sizeof(Vertex);
     hitbox->VertexBufferByteSize = vbByteSize;

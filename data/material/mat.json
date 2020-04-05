@@ -4,7 +4,7 @@
     {
         "Name" : "default",
         "Texture" : "default",
-        "NormalMap" : "defaultNormal",
+        "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.3
@@ -12,7 +12,7 @@
     {
         "Name" : "sky",
         "Texture" : "default",
-        "NormalMap" : "defaultNormal",
+        "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.3
@@ -46,8 +46,8 @@
 
     {
         "Name" : "mirror0",
-        "Texture" : "checkboard",
-        "NormalMap" : "checkboard_nmap",
+        "Texture" : "white",
+        "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [0.0,0.0,0.0,1.0],
         "FresnelR0" : [0.98,0.97,0.95],
         "Roughness" : 0.1
@@ -65,11 +65,20 @@
     {
         "Name" : "man",
         "Texture" : "OMO1",
-        "NormalMap" : "defaultNormal",
+        "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.3
-    }
+    },
+
+    {
+        "Name" : "skullMat",
+        "Texture" : "white",
+        "NormalMap" : "none",
+        "DiffuseAlbedo" : [0.3,0.3,0.3,1.0],
+        "FresnelR0" : [0.6,0.6,0.6],
+        "Roughness" : 0.2
+    }   
 
     ]
 }

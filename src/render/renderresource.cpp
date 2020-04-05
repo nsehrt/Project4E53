@@ -331,12 +331,19 @@ void RenderResource::buildShaders()
         NULL, NULL
     };
 
+    const D3D_SHADER_MACRO normalMapDefines[] = {
+        "NORMAL_MAP_DISABLED", "1",
+        NULL, NULL
+    };
 
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
     mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
+
+    mShaders["defaultNoNormalVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "VS", "vs_5_1");
+    mShaders["defaultNoNormalPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "PS", "ps_5_1");
 
 
     mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
@@ -417,6 +424,28 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultAlphaDesc, IID_PPV_ARGS(&mPSOs["defaultAlpha"])));
+
+
+    /* default no normal mapping PSO */
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultNoNormalDesc = defaultPSODesc;
+
+    defaultNoNormalDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+    defaultNoNormalDesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["defaultNoNormalVS"]->GetBufferPointer()),
+        mShaders["defaultNoNormalVS"]->GetBufferSize()
+    };
+    defaultNoNormalDesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["defaultNoNormalPS"]->GetBufferPointer()),
+        mShaders["defaultNoNormalPS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs["defaultNoNormal"])));
+
+
+
 
     /*shadow PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPSODesc = defaultPSODesc;
@@ -529,13 +558,18 @@ bool RenderResource::buildMaterials()
         std::string texName = std::string(i["Texture"]) + ".dds";
         std::string norName = std::string(i["NormalMap"]) + ".dds";
 
-        if (mTextures.find(texName) == mTextures.end() || mTextures.find(norName) == mTextures.end())
+        if (mTextures.find(texName) == mTextures.end())
         {
-       
             LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing textures! Using default.");
 
             texName = "default.dds";
-            norName = "defaultNormal.dds";
+            
+        }
+
+        if (mTextures.find(norName) == mTextures.end())
+        {
+            material->usesNormalMapping = false;
+            norName = "default_nmap.dds";
         }
 
         material->DiffuseSrvHeapIndex = mTextures[texName]->index;
@@ -627,7 +661,7 @@ void RenderResource::generateDefaultShapes()
 
     hitboxBox->name = "hitbox";
     hitboxBox->dTexture = "default";
-    hitboxBox->dNormal = "defaultNormal";
+    hitboxBox->dNormal = "default_nmap";
     hitboxBox->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxBox->VertexByteStride = sizeof(Vertex);
     hitboxBox->VertexBufferByteSize = vbByteSize;
@@ -745,7 +779,7 @@ void RenderResource::generateDefaultShapes()
 
     hitboxGrid->name = "hitbox";
     hitboxGrid->dTexture = "default";
-    hitboxGrid->dNormal = "defaultNormal";
+    hitboxGrid->dNormal = "default_nmap";
     hitboxGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxGrid->VertexByteStride = sizeof(Vertex);
     hitboxGrid->VertexBufferByteSize = vbByteSize;
@@ -855,7 +889,7 @@ void RenderResource::generateDefaultShapes()
 
     hitboxSphere->name = "hitbox";
     hitboxSphere->dTexture = "default";
-    hitboxSphere->dNormal = "defaultNormal";
+    hitboxSphere->dNormal = "default_nmap";
     hitboxSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxSphere->VertexByteStride = sizeof(Vertex);
     hitboxSphere->VertexBufferByteSize = vbByteSize;
@@ -965,7 +999,7 @@ void RenderResource::generateDefaultShapes()
 
     hitboxCyl->name = "hitbox";
     hitboxCyl->dTexture = "default";
-    hitboxCyl->dNormal = "defaultNormal";
+    hitboxCyl->dNormal = "default_nmap";
     hitboxCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxCyl->VertexByteStride = sizeof(Vertex);
     hitboxCyl->VertexBufferByteSize = vbByteSize;

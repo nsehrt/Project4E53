@@ -122,13 +122,24 @@ void Level::update(const GameTime& gt)
     //    }
     //}
 
+
+    ServiceProvider::getShadowMap()->mLightRotationAngle += 0.1f * gt.DeltaTime();
+
+    XMMATRIX R = XMMatrixRotationY(ServiceProvider::getShadowMap()->mLightRotationAngle);
+    for (int i = 0; i < 3; ++i)
+    {
+        XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getShadowMap()->mBaseLightDirections[i]);
+        lightDir = XMVector3TransformNormal(lightDir, R);
+        XMStoreFloat3(&ServiceProvider::getShadowMap()->mRotatedLightDirections[i], lightDir);
+    }
+
 }
 
 void Level::updateBuffers(const GameTime& gt)
 {
     updateGameObjectConstantBuffers(gt);
     updateMaterialConstantBuffers(gt);
-    //ServiceProvider::getShadowMap()->updateShadowTransform();
+    ServiceProvider::getShadowMap()->updateShadowTransform();
     updateMainPassConstantBuffers(gt);
     updateShadowPassConstantBuffers(gt);
 }
@@ -159,7 +170,17 @@ void Level::draw()
         
     }
 
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["defaultNoNormal"].Get());
 
+    for (const auto& gameObject : mGameObjects)
+    {
+        auto g = gameObject.second.get();
+
+        if (g->renderItem->renderType == RenderType::DefaultNoNormal)
+        {
+            objectsDrawn += gameObject.second->draw(objectCB);
+        }
+    }
 
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["defaultAlpha"].Get());
 

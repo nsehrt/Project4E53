@@ -143,6 +143,10 @@ GameObject::GameObject(const json& objectJson, int index)
     {
         rItem->renderType = RenderType::DefaultAlpha;
     }
+    else if (objectJson["RenderType"] == "DefaultNoNormal")
+    {
+        rItem->renderType = RenderType::DefaultNoNormal;
+    }
     else
     {
         rItem->renderType = RenderType::Default;
