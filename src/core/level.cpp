@@ -67,8 +67,6 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
-    buildFrameResource();
-
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
@@ -135,22 +133,14 @@ void Level::update(const GameTime& gt)
 
 }
 
-void Level::updateBuffers(const GameTime& gt)
-{
-    updateGameObjectConstantBuffers(gt);
-    updateMaterialConstantBuffers(gt);
-    ServiceProvider::getShadowMap()->updateShadowTransform();
-    updateMainPassConstantBuffers(gt);
-    updateShadowPassConstantBuffers(gt);
-}
-
-void Level::draw()
+void Level::draw(int drawMode)
 {
 
     UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 
-    auto objectCB = mCurrentFrameResource->ObjectCB->getResource();
     auto renderResource = ServiceProvider::getRenderResource();
+    auto objectCB = renderResource->getCurrentFrameResource()->ObjectCB->getResource();
+    
 
     /* TODO sort draw order of game objects*/
 
@@ -221,9 +211,7 @@ void Level::draw()
         {
             auto g = gameObject.second.get();
 
-            if (g->renderItem->renderType == RenderType::Default ||
-                g->renderItem->renderType == RenderType::DefaultAlpha
-                )
+            if (g->renderItem->renderType != RenderType::Sky)
             {
                 gameObject.second->drawHitbox(objectCB);
             }
@@ -232,47 +220,6 @@ void Level::draw()
 
     }
 
-}
-
-void Level::drawShadow()
-{
-
-    UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
-
-    auto objectCB = mCurrentFrameResource->ObjectCB->getResource();
-    auto renderResource = ServiceProvider::getRenderResource();
-
-    /* TODO sort draw order of game objects*/
-
-
-    // draw the gameobjects
-    UINT objectsDrawn = 0;
-
-    for (const auto& gameObject : mGameObjects)
-    {
-
-        auto g = gameObject.second.get();
-
-        objectsDrawn += gameObject.second->draw(objectCB);
-
-    }
-
-}
-
-void Level::cycleFrameResource()
-{
-    mCurrentFrameResourceIndex = (mCurrentFrameResourceIndex + 1) % gNumFrameResources;
-    mCurrentFrameResource = mFrameResources[mCurrentFrameResourceIndex].get();
-}
-
-int Level::getCurrentFrameResourceIndex()
-{
-    return mCurrentFrameResourceIndex;
-}
-
-FrameResource* Level::getCurrentFrameResource()
-{
-    return mCurrentFrameResource;
 }
 
 bool Level::parseSky(const json& skyJson)
@@ -342,154 +289,4 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
 
     return true;
-}
-
-void Level::buildFrameResource()
-{
-
-    for (int i = 0; i < gNumFrameResources; i++)
-    {
-        mFrameResources.push_back(std::make_unique<FrameResource>(ServiceProvider::getRenderResource()->device,
-                                  2,
-                                  (UINT)mGameObjects.size(),
-                                  0,
-                                  (UINT)ServiceProvider::getRenderResource()->mMaterials.size()));
-    }
-
-}
-
-void Level::updateGameObjectConstantBuffers(const GameTime& gt)
-{
-
-    auto currObjectCB = mCurrentFrameResource->ObjectCB.get();
-
-    for (auto& go : mGameObjects)
-    {
-        auto e = go.second->renderItem.get();
-
-        // Only update the cbuffer data if the constants have changed.  
-        if (e->NumFramesDirty > 0)
-        {
-            XMMATRIX world = XMLoadFloat4x4(&e->World);
-            XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
-
-            ObjectConstants objConstants;
-            XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
-            XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
-            objConstants.MaterialIndex = e->Mat->MatCBIndex;
-
-            currObjectCB->copyData(e->ObjCBIndex, objConstants);
-
-            // Next FrameResource need to be updated too.
-            e->NumFramesDirty--;
-        }
-    }
-
-}
-
-
-void Level::updateMaterialConstantBuffers(const GameTime& gt)
-{
-
-    auto currMaterialBuffer = mCurrentFrameResource->MaterialBuffer.get();
-    for (auto& e : ServiceProvider::getRenderResource()->mMaterials)
-    {
-        // Only update the cbuffer data if the constants have changed.  If the cbuffer
-        // data changes, it needs to be updated for each FrameResource.
-        Material* mat = e.second.get();
-        if (mat->NumFramesDirty > 0)
-        {
-            XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
-
-            MaterialData matData;
-            matData.DiffuseAlbedo = mat->DiffuseAlbedo;
-            matData.FresnelR0 = mat->FresnelR0;
-            matData.Roughness = mat->Roughness;
-            XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
-            matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
-            matData.NormalMapIndex = mat->NormalSrvHeapIndex;
-
-            currMaterialBuffer->copyData(mat->MatCBIndex, matData);
-
-            // Next FrameResource need to be updated too.
-            mat->NumFramesDirty--;
-        }
-    }
-
-}
-
-
-void Level::updateMainPassConstantBuffers(const GameTime& gt)
-{
-    /*always update the camera light etc buffer*/
-    XMMATRIX view = ServiceProvider::getActiveCamera()->getView();
-    XMMATRIX proj = ServiceProvider::getActiveCamera()->getProj();
-
-    XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
-
-    XMStoreFloat4x4(&mMainPassConstants.View, XMMatrixTranspose(view));
-    XMStoreFloat4x4(&mMainPassConstants.InvView, XMMatrixTranspose(invView));
-    XMStoreFloat4x4(&mMainPassConstants.Proj, XMMatrixTranspose(proj));
-    XMStoreFloat4x4(&mMainPassConstants.InvProj, XMMatrixTranspose(invProj));
-    XMStoreFloat4x4(&mMainPassConstants.ViewProj, XMMatrixTranspose(viewProj));
-    XMStoreFloat4x4(&mMainPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
-    mMainPassConstants.EyePosW = ServiceProvider::getActiveCamera()->getPosition3f();
-
-
-
-    mMainPassConstants.RenderTargetSize = XMFLOAT2((float)ServiceProvider::getSettings()->displaySettings.ResolutionWidth, (float)ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
-    mMainPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
-    mMainPassConstants.NearZ = 0.01f;
-    mMainPassConstants.FarZ = 1000.0f;
-    mMainPassConstants.TotalTime = gt.TotalTime();
-    mMainPassConstants.DeltaTime = gt.DeltaTime();
-    mMainPassConstants.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
-    mMainPassConstants.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
-    mMainPassConstants.Lights[0].Strength = { 0.8f, 0.8f, 0.8f };
-    mMainPassConstants.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
-    mMainPassConstants.Lights[1].Strength = { 0.4f, 0.4f, 0.4f };
-    mMainPassConstants.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-    mMainPassConstants.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
-
-    auto currPassCB = mCurrentFrameResource->PassCB.get();
-    currPassCB->copyData(0, mMainPassConstants);
-
-}
-
-void Level::updateShadowPassConstantBuffers(const GameTime& gt)
-{
-    auto sMap = ServiceProvider::getShadowMap();
-
-    /*TODO use main light*/
-    XMMATRIX view = XMLoadFloat4x4(&sMap->mLightView);
-    XMMATRIX proj = XMLoadFloat4x4(&sMap->mLightProj);
-
-    XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
-
-    UINT w = sMap->getWidth();
-    UINT h = sMap->getHeight();
-
-    XMStoreFloat4x4(&mShadowPassConstants.View, XMMatrixTranspose(view));
-    XMStoreFloat4x4(&mShadowPassConstants.InvView, XMMatrixTranspose(invView));
-    XMStoreFloat4x4(&mShadowPassConstants.Proj, XMMatrixTranspose(proj));
-    XMStoreFloat4x4(&mShadowPassConstants.InvProj, XMMatrixTranspose(invProj));
-    XMStoreFloat4x4(&mShadowPassConstants.ViewProj, XMMatrixTranspose(viewProj));
-    XMStoreFloat4x4(&mShadowPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
-    mShadowPassConstants.EyePosW = sMap->mLightPosW;
-    mShadowPassConstants.RenderTargetSize = XMFLOAT2((float)w, (float)h);
-    mShadowPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / w, 1.0f / h);
-    mShadowPassConstants.NearZ = sMap->mLightNearZ;
-    mShadowPassConstants.FarZ = sMap->mLightFarZ;
-
-    auto currPassCB =  mCurrentFrameResource->PassCB.get();
-    currPassCB->copyData(1, mShadowPassConstants);
-
-
-
 }

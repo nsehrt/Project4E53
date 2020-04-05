@@ -37,6 +37,19 @@ public:
         return drawHitbox;
     }
 
+    /*frame resource related*/
+
+    /*use next frame resource (start of new frame) */
+    void cycleFrameResource();
+
+    /*return the index of the current frame resource */
+    int getCurrentFrameResourceIndex();
+
+    /* return pointer to the current frame resource */
+    FrameResource* getCurrentFrameResource();
+
+    void updateBuffers(const GameTime& gt);
+
     /*resources*/
     std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
@@ -73,6 +86,22 @@ private:
     void buildPSOs();
     bool buildMaterials();
 
-
     bool drawHitbox = false;
+
+    /*frame resource related*/
+    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
+    FrameResource* mCurrentFrameResource = nullptr;
+    int mCurrentFrameResourceIndex = 0;
+
+    PassConstants mMainPassConstants;
+    PassConstants mShadowPassConstants;
+
+    const UINT MAX_GAME_OBJECTS = 512;
+
+    void buildFrameResource();
+
+    void updateGameObjectConstantBuffers(const GameTime& gt);
+    void updateMainPassConstantBuffers(const GameTime& gt);
+    void updateMaterialConstantBuffers(const GameTime& gt);
+    void updateShadowPassConstantBuffers(const GameTime& gt);
 };

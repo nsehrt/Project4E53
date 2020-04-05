@@ -295,11 +295,11 @@ void P_4E53::update(const GameTime& gt)
 	/*cycle to next frame resource*/
 	auto renderResource = ServiceProvider::getRenderResource();
 
-	ServiceProvider::getActiveLevel()->cycleFrameResource();
+	renderResource->cycleFrameResource();
 
 	//renderResource->incFrameResource();
 
-	FrameResource* mCurrentFrameResource = ServiceProvider::getActiveLevel()->getCurrentFrameResource();
+	FrameResource* mCurrentFrameResource = renderResource->getCurrentFrameResource();
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -353,7 +353,7 @@ void P_4E53::update(const GameTime& gt)
 	ServiceProvider::getActiveLevel()->update(gt);
 
 	ServiceProvider::getActiveCamera()->updateViewMatrix();
-	ServiceProvider::getActiveLevel()->updateBuffers(gt);
+	renderResource->updateBuffers(gt);
 
 	/*save input for next frame*/
 	ServiceProvider::getInputManager()->setPrevious(inputData.current);
@@ -366,15 +366,16 @@ void P_4E53::update(const GameTime& gt)
 /*=====================*/
 void P_4E53::draw(const GameTime& gt)
 {
-	auto mCurrentFrameResource = ServiceProvider::getActiveLevel()->getCurrentFrameResource();
+	
 	auto renderResource = ServiceProvider::getRenderResource();
+	auto mCurrentFrameResource = renderResource->getCurrentFrameResource();
 
 	auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
 
 	mCommandList->Reset(
 		cmdListAlloc.Get(),
-		ServiceProvider::getRenderResource()->mPSOs["default"].Get()
+		renderResource->mPSOs["default"].Get()
 	);
 
 	/**/
@@ -478,7 +479,7 @@ void P_4E53::draw(const GameTime& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	/*advance fence on gpu to signal that this frame is finished*/
-	ServiceProvider::getActiveLevel()->getCurrentFrameResource()->Fence = ++mCurrentFence;
+	renderResource->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 }

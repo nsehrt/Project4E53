@@ -20,30 +20,11 @@ public:
     /* update all game objects in the level */
     void update(const GameTime& gt);
 
-    /* update constant buffers for the gpu */
-    void updateBuffers(const GameTime& gt);
-
     /* draw the level */
-    void draw();
-
-    /*draw to shadow map*/
-    void drawShadow();
+    void draw(int drawMode = 0);
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
     std::vector<std::shared_ptr<Camera>> mCameras;
-
-    //Camera* activeCamera = nullptr;
-
-    /*frame resource related*/
-
-    /*use next frame resource (start of new frame) */
-    void cycleFrameResource();
-
-    /*return the index of the current frame resource */
-    int getCurrentFrameResourceIndex();
-
-    /* return pointer to the current frame resource */
-    FrameResource* getCurrentFrameResource();
 
 private:
 
@@ -53,21 +34,6 @@ private:
     bool parseSky(const json& skyJson);
     bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
-    
-    /*frame resource related*/
-    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-    FrameResource* mCurrentFrameResource = nullptr;
-    int mCurrentFrameResourceIndex = 0;
-
-    PassConstants mMainPassConstants;
-    PassConstants mShadowPassConstants;
-
-    void buildFrameResource();
-
-    void updateGameObjectConstantBuffers(const GameTime& gt);
-    void updateMainPassConstantBuffers(const GameTime& gt);
-    void updateMaterialConstantBuffers(const GameTime& gt);
-    void updateShadowPassConstantBuffers(const GameTime& gt);
 
 
 
