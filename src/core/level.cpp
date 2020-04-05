@@ -121,20 +121,9 @@ void Level::update(const GameTime& gt)
     //    }
     //}
 
-
-    renderResource->getShadowMap()->mLightRotationAngle += 0.1f * gt.DeltaTime();
-
-    XMMATRIX R = XMMatrixRotationY(renderResource->getShadowMap()->mLightRotationAngle);
-    for (int i = 0; i < 3; ++i)
-    {
-        XMVECTOR lightDir = XMLoadFloat3(&renderResource->getShadowMap()->mBaseLightDirections[i]);
-        lightDir = XMVector3TransformNormal(lightDir, R);
-        XMStoreFloat3(&renderResource->getShadowMap()->mRotatedLightDirections[i], lightDir);
-    }
-
 }
 
-void Level::draw(int drawMode)
+void Level::draw()
 {
 
     UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
@@ -147,16 +136,7 @@ void Level::draw(int drawMode)
 
 
 
-    if (drawMode == 1)
-    {
-        for (const auto& gO : mGameObjects)
-        {
-            //if(gO.second->renderItem->renderType)
-            gO.second->draw(objectCB, 1);
-        }
-            
-        return;
-    }
+
 
     // draw the gameobjects
     UINT objectsDrawn = 0;
@@ -200,6 +180,21 @@ void Level::draw(int drawMode)
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
 
+    /*draw debug*/
+
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["debug"].Get());
+
+    for (const auto& gameObject : mGameObjects)
+    {
+        auto g = gameObject.second.get();
+
+        if (g->renderItem->renderType == RenderType::Debug)
+        {
+            gameObject.second->drawHitbox(objectCB);
+        }
+
+    }
+
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
 
@@ -209,7 +204,7 @@ void Level::draw(int drawMode)
 
         if (g->renderItem->renderType == RenderType::Sky)
         {
-            gameObject.second->draw(objectCB,1);
+            gameObject.second->draw(objectCB);
         }
         
     }
@@ -232,6 +227,23 @@ void Level::draw(int drawMode)
         }
 
     }
+
+}
+
+void Level::drawShadow()
+{
+    UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+
+    auto renderResource = ServiceProvider::getRenderResource();
+    auto objectCB = renderResource->getCurrentFrameResource()->ObjectCB->getResource();
+
+    for (const auto& gO : mGameObjects)
+    {
+        if (gO.second->renderItem->renderType != RenderType::Sky &&
+            gO.second->renderItem->renderType != RenderType::Debug)
+            gO.second->drawShadow(objectCB);
+    }
+
 
 }
 

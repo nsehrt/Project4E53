@@ -21,7 +21,9 @@ public:
     void update(const GameTime& gt);
 
     /* draw the level */
-    void draw(int drawMode = 0);
+    void draw();
+
+    void drawShadow();
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
     std::vector<std::shared_ptr<Camera>> mCameras;

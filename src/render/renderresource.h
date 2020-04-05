@@ -68,16 +68,43 @@ public:
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
     
-    CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
     ShadowMap* getShadowMap()
     {
         return mShadowMap.get();
     }
 
+    /*shadow map*/
+    std::unique_ptr<ShadowMap> mShadowMap = nullptr;
+    DirectX::BoundingSphere mSceneBounds;
+
+    UINT mShadowMapHeapIndex = 0;
+
+    UINT mNullCubeSrvIndex = 0;
+    UINT mNullTexSrvIndex = 0;
+
+    CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
+
+    float mLightNearZ = 0.0f;
+    float mLightFarZ = 0.0f;
+    XMFLOAT3 mLightPosW;
+    XMFLOAT4X4 mLightView = MathHelper::identity4x4();
+    XMFLOAT4X4 mLightProj = MathHelper::identity4x4();
+    XMFLOAT4X4 mShadowTransform = MathHelper::identity4x4();
+
+    float mLightRotationAngle = 0.0f;
+    XMFLOAT3 mBaseLightDirections[3] = {
+        XMFLOAT3(0.57735f, -0.57735f, 0.57735f),
+        XMFLOAT3(-0.57735f, -0.57735f, 0.57735f),
+        XMFLOAT3(0.0f, -0.707f, -0.707f)
+    };
+    XMFLOAT3 mRotatedLightDirections[3];
+
 private:
 
-    std::unique_ptr<ShadowMap> mShadowMap = nullptr;
+
+
+    void updateShadowTransform(const GameTime& gt);
 
     /*private init functions*/
     bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);
@@ -90,6 +117,7 @@ private:
     void buildInputLayouts();
 
     void generateDefaultShapes();
+    void createRtvAndDsvDescriptorHeaps();
 
     void buildPSOs();
     bool buildMaterials();

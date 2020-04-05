@@ -275,6 +275,12 @@
                 -5
             ],
             "RenderType": "DefaultNoNormal"
+        },
+        {
+            "Name": "quad",
+            "Model": "quad",
+            "Material": "default",
+            "RenderType": "Debug"
         }
         
     ]

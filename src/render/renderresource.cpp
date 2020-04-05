@@ -10,12 +10,18 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     int textureCounter = 0;
     int modelCounter = 0;
 
-    mHeapDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    /*SHADOW*/
+    mSceneBounds.Center = XMFLOAT3(0, 0, 0);
+    mSceneBounds.Radius = sqrtf(10.0f * 10.0f + 15.0f * 15.0f);
+
 
     /*init shadow map*/
     mShadowMap = std::make_unique<ShadowMap>(device, (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
                                              (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
 
+    mHeapDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+    createRtvAndDsvDescriptorHeaps();
     buildRootSignature();
     buildShaders();
     buildInputLayouts();
@@ -103,6 +109,48 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
 
 
+void RenderResource::updateShadowTransform(const GameTime& gt)
+{
+
+    // Only the first "main" light casts a shadow.
+    XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
+    XMVECTOR lightPos = -2.0f * mSceneBounds.Radius * lightDir;
+    XMVECTOR targetPos = XMLoadFloat3(&mSceneBounds.Center);
+    XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);
+
+    XMStoreFloat3(&mLightPosW, lightPos);
+
+    // Transform bounding sphere to light space.
+    XMFLOAT3 sphereCenterLS;
+    XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, lightView));
+
+    // Ortho frustum in light space encloses scene.
+    float l = sphereCenterLS.x - mSceneBounds.Radius;
+    float b = sphereCenterLS.y - mSceneBounds.Radius;
+    float n = sphereCenterLS.z - mSceneBounds.Radius;
+    float r = sphereCenterLS.x + mSceneBounds.Radius;
+    float t = sphereCenterLS.y + mSceneBounds.Radius;
+    float f = sphereCenterLS.z + mSceneBounds.Radius;
+
+    mLightNearZ = n;
+    mLightFarZ = f;
+    XMMATRIX lightProj = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
+    // Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+    XMMATRIX T(
+        0.5f, 0.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.0f, 1.0f);
+
+    XMMATRIX S = lightView * lightProj * T;
+    XMStoreFloat4x4(&mLightView, lightView);
+    XMStoreFloat4x4(&mLightProj, lightProj);
+    XMStoreFloat4x4(&mShadowTransform, S);
+
+}
+
 bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, TextureType type)
 {
     auto texMap = std::make_unique<Texture>();
@@ -187,24 +235,6 @@ bool RenderResource::buildRootSignature()
 
 bool RenderResource::buildDescriptorHeap()
 {
-    // 
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
-    rtvHeapDesc.NumDescriptors = 2;
-    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    rtvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(device->CreateDescriptorHeap(
-        &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
-
-    // 
-    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
-    dsvHeapDesc.NumDescriptors = 2;
-    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    dsvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(device->CreateDescriptorHeap(
-        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
-
 
     UINT texIndex = 0;
 
@@ -256,16 +286,18 @@ bool RenderResource::buildDescriptorHeap()
         texIndex++;
     }
 
-    int shadowMapIndex = texIndex++;
-    int nullCubeSrvIndex = texIndex++;
-    int nullTexSrvIndex = texIndex++;
+    mShadowMapHeapIndex = texIndex++;
+
+    mNullCubeSrvIndex = texIndex++;
+    mNullTexSrvIndex = texIndex++;
 
     auto srvCpuStart = mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     auto srvGpuStart = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
     auto dsvCpuStart = mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 
-    auto nullSrv = CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, nullCubeSrvIndex, mHeapDescriptorSize);
-    mNullSrv = CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, nullCubeSrvIndex, mHeapDescriptorSize);
+
+    auto nullSrv = CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, mNullCubeSrvIndex, mHeapDescriptorSize);
+    mNullSrv = CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, mNullCubeSrvIndex, mHeapDescriptorSize);
 
     device->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
     nullSrv.Offset(1, mHeapDescriptorSize);
@@ -277,12 +309,10 @@ bool RenderResource::buildDescriptorHeap()
     srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
     device->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
 
-    mShadowMap->buildDescriptors(
-        CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, shadowMapIndex, mHeapDescriptorSize),
-        CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, shadowMapIndex, mHeapDescriptorSize),
+    mShadowMap->BuildDescriptors(
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, mShadowMapHeapIndex, mHeapDescriptorSize),
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, mShadowMapHeapIndex, mHeapDescriptorSize),
         CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvCpuStart, 1, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV)));
-
-
 
     return true;
 }
@@ -389,6 +419,9 @@ void RenderResource::buildShaders()
     mShaders["shadowPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
     mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
+    mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\ShadowDebug.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\ShadowDebug.hlsl", nullptr, "PS", "ps_5_1");
+
 
 }
 
@@ -481,32 +514,31 @@ void RenderResource::buildPSOs()
 
 
     /*shadow PSO*/
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPSODesc = defaultPSODesc;
 
-    shadowPSODesc.RasterizerState.DepthBias = 100000;
-    shadowPSODesc.RasterizerState.DepthBiasClamp = 0.0f;
-    shadowPSODesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
-    shadowPSODesc.pRootSignature = mMainRootSignature.Get();
-
-    shadowPSODesc.VS = {
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
+    smapPsoDesc.RasterizerState.DepthBias = 100000;
+    smapPsoDesc.RasterizerState.DepthBiasClamp = 0.0f;
+    smapPsoDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
+    smapPsoDesc.pRootSignature = mMainRootSignature.Get();
+    smapPsoDesc.VS =
+    {
         reinterpret_cast<BYTE*>(mShaders["shadowVS"]->GetBufferPointer()),
         mShaders["shadowVS"]->GetBufferSize()
     };
-
-    shadowPSODesc.PS = {
-        nullptr,
-        0
+    smapPsoDesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["shadowPS"]->GetBufferPointer()),
+        mShaders["shadowPS"]->GetBufferSize()
     };
 
-
-    shadowPSODesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
-    shadowPSODesc.NumRenderTargets = 0;
-
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&shadowPSODesc, IID_PPV_ARGS(&mPSOs["shadow"])));
+    // Shadow map pass does not have a render target.
+    smapPsoDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+    smapPsoDesc.NumRenderTargets = 0;
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
 
 
     /*shadow alpha clip pso*/
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowAlphaPSODesc = shadowPSODesc;
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowAlphaPSODesc = smapPsoDesc;
 
     shadowAlphaPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
@@ -516,6 +548,23 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&shadowAlphaPSODesc, IID_PPV_ARGS(&mPSOs["shadowAlpha"])));
+
+    /*debug PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC debugPsoDesc = defaultPSODesc;
+    debugPsoDesc.pRootSignature = mMainRootSignature.Get();
+    debugPsoDesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["debugVS"]->GetBufferPointer()),
+        mShaders["debugVS"]->GetBufferSize()
+    };
+    debugPsoDesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["debugPS"]->GetBufferPointer()),
+        mShaders["debugPS"]->GetBufferSize()
+    };
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&debugPsoDesc, IID_PPV_ARGS(&mPSOs["debug"])));
+
+
 
     /*sky sphere PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
@@ -623,17 +672,17 @@ void RenderResource::updateBuffers(const GameTime& gt)
     updateMaterialConstantBuffers(gt);
 
     /*TODO*/
-    mShadowMap->mLightRotationAngle += 0.1f * gt.DeltaTime();
+    mLightRotationAngle += 0.1f * gt.DeltaTime();
 
-    XMMATRIX R = XMMatrixRotationY(mShadowMap->mLightRotationAngle);
+    XMMATRIX R = XMMatrixRotationY(mLightRotationAngle);
     for (int i = 0; i < 3; ++i)
     {
-        XMVECTOR lightDir = XMLoadFloat3(&mShadowMap->mBaseLightDirections[i]);
+        XMVECTOR lightDir = XMLoadFloat3(&mBaseLightDirections[i]);
         lightDir = XMVector3TransformNormal(lightDir, R);
-        XMStoreFloat3(&mShadowMap->mRotatedLightDirections[i], lightDir);
+        XMStoreFloat3(&mRotatedLightDirections[i], lightDir);
     }
 
-    mShadowMap->updateShadowTransform();
+    updateShadowTransform(gt);
     updateMainPassConstantBuffers(gt);
     updateShadowPassConstantBuffers(gt);
 }
@@ -756,16 +805,16 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
 void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 {
     /*TODO use main light*/
-    XMMATRIX view = XMLoadFloat4x4(&mShadowMap->mLightView);
-    XMMATRIX proj = XMLoadFloat4x4(&mShadowMap->mLightProj);
+    XMMATRIX view = XMLoadFloat4x4(&mLightView);
+    XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
 
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
     XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
     XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
     XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
-    UINT w = mShadowMap->getWidth();
-    UINT h = mShadowMap->getHeight();
+    UINT w = mShadowMap->Width();
+    UINT h = mShadowMap->Height();
 
     XMStoreFloat4x4(&mShadowPassConstants.View, XMMatrixTranspose(view));
     XMStoreFloat4x4(&mShadowPassConstants.InvView, XMMatrixTranspose(invView));
@@ -773,11 +822,11 @@ void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
     XMStoreFloat4x4(&mShadowPassConstants.InvProj, XMMatrixTranspose(invProj));
     XMStoreFloat4x4(&mShadowPassConstants.ViewProj, XMMatrixTranspose(viewProj));
     XMStoreFloat4x4(&mShadowPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
-    mShadowPassConstants.EyePosW = mShadowMap->mLightPosW;
+    mShadowPassConstants.EyePosW = mLightPosW;
     mShadowPassConstants.RenderTargetSize = XMFLOAT2((float)w, (float)h);
     mShadowPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / w, 1.0f / h);
-    mShadowPassConstants.NearZ = mShadowMap->mLightNearZ;
-    mShadowPassConstants.FarZ = mShadowMap->mLightFarZ;
+    mShadowPassConstants.NearZ = mLightNearZ;
+    mShadowPassConstants.FarZ = mLightFarZ;
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();
     currPassCB->copyData(1, mShadowPassConstants);
@@ -800,6 +849,30 @@ FrameResource* RenderResource::getCurrentFrameResource()
     return mCurrentFrameResource;
 }
 
+void RenderResource::createRtvAndDsvDescriptorHeaps()
+{
+
+    // 
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+    rtvHeapDesc.NumDescriptors = 2;
+    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    rtvHeapDesc.NodeMask = 0;
+    ThrowIfFailed(device->CreateDescriptorHeap(
+        &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
+
+    // 
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+    dsvHeapDesc.NumDescriptors = 2;
+    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    dsvHeapDesc.NodeMask = 0;
+    ThrowIfFailed(device->CreateDescriptorHeap(
+        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+
+}
+
+
 
 
 
@@ -811,6 +884,7 @@ void RenderResource::generateDefaultShapes()
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
     GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
     GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
+    GeometryGenerator::MeshData quad = geoGen.CreateQuad(0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 
     /*copy to box model*/
     std::vector<Vertex> vertices(box.Vertices.size());
@@ -895,6 +969,54 @@ void RenderResource::generateDefaultShapes()
 
 
     mModels["box"]->boundingBoxMesh = std::move(hitboxBox);
+
+
+    /*quad*/
+
+    vertices.clear();
+    vertices.resize(quad.Vertices.size());
+    indices.clear();
+    indices.resize(quad.Indices32.size());
+
+
+    for (size_t i = 0; i < quad.Vertices.size(); i++)
+    {
+        vertices[i].Pos = quad.Vertices[i].Position;
+        vertices[i].Normal = quad.Vertices[i].Normal;
+        vertices[i].TexC = quad.Vertices[i].TexC;
+        vertices[i].TangentU = quad.Vertices[i].TangentU;
+    }
+
+    indices.insert(indices.end(), std::begin(quad.GetIndices16()), std::end(quad.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    auto geoQuad = std::make_unique<Mesh>();
+    geoQuad->name = "quad";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoQuad->VertexBufferCPU));
+    CopyMemory(geoQuad->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoQuad->IndexBufferCPU));
+    CopyMemory(geoQuad->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    geoQuad->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                            cmdList, vertices.data(), vbByteSize, geoQuad->VertexBufferUploader);
+
+    geoQuad->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                           cmdList, indices.data(), ibByteSize, geoQuad->IndexBufferUploader);
+
+    geoQuad->VertexByteStride = sizeof(Vertex);
+    geoQuad->VertexBufferByteSize = vbByteSize;
+    geoQuad->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoQuad->IndexBufferByteSize = ibByteSize;
+    geoQuad->IndexCount = (UINT)indices.size();
+
+    std::unique_ptr<Model> mQu = std::make_unique<Model>();
+
+    mQu->meshes["quad"] = std::move(geoQuad);
+    mModels["quad"] = std::move(mQu);
 
 
     /*grid*/

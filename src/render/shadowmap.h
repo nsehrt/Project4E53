@@ -4,95 +4,49 @@
 
 class ShadowMap
 {
-
 public:
-    ShadowMap(ID3D12Device* _device, UINT _width, UINT _height);
-    //ShadowMap(const ShadowMap& rhs) = delete;
-    //ShadowMap& operator=(const ShadowMap& rhs) = delete;
-    ~ShadowMap() = default;
+	ShadowMap(ID3D12Device* device,
+			  UINT width, UINT height);
 
-    ID3D12Resource* getResource() const
-    {
-        return mShadowMap.Get();
-    }
+	ShadowMap(const ShadowMap& rhs) = delete;
+	ShadowMap& operator=(const ShadowMap& rhs) = delete;
+	~ShadowMap() = default;
 
-    UINT getWidth()const
-    {
-        return width;
-    }
+	UINT Width()const;
+	UINT Height()const;
+	ID3D12Resource* Resource();
+	CD3DX12_GPU_DESCRIPTOR_HANDLE Srv()const;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE Dsv()const;
 
-    UINT getHeight()const
-    {
-        return height;
-    }
+	D3D12_VIEWPORT Viewport()const;
+	D3D12_RECT ScissorRect()const;
 
-    CD3DX12_GPU_DESCRIPTOR_HANDLE getSrv()const
-    {
-        return mSrvHandleGpu;
-    }
+	void BuildDescriptors(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE hCpuSrv,
+		CD3DX12_GPU_DESCRIPTOR_HANDLE hGpuSrv,
+		CD3DX12_CPU_DESCRIPTOR_HANDLE hCpuDsv);
 
-    CD3DX12_CPU_DESCRIPTOR_HANDLE getDsv()const
-    {
-        return mDsvHandleCpu;
-    }
+	void OnResize(UINT newWidth, UINT newHeight);
 
-    D3D12_VIEWPORT getViewPort()const
-    {
-        return mViewPort;
-    }
-
-    D3D12_RECT getScissor()const
-    {
-        return mScissor;
-    }
-
-    void buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE _cpuSrv,
-                         CD3DX12_GPU_DESCRIPTOR_HANDLE _gpuSrv,
-                         CD3DX12_CPU_DESCRIPTOR_HANDLE _cpuDsv);
-
-    void onResize(UINT _width, UINT _height);
-
-    void updateShadowTransform();
-
-    DirectX::BoundingSphere sceneBounds;
-
-    UINT heapIndex = 0;
-
-    /*shadow transform*/
-    float mLightNearZ = 0.0f;
-    float mLightFarZ = 0.0f;
-    DirectX::XMFLOAT3 mLightPosW;
-    DirectX::XMFLOAT4X4 mLightView = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 mLightProj = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 mShadowTransform = MathHelper::identity4x4();
-
-    /*TODO*/
-    float mLightRotationAngle = 0.0f;
-    DirectX::XMFLOAT3 mBaseLightDirections[3] = {
-         DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f),
-         DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f),
-         DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f)
-    };
-    DirectX::XMFLOAT3 mRotatedLightDirections[3];
-
+private:
+	void BuildDescriptors();
+	void BuildResource();
 
 private:
 
-    ID3D12Device* mDevice = nullptr;
-    D3D12_VIEWPORT mViewPort;
-    D3D12_RECT mScissor;
+	ID3D12Device* md3dDevice = nullptr;
 
-    UINT width = 0;
-    UINT height = 0;
-    DXGI_FORMAT mFormat = DXGI_FORMAT_R24G8_TYPELESS;
+	D3D12_VIEWPORT mViewport;
+	D3D12_RECT mScissorRect;
 
-    CD3DX12_CPU_DESCRIPTOR_HANDLE mSrvHandleCpu;
-    CD3DX12_GPU_DESCRIPTOR_HANDLE mSrvHandleGpu;
-    CD3DX12_CPU_DESCRIPTOR_HANDLE mDsvHandleCpu;
+	UINT mWidth = 0;
+	UINT mHeight = 0;
+	DXGI_FORMAT mFormat = DXGI_FORMAT_R24G8_TYPELESS;
 
-    Microsoft::WRL::ComPtr<ID3D12Resource> mShadowMap = nullptr;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE mhCpuSrv;
+	CD3DX12_GPU_DESCRIPTOR_HANDLE mhGpuSrv;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE mhCpuDsv;
 
-
-    void buildDescriptors();
-    void buildResource();
+	Microsoft::WRL::ComPtr<ID3D12Resource> mShadowMap = nullptr;
 };
+

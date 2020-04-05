@@ -305,7 +305,6 @@ void P_4E53::update(const GameTime& gt)
 	/****************************/
 
 
-
 	/*get input and settings*/
 	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
 	Settings* settingsData = ServiceProvider::getSettings();
@@ -368,56 +367,57 @@ void P_4E53::draw(const GameTime& gt)
 
 	mCommandList->Reset(
 		cmdListAlloc.Get(),
-		renderResource->mPSOs["default"].Get()
+		renderResource->mPSOs["shadow"].Get()
 	);
 
 	/**/
-	//ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
-	//mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
+	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	//mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
+	mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
 
-	//auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
-	//mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
-	//mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->mNullSrv);
+	auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
+	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
+	mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->mNullSrv);
 
-	//mCommandList->SetGraphicsRootDescriptorTable(4, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	mCommandList->SetGraphicsRootDescriptorTable(4, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 
-	//mCommandList->RSSetViewports(1, &mShadowMap->getViewPort());
-	//mCommandList->RSSetScissorRects(1, &mShadowMap->getScissor());
+	mCommandList->RSSetViewports(1, &renderResource->getShadowMap()->Viewport());
+	mCommandList->RSSetScissorRects(1, &renderResource->getShadowMap()->ScissorRect());
 
-	//// Change to DEPTH_WRITE.
-	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->getResource(),
-	//							  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+	// Change to DEPTH_WRITE.
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
+								  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 
-	//UINT passCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(PassConstants));
+	UINT passCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(PassConstants));
 
-	//// Clear the back buffer and depth buffer.
-	//mCommandList->ClearDepthStencilView(mShadowMap->getDsv(),
-	//									D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+	// Clear the back buffer and depth buffer.
+	mCommandList->ClearDepthStencilView(renderResource->getShadowMap()->Dsv(),
+										D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
-	//// Set null render target because we are only going to draw to
-	//// depth buffer.  Setting a null render target will disable color writes.
-	//// Note the active PSO also must specify a render target count of 0.
-	//mCommandList->OMSetRenderTargets(0, nullptr, false, &mShadowMap->getDsv());
+	// Set null render target because we are only going to draw to
+	// depth buffer.  Setting a null render target will disable color writes.
+	// Note the active PSO also must specify a render target count of 0.
+	mCommandList->OMSetRenderTargets(0, nullptr, false, &renderResource->getShadowMap()->Dsv());
 
-	//// Bind the pass constant buffer for the shadow map pass.
-	//auto passCB = mCurrentFrameResource->PassCB->getResource();
-	//D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
-	//mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
+	// Bind the pass constant buffer for the shadow map pass.
+	auto passCB = mCurrentFrameResource->PassCB->getResource();
+	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
+	mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
 
-	////mCommandList->SetPipelineState(renderResource->mPSOs["shadow"].Get());
+	mCommandList->SetPipelineState(renderResource->mPSOs["shadow"].Get());
 
-	//ServiceProvider::getActiveLevel()->drawShadow();
+	ServiceProvider::getActiveLevel()->drawShadow();
 
-	//// Change back to GENERIC_READ so we can read the texture in a shader.
-	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->getResource(),
-	//							  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
+	// Change back to GENERIC_READ so we can read the texture in a shader.
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
+								  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
 
 
 
 	/**/
+
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 
@@ -425,41 +425,29 @@ void P_4E53::draw(const GameTime& gt)
 								  D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	/*clear buffers*/
-	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::LimeGreen, 0, nullptr);
+	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
 	mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	/*set render target*/
 	mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
 
-	ID3D12DescriptorHeap* descHeap[] = { ServiceProvider::getRenderResource()->mSrvDescriptorHeap.Get() };
-	mCommandList->SetDescriptorHeaps(_countof(descHeap), descHeap);
+	auto pass2CB = mCurrentFrameResource->PassCB->getResource();
+	mCommandList->SetGraphicsRootConstantBufferView(1, pass2CB->GetGPUVirtualAddress());
 
-	/*set used root signature*/
-	mCommandList->SetGraphicsRootSignature(ServiceProvider::getRenderResource()->mMainRootSignature.Get());
-
-	/*set per pass constant buffer*/
-	auto passCB = mCurrentFrameResource->PassCB->getResource();
-	mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
-
-	auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
-	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
 
 	/*cubemap*/
 	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	skyTexDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["grasscube1024.dds"]->index, ServiceProvider::getRenderResource()->mHeapDescriptorSize);
 	mCommandList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
 
-	/*textures (array)*/
-	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-
 	/*draw everything*/
-	
+	mCommandList->SetPipelineState(renderResource->mPSOs["default"].Get());
+
 	ServiceProvider::getActiveLevel()->draw();
 
 	/*to resource stage*/
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
 								  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
-
 	// done
 	ThrowIfFailed(mCommandList->Close());
 

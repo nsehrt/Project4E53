@@ -162,7 +162,8 @@ enum class RenderType
     Default,
     DefaultAlpha,
     DefaultNoNormal,
-    Sky
+    Sky,
+    Debug
 };
 
 struct RenderItem

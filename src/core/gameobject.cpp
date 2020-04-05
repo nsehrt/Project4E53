@@ -147,6 +147,10 @@ GameObject::GameObject(const json& objectJson, int index)
     {
         rItem->renderType = RenderType::DefaultNoNormal;
     }
+    else if (objectJson["RenderType"] == "Debug")
+    {
+        rItem->renderType = RenderType::Debug;
+    }
     else
     {
         rItem->renderType = RenderType::Default;
@@ -170,14 +174,14 @@ void GameObject::update(const GameTime& gt)
     setRotation(rot);
 }
 
-bool GameObject::draw(ID3D12Resource* objectCB, int drawMode)
+bool GameObject::draw(ID3D12Resource* objectCB)
 {
     const auto gObjRenderItem = renderItem.get();
 
     if (!isDrawEnabled) return false;
 
     /*frustum culling check*/
-    if (isFrustumCulled || drawMode == 0)
+    if (isFrustumCulled)
     {
         auto cam = ServiceProvider::getActiveCamera();
 
@@ -193,7 +197,6 @@ bool GameObject::draw(ID3D12Resource* objectCB, int drawMode)
         }
 
     }
-
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -218,6 +221,35 @@ bool GameObject::draw(ID3D12Resource* objectCB, int drawMode)
     }
 
     return true;
+}
+
+void GameObject::drawShadow(ID3D12Resource* objectCB)
+{
+    const auto gObjRenderItem = renderItem.get();
+
+    if (!isDrawEnabled || !isShadowEnabled) return;
+
+    const auto renderResource = ServiceProvider::getRenderResource();
+
+    D3D12_GPU_VIRTUAL_ADDRESS cachedObjCBAddress = 0;
+
+    for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+    {
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes.second->VertexBufferView());
+        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes.second->IndexBufferView());
+        renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex * objectCBSize;
+
+        /*only if changed*/
+        if (cachedObjCBAddress != objCBAddress)
+        {
+            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+            cachedObjCBAddress = objCBAddress;
+        }
+
+        renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
+    }
 }
 
 void GameObject::drawHitbox(ID3D12Resource* objectCB)
