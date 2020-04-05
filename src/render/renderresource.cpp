@@ -183,11 +183,30 @@ bool RenderResource::buildRootSignature()
 
 bool RenderResource::buildDescriptorHeap()
 {
+    // 
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+    rtvHeapDesc.NumDescriptors = 2;
+    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    rtvHeapDesc.NodeMask = 0;
+    ThrowIfFailed(device->CreateDescriptorHeap(
+        &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
+
+    // 
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+    dsvHeapDesc.NumDescriptors = 2;
+    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    dsvHeapDesc.NodeMask = 0;
+    ThrowIfFailed(device->CreateDescriptorHeap(
+        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+
+
     UINT texIndex = 0;
 
     /*SRV heap description*/
     D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-    srvHeapDesc.NumDescriptors = (UINT)mTextures.size();
+    srvHeapDesc.NumDescriptors = (UINT)mTextures.size() + 3;
     srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
@@ -233,23 +252,33 @@ bool RenderResource::buildDescriptorHeap()
         texIndex++;
     }
 
-    // 
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
-    rtvHeapDesc.NumDescriptors = 2;
-    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    rtvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(device->CreateDescriptorHeap(
-        &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
+    int shadowMapIndex = texIndex++;
+    int nullCubeSrvIndex = texIndex++;
+    int nullTexSrvIndex = texIndex++;
 
-    // 
-    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
-    dsvHeapDesc.NumDescriptors = 2;
-    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    dsvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(device->CreateDescriptorHeap(
-        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+    auto srvCpuStart = mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    auto srvGpuStart = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+    auto dsvCpuStart = mDsvHeap->GetCPUDescriptorHandleForHeapStart();
+
+    auto nullSrv = CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, nullCubeSrvIndex, mHeapDescriptorSize);
+    mNullSrv = CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, nullCubeSrvIndex, mHeapDescriptorSize);
+
+    device->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
+    nullSrv.Offset(1, mHeapDescriptorSize);
+
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    srvDesc.Texture2D.MipLevels = 1;
+    srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+    device->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
+
+    ServiceProvider::getShadowMap()->buildDescriptors(
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, shadowMapIndex, mHeapDescriptorSize),
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, shadowMapIndex, mHeapDescriptorSize),
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvCpuStart, 1, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV)));
+
+
 
     return true;
 }

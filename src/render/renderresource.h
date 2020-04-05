@@ -54,6 +54,8 @@ public:
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
 
+    CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
+
 private:
 
     /*private init functions*/

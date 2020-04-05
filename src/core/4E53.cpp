@@ -210,6 +210,12 @@ bool P_4E53::Initialize()
 		return false;
 	}
 
+	/*init shadow map*/
+	mShadowMap = std::make_shared<ShadowMap>(mDevice.Get(), (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
+											 (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
+
+	ServiceProvider::setShadowMap(mShadowMap);
+
 	/*initialize and register render resource*/
 	std::shared_ptr<RenderResource> renderResource(new RenderResource());
 
@@ -237,12 +243,6 @@ bool P_4E53::Initialize()
 	fpsCamera = std::make_shared<FPSCamera>();
 	fpsCamera->setLens();
 	fpsCamera->setPosition(0.0f, 5.0f, -20.f);
-
-	/*init shadow map*/
-	mShadowMap = std::make_shared<ShadowMap>(mDevice.Get(), (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
-											 (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
-
-	ServiceProvider::setShadowMap(mShadowMap);
 
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
@@ -385,7 +385,7 @@ void P_4E53::draw(const GameTime& gt)
 
 	//auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
 	//mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
-	//mCommandList->SetGraphicsRootDescriptorTable(3, mNullSrv);
+	//mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->mNullSrv);
 
 	//mCommandList->SetGraphicsRootDescriptorTable(4, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
@@ -413,13 +413,15 @@ void P_4E53::draw(const GameTime& gt)
 	//D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
 	//mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
 
-	//mCommandList->SetPipelineState(renderResource->mPSOs["shadow"].Get());
+	////mCommandList->SetPipelineState(renderResource->mPSOs["shadow"].Get());
 
-	//ServiceProvider::getActiveLevel()->draw();
+	//ServiceProvider::getActiveLevel()->drawShadow();
 
 	//// Change back to GENERIC_READ so we can read the texture in a shader.
 	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->getResource(),
 	//							  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
+
+
 
 	/**/
 	mCommandList->RSSetViewports(1, &mScreenViewport);

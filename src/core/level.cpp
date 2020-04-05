@@ -234,6 +234,31 @@ void Level::draw()
 
 }
 
+void Level::drawShadow()
+{
+
+    UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+
+    auto objectCB = mCurrentFrameResource->ObjectCB->getResource();
+    auto renderResource = ServiceProvider::getRenderResource();
+
+    /* TODO sort draw order of game objects*/
+
+
+    // draw the gameobjects
+    UINT objectsDrawn = 0;
+
+    for (const auto& gameObject : mGameObjects)
+    {
+
+        auto g = gameObject.second.get();
+
+        objectsDrawn += gameObject.second->draw(objectCB);
+
+    }
+
+}
+
 void Level::cycleFrameResource()
 {
     mCurrentFrameResourceIndex = (mCurrentFrameResourceIndex + 1) % gNumFrameResources;
@@ -325,7 +350,7 @@ void Level::buildFrameResource()
     for (int i = 0; i < gNumFrameResources; i++)
     {
         mFrameResources.push_back(std::make_unique<FrameResource>(ServiceProvider::getRenderResource()->device,
-                                  1,
+                                  2,
                                   (UINT)mGameObjects.size(),
                                   0,
                                   (UINT)ServiceProvider::getRenderResource()->mMaterials.size()));

@@ -26,6 +26,9 @@ public:
     /* draw the level */
     void draw();
 
+    /*draw to shadow map*/
+    void drawShadow();
+
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
     std::vector<std::shared_ptr<Camera>> mCameras;
 
