@@ -103,9 +103,9 @@
             ],
             "RenderType": "Default",
             "TexScale": [
-                5,
-                5,
-                1
+                20,
+                20,
+                20
             ]
         },
         {

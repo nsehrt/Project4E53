@@ -18,7 +18,7 @@ class ShadowMap;
 #include "../core/level.h"
 #include "../core/camera.h"
 #include "../render/shadowmap.h"
-
+#include "../util/debuginfo.h"
 
 class ServiceProvider
 {
@@ -33,7 +33,7 @@ private:
 
     static std::shared_ptr<Level> activeLevel;
     static std::shared_ptr<Camera> activeCamera;
-
+    static std::shared_ptr<DebugInfo> debugInfo;
     static std::shared_ptr<ShadowMap> shadowMap;
 
     static std::atomic<unsigned int> audioGuid;
@@ -65,6 +65,7 @@ public:
     static ShadowMap* getShadowMap() { return shadowMap.get(); };
     static void setShadowMap(std::shared_ptr<ShadowMap> providedShadowMap);
 
+    static DebugInfo* getDebugInfo() { return debugInfo.get(); };
 
     static unsigned int getAudioGuid()
     {

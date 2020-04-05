@@ -554,11 +554,11 @@ void DX12App::calculateFrameStats()
 
         wstring fpsStr = to_wstring(fps);
         wstring mspfStr = to_wstring(mspf);
+        wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);
 
         wstring windowText = mWindowCaption +
             L"    fps: " + fpsStr +
-            L"   mspf: " + mspfStr;
-
+            L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn;
         SetWindowText(mMainWindow, windowText.c_str());
 
         frameCount = 0;

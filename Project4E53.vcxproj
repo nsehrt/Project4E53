@@ -176,6 +176,7 @@
     <ClCompile Include="src\util\settings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="debuginfo.h" />
     <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />

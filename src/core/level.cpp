@@ -195,8 +195,7 @@ void Level::draw()
     }
 
 
-
-    //LOG(Severity::Info, objectsDrawn << " objects drawn.");
+    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
 
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());

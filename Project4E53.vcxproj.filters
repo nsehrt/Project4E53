@@ -106,6 +106,9 @@
     <ClInclude Include="src\render\shadowmap.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
+    <ClInclude Include="debuginfo.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
