@@ -6,9 +6,9 @@ class ShadowMap
 {
 
 public:
-    explicit ShadowMap(ID3D12Device* _device, UINT _width, UINT _height);
-    ShadowMap(const ShadowMap& rhs) = delete;
-    ShadowMap& operator=(const ShadowMap& rhs) = delete;
+    ShadowMap(ID3D12Device* _device, UINT _width, UINT _height);
+    //ShadowMap(const ShadowMap& rhs) = delete;
+    //ShadowMap& operator=(const ShadowMap& rhs) = delete;
     ~ShadowMap() = default;
 
     ID3D12Resource* getResource() const

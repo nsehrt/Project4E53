@@ -5,6 +5,7 @@
 #include "../core/camera.h"
 #include "../core/gametime.h"
 #include "frameresource.h"
+#include "shadowmap.h"
 #include <filesystem>
 
 
@@ -66,10 +67,17 @@ public:
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
-
+    
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
+    ShadowMap* getShadowMap()
+    {
+        return mShadowMap.get();
+    }
+
 private:
+
+    std::unique_ptr<ShadowMap> mShadowMap = nullptr;
 
     /*private init functions*/
     bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);

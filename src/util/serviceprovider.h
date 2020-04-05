@@ -34,7 +34,6 @@ private:
     static std::shared_ptr<Level> activeLevel;
     static std::shared_ptr<Camera> activeCamera;
     static std::shared_ptr<DebugInfo> debugInfo;
-    static std::shared_ptr<ShadowMap> shadowMap;
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -61,9 +60,6 @@ public:
 
     static Camera* getActiveCamera() { return activeCamera.get(); };
     static void setActiveCamera(std::shared_ptr<Camera> providedCamera);
-
-    static ShadowMap* getShadowMap() { return shadowMap.get(); };
-    static void setShadowMap(std::shared_ptr<ShadowMap> providedShadowMap);
 
     static DebugInfo* getDebugInfo() { return debugInfo.get(); };
 

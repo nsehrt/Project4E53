@@ -49,7 +49,6 @@ private:
 
 	std::vector<std::shared_ptr<Level>> mLevel;
 
-	std::shared_ptr<ShadowMap> mShadowMap;
 };
 
 int gNumFrameResources = 3;
@@ -209,12 +208,6 @@ bool P_4E53::Initialize()
 		ServiceProvider::getLogger()->print<Severity::Critical>("Unable to access model folder!");
 		return false;
 	}
-
-	/*init shadow map*/
-	mShadowMap = std::make_shared<ShadowMap>(mDevice.Get(), (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
-											 (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
-
-	ServiceProvider::setShadowMap(mShadowMap);
 
 	/*initialize and register render resource*/
 	std::shared_ptr<RenderResource> renderResource(new RenderResource());

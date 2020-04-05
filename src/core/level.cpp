@@ -77,6 +77,7 @@ bool Level::load(const std::string& levelFile)
 
 void Level::update(const GameTime& gt)
 {
+    auto renderResource = ServiceProvider::getRenderResource();
 
     for (auto& gameObj : mGameObjects)
     {
@@ -121,14 +122,14 @@ void Level::update(const GameTime& gt)
     //}
 
 
-    ServiceProvider::getShadowMap()->mLightRotationAngle += 0.1f * gt.DeltaTime();
+    renderResource->getShadowMap()->mLightRotationAngle += 0.1f * gt.DeltaTime();
 
-    XMMATRIX R = XMMatrixRotationY(ServiceProvider::getShadowMap()->mLightRotationAngle);
+    XMMATRIX R = XMMatrixRotationY(renderResource->getShadowMap()->mLightRotationAngle);
     for (int i = 0; i < 3; ++i)
     {
-        XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getShadowMap()->mBaseLightDirections[i]);
+        XMVECTOR lightDir = XMLoadFloat3(&renderResource->getShadowMap()->mBaseLightDirections[i]);
         lightDir = XMVector3TransformNormal(lightDir, R);
-        XMStoreFloat3(&ServiceProvider::getShadowMap()->mRotatedLightDirections[i], lightDir);
+        XMStoreFloat3(&renderResource->getShadowMap()->mRotatedLightDirections[i], lightDir);
     }
 
 }

@@ -12,10 +12,13 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     mHeapDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
+    /*init shadow map*/
+    mShadowMap = std::make_unique<ShadowMap>(device, (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
+                                             (UINT)ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
+
     buildRootSignature();
     buildShaders();
     buildInputLayouts();
-
 
     /*load all textures*/
 
@@ -47,7 +50,6 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         }
         tC++;
     }
-
 
     buildDescriptorHeap();
 
@@ -275,7 +277,7 @@ bool RenderResource::buildDescriptorHeap()
     srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
     device->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
 
-    ServiceProvider::getShadowMap()->buildDescriptors(
+    mShadowMap->buildDescriptors(
         CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, shadowMapIndex, mHeapDescriptorSize),
         CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, shadowMapIndex, mHeapDescriptorSize),
         CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvCpuStart, 1, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV)));
@@ -619,7 +621,7 @@ void RenderResource::updateBuffers(const GameTime& gt)
 {
     updateGameObjectConstantBuffers(gt);
     updateMaterialConstantBuffers(gt);
-    ServiceProvider::getShadowMap()->updateShadowTransform();
+    mShadowMap->updateShadowTransform();
     updateMainPassConstantBuffers(gt);
     updateShadowPassConstantBuffers(gt);
 }
@@ -741,19 +743,17 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
 
 void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 {
-    auto sMap = ServiceProvider::getShadowMap();
-
     /*TODO use main light*/
-    XMMATRIX view = XMLoadFloat4x4(&sMap->mLightView);
-    XMMATRIX proj = XMLoadFloat4x4(&sMap->mLightProj);
+    XMMATRIX view = XMLoadFloat4x4(&mShadowMap->mLightView);
+    XMMATRIX proj = XMLoadFloat4x4(&mShadowMap->mLightProj);
 
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
     XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
     XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
     XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
-    UINT w = sMap->getWidth();
-    UINT h = sMap->getHeight();
+    UINT w = mShadowMap->getWidth();
+    UINT h = mShadowMap->getHeight();
 
     XMStoreFloat4x4(&mShadowPassConstants.View, XMMatrixTranspose(view));
     XMStoreFloat4x4(&mShadowPassConstants.InvView, XMMatrixTranspose(invView));
@@ -761,11 +761,11 @@ void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
     XMStoreFloat4x4(&mShadowPassConstants.InvProj, XMMatrixTranspose(invProj));
     XMStoreFloat4x4(&mShadowPassConstants.ViewProj, XMMatrixTranspose(viewProj));
     XMStoreFloat4x4(&mShadowPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
-    mShadowPassConstants.EyePosW = sMap->mLightPosW;
+    mShadowPassConstants.EyePosW = mShadowMap->mLightPosW;
     mShadowPassConstants.RenderTargetSize = XMFLOAT2((float)w, (float)h);
     mShadowPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / w, 1.0f / h);
-    mShadowPassConstants.NearZ = sMap->mLightNearZ;
-    mShadowPassConstants.FarZ = sMap->mLightFarZ;
+    mShadowPassConstants.NearZ = mShadowMap->mLightNearZ;
+    mShadowPassConstants.FarZ = mShadowMap->mLightFarZ;
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();
     currPassCB->copyData(1, mShadowPassConstants);
