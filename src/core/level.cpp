@@ -180,21 +180,6 @@ void Level::draw()
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
 
-    /*draw debug*/
-
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["debug"].Get());
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        auto g = gameObject.second.get();
-
-        if (g->renderItem->renderType == RenderType::Debug)
-        {
-            gameObject.second->drawHitbox(objectCB);
-        }
-
-    }
-
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
 

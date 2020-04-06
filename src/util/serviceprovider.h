@@ -17,7 +17,6 @@ class ShadowMap;
 #include "../render/renderresource.h"
 #include "../core/level.h"
 #include "../core/camera.h"
-#include "../render/shadowmap.h"
 #include "../util/debuginfo.h"
 
 class ServiceProvider

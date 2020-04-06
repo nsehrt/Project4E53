@@ -13,7 +13,6 @@
 #include "../core/fpscamera.h"
 #include "../util/modelloader.h"
 #include "../core/level.h"
-#include "../render/shadowmap.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -367,10 +366,10 @@ void P_4E53::draw(const GameTime& gt)
 
 	mCommandList->Reset(
 		cmdListAlloc.Get(),
-		renderResource->mPSOs["shadow"].Get()
+		renderResource->mPSOs["default"].Get()
 	);
 
-	/**/
+
 	ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
@@ -378,45 +377,8 @@ void P_4E53::draw(const GameTime& gt)
 
 	auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
 	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
-	mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->mNullSrv);
 
 	mCommandList->SetGraphicsRootDescriptorTable(4, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-
-
-	mCommandList->RSSetViewports(1, &renderResource->getShadowMap()->Viewport());
-	mCommandList->RSSetScissorRects(1, &renderResource->getShadowMap()->ScissorRect());
-
-	// Change to DEPTH_WRITE.
-	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
-								  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
-
-	UINT passCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(PassConstants));
-
-	// Clear the back buffer and depth buffer.
-	mCommandList->ClearDepthStencilView(renderResource->getShadowMap()->Dsv(),
-										D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-
-	// Set null render target because we are only going to draw to
-	// depth buffer.  Setting a null render target will disable color writes.
-	// Note the active PSO also must specify a render target count of 0.
-	mCommandList->OMSetRenderTargets(0, nullptr, false, &renderResource->getShadowMap()->Dsv());
-
-	// Bind the pass constant buffer for the shadow map pass.
-	auto passCB = mCurrentFrameResource->PassCB->getResource();
-	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
-	mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
-
-	mCommandList->SetPipelineState(renderResource->mPSOs["shadow"].Get());
-
-	ServiceProvider::getActiveLevel()->drawShadow();
-
-	// Change back to GENERIC_READ so we can read the texture in a shader.
-	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
-								  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
-
-
-
-	/**/
 
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
