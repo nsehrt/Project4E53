@@ -129,7 +129,6 @@ void Level::draw()
     UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 
     auto renderResource = ServiceProvider::getRenderResource();
-    auto objectCB = renderResource->getCurrentFrameResource()->ObjectCB->getResource();
     
 
     /* TODO sort draw order of game objects*/
@@ -148,7 +147,7 @@ void Level::draw()
 
         if (g->renderItem->renderType == RenderType::Default)
         {
-            objectsDrawn += gameObject.second->draw(objectCB);
+            objectsDrawn += gameObject.second->draw();
         }
         
     }
@@ -161,7 +160,7 @@ void Level::draw()
 
         if (g->renderItem->renderType == RenderType::DefaultNoNormal)
         {
-            objectsDrawn += gameObject.second->draw(objectCB);
+            objectsDrawn += gameObject.second->draw();
         }
     }
 
@@ -173,12 +172,28 @@ void Level::draw()
 
         if (g->renderItem->renderType == RenderType::DefaultAlpha)
         {
-            objectsDrawn += gameObject.second->draw(objectCB);
+            objectsDrawn += gameObject.second->draw();
         }
     }
 
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
+
+    /*debug*/
+#ifdef _DEBUG
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["debug"].Get());
+
+    for (const auto& gameObject : mGameObjects)
+    {
+        auto g = gameObject.second.get();
+
+        if (g->renderItem->renderType == RenderType::Debug)
+        {
+            gameObject.second->draw();
+        }
+
+    }
+#endif
 
     /*draw sky sphere*/
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
@@ -189,7 +204,7 @@ void Level::draw()
 
         if (g->renderItem->renderType == RenderType::Sky)
         {
-            gameObject.second->draw(objectCB);
+            gameObject.second->draw();
         }
         
     }
@@ -206,7 +221,7 @@ void Level::draw()
 
             if (g->renderItem->renderType != RenderType::Sky)
             {
-                gameObject.second->drawHitbox(objectCB);
+                gameObject.second->drawHitbox();
             }
             
         }
@@ -226,7 +241,7 @@ void Level::drawShadow()
     {
         if (gO.second->renderItem->renderType != RenderType::Sky &&
             gO.second->renderItem->renderType != RenderType::Debug)
-            gO.second->drawShadow(objectCB);
+            gO.second->drawShadow();
     }
 
 
@@ -297,6 +312,15 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
     }
 
+
+    auto debugObject = std::make_unique<GameObject>(amountGameObjects);
+
+    debugObject->isFrustumCulled = false;
+    debugObject->isShadowEnabled = false;
+    debugObject->renderItem->renderType = RenderType::Debug;
+    debugObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["quad"].get();
+
+    mGameObjects["debugQuad"] = std::move(debugObject);
 
     return true;
 }

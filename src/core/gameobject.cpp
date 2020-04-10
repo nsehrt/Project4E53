@@ -163,6 +163,26 @@ GameObject::GameObject(const json& objectJson, int index)
     updateTransforms();
 }
 
+GameObject::GameObject(int index)
+{
+    auto renderResource = ServiceProvider::getRenderResource();
+
+    Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Scale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+    TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureScale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+    auto tItem = std::make_unique<RenderItem>();
+    tItem->ObjCBIndex = index;
+    tItem->Mat = renderResource->mMaterials["default"].get();
+    tItem->Model = renderResource->mModels["box"].get();
+
+    renderItem = std::move(tItem);
+}
+
 void GameObject::update(const GameTime& gt)
 {
 
@@ -174,9 +194,10 @@ void GameObject::update(const GameTime& gt)
     setRotation(rot);
 }
 
-bool GameObject::draw(ID3D12Resource* objectCB)
+bool GameObject::draw()
 {
     const auto gObjRenderItem = renderItem.get();
+    const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
     if (!isDrawEnabled) return false;
 
@@ -223,9 +244,11 @@ bool GameObject::draw(ID3D12Resource* objectCB)
     return true;
 }
 
-void GameObject::drawShadow(ID3D12Resource* objectCB)
+void GameObject::drawShadow()
 {
     const auto gObjRenderItem = renderItem.get();
+    const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
+
 
     if (!isDrawEnabled || !isShadowEnabled) return;
 
@@ -252,10 +275,12 @@ void GameObject::drawShadow(ID3D12Resource* objectCB)
     }
 }
 
-void GameObject::drawHitbox(ID3D12Resource* objectCB)
+void GameObject::drawHitbox()
 {
 
     const auto gObjRenderItem = renderItem.get();
+    const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
+
 
     if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) return;
 

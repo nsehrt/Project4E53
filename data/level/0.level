@@ -93,22 +93,6 @@
             ]
         },
         {
-            "Name": "grid",
-            "Model": "grid",
-            "Material": "tile0",
-            "Scale": [
-                10,
-                1,
-                10
-            ],
-            "RenderType": "Default",
-            "TexScale": [
-                20,
-                20,
-                20
-            ]
-        },
-        {
             "Name": "obj5",
             "Model": "cylinder",
             "Material": "wire",
@@ -275,12 +259,6 @@
                 -5
             ],
             "RenderType": "DefaultNoNormal"
-        },
-        {
-            "Name": "quad",
-            "Model": "quad",
-            "Material": "default",
-            "RenderType": "Debug"
         }
         
     ]

@@ -19,23 +19,18 @@ class GameObject
 public:
 
     explicit GameObject(const json& objectJson, int index);
-    GameObject()
-    {
-        Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        Scale = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-        TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        TextureScale = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    };
+    GameObject() = default;
+
+    explicit GameObject(int index);
+
     ~GameObject() = default;
 
 
     void update(const GameTime &gt);
-    bool draw(ID3D12Resource* objectCB);
-    void drawShadow(ID3D12Resource* objectCB);
-    void drawHitbox(ID3D12Resource* objectCB);
+    bool draw();
+    void drawShadow();
+    void drawHitbox();
 
     std::string name;
     std::unique_ptr<RenderItem> renderItem;

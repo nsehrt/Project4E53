@@ -1,8 +1,3 @@
-//***************************************************************************************
-// Default.hlsl by Frank Luna (C) 2015 All Rights Reserved.
-//***************************************************************************************
-
-// Defaults for number of lights.
 #ifndef NUM_DIR_LIGHTS
     #define NUM_DIR_LIGHTS 3
 #endif
@@ -29,7 +24,7 @@ struct VertexIn
 struct VertexOut
 {
 	float4 PosH    : SV_POSITION;
-	float4 ShadowPosH : POSITION0;
+    float4 ShadowPosH : POSITION0;
     float3 PosW    : POSITION1;
     float3 NormalW : NORMAL;
 	float3 TangentW : TANGENT;
@@ -103,7 +98,7 @@ float4 PS(VertexOut pin) : SV_Target
 
     // Only the first light casts a shadow.
     float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
-    //shadowFactor[0] = CalcShadowFactor(pin.ShadowPosH);
+    shadowFactor[0] = CalcShadowFactor(pin.ShadowPosH);
 
     const float shininess = (1.0f - roughness) * normalMapSample.a;
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
