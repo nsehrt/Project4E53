@@ -1,8 +1,3 @@
-//***************************************************************************************
-// Shadows.hlsl by Frank Luna (C) 2015 All Rights Reserved.
-//***************************************************************************************
-
-// Include common HLSL code.
 #include "Common.hlsl"
 
 struct VertexIn
@@ -36,9 +31,7 @@ VertexOut VS(VertexIn vin)
     return vout;
 }
 
-// This is only used for alpha cut out geometry, so that shadows 
-// show up correctly.  Geometry that does not need to sample a
-// texture can use a NULL pixel shader for depth pass.
+/*only use this for the purpose of clipping, use null pixel shader for opaque objects*/
 void PS(VertexOut pin) 
 {
 	// Fetch the material data.
@@ -46,15 +39,9 @@ void PS(VertexOut pin)
 	float4 diffuseAlbedo = matData.DiffuseAlbedo;
     uint diffuseMapIndex = matData.DiffuseMapIndex;
 	
-	// Dynamically look up the texture in the array.
 	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
 
-#ifdef ALPHA_TEST
-    // Discard pixel if texture alpha < 0.1.  We do this test as soon 
-    // as possible in the shader so that we can potentially exit the
-    // shader early, thereby skipping the rest of the shader code.
     clip(diffuseAlbedo.a - 0.1f);
-#endif
 }
 
 

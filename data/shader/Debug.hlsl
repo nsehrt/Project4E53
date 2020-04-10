@@ -1,8 +1,3 @@
-//***************************************************************************************
-// ShadowDebug.hlsl by Frank Luna (C) 2015 All Rights Reserved.
-//***************************************************************************************
-
-// Include common HLSL code.
 #include "Common.hlsl"
 
 struct VertexIn
@@ -21,9 +16,8 @@ VertexOut VS(VertexIn vin)
 {
 	VertexOut vout = (VertexOut)0.0f;
 
-    // Already in homogeneous clip space.
+    // local Position is already in homogeneous clip space
     vout.PosH = float4(vin.PosL, 1.0f);
-	
 	vout.TexC = vin.TexC;
 	
     return vout;
@@ -31,6 +25,7 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
+	/*sample the shadow map*/
     return float4(gShadowMap.Sample(gsamLinearWrap, pin.TexC).rrr, 1.0f);
 }
 

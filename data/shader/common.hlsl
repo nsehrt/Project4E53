@@ -79,9 +79,7 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
-//---------------------------------------------------------------------------------------
-// Transforms a normal map sample to world space.
-//---------------------------------------------------------------------------------------
+/*transform sample from normal map to world space*/
 float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW)
 {
 	// Uncompress each component from [0,1] to [-1,1].
@@ -100,6 +98,7 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 	return bumpedNormalW;
 }
 
+/*calculate the amount the fragment is in shadow*/
 float CalcShadowFactor(float4 shadowPosH)
 {
     // Complete projection by doing division by w.
