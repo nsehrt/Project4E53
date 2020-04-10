@@ -93,6 +93,16 @@
             ]
         },
         {
+            "Name": "grid1",
+            "Model": "grid",
+            "Material": "tile0",
+            "Scale":[
+                10,10,10
+            ],
+            "TexScale":[10,10,10],
+            "RenderType": "Default"
+        },
+        {
             "Name": "obj5",
             "Model": "cylinder",
             "Material": "wire",

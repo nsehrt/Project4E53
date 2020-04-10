@@ -16,7 +16,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     mShadowMap = std::make_unique<ShadowMap>(device, 4096, 4096);
     mSceneBounds.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    mSceneBounds.Radius = 35;
+    mSceneBounds.Radius = 100;
 
     buildRootSignature();
     buildShaders();
@@ -801,6 +801,7 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     XMStoreFloat4x4(&mMainPassConstants.InvProj, XMMatrixTranspose(invProj));
     XMStoreFloat4x4(&mMainPassConstants.ViewProj, XMMatrixTranspose(viewProj));
     XMStoreFloat4x4(&mMainPassConstants.InvViewProj, XMMatrixTranspose(invViewProj));
+    XMStoreFloat4x4(&mMainPassConstants.ShadowTransform, XMMatrixTranspose(XMLoadFloat4x4(&mShadowTransform)));
     mMainPassConstants.EyePosW = ServiceProvider::getActiveCamera()->getPosition3f();
 
 
