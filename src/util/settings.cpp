@@ -94,9 +94,9 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pGraphic, "ShadowQuality", &settings.graphicSettings.ShadowQuality))
         return false;
 
-    if (settings.graphicSettings.ShadowQuality > 3)
+    if (settings.graphicSettings.ShadowQuality > 4)
     {
-        settings.graphicSettings.ShadowQuality = 3;
+        settings.graphicSettings.ShadowQuality = 4;
     }
     else if (settings.graphicSettings.ShadowQuality < 0)
     {

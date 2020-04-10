@@ -14,9 +14,9 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     mDsvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
-    mShadowMap = std::make_unique<ShadowMap>(device, 4096, 4096);
+    mShadowMap = std::make_unique<ShadowMap>(device, ServiceProvider::getSettings()->graphicSettings.ShadowQuality, ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
     mSceneBounds.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    mSceneBounds.Radius = 100;
+    mSceneBounds.Radius = 40;
 
     buildRootSignature();
     buildShaders();
@@ -373,8 +373,7 @@ void RenderResource::buildShaders()
     mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["shadowPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
-    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", alphaTestDefines, "PS", "ps_5_1");
+    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
@@ -469,7 +468,7 @@ void RenderResource::buildPSOs()
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
-    smapPsoDesc.RasterizerState.DepthBias = 100000;
+    smapPsoDesc.RasterizerState.DepthBias = 10000;
     smapPsoDesc.RasterizerState.DepthBiasClamp = 0.0f;
     smapPsoDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
     smapPsoDesc.pRootSignature = mMainRootSignature.Get();
@@ -480,8 +479,8 @@ void RenderResource::buildPSOs()
     };
     smapPsoDesc.PS =
     {
-        reinterpret_cast<BYTE*>(mShaders["shadowPS"]->GetBufferPointer()),
-        mShaders["shadowPS"]->GetBufferSize()
+        nullptr,
+        0
     };
 
     smapPsoDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
