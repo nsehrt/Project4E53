@@ -142,6 +142,7 @@ GameObject::GameObject(const json& objectJson, int index)
     if (objectJson["RenderType"] == "DefaultAlpha")
     {
         rItem->renderType = RenderType::DefaultAlpha;
+        rItem->shadowType = ShadowType::Alpha;
     }
     else if (objectJson["RenderType"] == "DefaultNoNormal")
     {

@@ -166,6 +166,12 @@ enum class RenderType
     Debug
 };
 
+enum class ShadowType
+{
+    Default,
+    Alpha
+};
+
 struct RenderItem
 {
     RenderItem() = default;
@@ -186,4 +192,6 @@ struct RenderItem
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     RenderType renderType = RenderType::Default;
+    ShadowType shadowType = ShadowType::Default;
+
 };

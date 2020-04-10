@@ -239,6 +239,19 @@ void Level::drawShadow()
 
     for (const auto& gO : mGameObjects)
     {
+        if (gO.second->renderItem->shadowType == ShadowType::Alpha) continue;
+
+        if (gO.second->renderItem->renderType != RenderType::Sky &&
+            gO.second->renderItem->renderType != RenderType::Debug)
+            gO.second->drawShadow();
+    }
+
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["shadowAlpha"].Get());
+
+    for (const auto& gO : mGameObjects)
+    {
+        if (gO.second->renderItem->shadowType == ShadowType::Default) continue;
+
         if (gO.second->renderItem->renderType != RenderType::Sky &&
             gO.second->renderItem->renderType != RenderType::Debug)
             gO.second->drawShadow();

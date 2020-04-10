@@ -23,7 +23,7 @@
     <Graphic>
         <NumFrameResources>3</NumFrameResources>
         <AnisotropicFiltering>16</AnisotropicFiltering>
-        <ShadowQuality>2</ShadowQuality>
+        <ShadowQuality>4</ShadowQuality>
     </Graphic>
 
     <Input>
