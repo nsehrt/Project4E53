@@ -14,9 +14,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     mDsvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
-    mShadowMap = std::make_unique<ShadowMap>(device, ServiceProvider::getSettings()->graphicSettings.ShadowQuality, ServiceProvider::getSettings()->graphicSettings.ShadowQuality);
-    mSceneBounds.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    mSceneBounds.Radius = 40;
+    mShadowMap = std::make_unique<ShadowMap>(device,
+                                             ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
+                                             ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
+                                             40);
 
     buildRootSignature();
     buildShaders();
@@ -331,7 +332,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> RenderResource::GetStaticSample
         0.0f,
         ServiceProvider::getSettings()->graphicSettings.AnisotropicFiltering,
         D3D12_COMPARISON_FUNC_LESS_EQUAL,
-        D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK
+        D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE
     );
 
     return {
@@ -655,8 +656,8 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 {
     // Only the first "main" light casts a shadow.
     XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
-    XMVECTOR lightPos = -2.0f * mSceneBounds.Radius * lightDir;
-    XMVECTOR targetPos = XMLoadFloat3(&mSceneBounds.Center);
+    XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir;
+    XMVECTOR targetPos = XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);
 
@@ -667,12 +668,12 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
     XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, lightView));
 
     // Ortho frustum in light space encloses scene.
-    float l = sphereCenterLS.x - mSceneBounds.Radius;
-    float b = sphereCenterLS.y - mSceneBounds.Radius;
-    float n = sphereCenterLS.z - mSceneBounds.Radius;
-    float r = sphereCenterLS.x + mSceneBounds.Radius;
-    float t = sphereCenterLS.y + mSceneBounds.Radius;
-    float f = sphereCenterLS.z + mSceneBounds.Radius;
+    float l = sphereCenterLS.x - mShadowMap->shadowBounds.Radius;
+    float b = sphereCenterLS.y - mShadowMap->shadowBounds.Radius;
+    float n = sphereCenterLS.z - mShadowMap->shadowBounds.Radius;
+    float r = sphereCenterLS.x + mShadowMap->shadowBounds.Radius;
+    float t = sphereCenterLS.y + mShadowMap->shadowBounds.Radius;
+    float f = sphereCenterLS.z + mShadowMap->shadowBounds.Radius;
 
     mLightNearZ = n;
     mLightFarZ = f;

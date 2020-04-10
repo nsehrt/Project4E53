@@ -10,7 +10,7 @@ class ShadowMap
 {
 public:
 	ShadowMap(ID3D12Device* device,
-		UINT width, UINT height);
+		UINT width, UINT height, UINT shadowRadius);
 		
 	ShadowMap(const ShadowMap& rhs)=delete;
 	ShadowMap& operator=(const ShadowMap& rhs)=delete;
@@ -31,6 +31,9 @@ public:
 		CD3DX12_CPU_DESCRIPTOR_HANDLE hCpuDsv);
 
 	void OnResize(UINT newWidth, UINT newHeight);
+
+	DirectX::BoundingSphere shadowBounds;
+	DirectX::BoundingSphere maxShadowDraw;
 
 private:
 	void BuildDescriptors();

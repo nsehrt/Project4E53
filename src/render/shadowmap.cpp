@@ -1,10 +1,6 @@
-//***************************************************************************************
-// ShadowMap.cpp by Frank Luna (C) 2011 All Rights Reserved.
-//***************************************************************************************
-
 #include "ShadowMap.h"
  
-ShadowMap::ShadowMap(ID3D12Device* device, UINT width, UINT height)
+ShadowMap::ShadowMap(ID3D12Device* device, UINT width, UINT height, UINT shadowRadius)
 {
 	md3dDevice = device;
 
@@ -13,6 +9,12 @@ ShadowMap::ShadowMap(ID3D12Device* device, UINT width, UINT height)
 
 	mViewport = { 0.0f, 0.0f, (float)width, (float)height, 0.0f, 1.0f };
 	mScissorRect = { 0, 0, (int)width, (int)height };
+
+	shadowBounds.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	shadowBounds.Radius = shadowRadius;
+
+	maxShadowDraw.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	maxShadowDraw.Radius = shadowBounds.Radius * 1.5f;
 
 	BuildResource();
 }

@@ -48,7 +48,7 @@
                 0
             ],
             "RenderType": "Default",
-            "CollisionEnabled": true,
+            "CollisionEnabled": false,
             "DrawEnabled": true,
             "ShadowEnabled": true
         },

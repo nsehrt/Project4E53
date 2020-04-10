@@ -88,8 +88,6 @@ private:
 
     std::unique_ptr<ShadowMap> mShadowMap = nullptr;
 
-    DirectX::BoundingSphere mSceneBounds;
-
     float mLightNearZ = 0.0f;
     float mLightFarZ = 0.0f;
     XMFLOAT3 mLightPosW;
