@@ -92,6 +92,9 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     /*also generate some default shapes*/
 
     generateDefaultShapes();
+
+    LOG(Severity::Info, "Successfully created default models.");
+
     buildPSOs();
 
     if (!buildMaterials())

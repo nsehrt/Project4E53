@@ -93,7 +93,12 @@ void InputManager::Update()
 
     if (!cs->isConnected)
     {
-        ServiceProvider::getLogger()->print<Severity::Warning>("Unable to find active xinput controller!");
+        static bool once = []()
+        {
+            ServiceProvider::getLogger()->print<Severity::Warning>("Unable to find active xinput controller!");
+            return true;
+        } ();
+        
         return;
     }
 
