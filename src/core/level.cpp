@@ -79,7 +79,7 @@ bool Level::load(const std::string& levelFile)
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
-    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << amountGameObjects << " GameObjects)");
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountGameObjects-1) << " GameObjects)");
 
     return true;
 }
@@ -155,6 +155,7 @@ void Level::draw()
 
     for (UINT i = 0; i < renderOrder.size(); i++)
     {
+        if (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled) continue;
         /*set PSO*/
         renderResource->setPSO(RenderType(i));
 
@@ -164,7 +165,7 @@ void Level::draw()
         }
     }
 
-    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
+    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn - 2; /* - Debug and Sky Object*/
 
     /* Draw the hitboxes of the GameObjects if enabled */
     if (renderResource->isHitBoxDrawEnabled())
@@ -178,10 +179,8 @@ void Level::draw()
             if (g->renderItem->renderType != RenderType::Sky)
             {
                 gameObject.second->drawHitbox();
-            }
-            
+            }   
         }
-
     }
 
 }
@@ -195,41 +194,35 @@ void Level::drawShadow()
 
     UINT objectsDrawn = 0;
 
-    for (const auto& gO : mGameObjects)
+    /*order shadow render order*/
+    for (auto& v : shadowRenderOrder)
     {
-        if (gO.second->renderItem->shadowType == RenderType::ShadowAlpha) continue;
-
-        if (gO.second->renderItem->renderType != RenderType::Sky &&
-            gO.second->renderItem->renderType != RenderType::Debug)
-        {
-            if (gO.second->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw) || gO.second->isShadowForced)
-            {
-                objectsDrawn += gO.second->drawShadow();
-            }
-            
-        }
-            
+        v.clear();
     }
 
-    renderResource->setPSO(RenderType::ShadowAlpha);
-
-    for (const auto& gO : mGameObjects)
+    for (const auto& gameObject : mGameObjects)
     {
-        if (gO.second->renderItem->shadowType == RenderType::ShadowDefault) continue;
+        if (gameObject.second->renderItem->renderType == RenderType::Sky ||
+            gameObject.second->renderItem->renderType == RenderType::Debug) continue;
 
-        if (gO.second->renderItem->renderType != RenderType::Sky &&
-            gO.second->renderItem->renderType != RenderType::Debug)
+        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - (int)RenderType::ShadowDefault].push_back(&(*gameObject.second));
+    }
+
+    /*draw shadows*/
+    for (UINT i = 0; i < shadowRenderOrder.size(); i++)
+    {
+        renderResource->setPSO(RenderType((int)RenderType::ShadowDefault+i));
+
+        for (const auto& gameObject : shadowRenderOrder[i])
         {
-            if (gO.second->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw) || gO.second->isShadowForced)
-            {
-                objectsDrawn += gO.second->drawShadow();
-            }
-
+            objectsDrawn += gameObject->drawShadow();
         }
+
     }
 
     ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
 }
+
 
 bool Level::parseSky(const json& skyJson)
 {
