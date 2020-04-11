@@ -206,6 +206,7 @@ void GameObject::update(const GameTime& gt)
     XMFLOAT3 rot = getRotation();
     rot.y += 0.25f * gt.DeltaTime();
     setRotation(rot);
+    if (name != "skull2") return;
     XMFLOAT3 pos = getPosition();
     pos.x += 2.5f * gt.DeltaTime();
     setPosition(pos);

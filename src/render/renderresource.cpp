@@ -1049,11 +1049,11 @@ void RenderResource::generateDefaultShapes()
 
     XMFLOAT3 v;
     XMStoreFloat3(&v, vMin);
-    v.y = -0.05f;
+    v.y = -0.025f;
     vMin = XMLoadFloat3(&v);
 
     XMStoreFloat3(&v, vMax);
-    v.y = 0.05f;
+    v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
     XMStoreFloat3(&mModels["grid"]->boundingBox.Center, 0.5f * (vMin + vMax));
