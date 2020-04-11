@@ -99,6 +99,11 @@ GameObject::GameObject(const json& objectJson, int index)
         isFrustumCulled = objectJson["FrustumCulled"];
     }
 
+    if (exists(objectJson, "ShadowForced"))
+    {
+        isShadowForced = objectJson["ShadowForced"];
+    }
+
     /*RenderItem*/
 
     auto renderResource = ServiceProvider::getRenderResource();
@@ -110,9 +115,6 @@ GameObject::GameObject(const json& objectJson, int index)
     XMMATRIX translationMatrix = XMMatrixTranslation(Position.x, Position.y, Position.z);
     XMMATRIX scaleMatrix = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
     XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-
-    XMStoreFloat4x4(&rItem->World, rotationMatrix * scaleMatrix * translationMatrix);
-    XMStoreFloat4x4(&rItem->TexTransform, XMMatrixScaling(1.0f,1.0f,1.0f));
 
     /*check model exists*/
     if (renderResource->mModels.find(objectJson["Model"]) == renderResource->mModels.end())
@@ -164,6 +166,17 @@ GameObject::GameObject(const json& objectJson, int index)
     updateTransforms();
 }
 
+GameObject::GameObject()
+{
+    Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Scale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+    TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureScale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+}
+
 GameObject::GameObject(int index)
 {
     auto renderResource = ServiceProvider::getRenderResource();
@@ -188,8 +201,8 @@ void GameObject::update(const GameTime& gt)
 {
 
     /*TODO*/
-    if (renderItem->renderType != RenderType::Default) return;
-    if (name != "box2")return;
+    if (renderItem->renderType != RenderType::Default && renderItem->renderType != RenderType::DefaultNoNormal) return;
+    if (name != "box2" && name != "skull2")return;
     XMFLOAT3 rot = getRotation();
     rot.y += 0.25f * gt.DeltaTime();
     setRotation(rot);
@@ -245,13 +258,13 @@ bool GameObject::draw()
     return true;
 }
 
-void GameObject::drawShadow()
+bool GameObject::drawShadow()
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
 
-    if (!isDrawEnabled || !isShadowEnabled) return;
+    if (!isDrawEnabled || !isShadowEnabled) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -274,6 +287,8 @@ void GameObject::drawShadow()
 
         renderResource->cmdList->DrawIndexedInstanced(gObjMeshes.second->IndexCount, 1, 0, 0, 0);
     }
+
+    return true;
 }
 
 void GameObject::drawHitbox()
@@ -298,9 +313,8 @@ void GameObject::drawHitbox()
 
     renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
 
-
-
 }
+
 
 bool GameObject::intersects(GameObject& obj)
 {
@@ -312,6 +326,7 @@ bool GameObject::intersects(GameObject& obj)
     return hitBox.Intersects(obj.hitBox);
 }
 
+
 bool GameObject::intersects(DirectX::BoundingBox& box)
 {
     if (!isCollisionEnabled)
@@ -321,6 +336,12 @@ bool GameObject::intersects(DirectX::BoundingBox& box)
 
     return hitBox.Intersects(box);
 }
+
+bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere)
+{
+    return hitBox.Intersects(sphere);
+}
+
 
 void GameObject::updateTransforms()
 {

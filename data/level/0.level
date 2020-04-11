@@ -50,7 +50,8 @@
             "RenderType": "Default",
             "CollisionEnabled": false,
             "DrawEnabled": true,
-            "ShadowEnabled": true
+            "ShadowEnabled": true,
+            "ShadowForced": false
         },
         {
             "Name": "plant2",
@@ -97,10 +98,11 @@
             "Model": "grid",
             "Material": "tile0",
             "Scale":[
-                10,10,10
+                40,40,40
             ],
-            "TexScale":[10,10,10],
-            "RenderType": "Default"
+            "TexScale":[80,80,80],
+            "RenderType": "Default",
+            "ShadowEnabled": false
         },
         {
             "Name": "obj5",
@@ -248,6 +250,18 @@
         }
         ,
         {
+            "Name": "man6",
+            "Model": "man",
+            "Material": "man",
+            "Position": [
+                -344,
+                2,
+                -5
+            ],
+            "RenderType": "Default"
+        }
+        ,
+        {
             "Name": "skull1",
             "Model": "skull",
             "Material": "skullMat",
@@ -267,6 +281,9 @@
                 -21,
                 14,
                 -5
+            ],
+            "Rotation": [
+                0,90,0
             ],
             "RenderType": "DefaultNoNormal"
         }

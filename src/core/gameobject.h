@@ -20,7 +20,7 @@ public:
 
     explicit GameObject(const json& objectJson, int index);
 
-    GameObject() = default;
+    explicit GameObject();
 
     explicit GameObject(int index);
 
@@ -29,7 +29,7 @@ public:
 
     void update(const GameTime &gt);
     bool draw();
-    void drawShadow();
+    bool drawShadow();
     void drawHitbox();
 
     std::string name;
@@ -114,6 +114,7 @@ public:
 
     bool intersects(GameObject& obj);
     bool intersects(DirectX::BoundingBox& box);
+    bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/
 
     void updateTransforms();
 
@@ -121,6 +122,7 @@ public:
     bool isCollisionEnabled = true;
     bool isDrawEnabled = true;
     bool isShadowEnabled = true;
+    bool isShadowForced = false;
     bool isFrustumCulled = true;
 
 private:

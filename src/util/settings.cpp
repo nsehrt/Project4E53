@@ -91,6 +91,14 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.graphicSettings.AnisotropicFiltering = 0;
     }
 
+    if (!setSetting(pGraphic, "ShadowEnabled", &settings.graphicSettings.ShadowEnabled))
+        return false;
+
+    if (settings.graphicSettings.ShadowEnabled != 0)
+    {
+        settings.graphicSettings.ShadowEnabled = 1;
+    }
+
     if (!setSetting(pGraphic, "ShadowQuality", &settings.graphicSettings.ShadowQuality))
         return false;
 

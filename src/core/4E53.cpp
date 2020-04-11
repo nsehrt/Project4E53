@@ -379,18 +379,20 @@ void P_4E53::draw(const GameTime& gt)
 
 	auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
 	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
-
-	mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->mNullSrv);
-
-	CD3DX12_GPU_DESCRIPTOR_HANDLE nullCube = renderResource->mNullSrv;
-	nullCube.Offset(1, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
-
-	mCommandList->SetGraphicsRootDescriptorTable(4, nullCube);
-
 	mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
-	drawToShadowMap();
+	/*draw shadows if enabled*/
+	if (ServiceProvider::getSettings()->graphicSettings.ShadowEnabled)
+	{
+		mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->mNullSrv);
 
+		CD3DX12_GPU_DESCRIPTOR_HANDLE nullCube = renderResource->mNullSrv;
+		nullCube.Offset(1, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
+
+		mCommandList->SetGraphicsRootDescriptorTable(4, nullCube);
+
+		drawToShadowMap();
+	}
 
 	/****/
 	mCommandList->RSSetViewports(1, &mScreenViewport);
@@ -409,16 +411,23 @@ void P_4E53::draw(const GameTime& gt)
 	auto pass2CB = mCurrentFrameResource->PassCB->getResource();
 	mCommandList->SetGraphicsRootConstantBufferView(1, pass2CB->GetGPUVirtualAddress());
 
-	/*cubemap*/
-
-	mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->getShadowMap()->Srv());
+	/*bind shadow map to slot 3 and cubemap to 4*/
+	if (ServiceProvider::getSettings()->graphicSettings.ShadowEnabled)
+	{
+		mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->getShadowMap()->Srv());
+	}
+	else
+	{
+		CD3DX12_GPU_DESCRIPTOR_HANDLE whiteDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		whiteDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["white.dds"]->index, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
+		mCommandList->SetGraphicsRootDescriptorTable(3, whiteDescriptor);
+	}
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	skyTexDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["grasscube1024.dds"]->index, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
 	mCommandList->SetGraphicsRootDescriptorTable(4, skyTexDescriptor);
 
 	/*draw everything*/
-	mCommandList->SetPipelineState(renderResource->mPSOs["default"].Get());
 
 	ServiceProvider::getActiveLevel()->draw();
 

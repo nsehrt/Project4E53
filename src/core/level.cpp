@@ -140,6 +140,8 @@ void Level::draw()
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
+    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["default"].Get());
+
     for (const auto& gameObject : mGameObjects)
     {
 
@@ -237,13 +239,23 @@ void Level::drawShadow()
     auto renderResource = ServiceProvider::getRenderResource();
     auto objectCB = renderResource->getCurrentFrameResource()->ObjectCB->getResource();
 
+    UINT objectsDrawn = 0;
+
     for (const auto& gO : mGameObjects)
     {
         if (gO.second->renderItem->shadowType == ShadowType::Alpha) continue;
 
         if (gO.second->renderItem->renderType != RenderType::Sky &&
             gO.second->renderItem->renderType != RenderType::Debug)
-            gO.second->drawShadow();
+        {
+            if (gO.second->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw) || gO.second->isShadowForced)
+            {
+                objectsDrawn += gO.second->drawShadow();
+                
+            }
+            
+        }
+            
     }
 
     renderResource->cmdList->SetPipelineState(renderResource->mPSOs["shadowAlpha"].Get());
@@ -254,9 +266,16 @@ void Level::drawShadow()
 
         if (gO.second->renderItem->renderType != RenderType::Sky &&
             gO.second->renderItem->renderType != RenderType::Debug)
-            gO.second->drawShadow();
+        {
+            if (gO.second->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw) || gO.second->isShadowForced)
+            {
+                objectsDrawn += gO.second->drawShadow();
+            }
+
+        }
     }
 
+    LOG(Severity::Info, "Shadows drawn: " << objectsDrawn);
 
 }
 

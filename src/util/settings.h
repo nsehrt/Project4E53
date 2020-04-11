@@ -34,7 +34,8 @@ struct GraphicSettings
     bool WireFrameMode = false;
     int numFrameResources = 3;
     int AnisotropicFiltering = 16;
-    int ShadowQuality = 3;
+    int ShadowEnabled = 1;
+    int ShadowQuality = 4;
 };
 
 struct GameplaySettings
