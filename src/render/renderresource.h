@@ -56,8 +56,10 @@ public:
 
     void updateBuffers(const GameTime& gt);
 
+    void setPSO(RenderType renderType);
+
     /*resources*/
-    std::unordered_map <std::string, ComPtr<ID3D12PipelineState>> mPSOs;
+    std::unordered_map <RenderType, ComPtr<ID3D12PipelineState>> mPSOs;
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
     std::unordered_map<std::string, std::unique_ptr<Model>> mModels;
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
@@ -84,6 +86,7 @@ public:
 
 private:
 
+   
     /*shadow map*/
 
     std::unique_ptr<ShadowMap> mShadowMap = nullptr;

@@ -11,7 +11,7 @@ ShadowMap::ShadowMap(ID3D12Device* device, UINT width, UINT height, UINT shadowR
 	mScissorRect = { 0, 0, (int)width, (int)height };
 
 	shadowBounds.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	shadowBounds.Radius = shadowRadius;
+	shadowBounds.Radius = (int)shadowRadius;
 
 	maxShadowDraw.Center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	maxShadowDraw.Radius = shadowBounds.Radius * 1.5f;

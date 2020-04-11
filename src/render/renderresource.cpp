@@ -428,7 +428,7 @@ void RenderResource::buildPSOs()
     defaultPSODesc.SampleDesc.Count = 1;
     defaultPSODesc.SampleDesc.Quality =  0;
     defaultPSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs["default"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Default])));
 
     /* default alpha PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultAlphaDesc = defaultPSODesc;
@@ -446,7 +446,7 @@ void RenderResource::buildPSOs()
         mShaders["defaultAlphaPS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultAlphaDesc, IID_PPV_ARGS(&mPSOs["defaultAlpha"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultAlphaDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultAlpha])));
 
 
     /* default no normal mapping PSO */
@@ -465,7 +465,7 @@ void RenderResource::buildPSOs()
         mShaders["defaultNoNormalPS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs["defaultNoNormal"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultNoNormal])));
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
@@ -486,7 +486,7 @@ void RenderResource::buildPSOs()
 
     smapPsoDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
     smapPsoDesc.NumRenderTargets = 0;
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::ShadowDefault])));
 
     /*shadow alpha PSO*/
 
@@ -497,7 +497,7 @@ void RenderResource::buildPSOs()
         mShaders["shadowAlphaPS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapAlphaPsoDesc, IID_PPV_ARGS(&mPSOs["shadowAlpha"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapAlphaPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::ShadowAlpha])));
 
 
     /*debug PSO*/
@@ -513,7 +513,7 @@ void RenderResource::buildPSOs()
         reinterpret_cast<BYTE*>(mShaders["debugPS"]->GetBufferPointer()),
         mShaders["debugPS"]->GetBufferSize()
     };
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&debugPsoDesc, IID_PPV_ARGS(&mPSOs["debug"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&debugPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::Debug])));
 
     /*sky sphere PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
@@ -530,7 +530,7 @@ void RenderResource::buildPSOs()
         reinterpret_cast<BYTE*>(mShaders["skyPS"]->GetBufferPointer()),
         mShaders["skyPS"]->GetBufferSize()
     };
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs["sky"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Sky])));
 
 
     /*hitbox PSO*/
@@ -550,7 +550,7 @@ void RenderResource::buildPSOs()
         reinterpret_cast<BYTE*>(mShaders["hitboxPS"]->GetBufferPointer()),
         mShaders["hitboxPS"]->GetBufferSize()
     };
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPSOs["hitbox"])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Hitbox])));
 
 }
 
@@ -636,6 +636,11 @@ void RenderResource::updateBuffers(const GameTime& gt)
     updateShadowTransform(gt);
     updateMainPassConstantBuffers(gt);
     updateShadowPassConstantBuffers(gt);
+}
+
+void RenderResource::setPSO(RenderType renderType)
+{
+    cmdList->SetPipelineState(mPSOs[renderType].Get());
 }
 
 void RenderResource::buildFrameResource()

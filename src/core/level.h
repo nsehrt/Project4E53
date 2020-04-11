@@ -37,7 +37,9 @@ private:
     bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
 
-
+    /*render order*/
+    std::vector<std::vector<GameObject*>> renderOrder;
+    std::vector<std::vector<GameObject*>> shadowRenderOrder;
 
     bool exists(const nlohmann::json& j, const std::string& key)
     {

@@ -160,16 +160,13 @@ struct Texture
 enum class RenderType
 {
     Default,
-    DefaultAlpha,
     DefaultNoNormal,
+    DefaultAlpha,
+    Debug,
     Sky,
-    Debug
-};
-
-enum class ShadowType
-{
-    Default,
-    Alpha
+    Hitbox,
+    ShadowDefault,
+    ShadowAlpha
 };
 
 struct RenderItem
@@ -192,6 +189,6 @@ struct RenderItem
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     RenderType renderType = RenderType::Default;
-    ShadowType shadowType = ShadowType::Default;
+    RenderType shadowType = RenderType::ShadowDefault;
 
 };

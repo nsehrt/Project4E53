@@ -13,7 +13,7 @@
         <ResolutionHeight>1080</ResolutionHeight>
         <FOV>80</FOV>
         <VSync>0</VSync>
-        <WindowMode>0</WindowMode>
+        <WindowMode>1</WindowMode>
     </Display>
 
     <Gameplay

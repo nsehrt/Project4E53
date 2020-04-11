@@ -67,6 +67,15 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    renderOrder.push_back(std::vector<GameObject*>(256)); /*default*/
+    renderOrder.push_back(std::vector<GameObject*>(128)); /*default alpha*/
+    renderOrder.push_back(std::vector<GameObject*>(32)); /*default no normal*/
+    renderOrder.push_back(std::vector<GameObject*>(1)); /*debug*/
+    renderOrder.push_back(std::vector<GameObject*>(1)); /*sky*/
+
+    shadowRenderOrder.push_back(std::vector<GameObject*>(256)); /*shadow default*/
+    shadowRenderOrder.push_back(std::vector<GameObject*>(128)); /*shadow alpha*/
+
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
@@ -130,92 +139,37 @@ void Level::draw()
 
     auto renderResource = ServiceProvider::getRenderResource();
     
+    /* Order of render items*/
+    for (auto& v : renderOrder)
+    {
+        v.clear();
+    }
 
-    /* TODO sort draw order of game objects*/
-
-
-
-
+    for (const auto& gameObject : mGameObjects)
+    {
+        renderOrder[(int)gameObject.second->renderItem->renderType].push_back(&(*gameObject.second));
+    }
 
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["default"].Get());
-
-    for (const auto& gameObject : mGameObjects)
+    for (UINT i = 0; i < renderOrder.size(); i++)
     {
+        /*set PSO*/
+        renderResource->setPSO(RenderType(i));
 
-        auto g = gameObject.second.get();
-
-        if (g->renderItem->renderType == RenderType::Default)
+        for (const auto& gameObject : renderOrder[i])
         {
-            objectsDrawn += gameObject.second->draw();
-        }
-        
-    }
-
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["defaultNoNormal"].Get());
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        auto g = gameObject.second.get();
-
-        if (g->renderItem->renderType == RenderType::DefaultNoNormal)
-        {
-            objectsDrawn += gameObject.second->draw();
+            objectsDrawn += gameObject->draw();
         }
     }
-
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["defaultAlpha"].Get());
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        auto g = gameObject.second.get();
-
-        if (g->renderItem->renderType == RenderType::DefaultAlpha)
-        {
-            objectsDrawn += gameObject.second->draw();
-        }
-    }
-
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
-
-    /*debug*/
-#ifdef _DEBUG
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["debug"].Get());
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        auto g = gameObject.second.get();
-
-        if (g->renderItem->renderType == RenderType::Debug)
-        {
-            gameObject.second->draw();
-        }
-
-    }
-#endif
-
-    /*draw sky sphere*/
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["sky"].Get());
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        auto g = gameObject.second.get();
-
-        if (g->renderItem->renderType == RenderType::Sky)
-        {
-            gameObject.second->draw();
-        }
-        
-    }
 
     /* Draw the hitboxes of the GameObjects if enabled */
     if (renderResource->isHitBoxDrawEnabled())
     {
-
-        renderResource->cmdList->SetPipelineState(renderResource->mPSOs["hitbox"].Get());
+        renderResource->setPSO(RenderType::Hitbox);
 
         for (const auto& gameObject : mGameObjects)
         {
@@ -243,7 +197,7 @@ void Level::drawShadow()
 
     for (const auto& gO : mGameObjects)
     {
-        if (gO.second->renderItem->shadowType == ShadowType::Alpha) continue;
+        if (gO.second->renderItem->shadowType == RenderType::ShadowAlpha) continue;
 
         if (gO.second->renderItem->renderType != RenderType::Sky &&
             gO.second->renderItem->renderType != RenderType::Debug)
@@ -251,18 +205,17 @@ void Level::drawShadow()
             if (gO.second->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw) || gO.second->isShadowForced)
             {
                 objectsDrawn += gO.second->drawShadow();
-                
             }
             
         }
             
     }
 
-    renderResource->cmdList->SetPipelineState(renderResource->mPSOs["shadowAlpha"].Get());
+    renderResource->setPSO(RenderType::ShadowAlpha);
 
     for (const auto& gO : mGameObjects)
     {
-        if (gO.second->renderItem->shadowType == ShadowType::Default) continue;
+        if (gO.second->renderItem->shadowType == RenderType::ShadowDefault) continue;
 
         if (gO.second->renderItem->renderType != RenderType::Sky &&
             gO.second->renderItem->renderType != RenderType::Debug)
@@ -275,8 +228,7 @@ void Level::drawShadow()
         }
     }
 
-    LOG(Severity::Info, "Shadows drawn: " << objectsDrawn);
-
+    ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
 }
 
 bool Level::parseSky(const json& skyJson)
@@ -298,7 +250,7 @@ bool Level::parseSky(const json& skyJson)
     rItem->Model = renderResource->mModels["sphere"].get();
     rItem->renderType = RenderType::Sky;
 
-    gameObject->name = "SkySphere";
+    gameObject->name = "SKY_SPHERE";
     gameObject->renderItem = std::move(rItem);
     gameObject->gameObjectType = GameObjectType::Sky;
     gameObject->isFrustumCulled = false;

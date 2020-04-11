@@ -144,7 +144,7 @@ GameObject::GameObject(const json& objectJson, int index)
     if (objectJson["RenderType"] == "DefaultAlpha")
     {
         rItem->renderType = RenderType::DefaultAlpha;
-        rItem->shadowType = ShadowType::Alpha;
+        rItem->shadowType = RenderType::ShadowAlpha;
     }
     else if (objectJson["RenderType"] == "DefaultNoNormal")
     {
@@ -206,6 +206,9 @@ void GameObject::update(const GameTime& gt)
     XMFLOAT3 rot = getRotation();
     rot.y += 0.25f * gt.DeltaTime();
     setRotation(rot);
+    XMFLOAT3 pos = getPosition();
+    pos.x += 2.5f * gt.DeltaTime();
+    setPosition(pos);
 }
 
 bool GameObject::draw()
