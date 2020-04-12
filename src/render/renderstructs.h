@@ -164,9 +164,11 @@ enum class RenderType
     DefaultAlpha,
     Debug,
     Sky,
+    DefaultTransparency,
     Hitbox,
     ShadowDefault,
-    ShadowAlpha
+    ShadowAlpha,
+    COUNT = 9
 };
 
 struct RenderItem

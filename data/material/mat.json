@@ -25,7 +25,22 @@
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
     },
-
+    {
+        "Name" : "transp",
+        "Texture" : "bricks",
+        "NormalMap" : "bricks_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,0.5],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.2
+    },
+    {
+        "Name" : "transp2",
+        "Texture" : "default",
+        "NormalMap" : "bricks_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,0.5],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.2
+    },
     {
         "Name" : "wire",
         "Texture" : "WireFence",

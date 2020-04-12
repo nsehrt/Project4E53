@@ -368,7 +368,7 @@ void P_4E53::draw(const GameTime& gt)
 
 	mCommandList->Reset(
 		cmdListAlloc.Get(),
-		renderResource->mPSOs[RenderType::ShadowDefault].Get()
+		renderResource->getPSO(RenderType::ShadowDefault)
 	);
 
 

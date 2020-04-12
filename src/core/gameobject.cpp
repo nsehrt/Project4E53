@@ -154,6 +154,10 @@ GameObject::GameObject(const json& objectJson, int index)
     {
         rItem->renderType = RenderType::Debug;
     }
+    else if (objectJson["RenderType"] == "DefaultTransparency")
+    {
+        rItem->renderType = RenderType::DefaultTransparency;
+    }
     else
     {
         rItem->renderType = RenderType::Default;

@@ -470,6 +470,25 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultNoNormal])));
 
+    /* Transparency PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC transparencyPSODesc = defaultPSODesc;
+
+    D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc;
+    transparencyBlendDesc.BlendEnable = true;
+    transparencyBlendDesc.LogicOpEnable = false;
+    transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+    transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+    transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+    transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+    transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+    transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+    transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+    transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+    transparencyPSODesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&transparencyPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultTransparency])));
+
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
     smapPsoDesc.RasterizerState.DepthBias = 10000;
@@ -646,6 +665,11 @@ void RenderResource::setPSO(RenderType renderType)
     cmdList->SetPipelineState(mPSOs[renderType].Get());
 }
 
+ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
+{
+    return mPSOs[renderType].Get();
+}
+
 void RenderResource::buildFrameResource()
 {
 
@@ -736,8 +760,6 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
     auto currMaterialBuffer = mCurrentFrameResource->MaterialBuffer.get();
     for (auto& e : ServiceProvider::getRenderResource()->mMaterials)
     {
-        // Only update the cbuffer data if the constants have changed.  If the cbuffer
-        // data changes, it needs to be updated for each FrameResource.
         Material* mat = e.second.get();
         if (mat->NumFramesDirty > 0)
         {
@@ -753,7 +775,6 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
 
             currMaterialBuffer->copyData(mat->MatCBIndex, matData);
 
-            // Next FrameResource need to be updated too.
             mat->NumFramesDirty--;
         }
     }

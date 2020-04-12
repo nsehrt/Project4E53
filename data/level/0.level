@@ -106,7 +106,7 @@
         },
         {
             "Name": "obj5",
-            "Model": "cylinder",
+            "Model": "box",
             "Material": "wire",
             "Position": [
                 -5,
@@ -286,6 +286,30 @@
                 0,90,0
             ],
             "RenderType": "DefaultNoNormal"
+        },
+        {
+            "Name": "boxT",
+            "Model": "box",
+            "Material": "transp",
+            "Position": [
+                -10,2,-10
+            ],
+            "Rotation": [
+                0,0,0
+            ],
+            "RenderType": "DefaultTransparency"            
+        },
+        {
+            "Name": "boxT2",
+            "Model": "box",
+            "Material": "transp2",
+            "Position": [
+                -12,2,-10
+            ],
+            "Rotation": [
+                0,0,0
+            ],
+            "RenderType": "DefaultTransparency"            
         }
         
     ]

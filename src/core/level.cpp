@@ -67,14 +67,28 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
-    renderOrder.push_back(std::vector<GameObject*>(256)); /*default*/
-    renderOrder.push_back(std::vector<GameObject*>(128)); /*default alpha*/
-    renderOrder.push_back(std::vector<GameObject*>(32)); /*default no normal*/
-    renderOrder.push_back(std::vector<GameObject*>(1)); /*debug*/
-    renderOrder.push_back(std::vector<GameObject*>(1)); /*sky*/
 
-    shadowRenderOrder.push_back(std::vector<GameObject*>(256)); /*shadow default*/
-    shadowRenderOrder.push_back(std::vector<GameObject*>(128)); /*shadow alpha*/
+    /*determine size of render orders*/
+    std::vector<int> renderOrderSize((int)RenderType::COUNT);
+
+    for (const auto& gameOject : mGameObjects)
+    {
+        renderOrderSize[(int)gameOject.second->renderItem->renderType]++;
+        renderOrderSize[(int)gameOject.second->renderItem->shadowType]++;
+    }
+
+    for (int i = 0; i < renderOrderSize.size(); i++)
+    {
+        if (i < (int)RenderType::COUNT - 2)
+        {
+            renderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
+        }
+        else
+        {
+            shadowRenderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
+        }
+       
+    }
 
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
@@ -150,6 +164,16 @@ void Level::draw()
         renderOrder[(int)gameObject.second->renderItem->renderType].push_back(&(*gameObject.second));
     }
 
+    /*sort the transparent objects by distance from camera*/
+    auto aCamera = ServiceProvider::getActiveCamera();
+
+    //std::sort(renderOrder[(int)RenderType::DefaultTransparency].begin(),
+    //          renderOrder[(int)RenderType::DefaultTransparency].end(),
+    //    [&](const GameObject* a, const GameObject* b) -> bool
+    //{
+    //    return XMVector3Length(a->getPosition())
+    //});
+
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
@@ -205,7 +229,7 @@ void Level::drawShadow()
         if (gameObject.second->renderItem->renderType == RenderType::Sky ||
             gameObject.second->renderItem->renderType == RenderType::Debug) continue;
 
-        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - (int)RenderType::ShadowDefault].push_back(&(*gameObject.second));
+        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - ((int)RenderType::COUNT - 2)].push_back(&(*gameObject.second));
     }
 
     /*draw shadows*/
@@ -292,6 +316,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
     auto debugObject = std::make_unique<GameObject>(amountGameObjects);
 
+    debugObject->name = "debug";
     debugObject->isFrustumCulled = false;
     debugObject->isShadowEnabled = false;
     debugObject->renderItem->renderType = RenderType::Debug;

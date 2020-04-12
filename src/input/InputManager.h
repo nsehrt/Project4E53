@@ -51,7 +51,7 @@ enum TRG : int
 
 struct InputData
 {
-    int type;
+    int type = TYPE_GAMEPAD;
     bool buttons[BUTTON_COUNT] = {};
 
     float trigger[TRIGGER_COUNT] = {};

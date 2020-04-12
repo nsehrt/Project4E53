@@ -143,6 +143,4 @@ private:
         return j.find(key) != j.end();
     }
 
-    friend class RenderResource;
-
 };
