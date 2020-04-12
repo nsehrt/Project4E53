@@ -166,13 +166,23 @@ void Level::draw()
 
     /*sort the transparent objects by distance from camera*/
     auto aCamera = ServiceProvider::getActiveCamera();
+    XMVECTOR cameraPos = aCamera->getPosition();
 
-    //std::sort(renderOrder[(int)RenderType::DefaultTransparency].begin(),
-    //          renderOrder[(int)RenderType::DefaultTransparency].end(),
-    //    [&](const GameObject* a, const GameObject* b) -> bool
-    //{
-    //    return XMVector3Length(a->getPosition())
-    //});
+
+    std::sort(renderOrder[(int)RenderType::DefaultTransparency].begin(),
+              renderOrder[(int)RenderType::DefaultTransparency].end(),
+              [&](const GameObject* a, const GameObject* b) -> bool
+              {
+                  
+                  XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
+                  XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+                  
+                  XMFLOAT3 result;
+                  XMStoreFloat3(&result, XMVectorGreater(lengthA, lengthB));
+
+                  return result.x;
+                  
+    });
 
     // draw the gameobjects
     UINT objectsDrawn = 0;

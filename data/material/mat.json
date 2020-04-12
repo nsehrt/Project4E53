@@ -29,15 +29,15 @@
         "Name" : "transp",
         "Texture" : "bricks",
         "NormalMap" : "bricks_nmap",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,0.5],
+        "DiffuseAlbedo" : [1.0,1.0,1.0,0.7],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
     },
     {
         "Name" : "transp2",
-        "Texture" : "default",
-        "NormalMap" : "bricks_nmap",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,0.5],
+        "Texture" : "tile",
+        "NormalMap" : "tile_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,0.75],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
     },

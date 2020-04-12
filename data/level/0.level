@@ -310,6 +310,30 @@
                 0,0,0
             ],
             "RenderType": "DefaultTransparency"            
+        },
+        {
+            "Name": "boxT3",
+            "Model": "box",
+            "Material": "transp2",
+            "Position": [
+                -12,4,-10
+            ],
+            "Rotation": [
+                0,0,0
+            ],
+            "RenderType": "DefaultTransparency"            
+        },
+        {
+            "Name": "boxT4",
+            "Model": "box",
+            "Material": "transp",
+            "Position": [
+                -10,4,-10
+            ],
+            "Rotation": [
+                0,0,0
+            ],
+            "RenderType": "DefaultTransparency"            
         }
         
     ]
