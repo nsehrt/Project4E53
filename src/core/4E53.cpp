@@ -398,15 +398,17 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 
-	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-								  D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	auto offscreenRT = renderResource->getRenderTarget();
+
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
+								  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	/*clear buffers*/
-	mCommandList->ClearRenderTargetView(getCurrentBackBufferView(), Colors::LimeGreen, 0, nullptr);
+	mCommandList->ClearRenderTargetView(offscreenRT->getRtv(), Colors::LimeGreen, 0, nullptr);
 	mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	/*set render target*/
-	mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
+	mCommandList->OMSetRenderTargets(1, &offscreenRT->getRtv(), true, &getDepthStencilView());
 
 	auto pass2CB = mCurrentFrameResource->PassCB->getResource();
 	mCommandList->SetGraphicsRootConstantBufferView(1, pass2CB->GetGPUVirtualAddress());
@@ -431,9 +433,38 @@ void P_4E53::draw(const GameTime& gt)
 
 	ServiceProvider::getActiveLevel()->draw();
 
-	/*to resource stage*/
+	/*to srv read*/
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
+								  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_GENERIC_READ));
+
+	renderResource->getSobelFilter()->execute(mCommandList.Get(),
+											  renderResource->mPostProcessRootSignature.Get(),
+											  renderResource->getPSO(RenderType::Sobel),
+											  offscreenRT->getSrv());
+
+	// Indicate a state transition on the resource usage.
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+								  D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
+	// Specify the buffers we are going to render to.
+	mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
+
+	mCommandList->SetGraphicsRootSignature(renderResource->mPostProcessRootSignature.Get());
+	mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
+	mCommandList->SetGraphicsRootDescriptorTable(0, offscreenRT->getSrv());
+	mCommandList->SetGraphicsRootDescriptorTable(1, renderResource->getSobelFilter()->getOutputSrv());
+
+	mCommandList->IASetVertexBuffers(0, 1, nullptr);
+	mCommandList->IASetIndexBuffer(nullptr);
+	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	mCommandList->DrawInstanced(6, 1, 0, 0);
+
+	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
 								  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+
+
 	// done
 	ThrowIfFailed(mCommandList->Close());
 

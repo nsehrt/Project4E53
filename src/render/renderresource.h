@@ -93,6 +93,11 @@ public:
         return mRenderTarget.get();
     }
 
+    Sobel* getSobelFilter()
+    {
+        return mSobelFilter.get();
+    }
+
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
 private:

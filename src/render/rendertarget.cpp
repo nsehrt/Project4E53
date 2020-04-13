@@ -66,13 +66,20 @@ void RenderTarget::buildResource()
     textureDesc.SampleDesc.Quality = 0;
     textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     textureDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-    
+
+    D3D12_CLEAR_VALUE clearValue = {};
+    clearValue.Format = mFormat;
+    clearValue.Color[0] = 0.196078449f; /*Colors::LimeGreen*/
+    clearValue.Color[1] = 0.803921640f;
+    clearValue.Color[2] = 0.196078449f;
+    clearValue.Color[3] = 1.000000000f;
+
     ThrowIfFailed(mDevice->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
         D3D12_HEAP_FLAG_NONE,
         &textureDesc,
         D3D12_RESOURCE_STATE_GENERIC_READ,
-        nullptr,
+        &clearValue,
         IID_PPV_ARGS(&mOffscreenTexture)
     ));
 
