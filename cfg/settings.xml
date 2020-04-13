@@ -7,12 +7,12 @@
     </Audio>
     <Display>
         <BufferFrames>3</BufferFrames>
-        <Monitor>1</Monitor>
-        <RefreshRate>60</RefreshRate>
-        <ResolutionWidth>3840</ResolutionWidth>
-        <ResolutionHeight>2160</ResolutionHeight>
+        <Monitor>0</Monitor>
+        <RefreshRate>144</RefreshRate>
+        <ResolutionWidth>1920</ResolutionWidth>
+        <ResolutionHeight>1080</ResolutionHeight>
         <FOV>80</FOV>
-        <VSync>1</VSync>
+        <VSync>0</VSync>
         <WindowMode>1</WindowMode>
     </Display>
 

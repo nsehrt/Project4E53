@@ -444,10 +444,10 @@ void RenderResource::buildShaders()
     mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_0");
+    mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_0");
 
-    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
+    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_0");
 
     mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
@@ -467,12 +467,12 @@ void RenderResource::buildInputLayouts()
         { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
     });
 
-    mInputLayouts.push_back(
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    });
+    //mInputLayouts.push_back(
+    //{
+    //    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    //    { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    //    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    //});
 
 }
 
@@ -660,16 +660,16 @@ void RenderResource::buildPSOs()
     compositePSO.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
     compositePSO.VS = {
-        reinterpret_cast<BYTE*>(mShaders["compositeVS"]->GetBufferPointer(),
-        mShaders["compositeVS"]->GetBufferSize())
+        reinterpret_cast<BYTE*>(mShaders["compositeVS"]->GetBufferPointer()),
+        mShaders["compositeVS"]->GetBufferSize()
     };
 
     compositePSO.PS = {
-    reinterpret_cast<BYTE*>(mShaders["compositePS"]->GetBufferPointer(),
-    mShaders["compositePS"]->GetBufferSize())
+        reinterpret_cast<BYTE*>(mShaders["compositePS"]->GetBufferPointer()),
+        mShaders["compositePS"]->GetBufferSize()
     };
 
-    //ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPSOs[RenderType::Composite])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPSOs[RenderType::Composite])));
 
 
     /*sobel PSO*/
@@ -677,12 +677,12 @@ void RenderResource::buildPSOs()
 
     sobelPSO.pRootSignature = mPostProcessRootSignature.Get();
     sobelPSO.CS = {
-        reinterpret_cast<BYTE*>(mShaders["sobelCS"]->GetBufferPointer(),
-        mShaders["sobelCS"]->GetBufferSize())
+        reinterpret_cast<BYTE*>(mShaders["sobelCS"]->GetBufferPointer()),
+        mShaders["sobelCS"]->GetBufferSize()
     };
     sobelPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
-    //ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPSOs[RenderType::Sobel])));
+    ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPSOs[RenderType::Sobel])));
 
 
 }
