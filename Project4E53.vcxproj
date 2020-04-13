@@ -168,6 +168,7 @@
     <ClCompile Include="src\render\renderresource.cpp" />
     <ClCompile Include="src\render\rendertarget.cpp" />
     <ClCompile Include="src\render\shadowmap.cpp" />
+    <ClCompile Include="src\render\sobel.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\geogen.cpp" />
     <ClCompile Include="src\util\log.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="src\render\renderstructs.h" />
     <ClInclude Include="src\render\rendertarget.h" />
     <ClInclude Include="src\render\shadowmap.h" />
+    <ClInclude Include="src\render\sobel.h" />
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\expected.h" />

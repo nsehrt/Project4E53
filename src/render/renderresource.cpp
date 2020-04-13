@@ -25,6 +25,12 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
         DXGI_FORMAT_R8G8B8A8_UNORM);
 
+    mSobelFilter = std::make_unique<Sobel>(
+        device,
+        ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
+        ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+        DXGI_FORMAT_R8G8B8A8_UNORM);
+
     buildShaders();
     buildRootSignature();
     buildPostProcessSignature();
@@ -112,6 +118,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     buildFrameResource();
 
     return true;
+}
+
+void RenderResource::onResize()
+{
 }
 
 
@@ -266,7 +276,11 @@ bool RenderResource::buildDescriptorHeap()
 
     /*SRV heap description*/
     D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-    srvHeapDesc.NumDescriptors = (UINT)mTextures.size() + 3;
+    srvHeapDesc.NumDescriptors = (UINT)mTextures.size() 
+        + 3 /*shadow map resources*/
+        + 1 /*offscreen rtv*/
+        + mSobelFilter->getDescriptorCount(); /*sobel filter resource*/
+
     srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
@@ -315,12 +329,12 @@ bool RenderResource::buildDescriptorHeap()
     UINT mShadowMapHeapIndex = texIndex++;
 
     mNullCubeSrvIndex = texIndex++;
-    mNullTexSrvIndex = texIndex;
+    mNullTexSrvIndex = texIndex++;
 
     auto srvCpuStart = mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     auto srvGpuStart = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
     auto dsvCpuStart = mDsvHeap->GetCPUDescriptorHandleForHeapStart();
-
+    auto rtvCpuStart = mRtvHeap->GetCPUDescriptorHandleForHeapStart();
 
     auto nullSrv = CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, mNullCubeSrvIndex, mCbvSrvUavDescriptorSize);
     mNullSrv = CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, mNullCubeSrvIndex, mCbvSrvUavDescriptorSize);
@@ -339,6 +353,22 @@ bool RenderResource::buildDescriptorHeap()
         CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, mShadowMapHeapIndex, mCbvSrvUavDescriptorSize),
         CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, mShadowMapHeapIndex, mCbvSrvUavDescriptorSize),
         CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvCpuStart, 1, mDsvDescriptorSize));
+
+    UINT sobelOffset = texIndex++;
+
+    mSobelFilter->buildDescriptors(
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, sobelOffset, mCbvSrvUavDescriptorSize),
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, sobelOffset, mCbvSrvUavDescriptorSize),
+        mCbvSrvUavDescriptorSize);
+
+    UINT offscreenOffset = texIndex++;
+    UINT rtvOffset = 2; /*swap chain buffer count*/
+
+    mRenderTarget->buildDescriptors(
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, offscreenOffset, mCbvSrvUavDescriptorSize),
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, offscreenOffset, mCbvSrvUavDescriptorSize),
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvCpuStart, rtvOffset, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV))
+    );
 
     return true;
 }

@@ -112,6 +112,9 @@
     <ClInclude Include="src\render\rendertarget.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\sobel.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -181,6 +184,9 @@
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
     <ClCompile Include="src\render\rendertarget.cpp">
+      <Filter>Source Files\src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\sobel.cpp">
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
   </ItemGroup>

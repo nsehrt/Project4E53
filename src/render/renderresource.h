@@ -7,6 +7,7 @@
 #include "../render/frameresource.h"
 #include "../render/shadowmap.h"
 #include "../render/rendertarget.h"
+#include "../render/sobel.h"
 #include <filesystem>
 
 
@@ -33,6 +34,8 @@ public:
 
     /*set up render resource*/
     bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
+
+    void onResize(); /*TODO some time*/
 
     void toggleHitBoxDraw()
     {
@@ -98,7 +101,10 @@ private:
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
     std::vector<std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
 
+    /*post process*/
     std::unique_ptr<RenderTarget> mRenderTarget = nullptr;
+    std::unique_ptr<Sobel> mSobelFilter = nullptr;
+
 
     /*shadow map*/
 
