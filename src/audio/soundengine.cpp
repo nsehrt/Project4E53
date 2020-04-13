@@ -93,7 +93,7 @@ void SoundEngine::run()
         }
     }
 
-    LOG(Severity::Info, "Successfully loaded " << musicCounter << " music and " << effectCounter << " effect files.");
+    LOG(Severity::Info, "Successfully loaded " << (musicCounter+effectCounter) << " audio files! (" << musicCounter << " tracks, " << effectCounter << " effects)");
 
     isLoaded = true;
 
