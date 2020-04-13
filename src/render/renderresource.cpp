@@ -19,8 +19,15 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
                                              ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
                                              40);
 
-    buildRootSignature();
+    mRenderTarget = std::make_unique<RenderTarget>(
+        device,
+        ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 
+        ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+        DXGI_FORMAT_R8G8B8A8_UNORM);
+
     buildShaders();
+    buildRootSignature();
+    buildPostProcessSignature();
     buildInputLayouts();
 
     /*load all textures*/
@@ -131,6 +138,12 @@ bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, T
 
 bool RenderResource::buildRootSignature()
 {
+
+    auto staticSamplers = GetStaticSamplers();
+
+    /*main root signature*/
+
+
     /*5 root parameter*/
     CD3DX12_ROOT_PARAMETER rootParameter[6];
 
@@ -158,7 +171,6 @@ bool RenderResource::buildRootSignature()
     rootParameter[5].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_PIXEL);
 
     /*get the static samplers and bind them to root signature description*/
-    auto staticSamplers = GetStaticSamplers();
 
     CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDescription(6, rootParameter, (UINT)staticSamplers.size(),
                                                          staticSamplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
@@ -172,7 +184,7 @@ bool RenderResource::buildRootSignature()
 
     if (errorBlob != nullptr)
     {
-        LOG(Severity::Error, "Error serializing root signature: " << (char*)errorBlob->GetBufferPointer());
+        LOG(Severity::Error, "Error serializing main root signature: " << (char*)errorBlob->GetBufferPointer());
         ThrowIfFailed(hr);
         return false;
     }
@@ -186,7 +198,60 @@ bool RenderResource::buildRootSignature()
 
     if (hr != S_OK)
     {
-        ServiceProvider::getLogger()->print<Severity::Error>("Error creating root signature!");
+        ServiceProvider::getLogger()->print<Severity::Error>("Error creating main root signature!");
+        ThrowIfFailed(hr);
+        return false;
+    }
+
+    return true;
+}
+
+bool RenderResource::buildPostProcessSignature()
+{
+    ///*sobel root signature*/
+    CD3DX12_DESCRIPTOR_RANGE srv0;
+    CD3DX12_DESCRIPTOR_RANGE srv1;
+    CD3DX12_DESCRIPTOR_RANGE uav0;
+
+    srv0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+    srv1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+    uav0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+
+    CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+
+    slotRootParameter[0].InitAsDescriptorTable(1, &srv0);
+    slotRootParameter[1].InitAsDescriptorTable(1, &srv1);
+    slotRootParameter[2].InitAsDescriptorTable(1, &uav0);
+
+    auto staticSamplers = GetStaticSamplers();
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter,
+                                                 (UINT)staticSamplers.size(),
+                                                 staticSamplers.data(),
+                                                 D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+    ComPtr<ID3DBlob> serializedRootSig = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
+
+    HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
+                                             serializedRootSig.GetAddressOf(),
+                                             errorBlob.GetAddressOf());
+
+    if (errorBlob != nullptr)
+    {
+        LOG(Severity::Error, "Error serializing sobel root signature: " << (char*)errorBlob->GetBufferPointer());
+        ThrowIfFailed(hr);
+        return false;
+    }
+
+    hr = device->CreateRootSignature(0,
+                                     serializedRootSig->GetBufferPointer(),
+                                     serializedRootSig->GetBufferSize(),
+                                     IID_PPV_ARGS(mPostProcessRootSignature.GetAddressOf()));
+
+    if (hr != S_OK)
+    {
+        ServiceProvider::getLogger()->print<Severity::Error>("Error creating sobel root signature!");
         ThrowIfFailed(hr);
         return false;
     }
@@ -382,7 +447,7 @@ void RenderResource::buildShaders()
     mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["sobel"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
+    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
 
     mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
@@ -400,6 +465,13 @@ void RenderResource::buildInputLayouts()
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    });
+
+    mInputLayouts.push_back(
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
     });
 
 }
@@ -579,6 +651,40 @@ void RenderResource::buildPSOs()
     };
     ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Hitbox])));
 
+    /*composite PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC compositePSO = defaultPSODesc;
+    compositePSO.pRootSignature = mPostProcessRootSignature.Get();
+
+    compositePSO.DepthStencilState.DepthEnable = false;
+    compositePSO.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+    compositePSO.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
+    compositePSO.VS = {
+        reinterpret_cast<BYTE*>(mShaders["compositeVS"]->GetBufferPointer(),
+        mShaders["compositeVS"]->GetBufferSize())
+    };
+
+    compositePSO.PS = {
+    reinterpret_cast<BYTE*>(mShaders["compositePS"]->GetBufferPointer(),
+    mShaders["compositePS"]->GetBufferSize())
+    };
+
+    //ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPSOs[RenderType::Composite])));
+
+
+    /*sobel PSO*/
+    D3D12_COMPUTE_PIPELINE_STATE_DESC sobelPSO = {};
+
+    sobelPSO.pRootSignature = mPostProcessRootSignature.Get();
+    sobelPSO.CS = {
+        reinterpret_cast<BYTE*>(mShaders["sobelCS"]->GetBufferPointer(),
+        mShaders["sobelCS"]->GetBufferSize())
+    };
+    sobelPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+
+    //ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPSOs[RenderType::Sobel])));
+
+
 }
 
 #pragma endregion PSO
@@ -673,20 +779,6 @@ void RenderResource::setPSO(RenderType renderType)
 ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 {
     return mPSOs[renderType].Get();
-}
-
-void RenderResource::buildFrameResource()
-{
-
-    for (int i = 0; i < gNumFrameResources; i++)
-    {
-        mFrameResources.push_back(std::make_unique<FrameResource>(device,
-                                  2, /*main pass and shadow pass cbs*/
-                                  MAX_GAME_OBJECTS,
-                                  0,
-                                  (UINT)mMaterials.size()));
-    }
-
 }
 
 void RenderResource::updateShadowTransform(const GameTime& gt)
@@ -846,6 +938,8 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     mMainPassConstants.FarZ = 1000.0f;
     mMainPassConstants.TotalTime = gt.TotalTime();
     mMainPassConstants.DeltaTime = gt.DeltaTime();
+
+    /*TODO*/
     mMainPassConstants.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
     mMainPassConstants.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
     mMainPassConstants.Lights[0].Strength = { 0.8f, 0.8f, 0.8f };
@@ -859,6 +953,20 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
 
 }
 
+/*Frame Resource*/
+void RenderResource::buildFrameResource()
+{
+
+    for (int i = 0; i < gNumFrameResources; i++)
+    {
+        mFrameResources.push_back(std::make_unique<FrameResource>(device,
+                                  2, /*main pass and shadow pass cbs*/
+                                  MAX_GAME_OBJECTS,
+                                  0,
+                                  (UINT)mMaterials.size()));
+    }
+
+}
 
 void RenderResource::cycleFrameResource()
 {
@@ -875,7 +983,7 @@ FrameResource* RenderResource::getCurrentFrameResource()
 {
     return mCurrentFrameResource;
 }
-
+/***************/
 
 void RenderResource::generateDefaultShapes()
 {

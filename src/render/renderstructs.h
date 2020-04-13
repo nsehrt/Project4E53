@@ -166,9 +166,11 @@ enum class RenderType
     Sky,
     DefaultTransparency,
     Hitbox,
+    Composite,
+    Sobel,
     ShadowDefault,
     ShadowAlpha,
-    COUNT = 9
+    COUNT = 11
 };
 
 struct RenderItem

@@ -6,6 +6,7 @@
 #include "../core/gametime.h"
 #include "../render/frameresource.h"
 #include "../render/shadowmap.h"
+#include "../render/rendertarget.h"
 #include <filesystem>
 
 
@@ -63,8 +64,6 @@ public:
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
     std::unordered_map<std::string, std::unique_ptr<Model>> mModels;
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
-    std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
-    std::vector<std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
 
     UINT mRtvDescriptorSize = 0;
     UINT mDsvDescriptorSize = 0;
@@ -73,7 +72,10 @@ public:
 
     ID3D12Device* device = nullptr;
     ID3D12GraphicsCommandList* cmdList = nullptr;
+
     ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
+    ComPtr<ID3D12RootSignature> mPostProcessRootSignature = nullptr;
+
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
@@ -82,11 +84,21 @@ public:
     {
         return mShadowMap.get();
     }
+
+    RenderTarget* getRenderTarget()
+    {
+        return mRenderTarget.get();
+    }
+
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
 private:
 
     std::unordered_map <RenderType, ComPtr<ID3D12PipelineState>> mPSOs;
+    std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
+    std::vector<std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
+
+    std::unique_ptr<RenderTarget> mRenderTarget = nullptr;
 
     /*shadow map*/
 
@@ -114,6 +126,7 @@ private:
     bool loadTexture(const std::filesystem::directory_entry& file, TextureType type = TextureType::Texture2D);
 
     bool buildRootSignature();
+    bool buildPostProcessSignature();
     bool buildDescriptorHeap();
     std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> GetStaticSamplers();
 

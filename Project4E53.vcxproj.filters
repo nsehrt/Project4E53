@@ -109,6 +109,9 @@
     <ClInclude Include="src\render\shadowmap.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\rendertarget.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -175,6 +178,9 @@
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\render\shadowmap.cpp">
+      <Filter>Source Files\src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\rendertarget.cpp">
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
   </ItemGroup>
