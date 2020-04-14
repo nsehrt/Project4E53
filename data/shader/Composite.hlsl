@@ -1,4 +1,7 @@
-/*Multiplay two input textures*/
+/*Multiply two input textures and add some post process fx*/
+
+#define INC_BRIGHTNESS
+#define DIGITAL_VIBRANCE
 
 Texture2D gBaseMap : register(t0);
 Texture2D gEdgeMap : register(t1);
@@ -23,7 +26,7 @@ static const float2 gTexCoords[6] =
 
 static float4 coefLuma = {0.212656f, 0.714158f, 0.072186f, 1.0f};
 static float4 rgbBalance = {1.0f,1.0f,1.0f, 1.0f};
-static float vibrance = 0.2f;
+static float vibrance = 0.13f;
 
 struct VertexOut
 {
@@ -49,6 +52,8 @@ float4 PS(VertexOut pin) : SV_Target
 	float4 outColor = c*e;
 
 	/*apply digital vibrance*/
+	#ifdef DIGITAL_VIBRANCE
+
 	float4 luma = dot(coefLuma, outColor);
 	float4 maxColor = max(outColor.r, max(outColor.g, outColor.b));
 	float4 minColor = min(outColor.r, min(outColor.g, outColor.b));
@@ -58,8 +63,12 @@ float4 PS(VertexOut pin) : SV_Target
 
 	outColor = lerp(luma, outColor, 1.0f + (coeffVibrance * (1.0f - (sign(coeffVibrance)* colorSat))));
 
+	#endif
+
 	/*increase brightness*/
+	#ifdef INC_BRIGHTNESS
 	outColor = saturate(outColor*1.4f);
+	#endif
 
 	return outColor;
 }
