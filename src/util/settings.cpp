@@ -99,6 +99,15 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.graphicSettings.ShadowEnabled = 1;
     }
 
+
+    if (!setSetting(pGraphic, "SobelFilter", &settings.graphicSettings.SobelFilter))
+        return false;
+
+    if (settings.graphicSettings.SobelFilter != 0)
+    {
+        settings.graphicSettings.SobelFilter = 1;
+    }
+
     if (!setSetting(pGraphic, "ShadowQuality", &settings.graphicSettings.ShadowQuality))
         return false;
 
@@ -142,6 +151,14 @@ bool SettingsLoader::loadSettings(const std::string& path)
     {
         settings.miscSettings.DebugEnabled = 1;
     }  
+
+    if (!setSetting(pMisc, "DebugQuadEnabled", &settings.miscSettings.DebugQuadEnabled))
+        return false;
+
+    if (settings.miscSettings.DebugQuadEnabled != 0)
+    {
+        settings.miscSettings.DebugQuadEnabled = 1;
+    }
 
     return true;
 }

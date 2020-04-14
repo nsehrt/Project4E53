@@ -91,6 +91,13 @@ public:
         const std::string& target
     );
 
+    static Microsoft::WRL::ComPtr<ID3DBlob> CompileShaderFromString(
+        const std::string& str,
+        const D3D_SHADER_MACRO* defines,
+        const std::string& entryPoint,
+        const std::string& target
+    );
+
 };
 
 class DxException

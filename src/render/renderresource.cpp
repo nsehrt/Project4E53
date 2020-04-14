@@ -355,13 +355,12 @@ bool RenderResource::buildDescriptorHeap()
         CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvCpuStart, 1, mDsvDescriptorSize));
 
     UINT sobelOffset = texIndex++;
+    texIndex++; /*because sobel uses two slots*/
 
     mSobelFilter->buildDescriptors(
         CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, sobelOffset, mCbvSrvUavDescriptorSize),
         CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, sobelOffset, mCbvSrvUavDescriptorSize),
         mCbvSrvUavDescriptorSize);
-
-    texIndex++; /*because sobel uses two slots*/
 
     UINT offscreenOffset = texIndex++;
     UINT rtvOffset = 2; /*swap chain buffer count*/
@@ -476,10 +475,10 @@ void RenderResource::buildShaders()
     mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_0");
-    mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_0");
+    mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_0");
+    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
 
     mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");

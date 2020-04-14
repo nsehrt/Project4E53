@@ -36,6 +36,7 @@ struct GraphicSettings
     int AnisotropicFiltering = 16;
     int ShadowEnabled = 1;
     int ShadowQuality = 4;
+    int SobelFilter = true;
 };
 
 struct GameplaySettings
@@ -54,7 +55,7 @@ struct Misc
 {
     std::string AdapterName = "";
     int DebugEnabled = false;
-
+    int DebugQuadEnabled = true;
 };
 
 

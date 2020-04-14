@@ -190,7 +190,8 @@ void Level::draw()
     for (UINT i = 0; i < renderOrder.size(); i++)
     {
         if (renderOrder[i].empty())continue;
-        if (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled) continue;
+        if ( (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
+            || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)) continue;
         /*set PSO*/
 
 

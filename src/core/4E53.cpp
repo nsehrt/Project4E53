@@ -277,6 +277,27 @@ void P_4E53::onResize()
 		ServiceProvider::getActiveCamera()->setLens();
 	}
 
+	auto renderResource = ServiceProvider::getRenderResource();
+	if (renderResource == nullptr)return;
+
+	if (renderResource->getSobelFilter() != nullptr)
+	{
+		renderResource->getSobelFilter()->onResize(ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 
+												 ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
+	}
+
+	if (renderResource->getRenderTarget() != nullptr)
+	{
+		renderResource->getRenderTarget()->onResize(ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
+												   ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
+	}
+
+	if (renderResource->getShadowMap() != nullptr)
+	{
+		renderResource->getShadowMap()->OnResize(ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
+												 ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
+	}
+
 }
 
 
@@ -338,9 +359,19 @@ void P_4E53::update(const GameTime& gt)
 		fpsCamera->updateFPSCamera(inputData.current, gt);
 	}
 		
-	if (inputData.Released(BTN::RIGHT_THUMB) && settingsData->miscSettings.DebugEnabled )
+	if (inputData.Released(BTN::DPAD_DOWN) && settingsData->miscSettings.DebugEnabled )
 	{
 		renderResource->toggleHitBoxDraw();
+	}
+
+	if (inputData.Released(BTN::DPAD_UP) && settingsData->miscSettings.DebugEnabled)
+	{
+		ServiceProvider::getSettings()->graphicSettings.SobelFilter = !ServiceProvider::getSettings()->graphicSettings.SobelFilter;
+	}
+
+	if (inputData.Released(BTN::DPAD_LEFT) && settingsData->miscSettings.DebugEnabled)
+	{
+		ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
 	}
 
 	ServiceProvider::getActiveLevel()->update(gt);
@@ -452,7 +483,18 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->SetGraphicsRootSignature(renderResource->mPostProcessRootSignature.Get());
 	mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
 	mCommandList->SetGraphicsRootDescriptorTable(0, offscreenRT->getSrv());
-	mCommandList->SetGraphicsRootDescriptorTable(1, renderResource->getSobelFilter()->getOutputSrv());
+
+	if (ServiceProvider::getSettings()->graphicSettings.SobelFilter)
+	{
+		mCommandList->SetGraphicsRootDescriptorTable(1, renderResource->getSobelFilter()->getOutputSrv());
+	}
+	else
+	{
+		CD3DX12_GPU_DESCRIPTOR_HANDLE whiteDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		whiteDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["white.dds"]->index, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
+		mCommandList->SetGraphicsRootDescriptorTable(1, whiteDescriptor);
+	}
+	
 
 	mCommandList->IASetVertexBuffers(0, 1, nullptr);
 	mCommandList->IASetIndexBuffer(nullptr);
