@@ -1,7 +1,11 @@
 {
     "Sky": {
-        "Material": "sky"
+        "Material": "sky",
+        "DefaultCubeMap": "grasscube1024.dds"
     },
+    "Light": [
+
+    ],
     "Camera": [
         {
             "ID": 0,

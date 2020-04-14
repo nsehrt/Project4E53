@@ -168,7 +168,7 @@ bool DX12App::Initialize()
 
     changeWindowSize();
 
-    mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode;
+    mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode == 1 ? 1 : 0;
     setFullscreen(mFullscreenState);
 
     return true;
@@ -366,8 +366,18 @@ bool DX12App::initMainWindow()
     int width = R.right - R.left;
     int height = R.bottom - R.top;
 
-    mMainWindow = CreateWindow(L"MainWnd", mWindowCaption.c_str(),
-                             WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX ^ WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
+    if (ServiceProvider::getSettings()->displaySettings.WindowMode != 2)
+    {
+        mMainWindow = CreateWindow(L"MainWnd", mWindowCaption.c_str(),
+                            WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX ^ WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
+    }
+    else
+    {
+        mMainWindow = CreateWindow(L"MainWnd", mWindowCaption.c_str(),
+                                   WS_EX_TOPMOST | WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
+    }
+
+
     if (!mMainWindow)
     {
         MessageBox(0, L"CreateWindow Failed.", 0, 0);

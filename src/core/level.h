@@ -28,12 +28,15 @@ public:
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
     std::vector<std::shared_ptr<Camera>> mCameras;
 
+    CD3DX12_GPU_DESCRIPTOR_HANDLE defaultCubeMapHandle;
+
 private:
 
     /* total amount of game objects in the level, includes sky sphere*/
     int amountGameObjects = 0;
 
     bool parseSky(const json& skyJson);
+    bool parseLights(const json& lightJson);
     bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
 
@@ -46,5 +49,4 @@ private:
         return j.find(key) != j.end();
     }
 
-    friend class RenderResource;
 };

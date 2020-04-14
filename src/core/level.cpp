@@ -40,6 +40,12 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    if (!parseLights(levelJson["Light"]))
+    {
+        LOG(Severity::Critical, "Failed to load lights!");
+        return false;
+    }
+
     /*parse cameras*/
     auto defaultCamera = std::make_shared<Camera>();
     defaultCamera->setPosition(0.0f, 5.0f, -20.f);
@@ -203,7 +209,7 @@ void Level::draw()
         }
     }
 
-    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn - 2; /* - Debug and Sky Object*/
+    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
 
     /* Draw the hitboxes of the GameObjects if enabled */
     if (renderResource->isHitBoxDrawEnabled())
@@ -264,7 +270,7 @@ void Level::drawShadow()
 
 bool Level::parseSky(const json& skyJson)
 {
-    if (!exists(skyJson, "Material"))
+    if (!exists(skyJson, "Material") || !exists(skyJson, "DefaultCubeMap"))
     {
         return false;
     }
@@ -288,10 +294,21 @@ bool Level::parseSky(const json& skyJson)
 
     mGameObjects[gameObject->name] = std::move(gameObject);
 
+    /*default cube map*/
+    CD3DX12_GPU_DESCRIPTOR_HANDLE tempHandle(renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+    tempHandle.Offset(renderResource->mTextures[skyJson["DefaultCubeMap"]]->index, renderResource->mCbvSrvUavDescriptorSize);
+
+    defaultCubeMapHandle = tempHandle;
+
     return true;
 }
 
-bool Level::parseCameras(const json& cameraJson)
+bool Level::parseLights(const json& lightJson) /*TODO*/
+{
+    return true;
+}
+
+bool Level::parseCameras(const json& cameraJson) /*TODO*/
 {
     return true;
 }

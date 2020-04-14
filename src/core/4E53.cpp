@@ -456,9 +456,7 @@ void P_4E53::draw(const GameTime& gt)
 		mCommandList->SetGraphicsRootDescriptorTable(3, whiteDescriptor);
 	}
 
-	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	skyTexDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["grasscube1024.dds"]->index, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
-	mCommandList->SetGraphicsRootDescriptorTable(4, skyTexDescriptor);
+	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->defaultCubeMapHandle);
 
 	/*draw everything*/
 
