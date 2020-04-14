@@ -63,12 +63,25 @@ void DX12App::setFullscreen(bool value)
         IDXGIOutput* output = nullptr;
         if (adapter->EnumOutputs(ServiceProvider::getSettings()->displaySettings.Monitor, &output) == DXGI_ERROR_NOT_FOUND)
         {
-            mSwapChain->SetFullscreenState(true, nullptr);
+            HRESULT hr =  mSwapChain->SetFullscreenState(true, nullptr);
+
+            if (hr != S_OK)
+            {
+                LOG(Severity::Error, "Can't enter exclusive fullscreen, probably another window in exlusive fullscreen already exists!")
+                    return;
+            }
+
             ServiceProvider::getLogger()->print<Severity::Info>("Switching to fullscreen mode on standard monitor. (Setting ignored)");
         }
         else
         {
-            mSwapChain->SetFullscreenState(true, output);
+            HRESULT hr = mSwapChain->SetFullscreenState(true, output);
+
+            if (hr != S_OK)
+            {
+                LOG(Severity::Error, "Can't enter exclusive fullscreen, probably another window in exlusive fullscreen already exists!")
+                    return;
+            }
 
             LOG(Severity::Info, "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".");
         }
@@ -439,9 +452,6 @@ bool DX12App::initDirect3D()
     mRtvDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     mDsvDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     mCbvSrvUavDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-    msaaState = false;
-    msaaQuality = 0;
 
     logAdapters();
 

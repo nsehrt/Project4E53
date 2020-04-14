@@ -21,6 +21,10 @@ static const float2 gTexCoords[6] =
 	float2(1.0f, 1.0f)
 };
 
+static float4 coefLuma = {0.212656f, 0.714158f, 0.072186f, 1.0f};
+static float4 rgbBalance = {1.0f,1.0f,1.0f, 1.0f};
+static float vibrance = 0.2f;
+
 struct VertexOut
 {
 	float4 PosH    : SV_POSITION;
@@ -42,7 +46,22 @@ float4 PS(VertexOut pin) : SV_Target
     float4 c = gBaseMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
 	float4 e = gEdgeMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
 	
-	return c*e;
+	float4 outColor = c*e;
+
+	/*apply digital vibrance*/
+	float4 luma = dot(coefLuma, outColor);
+	float4 maxColor = max(outColor.r, max(outColor.g, outColor.b));
+	float4 minColor = min(outColor.r, min(outColor.g, outColor.b));
+
+	float4 colorSat = maxColor - minColor;
+	float4 coeffVibrance = float4(rgbBalance * vibrance);
+
+	outColor = lerp(luma, outColor, 1.0f + (coeffVibrance * (1.0f - (sign(coeffVibrance)* colorSat))));
+
+	/*increase brightness*/
+	outColor = saturate(outColor*1.4f);
+
+	return outColor;
 }
 
 

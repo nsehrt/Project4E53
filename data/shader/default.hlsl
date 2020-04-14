@@ -12,6 +12,8 @@
 
 #include "Common.hlsl"
 
+#define SHADOW_ADD_BRIGHTNESS 0.4f
+
 struct VertexIn
 {
 	float3 PosL    : POSITION;
@@ -99,7 +101,7 @@ float4 PS(VertexOut pin) : SV_Target
     float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
     
 #ifndef NO_SHADOWS
-    shadowFactor[0] = CalcShadowFactor(pin.ShadowPosH);
+    shadowFactor[0] = saturate(CalcShadowFactor(pin.ShadowPosH) + SHADOW_ADD_BRIGHTNESS);
 #endif
 
     const float shininess = (1.0f - roughness) * normalMapSample.a;

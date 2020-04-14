@@ -57,7 +57,6 @@ protected:
     //void logAdapterOutputs(IDXGIAdapter* adapter);
     //void logOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
-
 protected:
     static DX12App* dx12App;
 
@@ -68,9 +67,6 @@ protected:
     bool mMaximized = false;
     bool mResizing = false;
     bool mFullscreenState = false;
-
-    bool msaaState = false;
-    UINT msaaQuality = 0;
 
     GameTime mTimer;
 

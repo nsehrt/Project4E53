@@ -116,7 +116,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 		status = app.run();
 
 		ServiceProvider::getLogger()->print<Severity::Info>("Game loop has been quit!");
-
+		
 		return 0;
 	}
 	catch (DxException & e)

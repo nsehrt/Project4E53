@@ -76,9 +76,9 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     {
         str << texCounter[i];
         if (i != texTypes - 1)
-            str << ", ";
+            str << " Texture2D, ";
     }
-    str << ")";
+    str << " TextureCubeMap)";
 
     ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
 
