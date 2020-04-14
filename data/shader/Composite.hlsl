@@ -42,7 +42,7 @@ float4 PS(VertexOut pin) : SV_Target
     float4 c = gBaseMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
 	float4 e = gEdgeMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
 	
-	return c;
+	return c*e;
 }
 
 

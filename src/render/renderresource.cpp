@@ -276,10 +276,10 @@ bool RenderResource::buildDescriptorHeap()
 
     /*SRV heap description*/
     D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-    srvHeapDesc.NumDescriptors = (UINT)mTextures.size() 
+    srvHeapDesc.NumDescriptors = (UINT)mTextures.size()
         + 3 /*shadow map resources*/
-        + 1 /*offscreen rtv*/
-        + mSobelFilter->getDescriptorCount(); /*sobel filter resource*/
+        + mSobelFilter->getDescriptorCount() /*sobel filter resource*/
+        + 1; /*offscreen rtv*/
 
     srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -360,6 +360,8 @@ bool RenderResource::buildDescriptorHeap()
         CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, sobelOffset, mCbvSrvUavDescriptorSize),
         CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, sobelOffset, mCbvSrvUavDescriptorSize),
         mCbvSrvUavDescriptorSize);
+
+    texIndex++; /*because sobel uses two slots*/
 
     UINT offscreenOffset = texIndex++;
     UINT rtvOffset = 2; /*swap chain buffer count*/
