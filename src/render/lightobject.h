@@ -20,6 +20,7 @@ class LightObject
 public:
 
     explicit LightObject(LightType type, const json& lightJson);
+    explicit LightObject();
 
     std::string name;
 

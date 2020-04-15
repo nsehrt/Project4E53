@@ -781,19 +781,6 @@ bool RenderResource::buildMaterials()
 
 void RenderResource::updateBuffers(const GameTime& gt)
 {
-    static bool once = [&]()
-    {
-        mLightRotationAngle = 0.0f;
-
-        XMMATRIX R = DirectX::XMMatrixRotationY(mLightRotationAngle);
-        for (int i = 0; i < 3; ++i)
-        {
-            XMVECTOR lightDir = XMLoadFloat3(&mBaseLightDirections[i]);
-            lightDir = XMVector3TransformNormal(lightDir, R);
-            XMStoreFloat3(&mRotatedLightDirections[i], lightDir);
-        }
-        return true;
-    } ();
     
     updateGameObjectConstantBuffers(gt);
     updateMaterialConstantBuffers(gt);
@@ -815,7 +802,8 @@ ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
     // Only the first "main" light casts a shadow.
-    XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
+    //XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
+    XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mLightObjects[0]->getDirection());
     XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir + XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR targetPos = XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -974,12 +962,16 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     auto aLevel = ServiceProvider::getActiveLevel();
 
     mMainPassConstants.AmbientLight = aLevel->AmbientLight;
-    mMainPassConstants.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
-    mMainPassConstants.Lights[0].Strength = { 0.8f, 0.8f, 0.8f };
-    mMainPassConstants.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
-    mMainPassConstants.Lights[1].Strength = { 0.4f, 0.4f, 0.4f };
-    mMainPassConstants.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-    mMainPassConstants.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
+
+    for (UINT i = 0; i < MAX_LIGHTS; i++)
+    {
+        mMainPassConstants.Lights[i].Direction = aLevel->mLightObjects[i]->getDirection();
+        mMainPassConstants.Lights[i].Position = aLevel->mLightObjects[i]->getPosition();
+        mMainPassConstants.Lights[i].Strength = aLevel->mLightObjects[i]->getStrength();
+        mMainPassConstants.Lights[i].FalloffStart = aLevel->mLightObjects[i]->getFallOffStart();
+        mMainPassConstants.Lights[i].FalloffEnd = aLevel->mLightObjects[i]->getFallOffEnd();
+        mMainPassConstants.Lights[i].SpotPower = aLevel->mLightObjects[i]->getSpotPower();
+    }
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();
     currPassCB->copyData(0, mMainPassConstants);

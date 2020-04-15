@@ -114,6 +114,11 @@ LightObject::LightObject(LightType type, const json& lightJson)
     updateHitbox();
 }
 
+LightObject::LightObject()
+{
+    properties = Light();
+}
+
 void LightObject::updateHitbox()
 {
 

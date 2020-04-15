@@ -317,7 +317,7 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
 
     for (UINT i = 0; i < MAX_LIGHTS; i++)
     {
-        mLightObjects[i] = nullptr;
+        mLightObjects[i] = std::make_unique<LightObject>();
     }
 
     /*directional light*/
