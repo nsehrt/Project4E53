@@ -315,7 +315,15 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
         AmbientLight.z = lightJson["AmbientLight"][2];
     }
 
+    for (UINT i = 0; i < MAX_LIGHTS; i++)
+    {
+        mLightObjects[i] = nullptr;
+    }
+
     /*directional light*/
+
+    UINT lightCounter = 0;
+
     if (exists(lightJson, "Directional"))
     {
         for (auto const& entryJson : lightJson["Directional"])
@@ -326,19 +334,17 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
                 continue;
             }
 
+            if (lightCounter == AMOUNT_DIRECTIONAL) break;
+
             auto lightObj = std::make_unique<LightObject>(LightType::Directional, entryJson);
 
-            if (mLightObjects.find(lightObj->name) != mLightObjects.end())
-            {
-                LOG(Severity::Warning, "LightObject " << lightObj->name << " already exists!");
-                continue;
-            }
-
-            mLightObjects[lightObj->name] = std::move(lightObj);
+            mLightObjects[lightCounter++] = std::move(lightObj);
         }
     }
 
     /*point light*/
+    lightCounter = 0;
+
     if (exists(lightJson, "Point"))
     {
         for (auto const& entryJson : lightJson["Point"])
@@ -349,20 +355,19 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
                 continue;
             }
 
+            if (lightCounter == AMOUNT_POINT) break;
+
             auto lightObj = std::make_unique<LightObject>(LightType::Point, entryJson);
 
-            if (mLightObjects.find(lightObj->name) != mLightObjects.end())
-            {
-                LOG(Severity::Warning, "LightObject " << lightObj->name << " already exists!");
-                continue;
-            }
 
-            mLightObjects[lightObj->name] = std::move(lightObj);
+            mLightObjects[AMOUNT_DIRECTIONAL + lightCounter++] = std::move(lightObj);
         }
     }
 
 
     /*spot light*/
+    lightCounter = 0;
+
     if (exists(lightJson, "Spot"))
     {
         for (auto const& entryJson : lightJson["Spot"])
@@ -373,15 +378,12 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
                 continue;
             }
 
+            if (lightCounter == AMOUNT_SPOT) break;
+
             auto lightObj = std::make_unique<LightObject>(LightType::Spot, entryJson);
 
-            if (mLightObjects.find(lightObj->name) != mLightObjects.end())
-            {
-                LOG(Severity::Warning, "LightObject " << lightObj->name << " already exists!");
-                continue;
-            }
 
-            mLightObjects[lightObj->name] = std::move(lightObj);
+            mLightObjects[AMOUNT_DIRECTIONAL + AMOUNT_POINT + lightCounter++] = std::move(lightObj);
         }
     }
 

@@ -971,7 +971,9 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     mMainPassConstants.DeltaTime = gt.DeltaTime();
 
     /*TODO*/
-    mMainPassConstants.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+    auto aLevel = ServiceProvider::getActiveLevel();
+
+    mMainPassConstants.AmbientLight = aLevel->AmbientLight;
     mMainPassConstants.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
     mMainPassConstants.Lights[0].Strength = { 0.8f, 0.8f, 0.8f };
     mMainPassConstants.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };

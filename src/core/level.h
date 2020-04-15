@@ -7,6 +7,11 @@
 
 #define LEVEL_PATH "data/level"
 
+#define MAX_LIGHTS 8
+#define AMOUNT_DIRECTIONAL 3
+#define AMOUNT_POINT 4
+#define AMOUNT_SPOT 1
+
 using json = nlohmann::json;
 
 class Level
@@ -28,8 +33,8 @@ public:
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
 
-    std::unordered_map<std::string, std::unique_ptr<LightObject>> mLightObjects;
-    XMFLOAT3 AmbientLight = { 0.25f, 0.25f, 0.25f };
+    std::array<std::unique_ptr<LightObject>, MAX_LIGHTS> mLightObjects;
+    XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
 
     std::vector<std::shared_ptr<Camera>> mCameras;
 
