@@ -1,5 +1,5 @@
 /*Max amount of lights possible*/
-#define MaxLights 16
+#define MaxLights 8
 
 /*light struct that can describe parallel, point and spotlight*/
 struct Light

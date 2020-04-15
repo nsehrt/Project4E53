@@ -12,8 +12,8 @@
         <ResolutionWidth>1920</ResolutionWidth>
         <ResolutionHeight>1080</ResolutionHeight>
         <FOV>80</FOV>
-        <VSync>1</VSync>
-        <WindowMode>2</WindowMode>
+        <VSync>0</VSync>
+        <WindowMode>0</WindowMode>
     </Display>
 
     <Gameplay>
@@ -35,7 +35,7 @@
     </Input>
 
     <Misc>
-        <DebugEnabled>0</DebugEnabled>
+        <DebugEnabled>1</DebugEnabled>
         <DebugQuadEnabled>0</DebugQuadEnabled>
     </Misc>
 </root>

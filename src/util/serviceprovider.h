@@ -8,7 +8,7 @@ class Level;
 class Camera;
 class GameObject;
 class ShadowMap;
-
+class LightObject;
 
 #include "log.h"
 #include "settings.h"

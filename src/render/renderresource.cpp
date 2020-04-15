@@ -816,7 +816,7 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 {
     // Only the first "main" light casts a shadow.
     XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
-    XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir;
+    XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir + XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR targetPos = XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);

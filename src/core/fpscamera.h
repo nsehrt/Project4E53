@@ -1,4 +1,5 @@
 #pragma once
+
 #include "camera.h"
 #include "../input/inputmanager.h"
 #include "gametime.h"

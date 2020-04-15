@@ -3,9 +3,69 @@
         "Material": "sky",
         "DefaultCubeMap": "grasscube1024.dds"
     },
-    "Light": [
 
-    ],
+    "Light": {
+        "AmbientLight": [0.25,0.25,0.25],
+        "Directional": [
+            {
+                "Name": "D1",
+                "Strength": [0.8,0.8,0.8],
+                "Direction": [0.576, -0.577, 0.577]
+            },
+            {
+                "Name": "D2",
+                "Strength": [0.4,0.4,0.4],
+                "Direction": [-0.576, -0.577, 0.577]
+            },
+            {
+                "Name": "D3",
+                "Strength": [0.2,0.2,0.2],
+                "Direction": [0.0, -0.7, -0.7]
+            }
+        ],
+        "Point": [
+            {
+                "Name": "P1",
+                "Position" : [0.0,2.0,0.0],
+                "Strength": [0.8,0.8,0.8],
+                "FallOffStart": 1.0,
+                "FallOffEnd" : 10.0
+            },
+            {
+                "Name": "P2",
+                "Position" : [-2.0,4.0,1.0],
+                "Strength": [0.8,0.0,0.0],
+                "FallOffStart": 1.0,
+                "FallOffEnd" : 5.0
+            },
+            {
+                "Name": "P3",
+                "Position" : [-2.0,4.0,1.0],
+                "Strength": [0.0,0.0,0.8],
+                "FallOffStart": 1.0,
+                "FallOffEnd" : 5.0
+            },
+            {
+                "Name": "P4",
+                "Position" : [-5.0,0.0,1.0],
+                "Strength": [0.0,0.8,0.8],
+                "FallOffStart": 1.8,
+                "FallOffEnd" : 2.0
+            }
+        ],
+        "Spot": [
+            {
+                "Name": "S1",
+                "Position" : [0.0,6.0,4.0],
+                "Strength": [0.8,0.8,0.8],
+                "Direction": [0.0,-1.0, 0.0],
+                "FallOffStart": 5.0,
+                "FallOffEnd": 10.0,
+                "SpotPower": 64               
+            }
+        ]
+    },
+
     "Camera": [
         {
             "ID": 0,
@@ -104,7 +164,7 @@
             "Scale":[
                 40,40,40
             ],
-            "TexScale":[80,80,80],
+            "TexScale":[40,40,40],
             "RenderType": "Default",
             "ShadowEnabled": false
         },

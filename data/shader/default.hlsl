@@ -1,15 +1,3 @@
-#ifndef NUM_DIR_LIGHTS
-    #define NUM_DIR_LIGHTS 3
-#endif
-
-#ifndef NUM_POINT_LIGHTS
-    #define NUM_POINT_LIGHTS 0
-#endif
-
-#ifndef NUM_SPOT_LIGHTS
-    #define NUM_SPOT_LIGHTS 0
-#endif
-
 #include "Common.hlsl"
 
 #define SHADOW_ADD_BRIGHTNESS 0.4f

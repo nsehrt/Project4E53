@@ -165,6 +165,7 @@
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
+    <ClCompile Include="src\render\lightobject.cpp" />
     <ClCompile Include="src\render\renderresource.cpp" />
     <ClCompile Include="src\render\rendertarget.cpp" />
     <ClCompile Include="src\render\shadowmap.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />
     <ClInclude Include="src\render\frameresource.h" />
+    <ClInclude Include="src\render\lightobject.h" />
     <ClInclude Include="src\render\renderresource.h" />
     <ClInclude Include="src\render\renderstructs.h" />
     <ClInclude Include="src\render\rendertarget.h" />

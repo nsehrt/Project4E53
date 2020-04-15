@@ -25,6 +25,7 @@ static const float2 gTexCoords[6] =
 };
 
 static float4 coefLuma = {0.212656f, 0.714158f, 0.072186f, 1.0f};
+static float4 greyScale = {0.299f, 0.57f, 0.114f,1.0f};
 static float4 rgbBalance = {1.0f,1.0f,1.0f, 1.0f};
 static float vibrance = 0.13f;
 
@@ -67,7 +68,7 @@ float4 PS(VertexOut pin) : SV_Target
 
 	/*increase brightness*/
 	#ifdef INC_BRIGHTNESS
-	outColor = saturate(outColor*1.4f);
+	outColor = saturate(outColor*1.25f);
 	#endif
 
 	return outColor;

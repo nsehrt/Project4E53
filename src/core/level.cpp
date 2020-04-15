@@ -40,6 +40,7 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    /*parse lights*/
     if (!parseLights(levelJson["Light"]))
     {
         LOG(Severity::Critical, "Failed to load lights!");
@@ -305,6 +306,85 @@ bool Level::parseSky(const json& skyJson)
 
 bool Level::parseLights(const json& lightJson) /*TODO*/
 {
+    if (!exists(lightJson, "AmbientLight"))
+    {
+        LOG(Severity::Warning, "Level misses AmbientLight property!");
+    }else{
+        AmbientLight.x = lightJson["AmbientLight"][0];
+        AmbientLight.y = lightJson["AmbientLight"][1];
+        AmbientLight.z = lightJson["AmbientLight"][2];
+    }
+
+    /*directional light*/
+    if (exists(lightJson, "Directional"))
+    {
+        for (auto const& entryJson : lightJson["Directional"])
+        {
+            if (!exists(entryJson, "Name"))
+            {
+                LOG(Severity::Warning, "LightObject is missing the name property!");
+                continue;
+            }
+
+            auto lightObj = std::make_unique<LightObject>(LightType::Directional, entryJson);
+
+            if (mLightObjects.find(lightObj->name) != mLightObjects.end())
+            {
+                LOG(Severity::Warning, "LightObject " << lightObj->name << " already exists!");
+                continue;
+            }
+
+            mLightObjects[lightObj->name] = std::move(lightObj);
+        }
+    }
+
+    /*point light*/
+    if (exists(lightJson, "Point"))
+    {
+        for (auto const& entryJson : lightJson["Point"])
+        {
+            if (!exists(entryJson, "Name"))
+            {
+                LOG(Severity::Warning, "LightObject is missing the name property!");
+                continue;
+            }
+
+            auto lightObj = std::make_unique<LightObject>(LightType::Point, entryJson);
+
+            if (mLightObjects.find(lightObj->name) != mLightObjects.end())
+            {
+                LOG(Severity::Warning, "LightObject " << lightObj->name << " already exists!");
+                continue;
+            }
+
+            mLightObjects[lightObj->name] = std::move(lightObj);
+        }
+    }
+
+
+    /*spot light*/
+    if (exists(lightJson, "Spot"))
+    {
+        for (auto const& entryJson : lightJson["Spot"])
+        {
+            if (!exists(entryJson, "Name"))
+            {
+                LOG(Severity::Warning, "LightObject is missing the name property!");
+                continue;
+            }
+
+            auto lightObj = std::make_unique<LightObject>(LightType::Spot, entryJson);
+
+            if (mLightObjects.find(lightObj->name) != mLightObjects.end())
+            {
+                LOG(Severity::Warning, "LightObject " << lightObj->name << " already exists!");
+                continue;
+            }
+
+            mLightObjects[lightObj->name] = std::move(lightObj);
+        }
+    }
+
     return true;
 }
 
@@ -335,7 +415,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
         if (mGameObjects.find(entryJson["Name"]) != mGameObjects.end())
         {
             LOG(Severity::Warning, "GameObject " << entryJson["Name"] << " already exists!");
-            return false;
+            continue;
         }
 
         auto gameObject = std::make_unique<GameObject>(entryJson, amountGameObjects++);

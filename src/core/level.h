@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../util/serviceprovider.h"
 #include "../extern/json.hpp"
-#include "gameobject.h"
+#include "../core/gameobject.h"
+#include "../util/serviceprovider.h"
+#include "../render/lightobject.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -26,6 +27,10 @@ public:
     void drawShadow();
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
+
+    std::unordered_map<std::string, std::unique_ptr<LightObject>> mLightObjects;
+    XMFLOAT3 AmbientLight = { 0.25f, 0.25f, 0.25f };
+
     std::vector<std::shared_ptr<Camera>> mCameras;
 
     CD3DX12_GPU_DESCRIPTOR_HANDLE defaultCubeMapHandle;

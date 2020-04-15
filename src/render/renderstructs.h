@@ -84,7 +84,6 @@ struct Model
     std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingBox boundingBox;
-    //DirectX::BoundingSphere boundingSphere;
 
     std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };
@@ -92,7 +91,7 @@ struct Model
 
 struct Light
 {
-    DirectX::XMFLOAT3 Strength = { 0.5f, 0.5f, 0.5f };
+    DirectX::XMFLOAT3 Strength = { 0.0f, 0.0f, 0.0f };
     float FalloffStart = 1.0f;                          // point/spot light only
     DirectX::XMFLOAT3 Direction = { 0.0f, -1.0f, 0.0f };// directional/spot light only
     float FalloffEnd = 10.0f;                           // point/spot light only
