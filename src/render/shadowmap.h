@@ -28,6 +28,8 @@ public:
 
 	void OnResize(UINT newWidth, UINT newHeight);
 
+	void setBoundsCenter(DirectX::XMFLOAT3 center);
+
 	DirectX::BoundingSphere shadowBounds;
 	DirectX::BoundingSphere maxShadowDraw;
 

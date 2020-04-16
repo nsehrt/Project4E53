@@ -80,6 +80,14 @@ void ShadowMap::OnResize(UINT newWidth, UINT newHeight)
 		BuildDescriptors();
 	}
 }
+
+void ShadowMap::setBoundsCenter(DirectX::XMFLOAT3 center)
+{
+
+	shadowBounds.Center = center;
+	maxShadowDraw.Center = center;
+
+}
  
 void ShadowMap::BuildDescriptors()
 {

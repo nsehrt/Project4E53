@@ -108,10 +108,40 @@ bool Level::load(const std::string& levelFile)
 void Level::update(const GameTime& gt)
 {
     auto renderResource = ServiceProvider::getRenderResource();
+    auto aCamera = ServiceProvider::getActiveCamera();
 
+    /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
         gameObj.second->update(gt);
+    }
+
+    /*update order of light objects*/
+
+    auto itStart = mLightObjects.begin() + 3;
+    auto itEnd = mLightObjects.end() - 1;
+
+    auto cameraPos = aCamera->getPosition(); 
+
+    /*TODO mit Spielerposition statt Kameraposition*/
+    std::sort(itStart,
+              itEnd,
+              [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b) -> bool
+              {
+
+                  XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
+                  XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+
+                  XMFLOAT3 result;
+                  XMStoreFloat3(&result, XMVectorLess(lengthA, lengthB));
+
+                  return result.x;
+
+              });
+
+    for (UINT i = 3; i < (MAX_LIGHTS -1); i++)
+    {
+        mCurrentLightObjects[i] = mLightObjects[i].get();
     }
 
     /*TODO Collision test*/
@@ -260,7 +290,11 @@ void Level::drawShadow()
 
         for (const auto& gameObject : shadowRenderOrder[i])
         {
-            objectsDrawn += gameObject->drawShadow();
+            if (gameObject->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw))
+            {
+                objectsDrawn += gameObject->drawShadow();
+            }
+                
         }
 
     }
@@ -304,7 +338,7 @@ bool Level::parseSky(const json& skyJson)
     return true;
 }
 
-bool Level::parseLights(const json& lightJson) /*TODO*/
+bool Level::parseLights(const json& lightJson)
 {
     if (!exists(lightJson, "AmbientLight"))
     {
@@ -315,10 +349,10 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
         AmbientLight.z = lightJson["AmbientLight"][2];
     }
 
-    for (UINT i = 0; i < MAX_LIGHTS; i++)
-    {
-        mLightObjects[i] = std::make_unique<LightObject>();
-    }
+    //for (UINT i = 0; i < MAX_LIGHTS; i++)
+    //{
+    //    mCurrentLightObjects[i] = std::make_unique<LightObject>();
+    //}
 
     /*directional light*/
 
@@ -338,7 +372,7 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
 
             auto lightObj = std::make_unique<LightObject>(LightType::Directional, entryJson);
 
-            mLightObjects[lightCounter++] = std::move(lightObj);
+            mLightObjects.push_back(std::move(lightObj));
         }
     }
 
@@ -355,12 +389,10 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
                 continue;
             }
 
-            if (lightCounter == AMOUNT_POINT) break;
-
             auto lightObj = std::make_unique<LightObject>(LightType::Point, entryJson);
 
 
-            mLightObjects[AMOUNT_DIRECTIONAL + lightCounter++] = std::move(lightObj);
+            mLightObjects.push_back(std::move(lightObj));
         }
     }
 
@@ -378,14 +410,22 @@ bool Level::parseLights(const json& lightJson) /*TODO*/
                 continue;
             }
 
-            if (lightCounter == AMOUNT_SPOT) break;
-
             auto lightObj = std::make_unique<LightObject>(LightType::Spot, entryJson);
+            mLightObjects.push_back(std::move(lightObj));
 
-
-            mLightObjects[AMOUNT_DIRECTIONAL + AMOUNT_POINT + lightCounter++] = std::move(lightObj);
+            break;
         }
     }
+
+    /*set immutable lights*/
+
+    /*directional*/
+    mCurrentLightObjects[0] = mLightObjects[0].get();
+    mCurrentLightObjects[1] = mLightObjects[1].get();
+    mCurrentLightObjects[2] = mLightObjects[2].get();
+
+    /*spot*/
+    mCurrentLightObjects[7] = mLightObjects[mLightObjects.size()-1].get();
 
     return true;
 }

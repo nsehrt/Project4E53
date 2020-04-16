@@ -801,9 +801,14 @@ ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
-    // Only the first "main" light casts a shadow.
-    //XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
-    XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mLightObjects[0]->getDirection());
+    /*TODO*/
+    XMFLOAT3 c = mShadowMap->shadowBounds.Center;
+    c.x += 2.f * gt.DeltaTime();
+
+    mShadowMap->setBoundsCenter(c);
+
+    //only the first light casts shadow
+    XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());
     XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir + XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR targetPos = XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -965,12 +970,12 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
 
     for (UINT i = 0; i < MAX_LIGHTS; i++)
     {
-        mMainPassConstants.Lights[i].Direction = aLevel->mLightObjects[i]->getDirection();
-        mMainPassConstants.Lights[i].Position = aLevel->mLightObjects[i]->getPosition();
-        mMainPassConstants.Lights[i].Strength = aLevel->mLightObjects[i]->getStrength();
-        mMainPassConstants.Lights[i].FalloffStart = aLevel->mLightObjects[i]->getFallOffStart();
-        mMainPassConstants.Lights[i].FalloffEnd = aLevel->mLightObjects[i]->getFallOffEnd();
-        mMainPassConstants.Lights[i].SpotPower = aLevel->mLightObjects[i]->getSpotPower();
+        mMainPassConstants.Lights[i].Direction = aLevel->mCurrentLightObjects[i]->getDirection();
+        mMainPassConstants.Lights[i].Position = aLevel->mCurrentLightObjects[i]->getPosition();
+        mMainPassConstants.Lights[i].Strength = aLevel->mCurrentLightObjects[i]->getStrength();
+        mMainPassConstants.Lights[i].FalloffStart = aLevel->mCurrentLightObjects[i]->getFallOffStart();
+        mMainPassConstants.Lights[i].FalloffEnd = aLevel->mCurrentLightObjects[i]->getFallOffEnd();
+        mMainPassConstants.Lights[i].SpotPower = aLevel->mCurrentLightObjects[i]->getSpotPower();
     }
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();

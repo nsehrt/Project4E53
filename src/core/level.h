@@ -9,7 +9,6 @@
 
 #define MAX_LIGHTS 8
 #define AMOUNT_DIRECTIONAL 3
-#define AMOUNT_POINT 4
 #define AMOUNT_SPOT 1
 
 using json = nlohmann::json;
@@ -33,7 +32,9 @@ public:
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
 
-    std::array<std::unique_ptr<LightObject>, MAX_LIGHTS> mLightObjects;
+    std::array<LightObject*, MAX_LIGHTS> mCurrentLightObjects;
+    std::vector<std::unique_ptr<LightObject>> mLightObjects;
+
     XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
 
     std::vector<std::shared_ptr<Camera>> mCameras;
@@ -53,6 +54,7 @@ private:
     /*render order*/
     std::vector<std::vector<GameObject*>> renderOrder;
     std::vector<std::vector<GameObject*>> shadowRenderOrder;
+
 
     bool exists(const nlohmann::json& j, const std::string& key)
     {
