@@ -311,10 +311,8 @@ void P_4E53::update(const GameTime& gt)
 	auto renderResource = ServiceProvider::getRenderResource();
 
 	renderResource->cycleFrameResource();
-
-	//renderResource->incFrameResource();
-
 	FrameResource* mCurrentFrameResource = renderResource->getCurrentFrameResource();
+
 	/*wait for gpu if necessary*/
 	if (mCurrentFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrentFrameResource->Fence)
 	{
@@ -340,7 +338,7 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	/*fps camera controls*/
-	if (inputData.Released(BTN::LEFT_THUMB))
+	if (inputData.Released(BTN::DPAD_RIGHT))
 	{
 		fpsCameraMode = !fpsCameraMode;
 

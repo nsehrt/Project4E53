@@ -64,7 +64,11 @@ bool Level::load(const std::string& levelFile)
     }
 
     /*parse terrain*/
-
+    if (!parseTerrain(levelJson["Terrain"]))
+    {
+        LOG(Severity::Critical, "Failed to load terrain!");
+        return false;
+    }
 
 
     /*parse game objects*/
@@ -138,7 +142,8 @@ void Level::update(const GameTime& gt)
 
     for (UINT i = 3; i < (MAX_LIGHTS -1); i++)
     {
-        mCurrentLightObjects[i] = mLightObjects[i].get();
+        if( i < mLightObjects.size() - 1)
+            mCurrentLightObjects[i] = mLightObjects[i].get();
     }
 
     /*TODO Collision test*/
@@ -217,6 +222,10 @@ void Level::draw()
                   return result.x;
                   
     });
+
+    /*draw the terrain first*/
+
+    mTerrain->draw();
 
     // draw the gameobjects
     UINT objectsDrawn = 0;
@@ -304,6 +313,7 @@ bool Level::parseSky(const json& skyJson)
 {
     if (!exists(skyJson, "Material") || !exists(skyJson, "DefaultCubeMap"))
     {
+        LOG(Severity::Error, "Missing sky properties!");
         return false;
     }
 
@@ -473,6 +483,19 @@ bool Level::parseGameObjects(const json& gameObjectJson)
     debugObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["quad"].get();
 
     mGameObjects["debugQuad"] = std::move(debugObject);
+
+    return true;
+}
+
+bool Level::parseTerrain(const json& terrainJson)
+{
+    if (!exists(terrainJson, "HeightMap"))
+    {
+        LOG(Severity::Error, "Missing terrain properties!");
+        return false;
+    }
+
+    mTerrain = std::make_unique<Terrain>(terrainJson["HeightMap"]);
 
     return true;
 }

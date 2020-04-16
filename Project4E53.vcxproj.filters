@@ -116,7 +116,10 @@
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\render\lightobject.h">
-      <Filter>Source Files\src\render</Filter>
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\terrain.h">
+      <Filter>Source Files\src\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -193,7 +196,10 @@
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
     <ClCompile Include="src\render\lightobject.cpp">
-      <Filter>Source Files\src\render</Filter>
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\terrain.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

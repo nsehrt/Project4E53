@@ -3,7 +3,8 @@
 #include "../extern/json.hpp"
 #include "../core/gameobject.h"
 #include "../util/serviceprovider.h"
-#include "../render/lightobject.h"
+#include "../core/lightobject.h"
+#include "../core/terrain.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -30,6 +31,8 @@ public:
 
     void drawShadow();
 
+    std::unique_ptr<Terrain> mTerrain;
+
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
 
     std::array<LightObject*, MAX_LIGHTS> mCurrentLightObjects;
@@ -50,6 +53,7 @@ private:
     bool parseLights(const json& lightJson);
     bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
+    bool parseTerrain(const json& terrainJson);
 
     /*render order*/
     std::vector<std::vector<GameObject*>> renderOrder;

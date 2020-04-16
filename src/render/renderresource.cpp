@@ -801,7 +801,7 @@ ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
-    /*TODO*/
+    /*TODO set shadow bounds to player center*/
     //XMFLOAT3 c = mShadowMap->shadowBounds.Center;
     //c.x += 2.f * gt.DeltaTime();
 
@@ -970,12 +970,20 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
 
     for (UINT i = 0; i < MAX_LIGHTS; i++)
     {
-        mMainPassConstants.Lights[i].Direction = aLevel->mCurrentLightObjects[i]->getDirection();
-        mMainPassConstants.Lights[i].Position = aLevel->mCurrentLightObjects[i]->getPosition();
-        mMainPassConstants.Lights[i].Strength = aLevel->mCurrentLightObjects[i]->getStrength();
-        mMainPassConstants.Lights[i].FalloffStart = aLevel->mCurrentLightObjects[i]->getFallOffStart();
-        mMainPassConstants.Lights[i].FalloffEnd = aLevel->mCurrentLightObjects[i]->getFallOffEnd();
-        mMainPassConstants.Lights[i].SpotPower = aLevel->mCurrentLightObjects[i]->getSpotPower();
+        if (aLevel->mCurrentLightObjects[i] == nullptr)
+        {
+            mMainPassConstants.Lights[i].Strength = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        }
+        else
+        {
+            mMainPassConstants.Lights[i].Direction = aLevel->mCurrentLightObjects[i]->getDirection();
+            mMainPassConstants.Lights[i].Position = aLevel->mCurrentLightObjects[i]->getPosition();
+            mMainPassConstants.Lights[i].Strength = aLevel->mCurrentLightObjects[i]->getStrength();
+            mMainPassConstants.Lights[i].FalloffStart = aLevel->mCurrentLightObjects[i]->getFallOffStart();
+            mMainPassConstants.Lights[i].FalloffEnd = aLevel->mCurrentLightObjects[i]->getFallOffEnd();
+            mMainPassConstants.Lights[i].SpotPower = aLevel->mCurrentLightObjects[i]->getSpotPower();
+        }
+
     }
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();

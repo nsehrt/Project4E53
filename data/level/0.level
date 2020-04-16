@@ -3,7 +3,9 @@
         "Material": "sky",
         "DefaultCubeMap": "grasscube1024.dds"
     },
-
+    "Terrain": {
+        "HeightMap": "0.height"
+    },
     "Light": {
         "AmbientLight": [0.25,0.25,0.25],
         "Directional": [
