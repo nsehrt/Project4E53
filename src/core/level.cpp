@@ -118,14 +118,11 @@ void Level::update(const GameTime& gt)
 
     /*update order of light objects*/
 
-    auto itStart = mLightObjects.begin() + 3;
-    auto itEnd = mLightObjects.end() - 1;
-
     auto cameraPos = aCamera->getPosition(); 
 
     /*TODO mit Spielerposition statt Kameraposition*/
-    std::sort(itStart,
-              itEnd,
+    std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
+              mLightObjects.end() - AMOUNT_SPOT,
               [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b) -> bool
               {
 

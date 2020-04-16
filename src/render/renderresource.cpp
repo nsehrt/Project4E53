@@ -802,10 +802,10 @@ ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
     /*TODO*/
-    XMFLOAT3 c = mShadowMap->shadowBounds.Center;
-    c.x += 2.f * gt.DeltaTime();
+    //XMFLOAT3 c = mShadowMap->shadowBounds.Center;
+    //c.x += 2.f * gt.DeltaTime();
 
-    mShadowMap->setBoundsCenter(c);
+    //mShadowMap->setBoundsCenter(c);
 
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());
