@@ -35,7 +35,7 @@ public:
     float getFarWindowHeight()const;
 
     // Set frustum.
-    void setLens(float fovY, float aspect, float zn, float zf);
+    void setLens(float fovY, float aspect);
     void setLens();
 
     // Define camera space via LookAt parameters.
@@ -95,8 +95,8 @@ private:
     float mNearWindowHeight = 0.0f;
     float mFarWindowHeight = 0.0f;
 
-    float stdNear = 0.01f;
-    float stdFar = 1000.0f;
+    const float stdNear = 0.01f;
+    const float stdFar = 5000.0f;
 
     bool mViewDirty = true;
 

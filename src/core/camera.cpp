@@ -114,13 +114,13 @@ float Camera::getFarWindowHeight()const
 	return mFarWindowHeight;
 }
 
-void Camera::setLens(float fovY, float aspect, float zn, float zf)
+void Camera::setLens(float fovY, float aspect)
 {
 	// cache properties
 	mFovY = fovY;
 	mAspect = aspect;
-	mNearZ = zn;
-	mFarZ = zf;
+	mNearZ = stdNear;
+	mFarZ = stdFar;
 
 	mNearWindowHeight = 2.0f * mNearZ * tanf(0.5f * mFovY);
 	mFarWindowHeight = 2.0f * mFarZ * tanf(0.5f * mFovY);
@@ -137,9 +137,7 @@ void Camera::setLens()
 	float fovRad = ServiceProvider::getSettings()->displaySettings.FOV / 360.f * MathHelper::Pi;
 
 	setLens(fovRad,
-			static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
-			stdNear,
-			stdFar);
+			static_cast<float>(ServiceProvider::getSettings()->displaySettings.ResolutionWidth) / ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
 }
 
 void Camera::lookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)

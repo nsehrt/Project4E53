@@ -73,11 +73,11 @@
             {
                 "Name": "S1",
                 "Position" : [-25.0,4.0,0.0],
-                "Strength": [0.0,1.0,0.0],
-                "Direction": [0.0,-1.0, 0.0],
-                "FallOffStart": 100.0,
-                "FallOffEnd": 120.0,
-                "SpotPower": 1024               
+                "Strength": [1.0,0.3,0.66],
+                "Direction": [0.0,-1, 0.0],
+                "FallOffStart": 8.0,
+                "FallOffEnd": 10.0,
+                "SpotPower": 0.1               
             }
         ]
     },
@@ -174,17 +174,6 @@
             ]
         },
         {
-            "Name": "grid1",
-            "Model": "grid",
-            "Material": "tile0",
-            "Scale":[
-                40,40,40
-            ],
-            "TexScale":[40,40,40],
-            "RenderType": "Default",
-            "ShadowEnabled": false
-        },
-        {
             "Name": "obj5",
             "Model": "box",
             "Material": "wire",
@@ -218,6 +207,17 @@
             "Position": [
                 -5,
                 3.25,
+                0
+            ],
+            "RenderType": "Default"
+        },
+        {
+            "Name": "GRID",
+            "Model": "grid",
+            "Material": "default",
+            "Position": [
+                0,
+                -5,
                 0
             ],
             "RenderType": "Default"

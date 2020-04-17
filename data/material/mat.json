@@ -7,7 +7,7 @@
         "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
-        "Roughness" : 0.3
+        "Roughness" : 0.8
     },
     {
         "Name" : "sky",

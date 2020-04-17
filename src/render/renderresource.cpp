@@ -781,7 +781,6 @@ bool RenderResource::buildMaterials()
 
 void RenderResource::updateBuffers(const GameTime& gt)
 {
-    
     updateGameObjectConstantBuffers(gt);
     updateMaterialConstantBuffers(gt);
     updateShadowTransform(gt);

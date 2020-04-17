@@ -33,6 +33,13 @@ bool Level::load(const std::string& levelFile)
 
     levelStream.close();
 
+    /*parse terrain*/
+    if (!parseTerrain(levelJson["Terrain"]))
+    {
+        LOG(Severity::Critical, "Failed to load terrain!");
+        return false;
+    }
+
     /*parse sky*/
     if (!parseSky(levelJson["Sky"]))
     {
@@ -60,13 +67,6 @@ bool Level::load(const std::string& levelFile)
     if (!parseCameras(levelJson["Camera"]))
     {
         LOG(Severity::Critical, "Failed to load cameras!");
-        return false;
-    }
-
-    /*parse terrain*/
-    if (!parseTerrain(levelJson["Terrain"]))
-    {
-        LOG(Severity::Critical, "Failed to load terrain!");
         return false;
     }
 
@@ -224,9 +224,6 @@ void Level::draw()
     });
 
     /*draw the terrain first*/
-
-    mTerrain->draw();
-
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
@@ -356,11 +353,6 @@ bool Level::parseLights(const json& lightJson)
         AmbientLight.z = lightJson["AmbientLight"][2];
     }
 
-    //for (UINT i = 0; i < MAX_LIGHTS; i++)
-    //{
-    //    mCurrentLightObjects[i] = std::make_unique<LightObject>();
-    //}
-
     /*directional light*/
 
     UINT lightCounter = 0;
@@ -444,6 +436,7 @@ bool Level::parseCameras(const json& cameraJson) /*TODO*/
 
 bool Level::parseGameObjects(const json& gameObjectJson)
 {
+
     for (auto const& entryJson : gameObjectJson)
     {
         if (!exists(entryJson, "Name"))
@@ -496,6 +489,21 @@ bool Level::parseTerrain(const json& terrainJson)
     }
 
     mTerrain = std::make_unique<Terrain>(terrainJson["HeightMap"]);
+
+    /*create terrain gameobject*/
+    auto terrainObject = std::make_unique<GameObject>(amountGameObjects++);
+
+    terrainObject->name = "TERRAIN";
+    terrainObject->isFrustumCulled = false;
+    terrainObject->isShadowEnabled = false;
+    terrainObject->isDrawEnabled = true;
+    terrainObject->isCollisionEnabled = false;
+    terrainObject->renderItem->renderType = RenderType::Default;
+    terrainObject->renderItem->Model = mTerrain->terrainModel.get();
+    terrainObject->renderItem->Mat = ServiceProvider::getRenderResource()->mMaterials["default"].get();
+    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling(TERRAIN_SLICES, TERRAIN_SLICES, TERRAIN_SLICES));
+
+    mGameObjects["TERRAIN"] = std::move(terrainObject);
 
     return true;
 }
