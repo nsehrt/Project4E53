@@ -4,7 +4,7 @@
         "DefaultCubeMap": "grasscube1024.dds"
     },
     "Terrain": {
-        "HeightMap": "0.height"
+        "HeightMap": "0.raw"
     },
     "Light": {
         "AmbientLight": [0.25,0.25,0.25],

@@ -11,6 +11,31 @@ Terrain::Terrain(const std::string& heightMap)
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(TERRAIN_SIZE, TERRAIN_SIZE,
                                                               TERRAIN_SLICES, TERRAIN_SLICES);
 
+    /*load height map*/
+    mHeightMap.resize(HEIGHTMAP_SIZE * HEIGHTMAP_SIZE,0);
+    std::vector<unsigned char> input(HEIGHTMAP_SIZE * HEIGHTMAP_SIZE);
+
+    std::stringstream lFile;
+    lFile << TERRAIN_PATH << heightMap;
+
+    std::ifstream file;
+    file.open(lFile.str().c_str(), std::ios_base::binary);
+
+    if (!file.is_open())
+    {
+        LOG(Severity::Error, "Unable to open height map file "<< heightMap << "!");
+        return;
+    }
+
+    file.read((char*)&input[0], (std::streamsize)input.size());
+    file.close();
+
+    /*copy to actual height map*/
+    for (UINT i = 0; i < (UINT)input.size(); i++)
+    {
+        mHeightMap[i] = (input[i] / 255.0f) * HEIGHTMAP_SCALE;
+    }
+
 
     std::vector<Vertex> vertices(grid.Vertices.size());
     std::vector<std::uint16_t> indices(grid.Indices32.size());
@@ -20,8 +45,13 @@ Terrain::Terrain(const std::string& heightMap)
         auto& p = grid.Vertices[i].Position;
         vertices[i].Pos = p;
         vertices[i].Pos.y = calculateHeight(p.x, p.z) * 0.2f;
+        //int index = (int)(i / float(grid.Vertices.size()) * (HEIGHTMAP_SIZE * HEIGHTMAP_SIZE));
+        //vertices[i].Pos.y = mHeightMap[index];
+
         vertices[i].Normal = grid.Vertices[i].Normal;
         vertices[i].Normal = calculateNormal(p.x, p.z);
+
+
         vertices[i].TexC = grid.Vertices[i].TexC;
         vertices[i].TangentU = grid.Vertices[i].TangentU;
 
