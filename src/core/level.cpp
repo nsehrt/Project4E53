@@ -498,10 +498,10 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->isShadowEnabled = false;
     terrainObject->isDrawEnabled = true;
     terrainObject->isCollisionEnabled = false;
-    terrainObject->renderItem->renderType = RenderType::Default;
+    terrainObject->renderItem->renderType = RenderType::DefaultNoNormal;
     terrainObject->renderItem->Model = mTerrain->terrainModel.get();
-    terrainObject->renderItem->Mat = ServiceProvider::getRenderResource()->mMaterials["default"].get();
-    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling(TERRAIN_SLICES, TERRAIN_SLICES, TERRAIN_SLICES));
+    terrainObject->renderItem->Mat = ServiceProvider::getRenderResource()->mMaterials["tile0"].get();
+    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling(mTerrain->terrainSlices, mTerrain->terrainSlices, mTerrain->terrainSlices));
 
     mGameObjects["TERRAIN"] = std::move(terrainObject);
 

@@ -8,15 +8,15 @@ Terrain::Terrain(const std::string& heightMap)
 
     GeometryGenerator geoGen;
 
-    GeometryGenerator::MeshData grid = geoGen.CreateGrid(TERRAIN_SIZE, TERRAIN_SIZE,
-                                                              TERRAIN_SLICES, TERRAIN_SLICES);
+    GeometryGenerator::MeshData grid = geoGen.CreateGrid((float)terrainSize, (float)terrainSize,
+                                                              terrainSlices, terrainSlices);
 
     /*load height map*/
-    mHeightMap.resize(HEIGHTMAP_SIZE * HEIGHTMAP_SIZE,0);
-    std::vector<unsigned char> input(HEIGHTMAP_SIZE * HEIGHTMAP_SIZE);
+    mHeightMap.resize(terrainSlices * terrainSlices,0);
+    std::vector<unsigned short> input(terrainSlices * terrainSlices);
 
     std::stringstream lFile;
-    lFile << TERRAIN_PATH << heightMap;
+    lFile << terrainPath << heightMap;
 
     std::ifstream file;
     file.open(lFile.str().c_str(), std::ios_base::binary);
@@ -27,43 +27,38 @@ Terrain::Terrain(const std::string& heightMap)
         return;
     }
 
-    file.read((char*)&input[0], (std::streamsize)input.size());
+    terrainFile = lFile.str();
+
+    file.read((char*)&input[0], (std::streamsize)input.size() * 2);
     file.close();
 
     /*copy to actual height map*/
     for (UINT i = 0; i < (UINT)input.size(); i++)
     {
-        mHeightMap[i] = (input[i] / 255.0f) * HEIGHTMAP_SCALE;
+        mHeightMap[i] = (input[i] / 65536.0f) * heightScale - (heightScale/2.0f);
     }
 
+    //smoothHeightMap();
 
     std::vector<Vertex> vertices(grid.Vertices.size());
-    std::vector<std::uint16_t> indices(grid.Indices32.size());
+    std::vector<std::uint32_t> indices(grid.Indices32.size());
 
     for (size_t i = 0; i < grid.Vertices.size(); i++)
     {
-        auto& p = grid.Vertices[i].Position;
-        vertices[i].Pos = p;
-        vertices[i].Pos.y = calculateHeight(p.x, p.z) * 0.2f;
-        //int index = (int)(i / float(grid.Vertices.size()) * (HEIGHTMAP_SIZE * HEIGHTMAP_SIZE));
-        //vertices[i].Pos.y = mHeightMap[index];
-
+        vertices[i].Pos = grid.Vertices[i].Position;
+        vertices[i].Pos.y = mHeightMap[i];
         vertices[i].Normal = grid.Vertices[i].Normal;
-        vertices[i].Normal = calculateNormal(p.x, p.z);
-
 
         vertices[i].TexC = grid.Vertices[i].TexC;
         vertices[i].TangentU = grid.Vertices[i].TangentU;
 
     }
 
-    /*TODO HEIGHT*/
 
-
-    indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+    indices.insert(indices.end(), std::begin(grid.Indices32), std::end(grid.Indices32));
 
     UINT vertexByteSize = (UINT)vertices.size() * sizeof(Vertex);
-    UINT indexByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+    UINT indexByteSize = (UINT)indices.size() * sizeof(std::uint32_t);
 
     auto geoGrid = std::make_unique<Mesh>();
     geoGrid->name = "TERRAIN";
@@ -76,7 +71,7 @@ Terrain::Terrain(const std::string& heightMap)
 
     geoGrid->VertexByteStride = sizeof(Vertex);
     geoGrid->VertexBufferByteSize = vertexByteSize;
-    geoGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoGrid->IndexFormat = DXGI_FORMAT_R32_UINT;
     geoGrid->IndexBufferByteSize = indexByteSize;
     geoGrid->IndexCount = (UINT)indices.size();
 
@@ -99,9 +94,28 @@ Terrain::Terrain(const std::string& heightMap)
     terrainModel->meshes["TERRAIN"] = std::move(geoGrid);
 }
 
-void Terrain::draw()
+void Terrain::save()
 {
 
+    auto fileHandle = std::fstream(terrainFile.c_str(), std::ios::out | std::ios::binary);
+
+    if (!fileHandle.is_open())
+    {
+        LOG(Severity::Error, "Can not write to " << terrainFile << "!");
+        return;
+    }
+
+    unsigned short temp = 0;
+
+    for (UINT i = 0; i < mHeightMap.size(); i++)
+    {
+        temp = (mHeightMap[i] + heightScale / 2) / heightScale * 65536;
+        fileHandle.write(reinterpret_cast<const char*>(&temp), sizeof(unsigned short));
+    }
+ 
+    fileHandle.close();
+
+    LOG(Severity::Info, "Successfully wrote height map to file " << terrainFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
 }
 
 float Terrain::calculateHeight(float x, float z) const

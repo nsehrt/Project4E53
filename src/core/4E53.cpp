@@ -357,7 +357,10 @@ void P_4E53::update(const GameTime& gt)
 		fpsCamera->updateFPSCamera(inputData.current, gt);
 	}
 	
-	
+	if (inputData.Released(BTN::BACK) && settingsData->miscSettings.DebugEnabled)
+	{
+		ServiceProvider::getActiveLevel()->mTerrain->save();
+	}
 
 	if (inputData.Released(BTN::DPAD_DOWN) && settingsData->miscSettings.DebugEnabled )
 	{

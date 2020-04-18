@@ -56,6 +56,7 @@ struct Misc
     std::string AdapterName = "";
     int DebugEnabled = false;
     int DebugQuadEnabled = true;
+    int EditModeEnabled = false;
 };
 
 

@@ -1,13 +1,6 @@
 #pragma once
 
-#define TERRAIN_SIZE 1024
-#define TERRAIN_SLICES 250
-
-#define HEIGHTMAP_SIZE 2049
-#define HEIGHTMAP_SCALE 50.0f
-
 #include "../util/d3dUtil.h"
-#define TERRAIN_PATH "data/level/"
 
 
 class Terrain
@@ -17,17 +10,26 @@ public:
 
     explicit Terrain(const std::string& heightMap);
 
-    void draw();
+    void save();
 
     std::unique_ptr<Model> terrainModel = nullptr;
     std::unique_ptr<RenderItem> terrainRItem = nullptr;
 
+    const UINT terrainSize = 1000;
+    const UINT terrainSlices = 500;
+    const float heightScale = 100.0f;
+
 private:
+
+    const std::string terrainPath = "data/level/";
+    std::string terrainFile;
 
     float calculateHeight(float x, float z) const;
     DirectX::XMFLOAT3 calculateNormal(float x, float z) const;
 
+    
     std::vector<float> mHeightMap;
+
 
     float getWidth() const;
     float getDepth() const;

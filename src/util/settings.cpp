@@ -160,6 +160,14 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.miscSettings.DebugQuadEnabled = 1;
     }
 
+    if (!setSetting(pMisc, "EditModeEnabled", &settings.miscSettings.EditModeEnabled))
+        return false;
+
+    if (settings.miscSettings.EditModeEnabled != 0)
+    {
+        settings.miscSettings.EditModeEnabled = 1;
+    }
+
     return true;
 }
 
