@@ -93,6 +93,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 
 	ServiceProvider::getLogger()->print<Severity::Info>("Settings file loaded successfully.");
 
+	LOG(Severity::Info, "Debug Mode is " << (ServiceProvider::getSettings()->miscSettings.DebugEnabled ? "enabled" : "disabled") << ".");
+
+	LOG(Severity::Info, "Edit Mode is " << (ServiceProvider::getSettings()->miscSettings.EditModeEnabled ? "enabled" : "disabled") << ".");
+
+
 	/*initialize main window and directx12*/
 	try
 	{
@@ -101,8 +106,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 		{
 			return 0;
 		}
-
-		LOG(Severity::Info, "Debug Mode is " << (ServiceProvider::getSettings()->miscSettings.DebugEnabled ? "enabled" : "disabled") << ".");
 
 		/*wait for audio loading*/
 		while (!ServiceProvider::getAudio()->loadingFinished())
@@ -357,7 +360,8 @@ void P_4E53::update(const GameTime& gt)
 		fpsCamera->updateFPSCamera(inputData.current, gt);
 	}
 	
-	if (inputData.Released(BTN::BACK) && settingsData->miscSettings.DebugEnabled)
+
+	if (inputData.Released(BTN::BACK) && settingsData->miscSettings.DebugEnabled && settingsData->miscSettings.EditModeEnabled)
 	{
 		ServiceProvider::getActiveLevel()->mTerrain->save();
 	}
