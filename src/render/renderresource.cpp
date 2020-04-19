@@ -958,7 +958,7 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     mMainPassConstants.RenderTargetSize = XMFLOAT2((float)ServiceProvider::getSettings()->displaySettings.ResolutionWidth, (float)ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
     mMainPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
     mMainPassConstants.NearZ = 0.01f;
-    mMainPassConstants.FarZ = 1000.0f;
+    mMainPassConstants.FarZ = 5000.0f;
     mMainPassConstants.TotalTime = gt.TotalTime();
     mMainPassConstants.DeltaTime = gt.DeltaTime();
 
@@ -1000,7 +1000,8 @@ void RenderResource::buildFrameResource()
                                   2, /*main pass and shadow pass cbs*/
                                   MAX_GAME_OBJECTS,
                                   0,
-                                  (UINT)mMaterials.size()));
+                                  (UINT)mMaterials.size(),
+                                  250000 /*terrain vertices TODO*/));
     }
 
 }

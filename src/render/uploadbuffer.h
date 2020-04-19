@@ -19,6 +19,8 @@ public:
             mElementByteSize = sizeof(T);
         }
 
+        mElementCount = _elementCount;
+
         ThrowIfFailed(_device->CreateCommittedResource(
             &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
             D3D12_HEAP_FLAG_NONE,
@@ -50,10 +52,16 @@ public:
         memcpy(&mMappedData[_elementIndex * mElementByteSize], &data, sizeof(T));
     }
 
+    void copyAll(const T& data)
+    {
+        memcpy(&mMappedData[0], &data, mElementCount * sizeof(T));
+    }
+
 private:
     Microsoft::WRL::ComPtr<ID3D12Resource> mUploadBuffer;
     BYTE* mMappedData = nullptr;
 
+    UINT mElementCount = 0;
     UINT mElementByteSize = 0;
     bool mIsConstantBuffer = false;
 };

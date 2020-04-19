@@ -7,7 +7,7 @@
         "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
-        "Roughness" : 0.8
+        "Roughness" : 0.2
     },
     {
         "Name" : "sky",
@@ -16,6 +16,14 @@
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.3
+    },
+    {
+        "Name" : "grass",
+        "Texture" : "grass",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.1
     },
     {
         "Name" : "brick0",

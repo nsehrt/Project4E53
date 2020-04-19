@@ -6,6 +6,8 @@
 Terrain::Terrain(const std::string& heightMap)
 {
 
+    cellSpacing = terrainSize / terrainSlices;
+
     GeometryGenerator geoGen;
 
     GeometryGenerator::MeshData grid = geoGen.CreateGrid((float)terrainSize, (float)terrainSize,
@@ -40,31 +42,30 @@ Terrain::Terrain(const std::string& heightMap)
 
     //smoothHeightMap();
 
-    std::vector<Vertex> vertices(grid.Vertices.size());
+    mTerrainVertices.resize(grid.Vertices.size());
     std::vector<std::uint32_t> indices(grid.Indices32.size());
 
     for (size_t i = 0; i < grid.Vertices.size(); i++)
     {
-        vertices[i].Pos = grid.Vertices[i].Position;
-        vertices[i].Pos.y = mHeightMap[i];
-        vertices[i].Normal = grid.Vertices[i].Normal;
+        mTerrainVertices[i].Pos = grid.Vertices[i].Position;
+        mTerrainVertices[i].Pos.y = mHeightMap[i];
+        mTerrainVertices[i].Normal = grid.Vertices[i].Normal;
 
-        vertices[i].TexC = grid.Vertices[i].TexC;
-        vertices[i].TangentU = grid.Vertices[i].TangentU;
+        mTerrainVertices[i].TexC = grid.Vertices[i].TexC;
+        mTerrainVertices[i].TangentU = grid.Vertices[i].TangentU;
 
     }
 
-
     indices.insert(indices.end(), std::begin(grid.Indices32), std::end(grid.Indices32));
 
-    UINT vertexByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    UINT vertexByteSize = (UINT)mTerrainVertices.size() * sizeof(Vertex);
     UINT indexByteSize = (UINT)indices.size() * sizeof(std::uint32_t);
 
     auto geoGrid = std::make_unique<Mesh>();
     geoGrid->name = "TERRAIN";
 
     ThrowIfFailed(D3DCreateBlob(vertexByteSize, &geoGrid->VertexBufferCPU));
-    CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vertexByteSize);
+    CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), mTerrainVertices.data(), vertexByteSize);
 
     ThrowIfFailed(D3DCreateBlob(indexByteSize, &geoGrid->IndexBufferCPU));
     CopyMemory(geoGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), indexByteSize);
@@ -79,7 +80,7 @@ Terrain::Terrain(const std::string& heightMap)
 
     geoGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(renderResource->device,
                                                                 renderResource->cmdList,
-                                                                vertices.data(),
+                                                                mTerrainVertices.data(),
                                                                 vertexByteSize,
                                                                 geoGrid->VertexBufferUploader);
 
@@ -155,6 +156,24 @@ float Terrain::getHeight(float x, float z)
         float vy = B - D;
         return D + (1.0f - s) * uy + (1.0f - t) * vy;
     }
+}
+
+void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, float increase)
+{
+    float c = (x + 0.5f * terrainSize) / cellSpacing;
+    float d = (z - 0.5f * terrainSize) / -cellSpacing;
+
+    int row = (int)floorf(d);
+    int col = (int)floorf(c);
+
+    mHeightMap[row * terrainSlices + col] += increase;
+    mTerrainVertices[row * terrainSlices + col].Pos.y += increase;
+
+    auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
+
+    terrainVB->copyAll(mTerrainVertices[0]);
+
+    terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
 }
 
 float Terrain::calculateHeight(float x, float z) const

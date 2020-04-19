@@ -82,7 +82,7 @@ class FrameResource
 {
 public:
 
-    FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT materialCount);
+    FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT materialCount, UINT terrainVertexCount);
     FrameResource(const FrameResource& rhs) = delete;
     FrameResource& operator=(const FrameResource& rhs) = delete;
     ~FrameResource();
@@ -90,9 +90,12 @@ public:
     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc;
     std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
     std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
-    //std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
-    //std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
+
     std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
+    std::unique_ptr<UploadBuffer<Vertex>> TerrainVB = nullptr;
+
+    //std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
+//std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
 
     // Fence value to mark commands up to this fence point.  This lets us
     // check if these frame resources are still in use by the GPU.

@@ -1,6 +1,11 @@
 #include "frameresource.h"
 
-FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT materialCount)
+FrameResource::FrameResource(ID3D12Device* device,
+                             UINT passCount, 
+                             UINT objectCount, 
+                             UINT skinnedObjectCount, 
+                             UINT materialCount,
+                             UINT terrainVertexCount)
 {
     ThrowIfFailed(device->CreateCommandAllocator(
         D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -10,6 +15,7 @@ FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCo
     //SsaoCB = std::make_unique<UploadBuffer<SsaoConstants>>(device, 1, true);
     MaterialBuffer = std::make_unique<UploadBuffer<MaterialData>>(device, materialCount, false);
     ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
+    TerrainVB = std::make_unique<UploadBuffer<Vertex>>(device, terrainVertexCount, false);
     //SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
 }
 

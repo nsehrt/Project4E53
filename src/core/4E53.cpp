@@ -260,6 +260,7 @@ bool P_4E53::Initialize()
 		editSelect.Position.y = 0.0f;
 
 		editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
+		editLight->setStrength(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	}
 
 
@@ -384,8 +385,29 @@ void P_4E53::update(const GameTime& gt)
 												   -terrainHalf + 5.0f,
 												   terrainHalf - 5.0f);
 
-		editSelect.FallOffStart = editCamera->cameraPosNormalize() * editSelect.BaseSelectSize;
+		editSelect.FallOffStart = (editCamera->cameraPosNormalize() + editCamera->cameraPosNormalize() * editCamera->cameraPosNormalize())* editSelect.BaseSelectSize;
 		editSelect.FallOffEnd = editSelect.FallOffStart * 1.25f;
+
+		/*process height increase*/
+		static float heightInc = 10.0f;
+
+		if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)
+		{
+			activeLevel->mTerrain->increaseHeight(editSelect.Position.x,
+												  editSelect.Position.y,
+												  editSelect.FallOffStart,
+												  editSelect.FallOffEnd,
+												  gt.DeltaTime() * heightInc * inputData.current.trigger[TRG::RIGHT_TRIGGER]);
+		}
+
+		if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
+		{
+			activeLevel->mTerrain->increaseHeight(editSelect.Position.x,
+												  editSelect.Position.y,
+												  editSelect.FallOffStart,
+												  editSelect.FallOffEnd,
+												  gt.DeltaTime() * -heightInc * inputData.current.trigger[TRG::LEFT_TRIGGER]);
+		}
 
 		/*camera update*/
 		float zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -25.0f * gt.DeltaTime();

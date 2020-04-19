@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../util/d3dUtil.h"
-
+#include "../render/renderresource.h"
 
 class Terrain
 {
@@ -13,15 +13,16 @@ public:
     void save();
 
     std::unique_ptr<Model> terrainModel = nullptr;
-    std::unique_ptr<RenderItem> terrainRItem = nullptr;
 
     float getHeight(float x, float z);
 
-    const float terrainSize = 1000.0f;
-    const UINT terrainSlices = 500;
-    const float heightScale = 100.0f;
+    void increaseHeight(float x, float z, float fallStart, float fallEnd, float increase);
 
-    float cellSpacing = 2.0f;
+    const float terrainSize = 500.0f;
+    const UINT terrainSlices = 500;
+    const float heightScale = 50.0f;
+
+    float cellSpacing = 0.0f;
 
 private:
 
@@ -32,6 +33,7 @@ private:
     DirectX::XMFLOAT3 calculateNormal(float x, float z) const;
 
     std::vector<float> mHeightMap;
+    std::vector<Vertex> mTerrainVertices;
 
     UINT objectCBSize = 0;
 };
