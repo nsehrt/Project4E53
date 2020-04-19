@@ -15,9 +15,13 @@ public:
     std::unique_ptr<Model> terrainModel = nullptr;
     std::unique_ptr<RenderItem> terrainRItem = nullptr;
 
-    const UINT terrainSize = 1000;
+    float getHeight(float x, float z);
+
+    const float terrainSize = 1000.0f;
     const UINT terrainSlices = 500;
     const float heightScale = 100.0f;
+
+    float cellSpacing = 2.0f;
 
 private:
 
@@ -27,13 +31,7 @@ private:
     float calculateHeight(float x, float z) const;
     DirectX::XMFLOAT3 calculateNormal(float x, float z) const;
 
-    
     std::vector<float> mHeightMap;
-
-
-    float getWidth() const;
-    float getDepth() const;
-    float getHeight(float x, float y) const;
 
     UINT objectCBSize = 0;
 };

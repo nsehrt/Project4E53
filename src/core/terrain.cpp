@@ -109,13 +109,52 @@ void Terrain::save()
 
     for (UINT i = 0; i < mHeightMap.size(); i++)
     {
-        temp = (mHeightMap[i] + heightScale / 2) / heightScale * 65536;
+        temp = (unsigned short)((mHeightMap[i] + heightScale / 2) / heightScale * 65536);
         fileHandle.write(reinterpret_cast<const char*>(&temp), sizeof(unsigned short));
     }
  
     fileHandle.close();
 
     LOG(Severity::Info, "Successfully wrote height map to file " << terrainFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
+}
+
+float Terrain::getHeight(float x, float z)
+{
+    // Transform from terrain local space to "cell" space.
+    float c = (x + 0.5f * terrainSize) / cellSpacing;
+    float d = (z - 0.5f * terrainSize) / -cellSpacing;
+
+    // Get the row and column we are in.
+    int row = (int)floorf(d);
+    int col = (int)floorf(c);
+
+    // Grab the heights of the cell we are in.
+    // A*--*B
+    //  | /|
+    //  |/ |
+    // C*--*D
+    float A = mHeightMap[row * terrainSlices + col];
+    float B = mHeightMap[row * terrainSlices + col + 1];
+    float C = mHeightMap[(row + 1) * terrainSlices + col];
+    float D = mHeightMap[(row + 1) * terrainSlices + col + 1];
+
+    // Where we are relative to the cell.
+    float s = c - (float)col;
+    float t = d - (float)row;
+
+    // If upper triangle ABC.
+    if (s + t <= 1.0f)
+    {
+        float uy = B - A;
+        float vy = C - A;
+        return A + s * uy + t * vy;
+    }
+    else // lower triangle DCB.
+    {
+        float uy = C - D;
+        float vy = B - D;
+        return D + (1.0f - s) * uy + (1.0f - t) * vy;
+    }
 }
 
 float Terrain::calculateHeight(float x, float z) const
@@ -134,19 +173,4 @@ DirectX::XMFLOAT3 Terrain::calculateNormal(float x, float z) const
     XMStoreFloat3(&n, unitNormal);
 
     return n;
-}
-
-float Terrain::getWidth() const
-{
-    return 0.0f;
-}
-
-float Terrain::getDepth() const
-{
-    return 0.0f;
-}
-
-float Terrain::getHeight(float x, float y) const
-{
-    return 0.0f;
-}
+}                                                                                       

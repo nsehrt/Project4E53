@@ -11,8 +11,10 @@
 #include "../render/renderresource.h"
 #include "../core/camera.h"
 #include "../core/fpscamera.h"
+#include "../core/fixedcamera.h"
 #include "../util/modelloader.h"
 #include "../core/level.h"
+#include "../core/editmode.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -45,6 +47,10 @@ private:
 
 	std::shared_ptr<FPSCamera> fpsCamera;
 	bool fpsCameraMode = false;
+
+	std::shared_ptr<FixedCamera> editCamera;
+	LightObject* editLight = nullptr;
+	EditSelect editSelect;
 
 	std::vector<std::shared_ptr<Level>> mLevel;
 
@@ -241,6 +247,22 @@ bool P_4E53::Initialize()
 	fpsCamera->setLens();
 	fpsCamera->setPosition(0.0f, 5.0f, -20.f);
 
+	/*init edit mode camera if needed*/
+	if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+	{
+		editCamera = std::make_shared<FixedCamera>();
+		editCamera->initFixedDistance(15.0f, 100.0f);
+		editCamera->setLens();
+		editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		ServiceProvider::setActiveCamera(editCamera);
+
+		editSelect.Position.x = 0.0f;
+		editSelect.Position.y = 0.0f;
+
+		editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
+	}
+
+
 	// Execute the initialization commands.
 	ThrowIfFailed(mCommandList->Close());
 	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
@@ -312,6 +334,8 @@ void P_4E53::update(const GameTime& gt)
 	/******************************/
 	/*cycle to next frame resource*/
 	auto renderResource = ServiceProvider::getRenderResource();
+	auto activeLevel = ServiceProvider::getActiveLevel();
+	auto activeCamera = ServiceProvider::getActiveCamera();
 
 	renderResource->cycleFrameResource();
 	FrameResource* mCurrentFrameResource = renderResource->getCurrentFrameResource();
@@ -331,42 +355,87 @@ void P_4E53::update(const GameTime& gt)
 	/*get input and settings*/
 	InputSet& inputData = ServiceProvider::getInputManager()->getInput();
 	Settings* settingsData = ServiceProvider::getSettings();
+
+
+	activeCamera->mPreviousPosition = activeCamera->getPosition3f();
 	/***********************/
 
-	ServiceProvider::getActiveCamera()->mPreviousPosition = ServiceProvider::getActiveCamera()->getPosition3f();
-
-	if (inputData.Pressed(BTN::A))
+	if (settingsData->miscSettings.EditModeEnabled)
 	{
-		ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
+		/*save height map*/
+		if (inputData.Released(BTN::BACK))
+		{
+			activeLevel->mTerrain->save();
+		}
+
+		/*edit selection update*/
+		editSelect.Velocity = editSelect.BaseVelocity * editCamera->cameraPosNormalize();
+
+		editSelect.Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSelect.Velocity * gt.DeltaTime();
+		editSelect.Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSelect.Velocity * gt.DeltaTime();
+
+		float terrainHalf = activeLevel->mTerrain->terrainSize / 2.0f;
+
+		editSelect.Position.x = MathHelper::clampH(editSelect.Position.x,
+												   -terrainHalf + 5.0f ,
+												   terrainHalf - 5.0f);
+
+		editSelect.Position.y = MathHelper::clampH(editSelect.Position.y,
+												   -terrainHalf + 5.0f,
+												   terrainHalf - 5.0f);
+
+		editSelect.FallOffStart = editCamera->cameraPosNormalize() * editSelect.BaseSelectSize;
+		editSelect.FallOffEnd = editSelect.FallOffStart * 1.25f;
+
+		/*camera update*/
+		float zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -25.0f * gt.DeltaTime();
+
+		XMFLOAT3 newCamTarget = XMFLOAT3(editSelect.Position.x,
+										 activeLevel->mTerrain->getHeight(editSelect.Position.x, editSelect.Position.y),
+										 editSelect.Position.y);
+
+		editCamera->updateFixedCamera(newCamTarget, 
+										zoomDelta);
+
+		/*move light*/
+		XMFLOAT3 newLightPos = newCamTarget;
+		newLightPos.y += editSelect.FallOffStart / 2.0f;
+
+		editLight->setPosition(newLightPos);
+		editLight->setFallOffStart(editSelect.FallOffStart);
+		editLight->setFallOffEnd(editSelect.FallOffEnd);
 	}
-
-	/*fps camera controls*/
-	if (inputData.Released(BTN::DPAD_RIGHT))
+	else
 	{
-		fpsCameraMode = !fpsCameraMode;
+		if (inputData.Pressed(BTN::A))
+		{
+			ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
+		}
+
+		/*fps camera controls*/
+		if (inputData.Released(BTN::DPAD_RIGHT))
+		{
+			fpsCameraMode = !fpsCameraMode;
+
+			if (fpsCameraMode)
+			{
+				ServiceProvider::setActiveCamera(fpsCamera);
+			}
+			else
+			{
+				ServiceProvider::setActiveCamera(activeLevel->mCameras[0]);
+			}
+		}
 
 		if (fpsCameraMode)
 		{
-			ServiceProvider::setActiveCamera(fpsCamera);
+			fpsCamera->updateFPSCamera(inputData.current, gt);
 		}
-		else
-		{
-			ServiceProvider::setActiveCamera(ServiceProvider::getActiveLevel()->mCameras[0]);
-		}
+
 	}
 
-	if (fpsCameraMode)
-	{
-		fpsCamera->updateFPSCamera(inputData.current, gt);
-	}
-	
-
-	if (inputData.Released(BTN::BACK) && settingsData->miscSettings.DebugEnabled && settingsData->miscSettings.EditModeEnabled)
-	{
-		ServiceProvider::getActiveLevel()->mTerrain->save();
-	}
-
-	if (inputData.Released(BTN::DPAD_DOWN) && settingsData->miscSettings.DebugEnabled )
+	/*debug actions*/
+	if (inputData.Released(BTN::DPAD_DOWN) && settingsData->miscSettings.DebugEnabled)
 	{
 		renderResource->toggleHitBoxDraw();
 	}
@@ -381,9 +450,8 @@ void P_4E53::update(const GameTime& gt)
 		ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
 	}
 
-	ServiceProvider::getActiveLevel()->update(gt);
-
-	ServiceProvider::getActiveCamera()->updateViewMatrix();
+	activeLevel->update(gt);
+	activeCamera->updateViewMatrix();
 	renderResource->updateBuffers(gt);
 
 	/*save input for next frame*/

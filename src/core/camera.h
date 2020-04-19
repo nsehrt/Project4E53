@@ -72,7 +72,8 @@ public:
 
     DirectX::BoundingBox hitbox;
     DirectX::XMFLOAT3 mPreviousPosition = { 0.0f,0.0f,0.0f };
-private:
+
+protected:
 
     DirectX::BoundingBox baseHitbox;
     DirectX::BoundingFrustum camFrustum;

@@ -156,6 +156,7 @@
     <ClCompile Include="src\core\4E53.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
+    <ClCompile Include="src\core\fixedcamera.cpp" />
     <ClCompile Include="src\core\fpscamera.cpp" />
     <ClCompile Include="src\core\gameobject.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
@@ -184,6 +185,8 @@
     <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />
+    <ClInclude Include="src\core\editmode.h" />
+    <ClInclude Include="src\core\fixedcamera.h" />
     <ClInclude Include="src\core\fpscamera.h" />
     <ClInclude Include="src\core\gameobject.h" />
     <ClInclude Include="src\core\gametime.h" />
