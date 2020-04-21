@@ -465,6 +465,8 @@ void RenderResource::buildShaders()
     mShaders["defaultNoNormalVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "VS", "vs_5_1");
     mShaders["defaultNoNormalPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "PS", "ps_5_1");
 
+    mShaders["terrainVS"] = d3dUtil::CompileShader(L"data\\shader\\Terrain.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["terrainPS"] = d3dUtil::CompileShader(L"data\\shader\\Terrain.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["skyPS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
@@ -577,6 +579,21 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultNoNormal])));
+
+    /*terrain PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC terrainPSODesc = defaultPSODesc;
+
+    terrainPSODesc.VS = {
+        reinterpret_cast<BYTE*>(mShaders["terrainVS"]->GetBufferPointer()),
+        mShaders["terrainVS"]->GetBufferSize()
+    };
+
+    terrainPSODesc.PS = {
+        reinterpret_cast<BYTE*>(mShaders["terrainPS"]->GetBufferPointer()),
+        mShaders["terrainPS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&terrainPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Terrain])));
 
     /* Transparency PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC transparencyPSODesc = defaultPSODesc;
@@ -962,7 +979,7 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     mMainPassConstants.TotalTime = gt.TotalTime();
     mMainPassConstants.DeltaTime = gt.DeltaTime();
 
-    /*TODO*/
+
     auto aLevel = ServiceProvider::getActiveLevel();
 
     mMainPassConstants.AmbientLight = aLevel->AmbientLight;

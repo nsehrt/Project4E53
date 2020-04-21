@@ -160,36 +160,59 @@ float Terrain::getHeight(float x, float z)
 
 void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, float increase)
 {
-    float c = (x + 0.5f * terrainSize) / cellSpacing;
-    float d = (z - 0.5f * terrainSize) / -cellSpacing;
+    /*get height of main vertex*/
+    float mainVertexHeight = getHeight(x, z);
 
-    int row = (int)floorf(d);
-    int col = (int)floorf(c);
+    /*iterate over all vertices in the fallEnd * fallEnd cluster*/
+    int iterations = static_cast<int>(fallEnd*2 / cellSpacing) + 1;
+    if (iterations % 2 != 0) iterations++;
 
-    mHeightMap[row * terrainSlices + col] += increase;
-    mTerrainVertices[row * terrainSlices + col].Pos.y += increase;
+    float startX = x - (iterations / 2.0f * cellSpacing);
+    float startZ = z - (iterations / 2.0f * cellSpacing);
 
+    float xPos, zPos;
+    zPos = startZ;
+
+    for (int i = 0; i < iterations; i++)
+    {
+        xPos = startX;
+        zPos += cellSpacing;
+
+        for (int j = 0; j < iterations; j++)
+        {
+            xPos += cellSpacing;
+
+            /*check if position is inside the selection*/
+            float c = (xPos + 0.5f * terrainSize) / cellSpacing;
+            float d = (zPos - 0.5f * terrainSize) / -cellSpacing;
+
+            int row = (int)floorf(d);
+            int col = (int)floorf(c);
+
+            int currentIndex = row * terrainSlices + col;
+
+            float lengthBetween = sqrtf(powf(xPos - x, 2.0f) +
+                                        powf(zPos - z, 2.0f));
+
+            if (lengthBetween > fallEnd) continue;
+
+            /*return if height already higher than height of main selected vertex*/
+            if (currentIndex > mHeightMap.size() -1|| currentIndex < 0) continue;
+
+            /*normalize distance from center*/
+            float normalizedDistance = 1.0f - (lengthBetween / fallEnd);
+
+            /*increase height*/
+            mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
+            mHeightMap[currentIndex] = MathHelper::clampH(mHeightMap[currentIndex], -heightScale / 2.0f, heightScale / 2.0f);
+            mTerrainVertices[currentIndex].Pos.y = mHeightMap[currentIndex];
+
+        }
+    }
+
+
+    /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
-
     terrainVB->copyAll(mTerrainVertices[0]);
-
     terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
-}
-
-float Terrain::calculateHeight(float x, float z) const
-{
-    return 0.3f * (z * sinf(0.1f * x) + x * cosf(0.1f * z));
-}
-
-DirectX::XMFLOAT3 Terrain::calculateNormal(float x, float z) const
-{
-    XMFLOAT3 n(
-        -0.03f * z * cosf(0.1f * x) - 0.3f * cosf(0.1f * z),
-        1.0f,
-        -0.3f * sinf(0.1f * x) + 0.03f * x * sinf(0.1f * z));
-
-    XMVECTOR unitNormal = XMVector3Normalize(XMLoadFloat3(&n));
-    XMStoreFloat3(&n, unitNormal);
-
-    return n;
-}                                                                                       
+}                                                                  

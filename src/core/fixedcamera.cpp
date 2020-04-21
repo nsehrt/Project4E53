@@ -7,6 +7,7 @@ void FixedCamera::updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zo
     mCurrentDistance = MathHelper::clampH(mCurrentDistance + zoomDelta, mMinDistance, mMaxDistance);
 
     XMFLOAT3 newPos = targetPos;
+
     XMFLOAT3 mAdd = XMFLOAT3(0.0f, mCurrentDistance, -mCurrentDistance);
     XMVECTOR n = XMLoadFloat3(&newPos);
     n = XMVectorAdd(n, XMLoadFloat3(&mAdd));

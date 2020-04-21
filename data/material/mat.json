@@ -19,24 +19,24 @@
     },
     {
         "Name" : "grass",
-        "Texture" : "grass",
-        "NormalMap" : "default_nmap",
+        "Texture" : "AutumnLeaves",
+        "NormalMap" : "AutumnLeaves_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.1
+        "Roughness" : 0.9
     },
     {
         "Name" : "brick0",
-        "Texture" : "bricks",
-        "NormalMap" : "bricks_nmap",
+        "Texture" : "Bricks",
+        "NormalMap" : "Bricks_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
     },
     {
         "Name" : "transp",
-        "Texture" : "bricks",
-        "NormalMap" : "bricks_nmap",
+        "Texture" : "Bricks",
+        "NormalMap" : "Bricks_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,0.7],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2

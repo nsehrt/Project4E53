@@ -46,7 +46,7 @@
     else\
     {\
         std::wostringstream os_;\
-        os_ << "Assertion failed: " << #expr << " in " << __FILEW__ << " at line: " << __LINE__ <<endl;\
+        os_ << "Assertion failed: " << #expr << " in " << __FILEW__ << " at line: " << __LINE__ <<std::endl;\
         OutputDebugString( os_.str().c_str() );\
         DebugBreak();\
     }

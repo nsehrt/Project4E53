@@ -253,7 +253,7 @@ bool P_4E53::Initialize()
 		editCamera = std::make_shared<FixedCamera>();
 		editCamera->initFixedDistance(15.0f, 100.0f);
 		editCamera->setLens();
-		editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0f);
 		ServiceProvider::setActiveCamera(editCamera);
 
 		editSelect.Position.x = 0.0f;
@@ -414,10 +414,12 @@ void P_4E53::update(const GameTime& gt)
 
 		XMFLOAT3 newCamTarget = XMFLOAT3(editSelect.Position.x,
 										 activeLevel->mTerrain->getHeight(editSelect.Position.x, editSelect.Position.y),
-										 editSelect.Position.y);
+										 editSelect.Position.y
+										 );
 
 		editCamera->updateFixedCamera(newCamTarget, 
-										zoomDelta);
+								      zoomDelta
+									  );
 
 		/*move light*/
 		XMFLOAT3 newLightPos = newCamTarget;
