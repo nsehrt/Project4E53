@@ -68,6 +68,15 @@ struct Vertex
     DirectX::XMFLOAT3 TangentU;
 };
 
+struct TerrainVertex
+{
+    DirectX::XMFLOAT3 Pos;
+    DirectX::XMFLOAT3 Normal;
+    DirectX::XMFLOAT2 TexC;
+    DirectX::XMFLOAT3 TangentU;
+    DirectX::XMFLOAT4 TexBlend;
+};
+
 struct SkinnedVertex
 {
     DirectX::XMFLOAT3 Pos;
@@ -92,7 +101,7 @@ public:
     std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
 
     std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
-    std::unique_ptr<UploadBuffer<Vertex>> TerrainVB = nullptr;
+    std::unique_ptr<UploadBuffer<TerrainVertex>> TerrainVB = nullptr;
 
     //std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
 //std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;

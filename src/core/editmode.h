@@ -1,6 +1,12 @@
 #pragma once
 #include "../util/d3dUtil.h"
 
+enum class EditTool
+{
+    Height,
+    Paint
+};
+
 struct EditSelect
 {
     DirectX::XMFLOAT2 Position;
@@ -9,4 +15,5 @@ struct EditSelect
     float FallOffEnd = 7.5f;
     float BaseVelocity = 150.0f;
     float BaseSelectSize = 20.0f;
+    EditTool toolMode = EditTool::Height;
 };

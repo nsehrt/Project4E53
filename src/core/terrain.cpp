@@ -3,35 +3,69 @@
 #include "../util/serviceprovider.h"
 #include "../render/renderresource.h"
 
-Terrain::Terrain(const std::string& heightMap)
+Terrain::Terrain(const json& terrainInfo)
 {
+    auto renderResource = ServiceProvider::getRenderResource();
 
     cellSpacing = terrainSize / terrainSlices;
 
     GeometryGenerator geoGen;
-
     GeometryGenerator::MeshData grid = geoGen.CreateGrid((float)terrainSize, (float)terrainSize,
                                                               terrainSlices, terrainSlices);
+
+    /*create texture descriptor handles*/
+    CD3DX12_GPU_DESCRIPTOR_HANDLE baseDescriptor(renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+
+    for (UINT i = 0; i < 4; i++)
+    {
+        blendTexturesHandle[i] = baseDescriptor;
+        blendTexturesHandle[i].Offset(renderResource->mTextures[terrainInfo["BlendTextures"][i]]->index, renderResource->mCbvSrvUavDescriptorSize);
+    }
+
+
+    heightScale = terrainInfo["HeightScale"];
 
     /*load height map*/
     mHeightMap.resize(terrainSlices * terrainSlices,0);
     std::vector<unsigned short> input(terrainSlices * terrainSlices);
 
     std::stringstream lFile;
-    lFile << terrainPath << heightMap;
+    lFile << terrainPath << terrainInfo["HeightMap"].get<std::string>();
 
     std::ifstream file;
     file.open(lFile.str().c_str(), std::ios_base::binary);
 
     if (!file.is_open())
     {
-        LOG(Severity::Error, "Unable to open height map file "<< heightMap << "!");
+        LOG(Severity::Error, "Unable to open height map file "<< lFile.str() << "!");
         return;
     }
 
-    terrainFile = lFile.str();
+    terrainHeightMapFile = lFile.str();
 
-    file.read((char*)&input[0], (std::streamsize)input.size() * 2);
+    file.read((char*)&input[0], (std::streamsize)input.size() * sizeof(unsigned short));
+    file.close();
+
+    /*load blend map*/
+    mBlendMap.resize(terrainSlices * terrainSlices, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
+  
+
+    lFile.str("");
+    lFile << terrainPath << terrainInfo["BlendMap"].get<std::string>();
+    terrainBlendMapFile = lFile.str();
+
+    file.open(lFile.str().c_str(), std::ios_base::binary);
+
+    if (file.is_open())
+    {
+        file.read((char*)&mBlendMap[0], (std::streamsize)mBlendMap.size() * sizeof(DirectX::XMFLOAT4));
+    }
+    else
+    {
+        LOG(Severity::Warning, "Unable to open blend map file " << lFile.str() << "! Proceeding with default values.");
+
+    }
+
     file.close();
 
     /*copy to actual height map*/
@@ -40,7 +74,6 @@ Terrain::Terrain(const std::string& heightMap)
         mHeightMap[i] = (input[i] / 65536.0f) * heightScale - (heightScale/2.0f);
     }
 
-    //smoothHeightMap();
 
     mTerrainVertices.resize(grid.Vertices.size());
     std::vector<std::uint32_t> indices(grid.Indices32.size());
@@ -54,29 +87,23 @@ Terrain::Terrain(const std::string& heightMap)
         mTerrainVertices[i].TexC = grid.Vertices[i].TexC;
         mTerrainVertices[i].TangentU = grid.Vertices[i].TangentU;
 
+        mTerrainVertices[i].TexBlend = mBlendMap[i];
+        
     }
 
     indices.insert(indices.end(), std::begin(grid.Indices32), std::end(grid.Indices32));
 
-    UINT vertexByteSize = (UINT)mTerrainVertices.size() * sizeof(Vertex);
+    UINT vertexByteSize = (UINT)mTerrainVertices.size() * sizeof(TerrainVertex);
     UINT indexByteSize = (UINT)indices.size() * sizeof(std::uint32_t);
 
     auto geoGrid = std::make_unique<Mesh>();
     geoGrid->name = "TERRAIN";
 
-    ThrowIfFailed(D3DCreateBlob(vertexByteSize, &geoGrid->VertexBufferCPU));
-    CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), mTerrainVertices.data(), vertexByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(indexByteSize, &geoGrid->IndexBufferCPU));
-    CopyMemory(geoGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), indexByteSize);
-
-    geoGrid->VertexByteStride = sizeof(Vertex);
+    geoGrid->VertexByteStride = sizeof(TerrainVertex);
     geoGrid->VertexBufferByteSize = vertexByteSize;
     geoGrid->IndexFormat = DXGI_FORMAT_R32_UINT;
     geoGrid->IndexBufferByteSize = indexByteSize;
     geoGrid->IndexCount = (UINT)indices.size();
-
-    auto renderResource = ServiceProvider::getRenderResource();
 
     geoGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(renderResource->device,
                                                                 renderResource->cmdList,
@@ -98,11 +125,11 @@ Terrain::Terrain(const std::string& heightMap)
 void Terrain::save()
 {
 
-    auto fileHandle = std::fstream(terrainFile.c_str(), std::ios::out | std::ios::binary);
+    auto fileHandle = std::fstream(terrainHeightMapFile.c_str(), std::ios::out | std::ios::binary);
 
     if (!fileHandle.is_open())
     {
-        LOG(Severity::Error, "Can not write to " << terrainFile << "!");
+        LOG(Severity::Error, "Can not write to " << terrainHeightMapFile << "!");
         return;
     }
 
@@ -116,7 +143,23 @@ void Terrain::save()
  
     fileHandle.close();
 
-    LOG(Severity::Info, "Successfully wrote height map to file " << terrainFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
+    LOG(Severity::Info, "Successfully wrote height map to file " << terrainHeightMapFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
+
+
+    auto bFileHandle = std::fstream(terrainBlendMapFile.c_str(), std::ios::out | std::ios::binary);
+
+    if (!bFileHandle.is_open())
+    {
+        LOG(Severity::Error, "Can not write to " << terrainBlendMapFile << "!");
+        return;
+    }
+
+    bFileHandle.write(reinterpret_cast<const char*>(&mBlendMap[0]), sizeof(DirectX::XMFLOAT4) * mBlendMap.size());
+
+    bFileHandle.close();
+
+    LOG(Severity::Info, "Successfully wrote blend map to file " << terrainBlendMapFile << ". (" << (sizeof(DirectX::XMFLOAT4) * mBlendMap.size() / 1024.0f) << " kB)");
+
 }
 
 float Terrain::getHeight(float x, float z)
@@ -215,4 +258,11 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
     terrainVB->copyAll(mTerrainVertices[0]);
     terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
-}                                                                  
+}
+
+void Terrain::paint(float x, float z, float fallStart, float fallEnd, int indexTexture)
+{
+
+
+
+}

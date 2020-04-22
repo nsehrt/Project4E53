@@ -482,13 +482,14 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
 bool Level::parseTerrain(const json& terrainJson)
 {
-    if (!exists(terrainJson, "HeightMap"))
+    if (!exists(terrainJson, "HeightMap") || !exists(terrainJson, "BlendTextures") ||
+        !exists(terrainJson, "BlendMap") || !exists(terrainJson, "HeightScale"))
     {
         LOG(Severity::Error, "Missing terrain properties!");
         return false;
     }
 
-    mTerrain = std::make_unique<Terrain>(terrainJson["HeightMap"]);
+    mTerrain = std::make_unique<Terrain>(terrainJson);
 
     /*create terrain gameobject*/
     auto terrainObject = std::make_unique<GameObject>(amountGameObjects++);

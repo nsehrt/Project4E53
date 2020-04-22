@@ -4,7 +4,13 @@
         "DefaultCubeMap": "grasscube1024.dds"
     },
     "Terrain": {
-        "HeightMap": "0.raw"
+        "HeightMap": "0.raw",
+        "BlendTextures": ["ForestFloorGreen.dds",
+                          "SimpleSand.dds",
+                          "FlowerField.dds",
+                          "SimpleSand.dds"],
+        "BlendMap": "0.bld",
+        "HeightScale": 200.0
     },
     "Light": {
         "AmbientLight": [0.25,0.25,0.25],

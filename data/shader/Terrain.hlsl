@@ -8,6 +8,7 @@ struct VertexIn
     float3 NormalL : NORMAL;
 	float2 TexC    : TEXCOORD;
 	float3 TangentU : TANGENT;
+    float4 TexBlend : TEXBLEND;
 };
 
 struct VertexOut
@@ -18,14 +19,12 @@ struct VertexOut
     float3 NormalW : NORMAL;
 	float3 TangentW : TANGENT;
 	float2 TexC    : TEXCOORD;
+    float4 TexBlend : TEXBLEND;
 };
 
 VertexOut VS(VertexIn vin)
 {
 	VertexOut vout = (VertexOut)0.0f;
-
-	// Fetch the material data.
-	MaterialData matData = gMaterialData[gMaterialIndex];
 	
     // Transform to world space.
     float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);
@@ -40,11 +39,12 @@ VertexOut VS(VertexIn vin)
     vout.PosH = mul(posW, gViewProj);
 	
 	// Output vertex attributes for interpolation across triangle.
-	float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
-	vout.TexC = mul(texC, matData.MatTransform).xy;
+	vout.TexC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform).xy;
 	
     // Generate projective tex-coords to project shadow map onto scene.
     vout.ShadowPosH = mul(posW, gShadowTransform);
+
+    vout.TexBlend = vin.TexBlend;
 
     return vout;
 }
@@ -60,7 +60,8 @@ float4 PS(VertexOut pin) : SV_Target
 	uint normalMapIndex = matData.NormalMapIndex;
 
 	// Dynamically look up the texture in the array.
-	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+	diffuseAlbedo *= pin.TexBlend.x * gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC) +
+                     pin.TexBlend.y * gTextureMaps[diffuseMapIndex + 2].Sample(gsamAnisotropicWrap, pin.TexC);
 
 
 #ifdef ALPHA_TEST
