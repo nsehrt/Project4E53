@@ -402,7 +402,7 @@ void P_4E53::update(const GameTime& gt)
 		editSettings->FallOffRatio = MathHelper::clampH(editSettings->FallOffRatio, editSettings->fallOffRatioMin,
 														editSettings->fallOffRatioMax);
 
-		editSettings->BaseRadius = (editCamera->cameraPosNormalize() + editCamera->cameraPosNormalize() * editCamera->cameraPosNormalize()) * editSettings->BaseSelectSize;
+		editSettings->BaseRadius = editCamera->cameraPosNormalize() * (editCamera->cameraPosNormalize() * editSettings->BaseSelectSize);
 		editSettings->FallOffRadius = editSettings->BaseRadius * editSettings->FallOffRatio;
 
 		/*control for height tool*/
@@ -416,7 +416,8 @@ void P_4E53::update(const GameTime& gt)
 													  editSettings->Position.y,
 													  editSettings->FallOffRadius,
 													  editSettings->BaseRadius,
-													  gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER]);
+													  gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
+													  inputData.current.buttons[BTN::Y]);
 			}
 
 			if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
@@ -425,7 +426,8 @@ void P_4E53::update(const GameTime& gt)
 													  editSettings->Position.y,
 													  editSettings->FallOffRadius,
 													  editSettings->BaseRadius,
-													  gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER]);
+													  gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
+													  inputData.current.buttons[BTN::Y]);
 			}
 
 			/*control increase value*/
@@ -453,17 +455,25 @@ void P_4E53::update(const GameTime& gt)
 				editSettings->usedTextureIndex = (editSettings->usedTextureIndex + 1) % editSettings->textureMax;
 			}
 
-			static float paintInc = 0.25f;
-
 			if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)
 			{
 				activeLevel->mTerrain->paint(editSettings->Position.x,
-													  editSettings->Position.y,
-													  editSettings->BaseRadius,
-													  editSettings->FallOffRadius,
-													  gt.DeltaTime() * paintInc * inputData.current.trigger[TRG::RIGHT_TRIGGER]);
+											editSettings->Position.y,
+											editSettings->BaseRadius,
+											editSettings->FallOffRadius,
+											gt.DeltaTime() * editSettings->paintIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
+											editSettings->usedTextureIndex);
 			}
 
+			if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
+			{
+				activeLevel->mTerrain->paint(editSettings->Position.x,
+											 editSettings->Position.y,
+											 editSettings->BaseRadius,
+											 editSettings->FallOffRadius,
+											 gt.DeltaTime() * -editSettings->paintIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
+											 editSettings->usedTextureIndex);
+			}
 
 			/*control increase value*/
 			if (inputData.current.buttons[BTN::B])

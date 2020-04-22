@@ -12,7 +12,7 @@ struct EditSettings
     DirectX::XMFLOAT2 Position = DirectX::XMFLOAT2(0.0f,0.0f);
     float Velocity = 0.0f;
     float BaseVelocity = 150.0f;
-    float BaseSelectSize = 20.0f;
+    float BaseSelectSize = 60.0f;
     float BaseSelectSizeMax;
 
     float BaseRadius = 8.0f;

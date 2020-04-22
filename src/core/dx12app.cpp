@@ -590,7 +590,7 @@ void DX12App::calculateFrameStats()
                 windowText = mWindowCaption +
                     L"    fps: " + fpsStr +
                     L" / EditMode" +
-                    L" / Height " + 
+                    L" Height " + 
                     L" / Select Radius: " + selStr +
                     L" / FallOff: " + fallOffStr +
                     L" / Increase: " + incStr;
@@ -605,7 +605,7 @@ void DX12App::calculateFrameStats()
                 windowText = mWindowCaption +
                     L"    fps: " + fpsStr +
                     L" / EditMode" +
-                    L" / Paint" +
+                    L" Paint" +
                     L" / Select Radius: " + selStr +
                     L" / FallOff: " + fallOffStr + 
                     L" / Increase: " + incStr +
