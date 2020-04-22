@@ -6,7 +6,7 @@
     "Terrain": {
         "HeightMap": "0.raw",
         "BlendTextures": ["ForestFloorGreen.dds",
-                          "SimpleSand.dds",
+                          "Grass.dds",
                           "FlowerField.dds",
                           "SimpleSand.dds"],
         "BlendMap": "0.bld",

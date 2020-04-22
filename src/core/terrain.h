@@ -25,6 +25,8 @@ public:
 
     float cellSpacing = 0.0f;
 
+    std::array<std::string, 4> textureStrings;
+
 private:
 
     const std::string terrainPath = "data/level/";

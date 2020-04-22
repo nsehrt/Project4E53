@@ -20,6 +20,7 @@ Terrain::Terrain(const json& terrainInfo)
     {
         blendTexturesHandle[i] = baseDescriptor;
         blendTexturesHandle[i].Offset(renderResource->mTextures[terrainInfo["BlendTextures"][i]]->index, renderResource->mCbvSrvUavDescriptorSize);
+        textureStrings[i] = terrainInfo["BlendTextures"][i];
     }
 
 
@@ -243,7 +244,16 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
             if (currentIndex > mHeightMap.size() -1|| currentIndex < 0) continue;
 
             /*normalize distance from center*/
-            float normalizedDistance = 1.0f - (lengthBetween / fallEnd);
+            float normalizedDistance;
+
+            if (lengthBetween < fallStart)
+            {
+                normalizedDistance = 1.0f;
+            }
+            else
+            {
+                normalizedDistance = 1.0f - ( (lengthBetween - fallStart) / (fallEnd - fallStart));
+            }
 
             /*increase height*/
             mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);

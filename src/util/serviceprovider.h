@@ -18,6 +18,7 @@ class LightObject;
 #include "../core/level.h"
 #include "../core/camera.h"
 #include "../util/debuginfo.h"
+#include "../core/editmode.h"
 
 class ServiceProvider
 {
@@ -33,6 +34,7 @@ private:
     static std::shared_ptr<Level> activeLevel;
     static std::shared_ptr<Camera> activeCamera;
     static std::shared_ptr<DebugInfo> debugInfo;
+    static std::shared_ptr<EditSettings> editSettings;
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -61,6 +63,8 @@ public:
     static void setActiveCamera(std::shared_ptr<Camera> providedCamera);
 
     static DebugInfo* getDebugInfo() { return debugInfo.get(); };
+
+    static EditSettings* getEditSettings() { return editSettings.get(); };
 
     static unsigned int getAudioGuid()
     {

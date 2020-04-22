@@ -10,6 +10,7 @@ std::shared_ptr<RenderResource>ServiceProvider::renderResource = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
 std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInfo>();
+std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<EditSettings>();
 
 std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 

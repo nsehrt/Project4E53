@@ -567,23 +567,66 @@ void DX12App::calculateFrameStats()
 
     frameCount++;
 
-    if ((mTimer.TotalTime() - timeElapsed) >= 1.0f)
+    if ((mTimer.TotalTime() - timeElapsed) >= 0.25f)
     {
-        float fps = (float)frameCount;
-        float mspf = 1000.0f / fps;
+        float fps = (float)frameCount * 4;
+        float mspf = 250.0f / fps;
 
         wstring fpsStr = to_wstring(fps);
         wstring mspfStr = to_wstring(mspf);
         wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);
         wstring shadowsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnShadowObjects);
+        wstring fallOffStr = to_wstring(ServiceProvider::getEditSettings()->FallOffRatio);
+        wstring selStr = to_wstring(ServiceProvider::getEditSettings()->BaseRadius);
 
-        wstring windowText = mWindowCaption +
-            L"    fps: " + fpsStr +
-            L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
-        SetWindowText(mMainWindow, windowText.c_str());
+        if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+        {
+            wstring windowText;
+
+            if (ServiceProvider::getEditSettings()->toolMode == EditTool::Height)
+            {
+                wstring incStr = to_wstring(ServiceProvider::getEditSettings()->heightIncrease);
+
+                windowText = mWindowCaption +
+                    L"    fps: " + fpsStr +
+                    L" / EditMode" +
+                    L" / Height " + 
+                    L" / Select Radius: " + selStr +
+                    L" / FallOff: " + fallOffStr +
+                    L" / Increase: " + incStr;
+            }
+            else
+            {
+                wstring tex(ServiceProvider::getActiveLevel()->mTerrain->textureStrings[ServiceProvider::getEditSettings()->usedTextureIndex].begin(),
+                            ServiceProvider::getActiveLevel()->mTerrain->textureStrings[ServiceProvider::getEditSettings()->usedTextureIndex].end());
+
+                wstring incStr = to_wstring(ServiceProvider::getEditSettings()->paintIncrease);
+
+                windowText = mWindowCaption +
+                    L"    fps: " + fpsStr +
+                    L" / EditMode" +
+                    L" / Paint" +
+                    L" / Select Radius: " + selStr +
+                    L" / FallOff: " + fallOffStr + 
+                    L" / Increase: " + incStr +
+                    L" / Texture: " + tex;
+            }
+
+
+                
+            SetWindowText(mMainWindow, windowText.c_str());
+        }
+        else
+        {
+            wstring windowText = mWindowCaption +
+                L"    fps: " + fpsStr +
+                L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
+            SetWindowText(mMainWindow, windowText.c_str());
+        }
+
 
         frameCount = 0;
-        timeElapsed += 1.0f;
+        timeElapsed += 0.25f;
 
     }
 }

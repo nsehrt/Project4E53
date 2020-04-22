@@ -50,7 +50,6 @@ private:
 
 	std::shared_ptr<FixedCamera> editCamera;
 	LightObject* editLight = nullptr;
-	EditSelect editSelect;
 
 	std::vector<std::shared_ptr<Level>> mLevel;
 
@@ -256,9 +255,6 @@ bool P_4E53::Initialize()
 		editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0f);
 		ServiceProvider::setActiveCamera(editCamera);
 
-		editSelect.Position.x = 0.0f;
-		editSelect.Position.y = 0.0f;
-
 		editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
 		editLight->setStrength(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	}
@@ -363,58 +359,136 @@ void P_4E53::update(const GameTime& gt)
 
 	if (settingsData->miscSettings.EditModeEnabled)
 	{
-		/*save height map*/
+		auto editSettings = ServiceProvider::getEditSettings();
+
+		/*save map*/
 		if (inputData.Released(BTN::BACK))
 		{
 			activeLevel->mTerrain->save();
 		}
 
-		/*edit selection update*/
-		editSelect.Velocity = editSelect.BaseVelocity * editCamera->cameraPosNormalize();
+		/*switch tool*/
+		if (inputData.Pressed(BTN::RIGHT_SHOULDER))
+		{
+			if (editSettings->toolMode == EditTool::Height)
+			{
+				editSettings->toolMode = EditTool::Paint;
+			}
+			else
+			{
+				editSettings->toolMode = EditTool::Height;
+			}
+		}
 
-		editSelect.Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSelect.Velocity * gt.DeltaTime();
-		editSelect.Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSelect.Velocity * gt.DeltaTime();
+		/*edit selection update*/
+		editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
+
+		editSettings->Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSettings->Velocity * gt.DeltaTime();
+		editSettings->Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSettings->Velocity * gt.DeltaTime();
 
 		float terrainHalf = activeLevel->mTerrain->terrainSize / 2.0f;
 
-		editSelect.Position.x = MathHelper::clampH(editSelect.Position.x,
-												   -terrainHalf + 5.0f ,
-												   terrainHalf - 5.0f);
+		editSettings->Position.x = MathHelper::clampH(editSettings->Position.x,
+													  -terrainHalf + 5.0f,
+													  terrainHalf - 5.0f);
 
-		editSelect.Position.y = MathHelper::clampH(editSelect.Position.y,
-												   -terrainHalf + 5.0f,
-												   terrainHalf - 5.0f);
+		editSettings->Position.y = MathHelper::clampH(editSettings->Position.y,
+													  -terrainHalf + 5.0f,
+													  terrainHalf - 5.0f);
 
-		editSelect.FallOffStart = (editCamera->cameraPosNormalize() + editCamera->cameraPosNormalize() * editCamera->cameraPosNormalize())* editSelect.BaseSelectSize;
-		editSelect.FallOffEnd = editSelect.FallOffStart * 1.25f;
 
-		/*process height increase*/
-		static float heightInc = 10.0f;
+		/*falloff radius control*/
+		editSettings->FallOffRatio += inputData.current.trigger[TRG::THUMB_RX] * gt.DeltaTime() * (editSettings->fallOffRatioMax);
+		editSettings->FallOffRatio = MathHelper::clampH(editSettings->FallOffRatio, editSettings->fallOffRatioMin,
+														editSettings->fallOffRatioMax);
 
-		if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)
+		editSettings->BaseRadius = (editCamera->cameraPosNormalize() + editCamera->cameraPosNormalize() * editCamera->cameraPosNormalize()) * editSettings->BaseSelectSize;
+		editSettings->FallOffRadius = editSettings->BaseRadius * editSettings->FallOffRatio;
+
+		/*control for height tool*/
+		if (editSettings->toolMode == EditTool::Height)
 		{
-			activeLevel->mTerrain->increaseHeight(editSelect.Position.x,
-												  editSelect.Position.y,
-												  editSelect.FallOffStart,
-												  editSelect.FallOffEnd,
-												  gt.DeltaTime() * heightInc * inputData.current.trigger[TRG::RIGHT_TRIGGER]);
+			/*process height increase*/
+
+			if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)
+			{
+				activeLevel->mTerrain->increaseHeight(editSettings->Position.x,
+													  editSettings->Position.y,
+													  editSettings->FallOffRadius,
+													  editSettings->BaseRadius,
+													  gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER]);
+			}
+
+			if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
+			{
+				activeLevel->mTerrain->increaseHeight(editSettings->Position.x,
+													  editSettings->Position.y,
+													  editSettings->FallOffRadius,
+													  editSettings->BaseRadius,
+													  gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER]);
+			}
+
+			/*control increase value*/
+			if (inputData.current.buttons[BTN::B])
+			{
+				float newIncrease = editSettings->heightIncrease + gt.DeltaTime() * (editSettings->heightIncreaseMax / 4.0f);
+				editSettings->heightIncrease = MathHelper::clampH(newIncrease, editSettings->heightIncreaseMin,
+																 editSettings->heightIncreaseMax);
+			}
+			else if (inputData.current.buttons[BTN::X])
+			{
+				float newIncrease = editSettings->heightIncrease - gt.DeltaTime() * (editSettings->heightIncreaseMax / 4.0f);
+				editSettings->heightIncrease = MathHelper::clampH(newIncrease, editSettings->heightIncreaseMin,
+																 editSettings->heightIncreaseMax);
+			}
+
 		}
 
-		if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
+		/*control for paint tool*/
+		else if (editSettings->toolMode == EditTool::Paint)
 		{
-			activeLevel->mTerrain->increaseHeight(editSelect.Position.x,
-												  editSelect.Position.y,
-												  editSelect.FallOffStart,
-												  editSelect.FallOffEnd,
-												  gt.DeltaTime() * -heightInc * inputData.current.trigger[TRG::LEFT_TRIGGER]);
+
+			if (inputData.Pressed(BTN::Y))
+			{
+				editSettings->usedTextureIndex = (editSettings->usedTextureIndex + 1) % editSettings->textureMax;
+			}
+
+			static float paintInc = 0.25f;
+
+			if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)
+			{
+				activeLevel->mTerrain->paint(editSettings->Position.x,
+													  editSettings->Position.y,
+													  editSettings->BaseRadius,
+													  editSettings->FallOffRadius,
+													  gt.DeltaTime() * paintInc * inputData.current.trigger[TRG::RIGHT_TRIGGER]);
+			}
+
+
+			/*control increase value*/
+			if (inputData.current.buttons[BTN::B])
+			{
+				float newIncrease = editSettings->paintIncrease + gt.DeltaTime() * (editSettings->paintIncreaseMax / 4.0f);
+				editSettings->paintIncrease = MathHelper::clampH(newIncrease, editSettings->paintIncreaseMin,
+																  editSettings->paintIncreaseMax);
+			}
+			else if (inputData.current.buttons[BTN::X])
+			{
+				float newIncrease = editSettings->paintIncrease - gt.DeltaTime() * (editSettings->paintIncreaseMax / 4.0f);
+				editSettings->paintIncrease = MathHelper::clampH(newIncrease, editSettings->paintIncreaseMin,
+																  editSettings->paintIncreaseMax);
+			}
+
 		}
 
-		/*camera update*/
+
+
+		/*common camera update*/
 		float zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -25.0f * gt.DeltaTime();
 
-		XMFLOAT3 newCamTarget = XMFLOAT3(editSelect.Position.x,
-										 activeLevel->mTerrain->getHeight(editSelect.Position.x, editSelect.Position.y),
-										 editSelect.Position.y
+		XMFLOAT3 newCamTarget = XMFLOAT3(editSettings->Position.x,
+										 activeLevel->mTerrain->getHeight(editSettings->Position.x, editSettings->Position.y),
+										 editSettings->Position.y
 										 );
 
 		editCamera->updateFixedCamera(newCamTarget, 
@@ -423,11 +497,11 @@ void P_4E53::update(const GameTime& gt)
 
 		/*move light*/
 		XMFLOAT3 newLightPos = newCamTarget;
-		newLightPos.y += editSelect.FallOffStart / 2.0f;
+		newLightPos.y += editSettings->BaseRadius / 2.0f;
 
 		editLight->setPosition(newLightPos);
-		editLight->setFallOffStart(editSelect.FallOffStart);
-		editLight->setFallOffEnd(editSelect.FallOffEnd);
+		editLight->setFallOffStart(editSettings->FallOffRadius);
+		editLight->setFallOffEnd(editSettings->BaseRadius);
 	}
 	else
 	{
