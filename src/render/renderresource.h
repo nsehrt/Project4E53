@@ -78,6 +78,7 @@ public:
 
     ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
     ComPtr<ID3D12RootSignature> mPostProcessRootSignature = nullptr;
+    ComPtr<ID3D12RootSignature> mTerrainRootSignature = nullptr;
 
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
@@ -138,6 +139,8 @@ private:
 
     bool buildRootSignature();
     bool buildPostProcessSignature();
+    bool buildTerrainRootSignature();
+
     bool buildDescriptorHeap();
     std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> GetStaticSamplers();
 

@@ -29,7 +29,7 @@ struct EditSettings
     const float heightIncreaseMin = 1.0f;
     const float paintIncreaseMin = 0.05f;
     const float heightIncreaseMax = 100.0f;
-    const float paintIncreaseMax = 0.5f;
+    const float paintIncreaseMax = 1.0f;
     const float fallOffRatioMin = 0.05f;
     const float fallOffRatioMax = 0.95f;
 

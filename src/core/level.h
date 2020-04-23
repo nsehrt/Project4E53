@@ -27,6 +27,7 @@ public:
     void update(const GameTime& gt);
 
     /* draw the level */
+    void drawTerrain();
     void draw();
 
     void drawShadow();

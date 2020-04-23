@@ -185,6 +185,18 @@ void Level::update(const GameTime& gt)
 
 }
 
+void Level::drawTerrain()
+{
+    for (auto const& i : mGameObjects)
+    {
+        if (i.second->renderItem->renderType == RenderType::Terrain)
+        {
+            i.second->draw();
+            break;
+        }
+    }
+}
+
 void Level::draw()
 {
 
@@ -231,9 +243,10 @@ void Level::draw()
     {
         if (renderOrder[i].empty())continue;
         if ( (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
-            || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)) continue;
-        /*set PSO*/
+            || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)
+            || i == (UINT)RenderType::Terrain) continue;
 
+        /*set PSO*/
 
         renderResource->setPSO(RenderType(i));
 
@@ -281,7 +294,8 @@ void Level::drawShadow()
     for (const auto& gameObject : mGameObjects)
     {
         if (gameObject.second->renderItem->renderType == RenderType::Sky ||
-            gameObject.second->renderItem->renderType == RenderType::Debug) continue;
+            gameObject.second->renderItem->renderType == RenderType::Debug ||
+            gameObject.second->renderItem->renderType == RenderType::Terrain) continue;
 
         shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - ((int)RenderType::COUNT - 2)].push_back(&(*gameObject.second));
     }

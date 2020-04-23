@@ -34,6 +34,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     buildShaders();
     buildRootSignature();
     buildPostProcessSignature();
+    buildTerrainRootSignature();
     buildInputLayouts();
 
     /*load all textures*/
@@ -154,7 +155,7 @@ bool RenderResource::buildRootSignature()
     /*main root signature*/
 
 
-    /*5 root parameter*/
+    /*6 root parameter*/
     CD3DX12_ROOT_PARAMETER rootParameter[6];
 
     /*1 texture in register 0*/
@@ -262,6 +263,71 @@ bool RenderResource::buildPostProcessSignature()
     if (hr != S_OK)
     {
         ServiceProvider::getLogger()->print<Severity::Error>("Error creating sobel root signature!");
+        ThrowIfFailed(hr);
+        return false;
+    }
+
+    return true;
+}
+
+bool RenderResource::buildTerrainRootSignature()
+{
+    CD3DX12_DESCRIPTOR_RANGE srv0;
+    CD3DX12_DESCRIPTOR_RANGE srv1;
+    CD3DX12_DESCRIPTOR_RANGE srv2;
+    CD3DX12_DESCRIPTOR_RANGE srv3;
+    CD3DX12_DESCRIPTOR_RANGE srvShadoww;
+
+    srv0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0);
+    srv1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, 0);
+    srv2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, 0);
+    srv3.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, 0);
+    srvShadoww.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0);
+
+    CD3DX12_ROOT_PARAMETER slotRootParameter[8];
+
+    /*constant buffer views in register b0 and b1*/
+    slotRootParameter[0].InitAsConstantBufferView(0);
+    slotRootParameter[1].InitAsConstantBufferView(1);
+
+    /*material data in reg 0 space 1*/
+    slotRootParameter[2].InitAsShaderResourceView(0, 1);
+
+    slotRootParameter[3].InitAsDescriptorTable(1, &srv0);
+    slotRootParameter[4].InitAsDescriptorTable(1, &srv1);
+    slotRootParameter[5].InitAsDescriptorTable(1, &srv2);
+    slotRootParameter[6].InitAsDescriptorTable(1, &srv3);
+    slotRootParameter[7].InitAsDescriptorTable(1, &srvShadoww);
+
+    auto staticSamplers = GetStaticSamplers();
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(8, slotRootParameter,
+                                            (UINT)staticSamplers.size(),
+                                            staticSamplers.data(),
+                                            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+    ComPtr<ID3DBlob> serializedRootSig = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
+
+    HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
+                                             serializedRootSig.GetAddressOf(),
+                                             errorBlob.GetAddressOf());
+
+    if (errorBlob != nullptr)
+    {
+        LOG(Severity::Error, "Error serializing terrain root signature: " << (char*)errorBlob->GetBufferPointer());
+        ThrowIfFailed(hr);
+        return false;
+    }
+
+    hr = device->CreateRootSignature(0,
+                                     serializedRootSig->GetBufferPointer(),
+                                     serializedRootSig->GetBufferSize(),
+                                     IID_PPV_ARGS(mTerrainRootSignature.GetAddressOf()));
+
+    if (hr != S_OK)
+    {
+        ServiceProvider::getLogger()->print<Severity::Error>("Error creating terrain root signature!");
         ThrowIfFailed(hr);
         return false;
     }
@@ -583,6 +649,7 @@ void RenderResource::buildPSOs()
 
     /*terrain PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC terrainPSODesc = defaultPSODesc;
+    terrainPSODesc.pRootSignature = mTerrainRootSignature.Get();
     terrainPSODesc.InputLayout = { mInputLayouts[1].data(), (UINT)mInputLayouts[1].size() };
     terrainPSODesc.VS = {
         reinterpret_cast<BYTE*>(mShaders["terrainVS"]->GetBufferPointer()),

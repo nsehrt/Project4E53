@@ -461,7 +461,7 @@ void P_4E53::update(const GameTime& gt)
 											editSettings->Position.y,
 											editSettings->BaseRadius,
 											editSettings->FallOffRadius,
-											gt.DeltaTime() * editSettings->paintIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
+											gt.DeltaTime() * editSettings->paintIncrease * 10.0f * inputData.current.trigger[TRG::RIGHT_TRIGGER],
 											editSettings->usedTextureIndex);
 			}
 
@@ -471,20 +471,20 @@ void P_4E53::update(const GameTime& gt)
 											 editSettings->Position.y,
 											 editSettings->BaseRadius,
 											 editSettings->FallOffRadius,
-											 gt.DeltaTime() * -editSettings->paintIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
+											 gt.DeltaTime() * -editSettings->paintIncrease * 10.0f * inputData.current.trigger[TRG::LEFT_TRIGGER],
 											 editSettings->usedTextureIndex);
 			}
 
 			/*control increase value*/
 			if (inputData.current.buttons[BTN::B])
 			{
-				float newIncrease = editSettings->paintIncrease + gt.DeltaTime() * (editSettings->paintIncreaseMax / 4.0f);
+				float newIncrease = editSettings->paintIncrease + gt.DeltaTime() * (editSettings->paintIncreaseMax);
 				editSettings->paintIncrease = MathHelper::clampH(newIncrease, editSettings->paintIncreaseMin,
 																  editSettings->paintIncreaseMax);
 			}
 			else if (inputData.current.buttons[BTN::X])
 			{
-				float newIncrease = editSettings->paintIncrease - gt.DeltaTime() * (editSettings->paintIncreaseMax / 4.0f);
+				float newIncrease = editSettings->paintIncrease - gt.DeltaTime() * (editSettings->paintIncreaseMax);
 				editSettings->paintIncrease = MathHelper::clampH(newIncrease, editSettings->paintIncreaseMin,
 																  editSettings->paintIncreaseMax);
 			}
@@ -627,6 +627,8 @@ void P_4E53::draw(const GameTime& gt)
 	auto pass2CB = mCurrentFrameResource->PassCB->getResource();
 	mCommandList->SetGraphicsRootConstantBufferView(1, pass2CB->GetGPUVirtualAddress());
 
+
+
 	/*bind shadow map to slot 3 and cubemap to 4*/
 	if (ServiceProvider::getSettings()->graphicSettings.ShadowEnabled)
 	{
@@ -639,7 +641,22 @@ void P_4E53::draw(const GameTime& gt)
 		mCommandList->SetGraphicsRootDescriptorTable(3, whiteDescriptor);
 	}
 
+	mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->getShadowMap()->Srv());
+
+	/*draw terrain*/
+	mCommandList->SetGraphicsRootSignature(renderResource->mTerrainRootSignature.Get());
+	renderResource->setPSO(RenderType::Terrain);
+
+	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[1]);
+	mCommandList->SetGraphicsRootDescriptorTable(5, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[0]);
+	mCommandList->SetGraphicsRootDescriptorTable(6, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[2]);
+	mCommandList->SetGraphicsRootDescriptorTable(7, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[3]);
+
+	ServiceProvider::getActiveLevel()->drawTerrain();
+
+	mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
 	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->defaultCubeMapHandle);
+	mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	/*draw everything*/
 

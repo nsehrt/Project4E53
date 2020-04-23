@@ -27,6 +27,8 @@ public:
 
     std::array<std::string, 4> textureStrings;
 
+    CD3DX12_GPU_DESCRIPTOR_HANDLE blendTexturesHandle[4];
+
 private:
 
     const std::string terrainPath = "data/level/";
@@ -36,8 +38,6 @@ private:
     std::vector<float> mHeightMap;
     std::vector<DirectX::XMFLOAT4> mBlendMap;
     std::vector<TerrainVertex> mTerrainVertices;
-
-    CD3DX12_GPU_DESCRIPTOR_HANDLE blendTexturesHandle[4];
 
     UINT objectCBSize = 0;
 };
