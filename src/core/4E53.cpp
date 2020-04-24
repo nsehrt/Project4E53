@@ -380,6 +380,13 @@ void P_4E53::update(const GameTime& gt)
 			}
 		}
 
+		/*wireframe on/off*/
+		if (inputData.Pressed(BTN::LEFT_THUMB))
+		{
+			editSettings->WireFrameOn = !editSettings->WireFrameOn;
+		}
+
+
 		/*edit selection update*/
 		editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
 
@@ -408,6 +415,13 @@ void P_4E53::update(const GameTime& gt)
 		/*control for height tool*/
 		if (editSettings->toolMode == EditTool::Height)
 		{
+			/*reset height save*/
+			if (inputData.Pressed(BTN::RIGHT_THUMB))
+			{
+				editSettings->resetHeight = activeLevel->mTerrain->getHeight(editSettings->Position.x,
+																			 editSettings->Position.y);
+			}
+
 			/*process height increase*/
 
 			if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)
@@ -417,6 +431,7 @@ void P_4E53::update(const GameTime& gt)
 													  editSettings->FallOffRadius,
 													  editSettings->BaseRadius,
 													  gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
+													  editSettings->resetHeight,
 													  inputData.current.buttons[BTN::Y]);
 			}
 
@@ -427,6 +442,7 @@ void P_4E53::update(const GameTime& gt)
 													  editSettings->FallOffRadius,
 													  editSettings->BaseRadius,
 													  gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
+													  editSettings->resetHeight,
 													  inputData.current.buttons[BTN::Y]);
 			}
 
@@ -459,8 +475,8 @@ void P_4E53::update(const GameTime& gt)
 			{
 				activeLevel->mTerrain->paint(editSettings->Position.x,
 											editSettings->Position.y,
-											editSettings->BaseRadius,
 											editSettings->FallOffRadius,
+											editSettings->BaseRadius,
 											gt.DeltaTime() * editSettings->paintIncrease * 10.0f * inputData.current.trigger[TRG::RIGHT_TRIGGER],
 											editSettings->usedTextureIndex);
 			}
@@ -469,8 +485,8 @@ void P_4E53::update(const GameTime& gt)
 			{
 				activeLevel->mTerrain->paint(editSettings->Position.x,
 											 editSettings->Position.y,
-											 editSettings->BaseRadius,
 											 editSettings->FallOffRadius,
+											 editSettings->BaseRadius,
 											 gt.DeltaTime() * -editSettings->paintIncrease * 10.0f * inputData.current.trigger[TRG::LEFT_TRIGGER],
 											 editSettings->usedTextureIndex);
 			}
@@ -559,7 +575,7 @@ void P_4E53::update(const GameTime& gt)
 	}
 
 	activeLevel->update(gt);
-	activeCamera->updateViewMatrix();
+	ServiceProvider::getActiveCamera()->updateViewMatrix();
 	renderResource->updateBuffers(gt);
 
 	/*save input for next frame*/
@@ -641,14 +657,12 @@ void P_4E53::draw(const GameTime& gt)
 		mCommandList->SetGraphicsRootDescriptorTable(3, whiteDescriptor);
 	}
 
-	mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->getShadowMap()->Srv());
-
 	/*draw terrain*/
 	mCommandList->SetGraphicsRootSignature(renderResource->mTerrainRootSignature.Get());
-	renderResource->setPSO(RenderType::Terrain);
+	renderResource->setPSO(ServiceProvider::getEditSettings()->WireFrameOn ? RenderType::TerrainWireFrame : RenderType::Terrain);
 
-	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[1]);
-	mCommandList->SetGraphicsRootDescriptorTable(5, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[0]);
+	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[0]);
+	mCommandList->SetGraphicsRootDescriptorTable(5, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[1]);
 	mCommandList->SetGraphicsRootDescriptorTable(6, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[2]);
 	mCommandList->SetGraphicsRootDescriptorTable(7, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[3]);
 

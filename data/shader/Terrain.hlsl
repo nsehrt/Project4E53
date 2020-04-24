@@ -58,15 +58,15 @@ float4 PS(VertexOut pin) : SV_Target
 	float  roughness = matData.Roughness;
 
 	// Dynamically look up the texture in the array.
-	float4 c0 = gBlendTexture1.Sample( gsamLinearWrap, pin.TexC );
-	float4 c1 = gBlendTexture2.Sample( gsamLinearWrap, pin.TexC );
-	float4 c2 = gBlendTexture3.Sample( gsamLinearWrap, pin.TexC );
-	float4 c3 = gBlendTexture4.Sample( gsamLinearWrap, pin.TexC );
+	float4 c0 = gBlendTexture1.Sample( gsamAnisotropicWrap, pin.TexC );
+	float4 c1 = gBlendTexture2.Sample( gsamAnisotropicWrap, pin.TexC );
+	float4 c2 = gBlendTexture3.Sample( gsamAnisotropicWrap, pin.TexC );
+	float4 c3 = gBlendTexture4.Sample( gsamAnisotropicWrap, pin.TexC );
 
-    diffuseAlbedo = c0;
-    diffuseAlbedo = lerp(diffuseAlbedo, c1, pin.TexBlend.x);    
-    diffuseAlbedo = lerp(diffuseAlbedo, c2, pin.TexBlend.y);
-    diffuseAlbedo = lerp(diffuseAlbedo, c3, pin.TexBlend.z);
+    diffuseAlbedo = lerp(diffuseAlbedo, c0, pin.TexBlend.x);
+    diffuseAlbedo = lerp(diffuseAlbedo, c1, pin.TexBlend.y);    
+    diffuseAlbedo = lerp(diffuseAlbedo, c2, pin.TexBlend.z);
+    diffuseAlbedo = lerp(diffuseAlbedo, c3, pin.TexBlend.w);
 
 	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
@@ -86,9 +86,7 @@ float4 PS(VertexOut pin) : SV_Target
     // Only the first light casts a shadow.
     float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
     
-#ifndef NO_SHADOWS
     shadowFactor[0] = saturate(CalcShadowFactor(pin.ShadowPosH) + SHADOW_ADD_BRIGHTNESS);
-#endif
 
     const float shininess = (1.0f - roughness);
     Material mat = { diffuseAlbedo, fresnelR0, shininess };

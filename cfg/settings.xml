@@ -12,7 +12,7 @@
         <ResolutionWidth>1920</ResolutionWidth>
         <ResolutionHeight>1080</ResolutionHeight>
         <FOV>80</FOV>
-        <VSync>0</VSync>
+        <VSync>1</VSync>
         <WindowMode>0</WindowMode>
     </Display>
 

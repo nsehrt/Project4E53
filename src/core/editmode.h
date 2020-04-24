@@ -23,8 +23,10 @@ struct EditSettings
     float paintIncrease = 0.25f;
     int usedTextureIndex = 0;
 
+    float resetHeight = 0.0f;
 
     EditTool toolMode = EditTool::Height;
+    bool WireFrameOn = false;
 
     const float heightIncreaseMin = 1.0f;
     const float paintIncreaseMin = 0.05f;

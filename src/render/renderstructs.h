@@ -168,9 +168,11 @@ enum class RenderType
     Hitbox,
     Composite,
     Sobel,
+    TerrainNoShadow,
+    TerrainWireFrame,
     ShadowDefault,
     ShadowAlpha,
-    COUNT = 12
+    COUNT = 14
 };
 
 struct RenderItem

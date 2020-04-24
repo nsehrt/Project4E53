@@ -663,6 +663,13 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&terrainPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Terrain])));
 
+    /*terrain wireframe PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC terrainWFPSODesc = terrainPSODesc;
+
+    terrainWFPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&terrainWFPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::TerrainWireFrame])));
+
     /* Transparency PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC transparencyPSODesc = defaultPSODesc;
 

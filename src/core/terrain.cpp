@@ -208,10 +208,10 @@ float Terrain::getHeight(float x, float z)
     }
 }
 
-void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, float increase, bool setZero)
+void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, float increase, float resetHeight, bool setHeight)
 {
     /*get height of main vertex*/
-    float mainVertexHeight = getHeight(x, z);
+    float mainVertexHeight = getHeight(x, z) + increase;
 
     /*iterate over all vertices in the fallEnd * fallEnd cluster*/
     int iterations = static_cast<int>(fallEnd*2 / cellSpacing) + 1;
@@ -248,6 +248,8 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
 
             /*return if height already higher than height of main selected vertex*/
             if (currentIndex > mHeightMap.size() -1|| currentIndex < 0) continue;
+            if (mHeightMap[currentIndex] > mainVertexHeight && increase > 0) continue;
+            if (mHeightMap[currentIndex] < mainVertexHeight && increase < 0) continue;
 
             /*normalize distance from center*/
             float normalizedDistance;
@@ -263,7 +265,8 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
 
             /*increase height*/
             mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
-            if (setZero) mHeightMap[currentIndex] = 0.0f;
+            if (setHeight) mHeightMap[currentIndex] = resetHeight;
+
             mHeightMap[currentIndex] = MathHelper::clampH(mHeightMap[currentIndex], -heightScale / 2.0f, heightScale / 2.0f);
             mTerrainVertices[currentIndex].Pos.y = mHeightMap[currentIndex];
 
@@ -330,25 +333,27 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
             }
 
             /*increase paint of texture*/
+            float normIncrease = increase * normalizedDistance;
+
             switch (indexTexture)
             {
                 case 0: 
-                    mBlendMap[currentIndex].x = MathHelper::clampH(mBlendMap[currentIndex].x + increase * sin(normalizedDistance * XM_PIDIV2),
+                    mBlendMap[currentIndex].x = MathHelper::clampH(mBlendMap[currentIndex].x + normIncrease,
                                                                        0.0f, 1.0f);
                         if (setZero) mBlendMap[currentIndex].x = 0.0f;
                         break;
                 case 1: 
-                    mBlendMap[currentIndex].y = MathHelper::clampH(mBlendMap[currentIndex].y + increase * sin(normalizedDistance * XM_PIDIV2),
+                    mBlendMap[currentIndex].y = MathHelper::clampH(mBlendMap[currentIndex].y + normIncrease,
                                                                        0.0f, 1.0f);
                     if (setZero) mBlendMap[currentIndex].y = 0.0f;
                     break;
                 case 2: 
-                    mBlendMap[currentIndex].z = MathHelper::clampH(mBlendMap[currentIndex].z + increase * sin(normalizedDistance * XM_PIDIV2),
+                    mBlendMap[currentIndex].z = MathHelper::clampH(mBlendMap[currentIndex].z + normIncrease,
                                                                    0.0f, 1.0f);
                     if (setZero) mBlendMap[currentIndex].z = 0.0f;
                     break;
                 case 3: 
-                    mBlendMap[currentIndex].w = MathHelper::clampH(mBlendMap[currentIndex].w + increase * sin(normalizedDistance * XM_PIDIV2),
+                    mBlendMap[currentIndex].w = MathHelper::clampH(mBlendMap[currentIndex].w + normIncrease,
                                                                        0.0f, 1.0f);
                     if (setZero) mBlendMap[currentIndex].w = 0.0f;
                     break;
