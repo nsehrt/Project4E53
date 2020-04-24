@@ -38,6 +38,7 @@ private:
     std::vector<float> mHeightMap;
     std::vector<DirectX::XMFLOAT4> mBlendMap;
     std::vector<TerrainVertex> mTerrainVertices;
+    Microsoft::WRL::ComPtr<ID3D12Resource> holder;
 
     UINT objectCBSize = 0;
 };

@@ -121,6 +121,12 @@ Terrain::Terrain(const json& terrainInfo)
     terrainModel = std::make_unique<Model>();
     terrainModel->name = "TERRAIN";
     terrainModel->meshes["TERRAIN"] = std::move(geoGrid);
+
+    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        mTerrainVertices.resize(0);
+        mTerrainVertices.shrink_to_fit();
+    }
 }
 
 void Terrain::save()
@@ -268,6 +274,7 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
     /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
     terrainVB->copyAll(mTerrainVertices[0]);
+    holder = terrainModel->meshes["TERRAIN"]->VertexBufferGPU;
     terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
 }
 
@@ -346,7 +353,9 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
                     if (setZero) mBlendMap[currentIndex].w = 0.0f;
                     break;
             }
-                
+            
+            XMVECTOR t = XMVector4Normalize(XMLoadFloat4(&mBlendMap[currentIndex]));
+            XMStoreFloat4(&mBlendMap[currentIndex], t);
             mTerrainVertices[currentIndex].TexBlend = mBlendMap[currentIndex];
 
         }
@@ -356,6 +365,7 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
     /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
     terrainVB->copyAll(mTerrainVertices[0]);
+    holder = terrainModel->meshes["TERRAIN"]->VertexBufferGPU;
     terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
 
 }
