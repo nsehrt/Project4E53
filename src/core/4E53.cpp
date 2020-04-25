@@ -742,6 +742,7 @@ void P_4E53::draw(const GameTime& gt)
 	renderResource->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
+	editModeHUD->commit();
 }
 
 void P_4E53::drawToShadowMap()
