@@ -24,7 +24,7 @@ void EditModeHUD::init()
 
     resourceUpload.Begin();
 
-        CreateWICTextureFromFile(renderResource->device, resourceUpload, L"cat.png",
+        CreateWICTextureFromFile(renderResource->device, resourceUpload, L"data\\texture\\hud\\button\\a.png",
         m_texture.ReleaseAndGetAddressOf());
 
     CreateShaderResourceView(renderResource->device, m_texture.Get(),
@@ -48,7 +48,7 @@ void EditModeHUD::init()
 
 
     D3D12_VIEWPORT viewport = { 0.0f, 0.0f,
-    static_cast<float>(1600), static_cast<float>(1200),
+    static_cast<float>(1600), static_cast<float>(900),
     D3D12_MIN_DEPTH, D3D12_MAX_DEPTH };
     m_spriteBatch->SetViewport(viewport);
 
