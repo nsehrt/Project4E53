@@ -220,4 +220,7 @@
       <Filter>Source Files\src\hud</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

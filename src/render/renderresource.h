@@ -75,6 +75,7 @@ public:
 
     ID3D12Device* device = nullptr;
     ID3D12GraphicsCommandList* cmdList = nullptr;
+    ID3D12CommandQueue* cmdQueue = nullptr;
 
     ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
     ComPtr<ID3D12RootSignature> mPostProcessRootSignature = nullptr;

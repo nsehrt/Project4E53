@@ -45,6 +45,8 @@ private:
 	std::unique_ptr<std::thread> inputThread;
 	std::unique_ptr<std::thread> audioThread;
 
+	std::unique_ptr<EditModeHUD> editModeHUD = nullptr;
+
 	std::shared_ptr<FPSCamera> fpsCamera;
 	bool fpsCameraMode = false;
 
@@ -226,7 +228,8 @@ bool P_4E53::Initialize()
 		ServiceProvider::getLogger()->print<Severity::Error>("Initialising render resouce failed!");
 		return false;
 	}
-	
+	renderResource->cmdQueue = mCommandQueue.Get();
+
 	ServiceProvider::setRenderResource(renderResource);
 
 	/*load first level*/
@@ -240,6 +243,9 @@ bool P_4E53::Initialize()
 
 	mLevel.push_back(std::move(level));
 	ServiceProvider::setActiveLevel(mLevel.back());
+
+	editModeHUD = std::make_unique<EditModeHUD>();
+	editModeHUD->init();
 
 	/*init fpscamera*/
 	fpsCamera = std::make_shared<FPSCamera>();
@@ -713,6 +719,8 @@ void P_4E53::draw(const GameTime& gt)
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	mCommandList->DrawInstanced(6, 1, 0, 0);
+
+	editModeHUD->draw();
 
 	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
