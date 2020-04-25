@@ -14,7 +14,7 @@
 #include "../core/fixedcamera.h"
 #include "../util/modelloader.h"
 #include "../core/level.h"
-#include "../core/editmode.h"
+#include "../hud/editmodehud.h"
 #include <filesystem>
 
 #ifndef _DEBUG

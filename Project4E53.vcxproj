@@ -164,6 +164,7 @@
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
     <ClCompile Include="src\extern\tinyxml2.cpp" />
+    <ClCompile Include="src\hud\editmodehud.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
     <ClInclude Include="src\extern\json.hpp" />
     <ClInclude Include="src\extern\tinyxml2.h" />
+    <ClInclude Include="src\hud\editmodehud.h" />
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />
     <ClInclude Include="src\render\frameresource.h" />

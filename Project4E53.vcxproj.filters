@@ -26,6 +26,9 @@
     <Filter Include="Source Files\src\audio">
       <UniqueIdentifier>{98b8481c-54ca-4183-a5aa-34c976a56c01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\hud">
+      <UniqueIdentifier>{3403e18f-8f6f-4cec-b8eb-d72508042c77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\util\settings.h">
@@ -127,6 +130,9 @@
     <ClInclude Include="src\core\editmode.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\hud\editmodehud.h">
+      <Filter>Source Files\src\hud</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -209,6 +215,9 @@
     </ClCompile>
     <ClCompile Include="src\core\fixedcamera.cpp">
       <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hud\editmodehud.cpp">
+      <Filter>Source Files\src\hud</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
