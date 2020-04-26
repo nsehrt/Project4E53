@@ -10,7 +10,7 @@ public:
 
     explicit Terrain(const json& terrainInfo);
 
-    void save();
+    bool save();
 
     std::unique_ptr<Model> terrainModel = nullptr;
 

@@ -892,11 +892,16 @@ ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
-    /*TODO set shadow bounds to player center*/
-    //XMFLOAT3 c = mShadowMap->shadowBounds.Center;
-    //c.x += 2.f * gt.DeltaTime();
+    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        XMFLOAT3 center = { ServiceProvider::getEditSettings()->Position.x,
+                            ServiceProvider::getActiveLevel()->mTerrain->getHeight(ServiceProvider::getEditSettings()->Position.x,ServiceProvider::getEditSettings()->Position.y),
+                            ServiceProvider::getEditSettings()->Position.y };
 
-    //mShadowMap->setBoundsCenter(c);
+        mShadowMap->setBoundsCenter(center);
+    }
+
+    /*TODO set shadow bounds to player center*/
 
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());

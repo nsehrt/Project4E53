@@ -28,6 +28,7 @@ void EditModeHUD::init()
     mTextures.resize(Descriptors::Count);
 
     std::vector<std::wstring> texPaths = {
+        /*xbox buttons*/
         L"data\\texture\\hud\\button\\a.png",
         L"data\\texture\\hud\\button\\b.png",
         L"data\\texture\\hud\\button\\x.png",
@@ -45,6 +46,24 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\button\\dpad_right.png",
         L"data\\texture\\hud\\button\\l_stick.png",
         L"data\\texture\\hud\\button\\r_stick.png",
+        /*GUI Elements*/
+        L"data\\texture\\hud\\gui\\edit\\tool_win.png",
+        L"data\\texture\\hud\\gui\\edit\\height.png",
+        L"data\\texture\\hud\\gui\\edit\\paint.png",
+        L"data\\texture\\hud\\gui\\edit\\left.png",
+        L"data\\texture\\hud\\gui\\edit\\right.png",
+        L"data\\texture\\hud\\gui\\edit\\save_win.png",
+        L"data\\texture\\hud\\gui\\edit\\save.png",
+        L"data\\texture\\hud\\gui\\edit\\failed.png",
+        L"data\\texture\\hud\\gui\\edit\\select_win.png",
+        L"data\\texture\\hud\\gui\\edit\\slider_fg_blue.png",
+        L"data\\texture\\hud\\gui\\edit\\slider_fg_green.png",
+        L"data\\texture\\hud\\gui\\edit\\slider_fg_red.png",
+        L"data\\texture\\hud\\gui\\edit\\slider_blue.png",
+        L"data\\texture\\hud\\gui\\edit\\slider_green.png",
+        L"data\\texture\\hud\\gui\\edit\\slider_red.png",
+        L"data\\texture\\hud\\gui\\edit\\legend.png",
+        L"data\\texture\\hud\\gui\\edit\\legend_full.png"
     };
 
     ASSERT(texPaths.size() == Descriptors::Count);
@@ -76,26 +95,117 @@ void EditModeHUD::init()
     D3D12_MIN_DEPTH, D3D12_MAX_DEPTH };
     mSpriteBatch->SetViewport(viewport);
 
-    float scaleFactor = ServiceProvider::getSettings()->displaySettings.ResolutionWidth / DEFAULT_WIDTH;
+    resolutionScaleFactor = ServiceProvider::getSettings()->displaySettings.ResolutionWidth / DEFAULT_WIDTH;
 
     /*create HUD Elements for the GUI*/
 
-    auto hE = std::make_unique<HUDElement>(Descriptors::BUTTON_B);
+    /*tool select window 0 - 3*/
+    mHUDElements.push_back(initHUDElement(Descriptors::TOOL_WIN, { 0.93f,0.13f }));
+    mHUDElements.push_back(initHUDElement(Descriptors::BUTTON_RSHOULDER, { 0.915f,0.205f }));
+    mHUDElements.push_back(initHUDElement(Descriptors::RIGHT, { 0.96f,0.205f }, 0.6f));
+    mHUDElements.push_back(initHUDElement(Descriptors::HEIGHT, { 0.93f,0.108f }, 1.25f));
 
-    hE->TextureSize = GetTextureSize(mTextures[hE->TexDescriptor].Get());
-    hE->Origin.x = float(hE->TextureSize.x / 2);
-    hE->Origin.y = float(hE->TextureSize.y / 2);
+    /*save window 4 - 5*/
+    mHUDElements.push_back(initHUDElement(Descriptors::SAVE_WIN, saveWindowPos));
+    mHUDElements.push_back(initHUDElement(Descriptors::SAVED, saveWindowIconPos, 0.8f));
 
-    hE->ScreenPosition.x = 0;
-    hE->ScreenPosition.y = 0;
-    hE->ResolutionScale = scaleFactor;
+    /*select window 6 - 9*/
+    mHUDElements.push_back(initHUDElement(Descriptors::SELECT_WIN, { 0.125f, 0.85f }));
+    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_BLUE, { 0.046f, 0.805f }, 0.85f));
+    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_GREEN, { 0.046f, 0.875f }, 0.85f));
+    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_RED, { 0.046f, 0.9425f }, 0.85f));
 
-    mHUDElements.push_back(std::move(hE));
+    /*legend window 10 - 11*/
+    mHUDElements.push_back(initHUDElement(Descriptors::LEGEND_WIN, { 0.08f, 0.4f }));
+    mHUDElements.push_back(initHUDElement(Descriptors::LEGEND_FULL_WIN, { -0.08f, 0.4f }));
 
 }
 
 void EditModeHUD::update()
 {
+    auto dispSetting = ServiceProvider::getSettings()->displaySettings;
+    auto editSetting = ServiceProvider::getEditSettings();
+
+    /*show correct tool*/
+    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? Descriptors::HEIGHT : Descriptors::PAINT;
+
+    /*save window*/
+    mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? Descriptors::SAVED : Descriptors::FAILED;
+
+    if (editSetting->savedAnim > 0.0f)
+    {
+        if (editSetting->savedAnim > saveWindowLinger)
+        {
+            mHUDElements[4]->NormalizedPosition.y = MathHelper::lerpH(-saveWindowPos.y,
+                                                         saveWindowPos.y,
+                                                         1.0f - (editSetting->savedAnim - saveWindowLinger));
+
+            mHUDElements[5]->NormalizedPosition.y = mHUDElements[4]->NormalizedPosition.y;
+        }
+    }
+    else
+    {
+        mHUDElements[4]->NormalizedPosition.y = -saveWindowIconPos.y;
+        mHUDElements[5]->NormalizedPosition.y = -saveWindowIconPos.y;
+    }
+
+    /*legend window*/
+    if (editSetting->legendAnim > 0.0f)
+    {
+        mHUDElements[10]->NormalizedPosition.x = (editSetting->legendStatus ? 1 : -1) * MathHelper::lerpH(-legendWindowPos.x,
+                                                                   legendWindowPos.x,
+                                                                   editSetting->legendAnim / editSetting->legenAnimDur);
+
+        mHUDElements[11]->NormalizedPosition.x = (editSetting->legendStatus ? -1 : 1) * MathHelper::lerpH(-legendWindowPos.x,
+                                                                   legendWindowPos.x,
+                                                                   editSetting->legendAnim / editSetting->legenAnimDur);
+    }
+
+
+    /*radius slider*/
+    mHUDElements[7]->NormalizedPosition.x = MathHelper::mapH(editSetting->BaseRadius,
+                                                           1.35f,
+                                                           editSetting->BaseSelectSize,
+                                                           sliderMinMax.x,
+                                                           sliderMinMax.y);
+
+    /*falloff slider*/
+    mHUDElements[8]->NormalizedPosition.x = MathHelper::mapH(editSetting->FallOffRatio,
+                                                             editSetting->fallOffRatioMin,
+                                                             editSetting->fallOffRatioMax,
+                                                             sliderMinMax.x,
+                                                             sliderMinMax.y);
+
+    /*fill slider*/
+
+    if (editSetting->toolMode == EditTool::Height)
+    {
+        mHUDElements[9]->NormalizedPosition.x = MathHelper::mapH(editSetting->heightIncrease,
+                                                                 editSetting->heightIncreaseMin,
+                                                                 editSetting->heightIncreaseMax,
+                                                                 sliderMinMax.x,
+                                                                 sliderMinMax.y);
+    }
+    else if (editSetting->toolMode == EditTool::Paint)
+    {
+        mHUDElements[9]->NormalizedPosition.x = MathHelper::mapH(editSetting->paintIncrease,
+                                                                 editSetting->paintIncreaseMin,
+                                                                 editSetting->paintIncreaseMax,
+                                                                 sliderMinMax.x,
+                                                                 sliderMinMax.y);
+    }
+
+
+
+    for (auto& e : mHUDElements)
+    {
+        /*recalculate actual screen position*/
+
+        e->ScreenPosition.x = e->NormalizedPosition.x * dispSetting.ResolutionWidth;
+        e->ScreenPosition.y = e->NormalizedPosition.y * dispSetting.ResolutionHeight;
+
+    }
+
 }
 
 void EditModeHUD::draw()
@@ -129,4 +239,18 @@ void EditModeHUD::draw()
 void EditModeHUD::commit()
 {
     mGraphicsMemory->Commit(ServiceProvider::getRenderResource()->cmdQueue);
+}
+
+std::unique_ptr<EditModeHUD::HUDElement> EditModeHUD::initHUDElement(Descriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF)
+{
+    auto element = std::make_unique<HUDElement>(desc);
+
+    element->TextureSize = GetTextureSize(mTextures[element->TexDescriptor].Get());
+    element->Origin.x = float(element->TextureSize.x / 2);
+    element->Origin.y = float(element->TextureSize.y / 2);
+
+    element->NormalizedPosition = nPos;
+    element->ResolutionScale = resolutionScaleFactor * scaleF;
+
+    return std::move(element);
 }

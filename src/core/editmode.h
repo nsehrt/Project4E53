@@ -35,5 +35,14 @@ struct EditSettings
     const float fallOffRatioMin = 0.05f;
     const float fallOffRatioMax = 0.95f;
 
+    float savedAnim = 0.0f;
+    bool saveSuccess = true;
+
+    float legendAnim = 0.0f;
+    bool legendStatus = false;
+
+    const float legenAnimDur = 0.25f;
+
+
     const int textureMax = 4;
 };

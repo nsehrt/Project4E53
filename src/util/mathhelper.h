@@ -53,6 +53,13 @@ public:
         return x < low ? low : (x > high ? high : x);
     }
 
+    /*map*/
+    template<typename T>
+    static T mapH(T x, T in_min, T in_max, T out_min, T out_max)
+    {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+
     /*polar angle of point*/
     static float angleFromXY(float x, float y);
 

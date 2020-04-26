@@ -244,8 +244,11 @@ bool P_4E53::Initialize()
 	mLevel.push_back(std::move(level));
 	ServiceProvider::setActiveLevel(mLevel.back());
 
-	editModeHUD = std::make_unique<EditModeHUD>();
-	editModeHUD->init();
+	if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+	{
+		editModeHUD = std::make_unique<EditModeHUD>();
+		editModeHUD->init();
+	}
 
 	/*init fpscamera*/
 	fpsCamera = std::make_shared<FPSCamera>();
@@ -370,8 +373,13 @@ void P_4E53::update(const GameTime& gt)
 		/*save map*/
 		if (inputData.Released(BTN::BACK))
 		{
-			activeLevel->mTerrain->save();
+			editSettings->saveSuccess = activeLevel->mTerrain->save();
+			editSettings->savedAnim = 2.0f;
 		}
+
+		editSettings->savedAnim -= gt.DeltaTime();
+
+		if (editSettings->savedAnim < 0.0f) editSettings->savedAnim = 0.0f;
 
 		/*switch tool*/
 		if (inputData.Pressed(BTN::RIGHT_SHOULDER))
@@ -392,6 +400,16 @@ void P_4E53::update(const GameTime& gt)
 			editSettings->WireFrameOn = !editSettings->WireFrameOn;
 		}
 
+		/*legend on/off*/
+		if (inputData.Pressed(BTN::DPAD_RIGHT))
+		{
+			editSettings->legendAnim = editSettings->legenAnimDur;
+			editSettings->legendStatus = !editSettings->legendStatus;
+		}
+
+		editSettings->legendAnim -= gt.DeltaTime();
+
+		if (editSettings->legendAnim < 0.0f) editSettings->legendAnim = 0.0f;
 
 		/*edit selection update*/
 		editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
@@ -455,13 +473,13 @@ void P_4E53::update(const GameTime& gt)
 			/*control increase value*/
 			if (inputData.current.buttons[BTN::B])
 			{
-				float newIncrease = editSettings->heightIncrease + gt.DeltaTime() * (editSettings->heightIncreaseMax / 4.0f);
+				float newIncrease = editSettings->heightIncrease + gt.DeltaTime() * (editSettings->heightIncreaseMax / 1.25f);
 				editSettings->heightIncrease = MathHelper::clampH(newIncrease, editSettings->heightIncreaseMin,
 																 editSettings->heightIncreaseMax);
 			}
 			else if (inputData.current.buttons[BTN::X])
 			{
-				float newIncrease = editSettings->heightIncrease - gt.DeltaTime() * (editSettings->heightIncreaseMax / 4.0f);
+				float newIncrease = editSettings->heightIncrease - gt.DeltaTime() * (editSettings->heightIncreaseMax / 1.25f);
 				editSettings->heightIncrease = MathHelper::clampH(newIncrease, editSettings->heightIncreaseMin,
 																 editSettings->heightIncreaseMax);
 			}
@@ -529,11 +547,14 @@ void P_4E53::update(const GameTime& gt)
 
 		/*move light*/
 		XMFLOAT3 newLightPos = newCamTarget;
-		newLightPos.y += editSettings->BaseRadius / 2.0f;
+		newLightPos.y += editSettings->BaseRadius / 4.0f;
 
 		editLight->setPosition(newLightPos);
 		editLight->setFallOffStart(editSettings->FallOffRadius);
 		editLight->setFallOffEnd(editSettings->BaseRadius);
+
+		if (editModeHUD != nullptr)
+		editModeHUD->update();
 	}
 	else
 	{
@@ -720,6 +741,7 @@ void P_4E53::draw(const GameTime& gt)
 
 	mCommandList->DrawInstanced(6, 1, 0, 0);
 
+	if(editModeHUD != nullptr)
 	editModeHUD->draw();
 
 	// Indicate a state transition on the resource usage.
@@ -742,6 +764,7 @@ void P_4E53::draw(const GameTime& gt)
 	renderResource->getCurrentFrameResource()->Fence = ++mCurrentFence;
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
+	if (editModeHUD != nullptr)
 	editModeHUD->commit();
 }
 
