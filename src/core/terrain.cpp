@@ -249,24 +249,31 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
 
             /*return if height already higher than height of main selected vertex*/
             if (currentIndex > mHeightMap.size() -1|| currentIndex < 0) continue;
-            if (mHeightMap[currentIndex] > mainVertexHeight && increase > 0) continue;
-            if (mHeightMap[currentIndex] < mainVertexHeight && increase < 0) continue;
 
-            /*normalize distance from center*/
-            float normalizedDistance;
-
-            if (lengthBetween < fallStart)
+            if (!setHeight)
             {
-                normalizedDistance = 1.0f;
+                if (mHeightMap[currentIndex] > mainVertexHeight && increase > 0) continue;
+                if (mHeightMap[currentIndex] < mainVertexHeight && increase < 0) continue;
+
+                /*normalize distance from center*/
+                float normalizedDistance;
+
+                if (lengthBetween < fallStart)
+                {
+                    normalizedDistance = 1.0f;
+                }
+                else
+                {
+                    normalizedDistance = 1.0f - ((lengthBetween - fallStart) / (fallEnd - fallStart));
+                }
+
+                /*increase height*/
+                mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
             }
             else
             {
-                normalizedDistance = 1.0f - ( (lengthBetween - fallStart) / (fallEnd - fallStart));
+                mHeightMap[currentIndex] = resetHeight;
             }
-
-            /*increase height*/
-            mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
-            if (setHeight) mHeightMap[currentIndex] = resetHeight;
 
             mHeightMap[currentIndex] = MathHelper::clampH(mHeightMap[currentIndex], -heightScale / 2.0f, heightScale / 2.0f);
             mTerrainVertices[currentIndex].Pos.y = mHeightMap[currentIndex];

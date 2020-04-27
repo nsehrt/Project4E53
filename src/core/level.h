@@ -17,7 +17,11 @@ using json = nlohmann::json;
 class Level
 {
 public:
-    explicit Level() = default;
+    explicit Level()
+    {
+        for (int i = 0; i < mCurrentLightObjects.size(); i++)
+            mCurrentLightObjects[i] = nullptr;
+    };
     ~Level() = default;
 
     /* load a level file in data/level/ */

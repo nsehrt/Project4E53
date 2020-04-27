@@ -74,7 +74,7 @@ private:
     enum class HUDVisibility
     {
         ALWAYS,
-        NOT_OBJECT,
+        HEIGHT_AND_PAINT,
         HEIGHT,
         PAINT,
         OBJECT

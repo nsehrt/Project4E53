@@ -11,6 +11,7 @@ enum class GameObjectType
 {
     Static,
     Sky,
+    InvWall,
     Dynamic
 };
 

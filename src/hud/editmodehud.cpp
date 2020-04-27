@@ -144,7 +144,7 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(Descriptors::RIGHT, { 0.96f,0.455f }, 0.6f));
 
     /*set visibility*/
-    for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::NOT_OBJECT;
+    for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
     mHUDElements[15]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[16]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[17]->hudVisibility = HUDVisibility::PAINT;
@@ -276,7 +276,7 @@ void EditModeHUD::draw()
     {
         if (!e->Visible) continue;
 
-        if (e->hudVisibility == HUDVisibility::NOT_OBJECT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
+        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
         if (e->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::Object)continue;
