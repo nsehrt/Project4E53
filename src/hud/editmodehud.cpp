@@ -64,7 +64,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\slider_red.png",
         L"data\\texture\\hud\\gui\\edit\\legend.png",
         L"data\\texture\\hud\\gui\\edit\\legend_full.png",
-        L"data\\texture\\hud\\gui\\edit\\tex_win.png"
+        L"data\\texture\\hud\\gui\\edit\\tex_win.png",
+        L"data\\texture\\hud\\gui\\edit\\object.png"
     };
 
     ASSERT(texPaths.size() == Descriptors::Count);
@@ -142,6 +143,8 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(Descriptors::BUTTON_Y, { 0.915f,0.455f }, 0.7f));
     mHUDElements.push_back(initHUDElement(Descriptors::RIGHT, { 0.96f,0.455f }, 0.6f));
 
+    /*set visibility*/
+    for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::NOT_OBJECT;
     mHUDElements[15]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[16]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[17]->hudVisibility = HUDVisibility::PAINT;
@@ -154,7 +157,7 @@ void EditModeHUD::update()
     auto editSetting = ServiceProvider::getEditSettings();
 
     /*show correct tool*/
-    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? Descriptors::HEIGHT : Descriptors::PAINT;
+    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? Descriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ? Descriptors::PAINT : Descriptors::OBJECT;
 
     /*save window*/
     mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? Descriptors::SAVED : Descriptors::FAILED;
@@ -273,6 +276,7 @@ void EditModeHUD::draw()
     {
         if (!e->Visible) continue;
 
+        if (e->hudVisibility == HUDVisibility::NOT_OBJECT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
         if (e->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::Object)continue;

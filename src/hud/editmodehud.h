@@ -67,12 +67,14 @@ private:
         LEGEND_WIN,
         LEGEND_FULL_WIN,
         TEXTURE_WIN,
+        OBJECT,
         Count
     };
 
     enum class HUDVisibility
     {
         ALWAYS,
+        NOT_OBJECT,
         HEIGHT,
         PAINT,
         OBJECT
@@ -102,6 +104,7 @@ private:
     std::unique_ptr<DirectX::GraphicsMemory> mGraphicsMemory;
 
     const float DEFAULT_WIDTH = 1920.f;
+    const float DEFAULT_HEIGHT = 1080.f;
 
     float resolutionScaleFactor = 1.0f;
 

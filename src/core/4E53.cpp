@@ -364,6 +364,7 @@ void P_4E53::update(const GameTime& gt)
 
 
 	activeCamera->mPreviousPosition = activeCamera->getPosition3f();
+
 	/***********************/
 
 	if (settingsData->miscSettings.EditModeEnabled)
@@ -388,7 +389,11 @@ void P_4E53::update(const GameTime& gt)
 			{
 				editSettings->toolMode = EditTool::Paint;
 			}
-			else
+			else if(editSettings->toolMode == EditTool::Paint)
+			{
+				editSettings->toolMode = EditTool::Object;
+			}
+			else if (editSettings->toolMode == EditTool::Object)
 			{
 				editSettings->toolMode = EditTool::Height;
 			}
@@ -534,7 +539,7 @@ void P_4E53::update(const GameTime& gt)
 
 
 		/*common camera update*/
-		float zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -25.0f * gt.DeltaTime();
+		float zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -50.0f * gt.DeltaTime();
 
 		XMFLOAT3 newCamTarget = XMFLOAT3(editSettings->Position.x,
 										 activeLevel->mTerrain->getHeight(editSettings->Position.x, editSettings->Position.y),
@@ -695,11 +700,11 @@ void P_4E53::draw(const GameTime& gt)
 
 	ServiceProvider::getActiveLevel()->drawTerrain();
 
+	/*draw everything*/
+
 	mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
 	mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->defaultCubeMapHandle);
 	mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-
-	/*draw everything*/
 
 	ServiceProvider::getActiveLevel()->draw();
 
