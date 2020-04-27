@@ -66,7 +66,16 @@ private:
         SLIDER_RED,
         LEGEND_WIN,
         LEGEND_FULL_WIN,
+        TEXTURE_WIN,
         Count
+    };
+
+    enum class HUDVisibility
+    {
+        ALWAYS,
+        HEIGHT,
+        PAINT,
+        OBJECT
     };
 
     struct HUDElement
@@ -77,14 +86,17 @@ private:
         DirectX::SimpleMath::Vector2 NormalizedPosition = { 0.0f,0.0f };
         DirectX::SimpleMath::Vector2 ScreenPosition = { 0.0f,0.0f };
         DirectX::SimpleMath::Vector2 Origin = { 0.0f,0.0f };
+        RECT SourceRectangle;
         DirectX::XMUINT2 TextureSize = { 0,0 };
         float ResolutionScale = 1.0f;
         float Scale = 1.0f;
         float Rotation = 0.0f;
+        HUDVisibility hudVisibility = HUDVisibility::ALWAYS;
         bool Visible = true;
     };
 
     std::vector<std::unique_ptr<HUDElement>> mHUDElements;
+    std::unique_ptr<HUDElement> mTexturePreview;
     std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 
     std::unique_ptr<DirectX::GraphicsMemory> mGraphicsMemory;

@@ -576,54 +576,11 @@ void DX12App::calculateFrameStats()
         wstring mspfStr = to_wstring(mspf);
         wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);
         wstring shadowsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnShadowObjects);
-        wstring fallOffStr = to_wstring(ServiceProvider::getEditSettings()->FallOffRatio);
-        wstring selStr = to_wstring(ServiceProvider::getEditSettings()->BaseRadius);
 
-        if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-        {
-            wstring windowText;
-
-            if (ServiceProvider::getEditSettings()->toolMode == EditTool::Height)
-            {
-                wstring incStr = to_wstring(ServiceProvider::getEditSettings()->heightIncrease);
-
-                windowText = mWindowCaption +
-                    L"    fps: " + fpsStr +
-                    L" / EditMode" +
-                    L" Height " + 
-                    L" / Select Radius: " + selStr +
-                    L" / FallOff: " + fallOffStr +
-                    L" / Increase: " + incStr;
-            }
-            else
-            {
-                wstring tex(ServiceProvider::getActiveLevel()->mTerrain->textureStrings[ServiceProvider::getEditSettings()->usedTextureIndex].begin(),
-                            ServiceProvider::getActiveLevel()->mTerrain->textureStrings[ServiceProvider::getEditSettings()->usedTextureIndex].end());
-
-                wstring incStr = to_wstring(ServiceProvider::getEditSettings()->paintIncrease);
-
-                windowText = mWindowCaption +
-                    L"    fps: " + fpsStr +
-                    L" / EditMode" +
-                    L" Paint" +
-                    L" / Select Radius: " + selStr +
-                    L" / FallOff: " + fallOffStr + 
-                    L" / Increase: " + incStr +
-                    L" / Texture: " + tex;
-            }
-
-
-                
-            SetWindowText(mMainWindow, windowText.c_str());
-        }
-        else
-        {
-            wstring windowText = mWindowCaption +
-                L"    fps: " + fpsStr +
-                L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
-            SetWindowText(mMainWindow, windowText.c_str());
-        }
-
+        wstring windowText = mWindowCaption +
+            L"    fps: " + fpsStr +
+            L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
+        SetWindowText(mMainWindow, windowText.c_str());
 
         frameCount = 0;
         timeElapsed += 0.25f;

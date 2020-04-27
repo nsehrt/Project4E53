@@ -4,7 +4,8 @@
 enum class EditTool
 {
     Height,
-    Paint
+    Paint,
+    Object
 };
 
 struct EditSettings
