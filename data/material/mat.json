@@ -10,6 +10,14 @@
         "Roughness" : 0.2
     },
     {
+        "Name" : "invWall",
+        "Texture" : "default",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,0.55],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.8
+    },
+    {
         "Name" : "sky",
         "Texture" : "default",
         "NormalMap" : "default_nmap",

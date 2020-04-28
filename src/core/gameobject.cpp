@@ -112,16 +112,25 @@ GameObject::GameObject(const json& objectJson, int index)
 
     rItem->ObjCBIndex = index;
 
-    XMMATRIX translationMatrix = XMMatrixTranslation(Position.x, Position.y, Position.z);
-    XMMATRIX scaleMatrix = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
-    XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(Rotation.x, Rotation.y, Rotation.z);
-
     /*check model exists*/
     if (renderResource->mModels.find(objectJson["Model"]) == renderResource->mModels.end())
     {
-        LOG(Severity::Warning, "GameObject " << name << " specified not loaded model " << objectJson["Model"] << "!");
+        if (objectJson["Model"] == "")
+        {
+            /*invisible wall*/
+            isCollisionEnabled = true;
+            isDrawEnabled = false;
+            rItem->Model = renderResource->mModels["box"].get();
+            TextureScale = Scale;
+            gameObjectType = GameObjectType::Wall;
+        }
+        else
+        {
+            LOG(Severity::Warning, "GameObject " << name << " specified not loaded model " << objectJson["Model"] << "!");
 
-        rItem->Model = renderResource->mModels["box"].get();
+            rItem->Model = renderResource->mModels["box"].get();
+        }
+
     }
     else
     {
@@ -131,9 +140,16 @@ GameObject::GameObject(const json& objectJson, int index)
     /*check material exists*/
     if (renderResource->mMaterials.find(objectJson["Material"]) == renderResource->mMaterials.end())
     {
-        LOG(Severity::Warning, "GameObject " << name << " specified not loaded material " << objectJson["Material"] << "!");
+        if (gameObjectType == GameObjectType::Wall)
+        {
+            rItem->Mat = renderResource->mMaterials["default"].get();
+        }
+        else
+        {
+            LOG(Severity::Warning, "GameObject " << name << " specified not loaded material " << objectJson["Material"] << "!");
+            rItem->Mat = renderResource->mMaterials["default"].get();
+        }
 
-        rItem->Mat = renderResource->mMaterials["default"].get();
     }
     else
     {
@@ -141,27 +157,43 @@ GameObject::GameObject(const json& objectJson, int index)
     }
 
     /*render type*/
-    if (objectJson["RenderType"] == "DefaultAlpha")
+    if (!exists(objectJson, "RenderType"))
     {
-        rItem->renderType = RenderType::DefaultAlpha;
-        rItem->shadowType = RenderType::ShadowAlpha;
-    }
-    else if (objectJson["RenderType"] == "DefaultNoNormal")
-    {
-        rItem->renderType = RenderType::DefaultNoNormal;
-    }
-    else if (objectJson["RenderType"] == "Debug")
-    {
-        rItem->renderType = RenderType::Debug;
-    }
-    else if (objectJson["RenderType"] == "DefaultTransparency")
-    {
-        rItem->renderType = RenderType::DefaultTransparency;
+        if (gameObjectType == GameObjectType::Wall)
+        {
+            rItem->renderType = RenderType::DefaultTransparency;
+        }
+        else
+        {
+            rItem->renderType = RenderType::Default;
+        }
     }
     else
     {
-        rItem->renderType = RenderType::Default;
+        if (objectJson["RenderType"] == "DefaultAlpha")
+        {
+            rItem->renderType = RenderType::DefaultAlpha;
+            rItem->shadowType = RenderType::ShadowAlpha;
+        }
+        else if (objectJson["RenderType"] == "DefaultNoNormal")
+        {
+            rItem->renderType = RenderType::DefaultNoNormal;
+        }
+        else if (objectJson["RenderType"] == "Debug")
+        {
+            rItem->renderType = RenderType::Debug;
+        }
+        else if (objectJson["RenderType"] == "DefaultTransparency")
+        {
+            rItem->renderType = RenderType::DefaultTransparency;
+        }
+        else
+        {
+            rItem->renderType = RenderType::Default;
+        }
     }
+
+
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 
@@ -174,24 +206,19 @@ GameObject::GameObject()
 {
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
     Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Scale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    TextureScale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
 }
 
 GameObject::GameObject(int index)
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
-    Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Scale = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-    TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    TextureScale = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    GameObject();
 
     auto tItem = std::make_unique<RenderItem>();
     tItem->ObjCBIndex = index;
@@ -199,6 +226,7 @@ GameObject::GameObject(int index)
     tItem->Model = renderResource->mModels["box"].get();
 
     renderItem = std::move(tItem);
+
 }
 
 void GameObject::update(const GameTime& gt)
@@ -221,7 +249,11 @@ bool GameObject::draw()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-    if (!isDrawEnabled) return false;
+    if (!isDrawEnabled &&
+        !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
+    {
+        return false;
+    }
 
     /*frustum culling check*/
     if (isFrustumCulled)

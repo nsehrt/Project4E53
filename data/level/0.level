@@ -418,6 +418,20 @@
                 0,0,0
             ],
             "RenderType": "Default"            
+        },
+        {
+            "Name": "WALL",
+            "Model": "",
+            "Material": "invWall",
+            "Position": [
+                -12,5,10
+            ],
+            "Scale": [
+                12,1.4,3.13
+            ],
+            "Rotation": [
+                15,0,0
+            ]
         }
         
     ]

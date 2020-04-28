@@ -150,7 +150,8 @@ void Level::update(const GameTime& gt)
 
     for (const auto& gameObj : mGameObjects)
     {
-        if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
+        if (gameObj.second->gameObjectType != GameObjectType::Static &&
+            gameObj.second->gameObjectType != GameObjectType::Wall) continue;
 
         if (gameObj.second->intersects(ServiceProvider::getActiveCamera()->hitbox))
         {
@@ -235,7 +236,7 @@ void Level::draw()
                   
     });
 
-    /*draw the terrain first*/
+
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
@@ -460,8 +461,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
         }
 
         if (!exists(entryJson, "Model") ||
-            !exists(entryJson, "Material") ||
-            !exists(entryJson, "RenderType")
+            !exists(entryJson, "Material")
             )
         {
             LOG(Severity::Warning, "Skipping GameObject " << entryJson["Name"] << "due to missing properties!");

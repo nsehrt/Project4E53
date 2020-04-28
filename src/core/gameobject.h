@@ -10,8 +10,8 @@ using json = nlohmann::json;
 enum class GameObjectType
 {
     Static,
+    Wall,
     Sky,
-    InvWall,
     Dynamic
 };
 
