@@ -9,6 +9,8 @@ class Camera;
 class GameObject;
 class ShadowMap;
 class LightObject;
+class EditModeHUD;
+struct EditSettings;
 
 #include "log.h"
 #include "settings.h"

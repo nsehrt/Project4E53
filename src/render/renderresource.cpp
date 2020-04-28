@@ -894,11 +894,19 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 {
     if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     {
-        XMFLOAT3 center = { ServiceProvider::getEditSettings()->Position.x,
-                            ServiceProvider::getActiveLevel()->mTerrain->getHeight(ServiceProvider::getEditSettings()->Position.x,ServiceProvider::getEditSettings()->Position.y),
-                            ServiceProvider::getEditSettings()->Position.y };
+        if (ServiceProvider::getEditSettings()->toolMode != EditTool::Object)
+        {
+            XMFLOAT3 center = { ServiceProvider::getEditSettings()->Position.x,
+                    ServiceProvider::getActiveLevel()->mTerrain->getHeight(ServiceProvider::getEditSettings()->Position.x,ServiceProvider::getEditSettings()->Position.y),
+                    ServiceProvider::getEditSettings()->Position.y };
 
-        mShadowMap->setBoundsCenter(center);
+            mShadowMap->setBoundsCenter(center);
+        }
+        else
+        {
+            mShadowMap->setBoundsCenter(ServiceProvider::getEditSettings()->currentSelection->getPosition());
+        }
+
     }
 
     /*TODO set shadow bounds to player center*/

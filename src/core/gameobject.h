@@ -12,7 +12,8 @@ enum class GameObjectType
     Static,
     Wall,
     Sky,
-    Dynamic
+    Dynamic,
+    Debug
 };
 
 class GameObject

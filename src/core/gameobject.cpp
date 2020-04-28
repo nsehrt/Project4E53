@@ -218,7 +218,13 @@ GameObject::GameObject(int index)
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
-    GameObject();
+    Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+    TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     auto tItem = std::make_unique<RenderItem>();
     tItem->ObjCBIndex = index;

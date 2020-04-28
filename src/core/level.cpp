@@ -487,6 +487,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
     debugObject->isFrustumCulled = false;
     debugObject->isShadowEnabled = false;
     debugObject->renderItem->renderType = RenderType::Debug;
+    debugObject->gameObjectType = GameObjectType::Debug;
     debugObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["quad"].get();
 
     mGameObjects["debugQuad"] = std::move(debugObject);
