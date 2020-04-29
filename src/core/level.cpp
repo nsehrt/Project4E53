@@ -515,6 +515,7 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->isDrawEnabled = true;
     terrainObject->isCollisionEnabled = false;
     terrainObject->renderItem->renderType = RenderType::Terrain;
+    terrainObject->gameObjectType = GameObjectType::Terrain;
     terrainObject->renderItem->Model = mTerrain->terrainModel.get();
     terrainObject->renderItem->Mat = ServiceProvider::getRenderResource()->mMaterials["grass"].get();
     XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 8, 

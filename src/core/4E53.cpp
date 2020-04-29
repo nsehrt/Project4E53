@@ -596,7 +596,20 @@ void P_4E53::update(const GameTime& gt)
 
 			if (inputData.Pressed(BTN::B))
 			{
-				editSettings->transformAxis[(int)(editSettings->objTransformTool)] = (TransformAxis)(((int)editSettings->transformAxis[(int)(editSettings->objTransformTool)] + 1) % 3);
+				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
+				{
+					editSettings->translationAxis = (TranslationAxis)(((int)editSettings->translationAxis + 1) % 5);
+				}
+				else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
+				{
+					editSettings->scaleAxis = (TransformAxis)(((int)editSettings->scaleAxis + 1) % 3);
+				}
+				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
+				{
+					editSettings->rotationAxis = (TransformAxis)(((int)editSettings->rotationAxis + 1) % 3);
+				}
+
+				
 			}
 
 			/*reset to zero*/
@@ -605,11 +618,13 @@ void P_4E53::update(const GameTime& gt)
 				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
 				{
 					XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
-					switch (editSettings->transformAxis[0])
+					switch (editSettings->translationAxis)
 					{
-						case TransformAxis::X: nPos.x = 0.0f; break;
-						case TransformAxis::Y: nPos.y = 0.0f; break;
-						case TransformAxis::Z: nPos.z = 0.0f; break;
+						case TranslationAxis::XY: nPos.x = 0.0f; nPos.y = 0.0f; break;
+						case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
+						case TranslationAxis::X: nPos.x = 0.0f; break;
+						case TranslationAxis::Y: nPos.y = 0.0f; break;
+						case TranslationAxis::Z: nPos.z = 0.0f; break;
 					}
 
 					editSettings->currentSelection->setPosition(nPos);
@@ -621,7 +636,7 @@ void P_4E53::update(const GameTime& gt)
 				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
 				{
 					XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
-					switch (editSettings->transformAxis[2])
+					switch (editSettings->scaleAxis)
 					{
 						case TransformAxis::X: nRotation.x = 0.0f; break;
 						case TransformAxis::Y: nRotation.y = 0.0f; break;
@@ -639,7 +654,7 @@ void P_4E53::update(const GameTime& gt)
 				XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
 
 				float rot;
-				switch (editSettings->transformAxis[2])
+				switch (editSettings->rotationAxis)
 				{
 					case TransformAxis::X: rot = nRotation.x; break;
 					case TransformAxis::Y: rot = nRotation.y; break;
@@ -659,7 +674,7 @@ void P_4E53::update(const GameTime& gt)
 
 				rot = counter == 16 ? 0.0f : counter * (XM_PIDIV4 / 2);
 
-				switch (editSettings->transformAxis[2])
+				switch (editSettings->rotationAxis)
 				{
 					case TransformAxis::X: nRotation.x = rot; break;
 					case TransformAxis::Y: nRotation.y = rot; break;
@@ -676,7 +691,31 @@ void P_4E53::update(const GameTime& gt)
 				editSettings->uniformScaling = !editSettings->uniformScaling;
 			}
 
+			/*translation tool*/
+			if (editSettings->objTransformTool == ObjectTransformTool::Translation)
+			{
 
+				XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
+
+				float thumbX = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
+				float thumbY = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
+
+
+				switch (editSettings->translationAxis)
+				{
+					case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
+					case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
+					case TranslationAxis::X: nPos.x += thumbX; break;
+					case TranslationAxis::Y: nPos.y += thumbY; break;
+					case TranslationAxis::Z: nPos.z += thumbY; break;
+				}
+
+
+				editSettings->currentSelection->setPosition(nPos);
+
+			}
+
+			/*scale and rotation tool*/
 			if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
 			{
 				/*which trigger pressed more*/
@@ -684,27 +723,9 @@ void P_4E53::update(const GameTime& gt)
 				float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
 					-inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
 
-				/*translation*/
-				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
-				{
 
-					XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
-
-					float increase = editSettings->translationIncreaseBase * trigger * gt.DeltaTime();
-
-					switch (editSettings->transformAxis[0])
-					{
-						case TransformAxis::X: nPos.x += increase; break;
-						case TransformAxis::Y: nPos.y += increase; break;
-						case TransformAxis::Z: nPos.z += increase; break;
-					}
-
-
-					editSettings->currentSelection->setPosition(nPos);
-
-				}
 				/*scale*/
-				else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
+				if (editSettings->objTransformTool == ObjectTransformTool::Scale)
 				{
 
 					XMFLOAT3 nScale = editSettings->currentSelection->getScale();
@@ -713,7 +734,7 @@ void P_4E53::update(const GameTime& gt)
 
 					if (!editSettings->uniformScaling)
 					{
-						switch (editSettings->transformAxis[1])
+						switch (editSettings->scaleAxis)
 						{
 							case TransformAxis::X: nScale.x += increase; break;
 							case TransformAxis::Y: nScale.y += increase; break;
@@ -740,7 +761,7 @@ void P_4E53::update(const GameTime& gt)
 
 					float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
 
-					switch (editSettings->transformAxis[2])
+					switch (editSettings->rotationAxis)
 					{
 						case TransformAxis::X: nRotation.x += increase; if (nRotation.x > XM_2PI) nRotation.x -= XM_2PI; break;
 						case TransformAxis::Y: nRotation.y += increase; if (nRotation.y > XM_2PI) nRotation.y -= XM_2PI; break;

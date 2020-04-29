@@ -16,6 +16,15 @@ enum class ObjectTransformTool : int
     Rotation
 };
 
+enum class TranslationAxis : int
+{
+    XY,
+    XZ,
+    X,
+    Y, 
+    Z
+};
+
 enum class TransformAxis : int
 {
     X,
@@ -66,7 +75,10 @@ struct EditSettings
     int currentSelectionIndex = -1;
 
     ObjectTransformTool objTransformTool = ObjectTransformTool::Translation;
-    TransformAxis transformAxis[3];
+    /*per tool axis control*/
+    TranslationAxis translationAxis = TranslationAxis::XY;
+    TransformAxis scaleAxis = TransformAxis::X;
+    TransformAxis rotationAxis = TransformAxis::X;
 
     const float translationIncreaseBase = 10.0f;
     const float scaleIncreaseBase = 2.0f;
