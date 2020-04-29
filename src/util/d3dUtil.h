@@ -98,6 +98,14 @@ public:
         const std::string& target
     );
 
+    static std::wstring convertStringToWstring(const std::string& str)
+    {
+        const std::ctype<wchar_t>& CType = std::use_facet<std::ctype<wchar_t> >(std::locale());
+        std::vector<wchar_t> wideStringBuffer(str.length());
+        CType.widen(str.data(), str.data() + str.length(), &wideStringBuffer[0]);
+        return std::wstring(&wideStringBuffer[0], wideStringBuffer.size());
+    }
+
 };
 
 class DxException

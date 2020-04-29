@@ -72,6 +72,7 @@ private:
         OBJECT,
         TOOL_AXIS_WIN,
         TOOL_AXIS_CURSOR,
+        OBJECT_INFO_WIN,
         TCount
     };
 

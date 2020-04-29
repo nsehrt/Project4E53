@@ -68,7 +68,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\tex_win.png",
         L"data\\texture\\hud\\gui\\edit\\object.png",
         L"data\\texture\\hud\\gui\\edit\\tool_axis_select.png",
-        L"data\\texture\\hud\\gui\\edit\\tool_axis_select_cursor.png"
+        L"data\\texture\\hud\\gui\\edit\\tool_axis_select_cursor.png",
+        L"data\\texture\\hud\\gui\\edit\\object_info.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -170,11 +171,22 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.94f,  0.7675f }, 0.5f));
 
 
-    //mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.5f,0.5f },0.25f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::OBJECT_INFO_WIN, { 0.89f, 0.56f }));
 
-    //std::wstringstream ss;
-    //ss << std::setprecision(3) << 0.54322f;
-    //mFontElements[0]->text = ss.str();
+    /*fonts 0-9*/
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f },0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.56f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.595f }, 0.2f));
+
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.888f,0.525f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.888f,0.56f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.888f,0.595f }, 0.2f));
+
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.935f,0.525f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.935f,0.56f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.935f,0.595f }, 0.2f));
+
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.795f,0.46f }, 0.3f));
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
@@ -182,9 +194,14 @@ void EditModeHUD::init()
     mHUDElements[16]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[17]->hudVisibility = HUDVisibility::PAINT;
 
-    for (int i = 18; i < 23; i++)
+    for (int i = 18; i < 24; i++)
     {
         mHUDElements[i]->hudVisibility = HUDVisibility::OBJECT;
+    }
+
+    for (int i = 0; i < mFontElements.size(); i++)
+    {
+        mFontElements[i]->hudVisibility = HUDVisibility::OBJECT;
     }
 
 }
@@ -295,11 +312,57 @@ void EditModeHUD::update()
     /*update for object mode*/
     else
     {
+        /*tool axis window*/
         mHUDElements[19]->NormalizedPosition.x = 0.8525f + (int)editSetting->objTransformTool * 0.052f;
 
         mHUDElements[20]->NormalizedPosition.y = 0.7675f + (int)editSetting->translationAxis * 0.033f;
         mHUDElements[21]->NormalizedPosition.y = 0.7675f + (int)editSetting->scaleAxis * 0.033f;
         mHUDElements[22]->NormalizedPosition.y = 0.7675f + (int)editSetting->rotationAxis * 0.033f;
+
+        /*object info window*/
+        mFontElements[9]->text = d3dUtil::convertStringToWstring(editSetting->currentSelection->name);
+
+        XMFLOAT3 p = editSetting->currentSelection->getPosition();
+        XMFLOAT3 s = editSetting->currentSelection->getScale();
+        XMFLOAT3 r = editSetting->currentSelection->getRotation();
+
+        std::wstringstream ss;
+        ss << std::setprecision(5) << p.x;
+        mFontElements[0]->text = ss.str();
+
+        ss.str(L"");
+        ss << p.y;
+        mFontElements[1]->text = ss.str();
+
+        ss.str(L"");
+        ss << p.z;
+        mFontElements[2]->text = ss.str();
+
+        ss.str(L"");
+        ss << s.x;
+        mFontElements[3]->text = ss.str();
+
+        ss.str(L"");
+        ss << s.y;
+        mFontElements[4]->text = ss.str();
+
+        ss.str(L"");
+        ss << s.z;
+        mFontElements[5]->text = ss.str();
+
+
+        ss.str(L"");
+        ss << XMConvertToDegrees(r.x) << "*";
+        mFontElements[6]->text = ss.str();
+
+        ss.str(L"");
+        ss << XMConvertToDegrees(r.y) << "*";
+        mFontElements[7]->text = ss.str();
+
+        ss.str(L"");
+        ss << XMConvertToDegrees(r.z) << "*";
+        mFontElements[8]->text = ss.str();
+
     }
 
 
@@ -370,7 +433,7 @@ void EditModeHUD::draw()
         mFonts[f->font]->DrawString(mSpriteBatch.get(),
                                     f->text.c_str(),
                                     f->ScreenPosition,
-                                    Colors::White,
+                                    Colors::RosyBrown,
                                     0.0f,
                                     f->Origin,
                                     f->ResolutionScale * f->Scale);
@@ -433,6 +496,7 @@ std::unique_ptr<EditModeHUD::FontElement> EditModeHUD::initFontElement(FontDescr
 {
     auto element = std::make_unique<FontElement>();
 
+    element->text = L"Hello!";
     element->NormalizedPosition = nPos;
     element->ResolutionScale = resolutionScaleFactor * scaleF;
 
