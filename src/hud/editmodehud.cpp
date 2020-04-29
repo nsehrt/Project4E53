@@ -18,14 +18,15 @@ void EditModeHUD::init()
     m_resourceDescriptors = std::make_unique<DescriptorHeap>(renderResource->device,
                                                              D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
                                                              D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
-                                                             (int)Descriptors::Count);
+                                                             (int)TextureDescriptors::TCount + (int)FontDescriptors::FCount);
 
     ResourceUploadBatch resourceUpload(renderResource->device);
 
     resourceUpload.Begin();
 
     /*load png textures*/
-    mTextures.resize(Descriptors::Count);
+    mTextures.resize(TextureDescriptors::TCount);
+    mFonts.resize(FontDescriptors::FCount);
 
     std::vector<std::wstring> texPaths = {
         /*xbox buttons*/
@@ -68,8 +69,14 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\object.png"
     };
 
-    ASSERT(texPaths.size() == Descriptors::Count);
+    std::vector<std::wstring> fontPaths = {
+         L"data\\font\\editor64.font"
+    };
 
+    ASSERT(texPaths.size() == TextureDescriptors::TCount);
+    ASSERT(fontPaths.size() == FontDescriptors::FCount);
+
+    /*load textures*/
     for (int i = 0; i < mTextures.size(); i++)
     {
         CreateWICTextureFromFile(renderResource->device, resourceUpload, texPaths[i].c_str(),
@@ -79,6 +86,15 @@ void EditModeHUD::init()
         CreateShaderResourceView(renderResource->device, mTextures[i].Get(),
                                  m_resourceDescriptors->GetCpuHandle(i));
     }
+
+    /*load fonts*/
+    for (int i = 0; i < mFonts.size(); i++)
+    {
+        mFonts[i] = std::make_unique<SpriteFont>(renderResource->device, resourceUpload, fontPaths[i].c_str(),
+                                                 m_resourceDescriptors->GetCpuHandle(i + TextureDescriptors::TCount), 
+                                                 m_resourceDescriptors->GetGpuHandle(i + TextureDescriptors::TCount));
+    }
+
 
     RenderTargetState rtState(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_D32_FLOAT);
 
@@ -101,7 +117,7 @@ void EditModeHUD::init()
 
     /*create HUD Elements for the GUI*/
 
-    mTexturePreview = initHUDElement(Descriptors::TOOL_WIN, { 0.5f,0.5f }, 1.0f);
+    mTexturePreview = initHUDElement(TextureDescriptors::TOOL_WIN, { 0.5f,0.5f }, 1.0f);
 
     mTexturePreview->TextureSize.x = 2048;
     mTexturePreview->TextureSize.y = 2048;
@@ -116,32 +132,43 @@ void EditModeHUD::init()
     mTexturePreview->ResolutionScale = resolutionScaleFactor * 0.06f;
 
     /*tool select window 0 - 3*/
-    mHUDElements.push_back(initHUDElement(Descriptors::TOOL_WIN, { 0.93f,0.13f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::BUTTON_RSHOULDER, { 0.915f,0.205f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::RIGHT, { 0.96f,0.205f }, 0.6f));
-    mHUDElements.push_back(initHUDElement(Descriptors::HEIGHT, { 0.93f,0.108f }, 1.25f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_WIN, { 0.93f,0.13f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::BUTTON_RSHOULDER, { 0.915f,0.205f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::RIGHT, { 0.96f,0.205f }, 0.6f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::HEIGHT, { 0.93f,0.108f }, 1.25f));
 
     /*save window 4 - 5*/
-    mHUDElements.push_back(initHUDElement(Descriptors::SAVE_WIN, saveWindowPos));
-    mHUDElements.push_back(initHUDElement(Descriptors::SAVED, saveWindowIconPos, 0.8f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SAVE_WIN, saveWindowPos));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SAVED, saveWindowIconPos, 0.8f));
 
     /*select window 6 - 12*/
-    mHUDElements.push_back(initHUDElement(Descriptors::SELECT_WIN, { 0.125f, 0.85f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_FG_BLUE, { 0.125f, 0.805f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_FG_GREEN, { 0.125f, 0.875f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_FG_RED, { 0.125f, 0.9425f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_BLUE, { 0.046f, 0.805f }, 0.85f));
-    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_GREEN, { 0.046f, 0.875f }, 0.85f));
-    mHUDElements.push_back(initHUDElement(Descriptors::SLIDER_RED, { 0.046f, 0.9425f }, 0.85f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SELECT_WIN, { 0.125f, 0.85f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_BLUE, { 0.125f, 0.805f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_GREEN, { 0.125f, 0.875f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_RED, { 0.125f, 0.9425f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.046f, 0.805f }, 0.85f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.046f, 0.875f }, 0.85f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.046f, 0.9425f }, 0.85f));
 
     /*legend window 13 - 14*/
-    mHUDElements.push_back(initHUDElement(Descriptors::LEGEND_WIN, { 0.08f, 0.4f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::LEGEND_FULL_WIN, { -0.08f, 0.4f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::LEGEND_WIN, { 0.08f, 0.4f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::LEGEND_FULL_WIN, { -0.08f, 0.4f }));
 
     /*texture win 15 - 17*/
-    mHUDElements.push_back(initHUDElement(Descriptors::TEXTURE_WIN, { 0.93f, 0.38f }));
-    mHUDElements.push_back(initHUDElement(Descriptors::BUTTON_Y, { 0.915f,0.455f }, 0.7f));
-    mHUDElements.push_back(initHUDElement(Descriptors::RIGHT, { 0.96f,0.455f }, 0.6f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::TEXTURE_WIN, { 0.93f, 0.38f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::BUTTON_Y, { 0.915f,0.455f }, 0.7f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::RIGHT, { 0.96f,0.455f }, 0.6f));
+
+
+    /*hud for game object mode*/
+
+
+
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.5f,0.5f },0.25f));
+
+    std::wstringstream ss;
+    ss << std::setprecision(3) << 0.54322f;
+    mFontElements[0]->text = ss.str();
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
@@ -157,10 +184,10 @@ void EditModeHUD::update()
     auto editSetting = ServiceProvider::getEditSettings();
 
     /*show correct tool*/
-    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? Descriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ? Descriptors::PAINT : Descriptors::OBJECT;
+    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? TextureDescriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ? TextureDescriptors::PAINT : TextureDescriptors::OBJECT;
 
     /*save window*/
-    mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? Descriptors::SAVED : Descriptors::FAILED;
+    mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? TextureDescriptors::SAVED : TextureDescriptors::FAILED;
 
     if (editSetting->savedAnim > 0.0f)
     {
@@ -250,13 +277,19 @@ void EditModeHUD::update()
                                                                   (float)mHUDElements[9]->TextureSize.x);
     }
 
+    /*recalculate actual screen position*/
     for (auto& e : mHUDElements)
     {
-        /*recalculate actual screen position*/
 
         e->ScreenPosition.x = e->NormalizedPosition.x * dispSetting.ResolutionWidth;
         e->ScreenPosition.y = e->NormalizedPosition.y * dispSetting.ResolutionHeight;
 
+    }
+
+    for (auto& e : mFontElements)
+    {
+        e->ScreenPosition.x = e->NormalizedPosition.x * dispSetting.ResolutionWidth;
+        e->ScreenPosition.y = e->NormalizedPosition.y * dispSetting.ResolutionHeight;
     }
 
     mTexturePreview->ScreenPosition.x = mTexturePreview->NormalizedPosition.x * dispSetting.ResolutionWidth;
@@ -272,10 +305,17 @@ void EditModeHUD::draw()
 
     mSpriteBatch->Begin(renderResource->cmdList);
 
+    //const wchar_t* output = L"Hello World";
+
+    //DirectX::SimpleMath::Vector2 origin = mFonts[0]->MeasureString(output) / 2.f;
+
+    //mFonts[0]->DrawString(mSpriteBatch.get(), output,
+    //                      { 200.0f,200.0f }, Colors::White, 0.f, origin);
+
     for (const auto& e : mHUDElements)
     {
         if (!e->Visible) continue;
-
+        
         if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
@@ -291,7 +331,24 @@ void EditModeHUD::draw()
                             e->ResolutionScale * e->Scale);
     }
 
+    /*draw font after textures*/
+    for (const auto& f : mFontElements)
+    {
+        if (!f->Visible) continue;
+        if (f->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
+        if (f->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
+        if (f->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
+        if (f->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::Object)continue;
 
+        mFonts[f->font]->DrawString(mSpriteBatch.get(),
+                                    f->text.c_str(),
+                                    f->ScreenPosition,
+                                    Colors::White,
+                                    0.0f,
+                                    f->Origin,
+                                    f->ResolutionScale * f->Scale);
+
+    }
 
     mSpriteBatch->End();
 
@@ -326,7 +383,7 @@ void EditModeHUD::commit()
     mGraphicsMemory->Commit(ServiceProvider::getRenderResource()->cmdQueue);
 }
 
-std::unique_ptr<EditModeHUD::HUDElement> EditModeHUD::initHUDElement(Descriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF)
+std::unique_ptr<EditModeHUD::HUDElement> EditModeHUD::initHUDElement(TextureDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF)
 {
     auto element = std::make_unique<HUDElement>(desc);
 
@@ -341,6 +398,16 @@ std::unique_ptr<EditModeHUD::HUDElement> EditModeHUD::initHUDElement(Descriptors
     element->SourceRectangle.right = element->TextureSize.x;
     element->SourceRectangle.top = 0;
     element->SourceRectangle.bottom = element->TextureSize.y;
+
+    return std::move(element);
+}
+
+std::unique_ptr<EditModeHUD::FontElement> EditModeHUD::initFontElement(FontDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF)
+{
+    auto element = std::make_unique<FontElement>();
+
+    element->NormalizedPosition = nPos;
+    element->ResolutionScale = resolutionScaleFactor * scaleF;
 
     return std::move(element);
 }

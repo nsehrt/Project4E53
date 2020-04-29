@@ -2,6 +2,7 @@
 
 #include "../core/editmode.h"
 #include "SpriteBatch.h"
+#include "SpriteFont.h"
 #include "DescriptorHeap.h"
 #include "SimpleMath.h"
 #include "GraphicsMemory.h"
@@ -19,6 +20,7 @@ public:
 private:
     std::unique_ptr<DirectX::DescriptorHeap> m_resourceDescriptors;
     std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> mTextures;
+    std::vector<std::unique_ptr<SpriteFont>> mFonts;
 
     const DirectX::SimpleMath::Vector2 saveWindowPos = { 0.5f, 0.05f };
     const DirectX::SimpleMath::Vector2 saveWindowIconPos = { 0.46f, 0.05f };
@@ -28,7 +30,7 @@ private:
 
     const DirectX::SimpleMath::Vector2 sliderMinMax = { 0.046f, 0.204f };
 
-    enum Descriptors
+    enum TextureDescriptors
     {
         /*Xbox Buttons*/
         BUTTON_A,
@@ -68,7 +70,13 @@ private:
         LEGEND_FULL_WIN,
         TEXTURE_WIN,
         OBJECT,
-        Count
+        TCount
+    };
+
+    enum FontDescriptors
+    {
+        Editor64,
+        FCount
     };
 
     enum class HUDVisibility
@@ -82,9 +90,9 @@ private:
 
     struct HUDElement
     {
-        HUDElement(Descriptors a) : TexDescriptor(a){}
+        HUDElement(TextureDescriptors a) : TexDescriptor(a){}
 
-        Descriptors TexDescriptor = Descriptors::BUTTON_A;
+        TextureDescriptors TexDescriptor = TextureDescriptors::BUTTON_A;
         DirectX::SimpleMath::Vector2 NormalizedPosition = { 0.0f,0.0f };
         DirectX::SimpleMath::Vector2 ScreenPosition = { 0.0f,0.0f };
         DirectX::SimpleMath::Vector2 Origin = { 0.0f,0.0f };
@@ -97,7 +105,25 @@ private:
         bool Visible = true;
     };
 
+    struct FontElement
+    {
+        FontDescriptors font = FontDescriptors::Editor64;
+
+        std::wstring text = L"";
+
+        DirectX::SimpleMath::Vector2 NormalizedPosition = { 0.0f,0.0f };
+        DirectX::SimpleMath::Vector2 ScreenPosition = { 0.0f,0.0f };
+        DirectX::SimpleMath::Vector2 Origin = { 0.0f,0.0f };
+        float ResolutionScale = 1.0f;
+        float Scale = 1.0f;
+
+        HUDVisibility hudVisibility = HUDVisibility::ALWAYS;
+        bool Visible = true;
+    };
+
     std::vector<std::unique_ptr<HUDElement>> mHUDElements;
+    std::vector<std::unique_ptr<FontElement>> mFontElements;
+
     std::unique_ptr<HUDElement> mTexturePreview;
     std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 
@@ -108,6 +134,7 @@ private:
 
     float resolutionScaleFactor = 1.0f;
 
-    std::unique_ptr<HUDElement> initHUDElement(Descriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF = 1.0f);
+    std::unique_ptr<HUDElement> initHUDElement(TextureDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF = 1.0f);
+    std::unique_ptr<FontElement> initFontElement(FontDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF = 1.0f);
 
 };
