@@ -602,11 +602,11 @@ void P_4E53::update(const GameTime& gt)
 				}
 				else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
 				{
-					editSettings->scaleAxis = (TransformAxis)(((int)editSettings->scaleAxis + 1) % 3);
+					editSettings->scaleAxis = (ScaleAxis)(((int)editSettings->scaleAxis + 1) % 4);
 				}
 				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
 				{
-					editSettings->rotationAxis = (TransformAxis)(((int)editSettings->rotationAxis + 1) % 3);
+					editSettings->rotationAxis = (RotationAxis)(((int)editSettings->rotationAxis + 1) % 3);
 				}
 
 				
@@ -636,11 +636,11 @@ void P_4E53::update(const GameTime& gt)
 				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
 				{
 					XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
-					switch (editSettings->scaleAxis)
+					switch (editSettings->rotationAxis)
 					{
-						case TransformAxis::X: nRotation.x = 0.0f; break;
-						case TransformAxis::Y: nRotation.y = 0.0f; break;
-						case TransformAxis::Z: nRotation.z = 0.0f; break;
+						case RotationAxis::X: nRotation.x = 0.0f; break;
+						case RotationAxis::Y: nRotation.y = 0.0f; break;
+						case RotationAxis::Z: nRotation.z = 0.0f; break;
 					}
 
 					editSettings->currentSelection->setRotation(nRotation);
@@ -656,9 +656,9 @@ void P_4E53::update(const GameTime& gt)
 				float rot;
 				switch (editSettings->rotationAxis)
 				{
-					case TransformAxis::X: rot = nRotation.x; break;
-					case TransformAxis::Y: rot = nRotation.y; break;
-					case TransformAxis::Z: rot = nRotation.z; break;
+					case RotationAxis::X: rot = nRotation.x; break;
+					case RotationAxis::Y: rot = nRotation.y; break;
+					case RotationAxis::Z: rot = nRotation.z; break;
 				}
 
 				int counter = 0;
@@ -676,19 +676,12 @@ void P_4E53::update(const GameTime& gt)
 
 				switch (editSettings->rotationAxis)
 				{
-					case TransformAxis::X: nRotation.x = rot; break;
-					case TransformAxis::Y: nRotation.y = rot; break;
-					case TransformAxis::Z: nRotation.z = rot;  break;
+					case RotationAxis::X: nRotation.x = rot; break;
+					case RotationAxis::Y: nRotation.y = rot; break;
+					case RotationAxis::Z: nRotation.z = rot;  break;
 				}
 
 				editSettings->currentSelection->setRotation(nRotation);
-			}
-
-
-			/*toggle uniform scaling*/
-			if (inputData.Pressed(BTN::RIGHT_THUMB) && editSettings->objTransformTool == ObjectTransformTool::Scale)
-			{
-				editSettings->uniformScaling = !editSettings->uniformScaling;
 			}
 
 			/*translation tool*/
@@ -732,22 +725,17 @@ void P_4E53::update(const GameTime& gt)
 
 					float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
 
-					if (!editSettings->uniformScaling)
+					switch (editSettings->scaleAxis)
 					{
-						switch (editSettings->scaleAxis)
-						{
-							case TransformAxis::X: nScale.x += increase; break;
-							case TransformAxis::Y: nScale.y += increase; break;
-							case TransformAxis::Z: nScale.z += increase; break;
-						}
+						case ScaleAxis::XYZ: 
+							nScale.x += increase;
+							nScale.y += increase;
+							nScale.z += increase;
+							break;
+						case ScaleAxis::X: nScale.x += increase; break;
+						case ScaleAxis::Y: nScale.y += increase; break;
+						case ScaleAxis::Z: nScale.z += increase; break;
 					}
-					else
-					{
-						nScale.x += increase;
-						nScale.y += increase;
-						nScale.z += increase;
-					}
-
 
 
 					editSettings->currentSelection->setScale(nScale);
@@ -763,9 +751,9 @@ void P_4E53::update(const GameTime& gt)
 
 					switch (editSettings->rotationAxis)
 					{
-						case TransformAxis::X: nRotation.x += increase; if (nRotation.x > XM_2PI) nRotation.x -= XM_2PI; break;
-						case TransformAxis::Y: nRotation.y += increase; if (nRotation.y > XM_2PI) nRotation.y -= XM_2PI; break;
-						case TransformAxis::Z: nRotation.z += increase; if (nRotation.z > XM_2PI) nRotation.z -= XM_2PI; break;
+						case RotationAxis::X: nRotation.x += increase; if (nRotation.x > XM_2PI) nRotation.x -= XM_2PI; break;
+						case RotationAxis::Y: nRotation.y += increase; if (nRotation.y > XM_2PI) nRotation.y -= XM_2PI; break;
+						case RotationAxis::Z: nRotation.z += increase; if (nRotation.z > XM_2PI) nRotation.z -= XM_2PI; break;
 					}
 
 

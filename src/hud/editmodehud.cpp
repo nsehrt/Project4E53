@@ -66,7 +66,9 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\legend.png",
         L"data\\texture\\hud\\gui\\edit\\legend_full.png",
         L"data\\texture\\hud\\gui\\edit\\tex_win.png",
-        L"data\\texture\\hud\\gui\\edit\\object.png"
+        L"data\\texture\\hud\\gui\\edit\\object.png",
+        L"data\\texture\\hud\\gui\\edit\\tool_axis_select.png",
+        L"data\\texture\\hud\\gui\\edit\\tool_axis_select_cursor.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -160,21 +162,30 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::RIGHT, { 0.96f,0.455f }, 0.6f));
 
 
-    /*hud for game object mode*/
+    /*hud for game object mode 18-22*/
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_AXIS_WIN, { 0.905f, 0.825f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_AXIS_CURSOR, { 0.8525f, 0.734f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.837f, 0.7675f },0.5f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.8885f,  0.7675f }, 0.5f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.94f,  0.7675f }, 0.5f));
 
 
+    //mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.5f,0.5f },0.25f));
 
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.5f,0.5f },0.25f));
-
-    std::wstringstream ss;
-    ss << std::setprecision(3) << 0.54322f;
-    mFontElements[0]->text = ss.str();
+    //std::wstringstream ss;
+    //ss << std::setprecision(3) << 0.54322f;
+    //mFontElements[0]->text = ss.str();
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
     mHUDElements[15]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[16]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[17]->hudVisibility = HUDVisibility::PAINT;
+
+    for (int i = 18; i < 23; i++)
+    {
+        mHUDElements[i]->hudVisibility = HUDVisibility::OBJECT;
+    }
 
 }
 
@@ -206,76 +217,92 @@ void EditModeHUD::update()
         mHUDElements[5]->NormalizedPosition.y = -saveWindowIconPos.y;
     }
 
-    /*legend window*/
-    if (editSetting->legendAnim > 0.0f)
+    if (editSetting->toolMode != EditTool::Object)
     {
-        mHUDElements[13]->NormalizedPosition.x = (editSetting->legendStatus ? 1 : -1) * MathHelper::lerpH(-legendWindowPos.x,
-                                                                   legendWindowPos.x,
-                                                                   editSetting->legendAnim / editSetting->legenAnimDur);
+        /*legend window*/
+        if (editSetting->legendAnim > 0.0f)
+        {
+            mHUDElements[13]->NormalizedPosition.x = (editSetting->legendStatus ? 1 : -1) * MathHelper::lerpH(-legendWindowPos.x,
+                                                                                                              legendWindowPos.x,
+                                                                                                              editSetting->legendAnim / editSetting->legenAnimDur);
 
-        mHUDElements[14]->NormalizedPosition.x = (editSetting->legendStatus ? -1 : 1) * MathHelper::lerpH(-legendWindowPos.x,
-                                                                   legendWindowPos.x,
-                                                                   editSetting->legendAnim / editSetting->legenAnimDur);
+            mHUDElements[14]->NormalizedPosition.x = (editSetting->legendStatus ? -1 : 1) * MathHelper::lerpH(-legendWindowPos.x,
+                                                                                                              legendWindowPos.x,
+                                                                                                              editSetting->legendAnim / editSetting->legenAnimDur);
+        }
+
+
+        /*radius slider*/
+        mHUDElements[10]->NormalizedPosition.x = MathHelper::mapH(editSetting->BaseRadius,
+                                                                  1.35f,
+                                                                  editSetting->BaseSelectSize,
+                                                                  sliderMinMax.x,
+                                                                  sliderMinMax.y);
+
+        mHUDElements[7]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->BaseRadius,
+                                                                        1.35f,
+                                                                        editSetting->BaseSelectSize,
+                                                                        0.0f,
+                                                                        (float)mHUDElements[7]->TextureSize.x);
+
+        /*falloff slider*/
+        mHUDElements[11]->NormalizedPosition.x = MathHelper::mapH(editSetting->FallOffRatio,
+                                                                  editSetting->fallOffRatioMin,
+                                                                  editSetting->fallOffRatioMax,
+                                                                  sliderMinMax.x,
+                                                                  sliderMinMax.y);
+
+        mHUDElements[8]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->FallOffRatio,
+                                                                        editSetting->fallOffRatioMin,
+                                                                        editSetting->fallOffRatioMax,
+                                                                        0.0f,
+                                                                        (float)mHUDElements[7]->TextureSize.x);
+
+        /*fill slider*/
+
+        if (editSetting->toolMode == EditTool::Height)
+        {
+            mHUDElements[12]->NormalizedPosition.x = MathHelper::mapH(editSetting->heightIncrease,
+                                                                      editSetting->heightIncreaseMin,
+                                                                      editSetting->heightIncreaseMax,
+                                                                      sliderMinMax.x,
+                                                                      sliderMinMax.y);
+
+            mHUDElements[9]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->heightIncrease,
+                                                                            editSetting->heightIncreaseMin,
+                                                                            editSetting->heightIncreaseMax,
+                                                                            0.0f,
+                                                                            (float)mHUDElements[9]->TextureSize.x);
+
+        }
+        else if (editSetting->toolMode == EditTool::Paint)
+        {
+            mHUDElements[12]->NormalizedPosition.x = MathHelper::mapH(editSetting->paintIncrease,
+                                                                      editSetting->paintIncreaseMin,
+                                                                      editSetting->paintIncreaseMax,
+                                                                      sliderMinMax.x,
+                                                                      sliderMinMax.y);
+
+            mHUDElements[9]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->paintIncrease,
+                                                                            editSetting->paintIncreaseMin,
+                                                                            editSetting->paintIncreaseMax,
+                                                                            0.0f,
+                                                                            (float)mHUDElements[9]->TextureSize.x);
+        }
+
+    }
+
+    /*update for object mode*/
+    else
+    {
+        mHUDElements[19]->NormalizedPosition.x = 0.8525f + (int)editSetting->objTransformTool * 0.052f;
+
+        mHUDElements[20]->NormalizedPosition.y = 0.7675f + (int)editSetting->translationAxis * 0.033f;
+        mHUDElements[21]->NormalizedPosition.y = 0.7675f + (int)editSetting->scaleAxis * 0.033f;
+        mHUDElements[22]->NormalizedPosition.y = 0.7675f + (int)editSetting->rotationAxis * 0.033f;
     }
 
 
-    /*radius slider*/
-    mHUDElements[10]->NormalizedPosition.x = MathHelper::mapH(editSetting->BaseRadius,
-                                                           1.35f,
-                                                           editSetting->BaseSelectSize,
-                                                           sliderMinMax.x,
-                                                           sliderMinMax.y);
-
-    mHUDElements[7]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->BaseRadius,
-                                                              1.35f,
-                                                              editSetting->BaseSelectSize,
-                                                              0.0f,
-                                                              (float)mHUDElements[7]->TextureSize.x);
-
-    /*falloff slider*/
-    mHUDElements[11]->NormalizedPosition.x = MathHelper::mapH(editSetting->FallOffRatio,
-                                                             editSetting->fallOffRatioMin,
-                                                             editSetting->fallOffRatioMax,
-                                                             sliderMinMax.x,
-                                                             sliderMinMax.y);
-
-    mHUDElements[8]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->FallOffRatio,
-                                                              editSetting->fallOffRatioMin,
-                                                              editSetting->fallOffRatioMax,
-                                                              0.0f,
-                                                              (float)mHUDElements[7]->TextureSize.x);
-
-    /*fill slider*/
-
-    if (editSetting->toolMode == EditTool::Height)
-    {
-        mHUDElements[12]->NormalizedPosition.x = MathHelper::mapH(editSetting->heightIncrease,
-                                                                 editSetting->heightIncreaseMin,
-                                                                 editSetting->heightIncreaseMax,
-                                                                 sliderMinMax.x,
-                                                                 sliderMinMax.y);
-
-        mHUDElements[9]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->heightIncrease,
-                                                                  editSetting->heightIncreaseMin,
-                                                                  editSetting->heightIncreaseMax,
-                                                                  0.0f,
-                                                                  (float)mHUDElements[9]->TextureSize.x);
-
-    }
-    else if (editSetting->toolMode == EditTool::Paint)
-    {
-        mHUDElements[12]->NormalizedPosition.x = MathHelper::mapH(editSetting->paintIncrease,
-                                                                 editSetting->paintIncreaseMin,
-                                                                 editSetting->paintIncreaseMax,
-                                                                 sliderMinMax.x,
-                                                                 sliderMinMax.y);
-
-        mHUDElements[9]->SourceRectangle.right = (LONG)MathHelper::mapH(editSetting->paintIncrease,
-                                                                  editSetting->paintIncreaseMin,
-                                                                  editSetting->paintIncreaseMax,
-                                                                  0.0f,
-                                                                  (float)mHUDElements[9]->TextureSize.x);
-    }
 
     /*recalculate actual screen position*/
     for (auto& e : mHUDElements)

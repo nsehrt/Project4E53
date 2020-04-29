@@ -25,7 +25,15 @@ enum class TranslationAxis : int
     Z
 };
 
-enum class TransformAxis : int
+enum class ScaleAxis : int
+{
+    XYZ,
+    X,
+    Y,
+    Z
+};
+
+enum class RotationAxis : int
 {
     X,
     Y,
@@ -77,14 +85,12 @@ struct EditSettings
     ObjectTransformTool objTransformTool = ObjectTransformTool::Translation;
     /*per tool axis control*/
     TranslationAxis translationAxis = TranslationAxis::XY;
-    TransformAxis scaleAxis = TransformAxis::X;
-    TransformAxis rotationAxis = TransformAxis::X;
+    ScaleAxis scaleAxis = ScaleAxis::XYZ;
+    RotationAxis rotationAxis = RotationAxis::X;
 
     const float translationIncreaseBase = 10.0f;
     const float scaleIncreaseBase = 2.0f;
     const float rotationIncreaseBase = XM_PIDIV2;
-
-    bool uniformScaling = true;
 
     /*gui*/
     float savedAnim = 0.0f;
