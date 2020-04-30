@@ -34,6 +34,9 @@ public:
     void drawTerrain();
     void draw();
 
+    /*save gamobjects terrain etc*/
+    bool save();
+
     void drawShadow();
 
     std::unique_ptr<Terrain> mTerrain;

@@ -277,6 +277,19 @@ void Level::draw()
 
 }
 
+bool Level::save()
+{
+    /*save level file*/
+
+    /*save terrain*/
+    if (!mTerrain->save())
+    {
+        return false;
+    }
+
+    return true;
+}
+
 void Level::drawShadow()
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));

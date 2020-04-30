@@ -397,7 +397,7 @@ void P_4E53::update(const GameTime& gt)
 		/*save map*/
 		if (inputData.Released(BTN::BACK))
 		{
-			editSettings->saveSuccess = activeLevel->mTerrain->save();
+			editSettings->saveSuccess = activeLevel->save();
 			editSettings->savedAnim = 2.0f;
 		}
 

@@ -896,11 +896,28 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
     {
         if (ServiceProvider::getEditSettings()->toolMode != EditTool::Object)
         {
-            XMFLOAT3 center = { ServiceProvider::getEditSettings()->Position.x,
-                    ServiceProvider::getActiveLevel()->mTerrain->getHeight(ServiceProvider::getEditSettings()->Position.x,ServiceProvider::getEditSettings()->Position.y),
-                    ServiceProvider::getEditSettings()->Position.y };
+            if (ServiceProvider::getEditSettings()->toolMode != EditTool::Camera)
+            {
+                XMFLOAT3 center = { ServiceProvider::getEditSettings()->Position.x,
+                ServiceProvider::getActiveLevel()->mTerrain->getHeight(ServiceProvider::getEditSettings()->Position.x,ServiceProvider::getEditSettings()->Position.y),
+                ServiceProvider::getEditSettings()->Position.y };
 
-            mShadowMap->setBoundsCenter(center);
+                mShadowMap->setBoundsCenter(center);
+            }
+            else
+            {
+                XMFLOAT3 camPos = ServiceProvider::getActiveCamera()->getPosition3f();
+
+                XMFLOAT3 center = { camPos.x,
+                ServiceProvider::getActiveLevel()->mTerrain->getHeight(
+                    camPos.x,
+                    camPos.z),
+                camPos.z };
+
+                mShadowMap->setBoundsCenter(center);
+            }
+
+
         }
         else
         {
