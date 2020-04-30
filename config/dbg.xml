@@ -25,7 +25,7 @@
         <AnisotropicFiltering>16</AnisotropicFiltering>
         <ShadowEnabled>1</ShadowEnabled>
         <ShadowQuality>3</ShadowQuality>
-        <SobelFilter>0</SobelFilter>
+        <SobelFilter>1</SobelFilter>
     </Graphic>
 
     <Input>

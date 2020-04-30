@@ -409,15 +409,15 @@
         },
         {
             "Name": "Center",
-            "Model": "box",
-            "Material": "default",
+            "Model": "rock1",
+            "Material": "Rock01",
             "Position": [
                 0,0,0
             ],
             "Rotation": [
                 0,0,0
             ],
-            "RenderType": "Default"            
+            "RenderType": "DefaultNoNormal"            
         },
         {
             "Name": "WALL",

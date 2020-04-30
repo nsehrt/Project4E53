@@ -259,7 +259,7 @@ bool P_4E53::Initialize()
 	if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
 	{
 		editCamera = std::make_shared<FixedCamera>();
-		editCamera->initFixedDistance(15.0f, 100.0f);
+		editCamera->initFixedDistance(10.0f, 100.0f);
 		editCamera->setLens();
 		editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0f);
 
@@ -428,7 +428,7 @@ void P_4E53::update(const GameTime& gt)
 		}
 
 		/*legend on/off*/
-		if (inputData.Pressed(BTN::DPAD_RIGHT))
+		if (inputData.Pressed(BTN::DPAD_UP))
 		{
 			editSettings->legendAnim = editSettings->legenAnimDur;
 			editSettings->legendStatus = !editSettings->legendStatus;
@@ -560,7 +560,7 @@ void P_4E53::update(const GameTime& gt)
 		else if (editSettings->toolMode == EditTool::Object)
 		{
 			/*switch to next object*/
-			if (inputData.Pressed(BTN::X))
+			if (inputData.Pressed(BTN::DPAD_RIGHT))
 			{
 
 				std::vector<GameObject*> validGameObjects;
@@ -582,6 +582,34 @@ void P_4E53::update(const GameTime& gt)
 				else
 				{
 					editSettings->currentSelectionIndex++;
+				}
+
+				editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
+
+			}
+
+			if (inputData.Pressed(BTN::DPAD_LEFT))
+			{
+
+				std::vector<GameObject*> validGameObjects;
+
+				for (const auto& g : activeLevel->mGameObjects)
+				{
+					if (g.second->gameObjectType == GameObjectType::Static ||
+						g.second->gameObjectType == GameObjectType::Wall ||
+						g.second->gameObjectType == GameObjectType::Dynamic)
+					{
+						validGameObjects.push_back(g.second.get());
+					}
+				}
+
+				if (editSettings->currentSelectionIndex == 0)
+				{
+					editSettings->currentSelectionIndex = validGameObjects.size() - 1;
+				}
+				else
+				{
+					editSettings->currentSelectionIndex--;
 				}
 
 				editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
@@ -843,15 +871,15 @@ void P_4E53::update(const GameTime& gt)
 		renderResource->toggleHitBoxDraw();
 	}
 
-	if (inputData.Released(BTN::DPAD_UP) && settingsData->miscSettings.DebugEnabled)
-	{
-		ServiceProvider::getSettings()->graphicSettings.SobelFilter = !ServiceProvider::getSettings()->graphicSettings.SobelFilter;
-	}
+	//if (inputData.Released(BTN::DPAD_UP) && settingsData->miscSettings.DebugEnabled)
+	//{
+	//	ServiceProvider::getSettings()->graphicSettings.SobelFilter = !ServiceProvider::getSettings()->graphicSettings.SobelFilter;
+	//}
 
-	if (inputData.Released(BTN::DPAD_LEFT) && settingsData->miscSettings.DebugEnabled)
-	{
-		ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
-	}
+	//if (inputData.Released(BTN::DPAD_LEFT) && settingsData->miscSettings.DebugEnabled)
+	//{
+	//	ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
+	//}
 
 	activeLevel->update(gt);
 	ServiceProvider::getActiveCamera()->updateViewMatrix();
