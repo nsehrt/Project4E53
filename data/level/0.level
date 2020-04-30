@@ -1,438 +1,1111 @@
 {
-    "Sky": {
-        "Material": "sky",
-        "DefaultCubeMap": "grasscube1024.dds"
-    },
-    "Terrain": {
-        "HeightMap": "0.raw",
-        "BlendTextures": ["ForestFloorGreen.dds",
-                          "DirtGround.dds",
-                          "FlowerField.dds",
-                          "SimpleSand.dds"],
-        "BlendMap": "0.bld",
-        "HeightScale": 200.0
-    },
-    "Light": {
-        "AmbientLight": [0.25,0.25,0.25],
-        "Directional": [
-            {
-                "Name": "D1",
-                "Strength": [0.8,0.8,0.8],
-                "Direction": [-0.576, -0.577, 0.577]
-            },
-            {
-                "Name": "D2",
-                "Strength": [0.4,0.4,0.4],
-                "Direction": [0.576, -0.577, 0.577]
-            },
-            {
-                "Name": "D3",
-                "Strength": [0.2,0.2,0.2],
-                "Direction": [0.0, -0.7, -0.7]
-            }
-        ],
-        "Point": [
-            {
-                "Name": "P1",
-                "Position" : [0.0,2.0,10.0],
-                "Strength": [0.0,1.0,0.0],
-                "FallOffStart": 4.0,
-                "FallOffEnd" : 5.0
-            },
-            {
-                "Name": "P2",
-                "Position" : [5.0,2.0,10.0],
-                "Strength": [0.0,1.0,1.0],
-                "FallOffStart": 4.0,
-                "FallOffEnd" : 5.0
-            },
-            {
-                "Name": "P3",
-                "Position" : [10.0,2.0,10.0],
-                "Strength": [0.0,0.5,0.8],
-                "FallOffStart": 4.0,
-                "FallOffEnd" : 5.0
-            },
-            {
-                "Name": "P4",
-                "Position" : [20.0,2.0,10.0],
-                "Strength": [0.5,0.0,0.8],
-                "FallOffStart": 4.0,
-                "FallOffEnd" : 5.0
-            }
-        ],
-        "Spot": [
-            {
-                "Name": "S1",
-                "Position" : [-25.0,4.0,0.0],
-                "Strength": [1.0,0.3,0.66],
-                "Direction": [0.0,-1, 0.0],
-                "FallOffStart": 8.0,
-                "FallOffEnd": 10.0,
-                "SpotPower": 0.1               
-            }
-        ]
-    },
-
-    "Camera": [
-        {
-            "ID": 0,
-            "Position": [
-                0,
-                0,
-                0
-            ]
-        }
-    ],
     "GameObject": [
         {
-            "Name": "obj1",
-            "Model": "plant",
-            "Material": "plant",
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "man",
+            "Model": "man",
+            "Name": "man5",
             "Position": [
-                2,
-                16.25,
-                5
+                -19.0,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
             ],
             "Scale": [
-                1,
-                1,
-                1
+                1.0,
+                1.0,
+                1.0
             ],
-            "Rotation": [
-                0,
-                0,
-                0
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
             ],
             "TexTranslation": [
-                0,
-                0,
-                0
-            ],
-            "TexScale": [
-                1,
-                1,
-                1
-            ],
-            "TexRotation": [
-                0,
-                0,
-                0
-            ],
-            "RenderType": "Default",
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "Name": "plant2",
-            "Model": "plant",
-            "Material": "plant",
-            "Position": [
-                -2,
-                6.25,
-                0
-            ],
-            "Rotation": [
-                0,
-                0,
-                -45
-            ],
-            "RenderType": "Default"
-        },
-        {
-            "Name": "obj3",
-            "Model": "box",
-            "Material": "default",
-            "Position": [
-                10,
-                5,
-                0
-            ],
-            "RenderType": "Default",
-            "TexScale": [
-                1,
-                1,
-                1
-            ],
-            "Scale": [
-                1,
-                1,
-                1
-            ],
-            "Rotation": [
-                45,0,20
+                0.0,
+                0.0,
+                0.0
             ]
         },
         {
-            "Name": "obj5",
-            "Model": "box",
-            "Material": "wire",
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Material": "plant",
+            "Model": "plant",
+            "Name": "obj1",
             "Position": [
-                -5,
-                1.1,
-                0
-            ],
-            "RenderType": "DefaultAlpha"
-        },
-        {
-            "Name": "obj6",
-            "Model": "cylinder",
-            "Material": "tile0",
-            "Position": [
-                15,
-                1.1,
-                0
+                2.0,
+                16.25,
+                5.0
             ],
             "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box2",
+            "Position": [
+                0.20000000298023224,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                207.1368408203125,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                0.25,
+                0.25,
+                0.25
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "plant",
+            "Model": "plant",
+            "Name": "plant2",
+            "Position": [
+                -2.0,
+                6.25,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                -45.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "obj3",
+            "Position": [
+                10.0,
+                5.0,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                45.0,
+                0.0,
+                19.999998092651367
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "wire",
+            "Model": "box",
+            "Name": "obj5",
+            "Position": [
+                -5.0,
+                1.100000023841858,
+                0.0
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "tile0",
+            "Model": "cylinder",
+            "Name": "obj6",
+            "Position": [
+                15.0,
+                1.100000023841858,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
             "TexScale": [
                 2.5,
                 2.5,
                 2.5
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
             ]
         },
         {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "mirror0",
+            "Model": "sphere",
             "Name": "obj7",
-            "Model": "sphere",
-            "Material": "mirror0",
             "Position": [
-                -5,
+                -5.0,
                 3.25,
-                0
+                0.0
             ],
-            "RenderType": "Default"
-        },
-        {
-            "Name": "GRID",
-            "Model": "grid",
-            "Material": "default",
-            "Position": [
-                0,
-                -5,
-                0
-            ],
-            "RenderType": "Default"
-        },
-        {
-            "Name": "obj8",
-            "Model": "sphere",
-            "Material": "mirror0",
-            "Position": [
-                15,
-                3.25,
-                0
-            ],
-            "RenderType": "Default"
-        },
-        {
-            "Name": "box1",
-            "Model": "box",
-            "Material": "default",
-            "Position": [
-                -1.15,
-                2,
-                -5
-            ],
-            "TexScale": [
-                0.25,
-                0.25,
-                0.25
-            ],
+            "RenderType": "Default",
             "Rotation": [
-                0,0,45
-            ],
-            "RenderType": "Default"
-        },
-        {
-            "Name": "box2",
-            "Model": "box",
-            "Material": "default",
-            "Position": [
-                0.2,
-                2,
-                -5
-            ],
-            "TexScale": [
-                0.25,
-                0.25,
-                0.25
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "man1",
-            "Model": "man",
-            "Material": "man",
-            "Position": [
-                -11,
-                2,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "man2",
-            "Model": "man",
-            "Material": "man",
-            "Position": [
-                -13,
-                2,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "man3",
-            "Model": "man",
-            "Material": "man",
-            "Position": [
-                -15,
-                2,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "man4",
-            "Model": "man",
-            "Material": "man",
-            "Position": [
-                -17,
-                2,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "man5",
-            "Model": "man",
-            "Material": "man",
-            "Position": [
-                -19,
-                2,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "man6",
-            "Model": "man",
-            "Material": "man",
-            "Position": [
-                -344,
-                2,
-                -5
-            ],
-            "RenderType": "Default"
-        }
-        ,
-        {
-            "Name": "skull1",
-            "Model": "skull",
-            "Material": "skullMat",
-            "Position": [
-                -21,
-                8,
-                -5
-            ],
-            "RenderType": "DefaultNoNormal"
-        }
-        ,
-        {
-            "Name": "skull2",
-            "Model": "skull",
-            "Material": "skullMat",
-            "Position": [
-                -21,
-                14,
-                -5
-            ],
-            "Rotation": [
-                0,90,0
-            ],
-            "RenderType": "DefaultNoNormal"
-        },
-        {
-            "Name": "boxT",
-            "Model": "box",
-            "Material": "transp",
-            "Position": [
-                -10,2,-10
-            ],
-            "Rotation": [
-                0,0,0
-            ],
-            "RenderType": "DefaultTransparency"            
-        },
-        {
-            "Name": "boxT2",
-            "Model": "box",
-            "Material": "transp2",
-            "Position": [
-                -12,2,-10
-            ],
-            "Rotation": [
-                0,0,0
-            ],
-            "RenderType": "DefaultTransparency"            
-        },
-        {
-            "Name": "boxT3",
-            "Model": "box",
-            "Material": "transp2",
-            "Position": [
-                -12,4,-10
-            ],
-            "Rotation": [
-                0,0,0
-            ],
-            "RenderType": "DefaultTransparency"            
-        },
-        {
-            "Name": "boxT4",
-            "Model": "box",
-            "Material": "transp",
-            "Position": [
-                -10,4,-10
-            ],
-            "Rotation": [
-                0,0,0
-            ],
-            "RenderType": "DefaultTransparency"            
-        },
-        {
-            "Name": "Center",
-            "Model": "rock1",
-            "Material": "Rock01",
-            "Position": [
-                0,0,0
-            ],
-            "Rotation": [
-                0,0,0
-            ],
-            "RenderType": "DefaultNoNormal"            
-        },
-        {
-            "Name": "WALL",
-            "Model": "",
-            "Material": "invWall",
-            "Position": [
-                -12,5,10
+                0.0,
+                0.0,
+                0.0
             ],
             "Scale": [
-                12,1.4,3.13
+                1.0,
+                1.0,
+                1.0
             ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "grid",
+            "Name": "GRID",
+            "Position": [
+                0.0,
+                -5.0,
+                0.0
+            ],
+            "RenderType": "Default",
             "Rotation": [
-                15,0,0
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "mirror0",
+            "Model": "sphere",
+            "Name": "obj8",
+            "Position": [
+                15.0,
+                3.25,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box1",
+            "Position": [
+                -1.149999976158142,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                45.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                0.25,
+                0.25,
+                0.25
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "man",
+            "Model": "man",
+            "Name": "man1",
+            "Position": [
+                -11.0,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "man",
+            "Model": "man",
+            "Name": "man2",
+            "Position": [
+                -13.0,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "man",
+            "Model": "man",
+            "Name": "man3",
+            "Position": [
+                -15.0,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "man",
+            "Model": "man",
+            "Name": "man4",
+            "Position": [
+                -17.0,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "man",
+            "Model": "man",
+            "Name": "man6",
+            "Position": [
+                -344.0,
+                2.0,
+                -5.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "skullMat",
+            "Model": "skull",
+            "Name": "skull1",
+            "Position": [
+                -21.0,
+                8.0,
+                -5.0
+            ],
+            "RenderType": "DefaultNoNormal",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "skullMat",
+            "Model": "skull",
+            "Name": "skull2",
+            "Position": [
+                15.152137756347656,
+                14.0,
+                -5.0
+            ],
+            "RenderType": "DefaultNoNormal",
+            "Rotation": [
+                0.0,
+                297.1365051269531,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "transp",
+            "Model": "box",
+            "Name": "boxT4",
+            "Position": [
+                -10.0,
+                4.0,
+                -10.0
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "transp",
+            "Model": "box",
+            "Name": "boxT",
+            "Position": [
+                -10.0,
+                2.0,
+                -10.0
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "transp2",
+            "Model": "box",
+            "Name": "boxT2",
+            "Position": [
+                -12.0,
+                2.0,
+                -10.0
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "transp2",
+            "Model": "box",
+            "Name": "boxT3",
+            "Position": [
+                -12.0,
+                4.0,
+                -10.0
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "Rock01",
+            "Model": "rock1",
+            "Name": "Center",
+            "Position": [
+                20.640962600708008,
+                1.7850220203399658,
+                0.0
+            ],
+            "RenderType": "DefaultNoNormal",
+            "Rotation": [
+                0.0,
+                11.27094841003418,
+                0.0
+            ],
+            "Scale": [
+                1.0974347591400146,
+                1.0974347591400146,
+                1.0974347591400146
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": false,
+            "Material": "invWall",
+            "Model": "box",
+            "Name": "WALL",
+            "Position": [
+                -12.0,
+                5.0,
+                10.0
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                15.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                12.0,
+                1.399999976158142,
+                3.130000114440918
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                12.0,
+                1.399999976158142,
+                3.130000114440918
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
             ]
         }
-        
-    ]
+    ],
+    "Light": {
+        "AmbientLight": [
+            0.25,
+            0.23999999463558197,
+            0.25999999046325684
+        ],
+        "Directional": [
+            {
+                "Direction": [
+                    -0.5759999752044678,
+                    -0.5770000219345093,
+                    0.5770000219345093
+                ],
+                "Name": "D1",
+                "Strength": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            },
+            {
+                "Direction": [
+                    0.5759999752044678,
+                    -0.5770000219345093,
+                    0.5770000219345093
+                ],
+                "Name": "D2",
+                "Strength": [
+                    0.4000000059604645,
+                    0.4000000059604645,
+                    0.4000000059604645
+                ]
+            },
+            {
+                "Direction": [
+                    0.0,
+                    -0.699999988079071,
+                    -0.699999988079071
+                ],
+                "Name": "D3",
+                "Strength": [
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
+                ]
+            }
+        ],
+        "Point": [
+            {
+                "FallOffEnd": 5.0,
+                "FallOffStart": 4.0,
+                "Name": "P4",
+                "Position": [
+                    20.0,
+                    2.0,
+                    10.0
+                ],
+                "Strength": [
+                    0.5,
+                    0.0,
+                    0.800000011920929
+                ]
+            },
+            {
+                "FallOffEnd": 5.0,
+                "FallOffStart": 4.0,
+                "Name": "P3",
+                "Position": [
+                    10.0,
+                    2.0,
+                    10.0
+                ],
+                "Strength": [
+                    0.0,
+                    0.5,
+                    0.800000011920929
+                ]
+            },
+            {
+                "FallOffEnd": 5.0,
+                "FallOffStart": 4.0,
+                "Name": "P2",
+                "Position": [
+                    5.0,
+                    2.0,
+                    10.0
+                ],
+                "Strength": [
+                    0.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
+                "FallOffEnd": 3.371513605117798,
+                "FallOffStart": 1.680559515953064,
+                "Name": "P1",
+                "Position": [
+                    2.3519322872161865,
+                    -5.078141212463379,
+                    3.6158125400543213
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ],
+        "Spot": [
+            {
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "FallOffEnd": 10.0,
+                "FallOffStart": 8.0,
+                "Name": "S1",
+                "Position": [
+                    -25.0,
+                    4.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.30000001192092896,
+                    0.6600000262260437
+                ]
+            }
+        ]
+    },
+    "Sky": {
+        "DefaultCubeMap": "grasscube1024.dds",
+        "Material": "sky"
+    },
+    "Terrain": {
+        "BlendMap": "0.bld",
+        "BlendTextures": [
+            "ForestFloorGreen.dds",
+            "DirtGround.dds",
+            "FlowerField.dds",
+            "SimpleSand.dds"
+        ],
+        "HeightMap": "0.raw",
+        "HeightScale": 200.0
+    }
 }

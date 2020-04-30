@@ -29,9 +29,13 @@ public:
 
     CD3DX12_GPU_DESCRIPTOR_HANDLE blendTexturesHandle[4];
 
+    std::string terrainHeightMapFileStem;
+    std::string terrainBlendMapFileStem;
+
 private:
 
     const std::string terrainPath = "data/level/";
+
     std::string terrainHeightMapFile;
     std::string terrainBlendMapFile;
 

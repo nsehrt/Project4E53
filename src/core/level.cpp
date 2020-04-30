@@ -106,6 +106,8 @@ bool Level::load(const std::string& levelFile)
 
     LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountGameObjects-1) << " GameObjects)");
 
+    loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
+
     return true;
 }
 
@@ -280,6 +282,158 @@ void Level::draw()
 bool Level::save()
 {
     /*save level file*/
+    json saveFile;
+
+    /*sky*/
+    saveFile["Sky"]["Material"] = skyMaterial;
+    saveFile["Sky"]["DefaultCubeMap"] = defaultCubeMapStr;
+
+    /*terrain*/
+    saveFile["Terrain"]["HeightMap"] = mTerrain->terrainHeightMapFileStem;
+    saveFile["Terrain"]["BlendMap"] = mTerrain->terrainBlendMapFileStem;
+    saveFile["Terrain"]["HeightScale"] = mTerrain->heightScale;
+    for (int i = 0; i < 4; i++)
+    {
+        saveFile["Terrain"]["BlendTextures"].push_back(mTerrain->textureStrings[i]);
+    }
+
+    /*light*/
+    saveFile["Light"]["AmbientLight"][0] = AmbientLight.x;
+    saveFile["Light"]["AmbientLight"][1] = AmbientLight.y;
+    saveFile["Light"]["AmbientLight"][2] = AmbientLight.z;
+
+    for (const auto& e : mLightObjects)
+    {
+
+        if (e->getLightType() == LightType::Directional)
+        {
+            json jElement;
+
+            jElement["Name"] = e->name;
+            jElement["Strength"][0] = e->getStrength().x;
+            jElement["Strength"][1] = e->getStrength().y;
+            jElement["Strength"][2] = e->getStrength().z;
+            jElement["Direction"][0] = e->getDirection().x;
+            jElement["Direction"][1] = e->getDirection().y;
+            jElement["Direction"][2] = e->getDirection().z;
+
+            saveFile["Light"]["Directional"].push_back(jElement);
+        }
+        else if (e->getLightType() == LightType::Point)
+        {
+            json jElement;
+
+            jElement["Name"] = e->name;
+            jElement["Strength"][0] = e->getStrength().x;
+            jElement["Strength"][1] = e->getStrength().y;
+            jElement["Strength"][2] = e->getStrength().z;
+            jElement["Position"][0] = e->getPosition().x;
+            jElement["Position"][1] = e->getPosition().y;
+            jElement["Position"][2] = e->getPosition().z;
+            jElement["FallOffStart"] = e->getFallOffStart();
+            jElement["FallOffEnd"] = e->getFallOffEnd();
+
+            saveFile["Light"]["Point"].push_back(jElement);
+        }
+        else
+        {
+            json jElement;
+
+            jElement["Name"] = e->name;
+            jElement["Strength"][0] = e->getStrength().x;
+            jElement["Strength"][1] = e->getStrength().y;
+            jElement["Strength"][2] = e->getStrength().z;
+            jElement["Position"][0] = e->getPosition().x;
+            jElement["Position"][1] = e->getPosition().y;
+            jElement["Position"][2] = e->getPosition().z;
+            jElement["Direction"][0] = e->getDirection().x;
+            jElement["Direction"][1] = e->getDirection().y;
+            jElement["Direction"][2] = e->getDirection().z;
+            jElement["FallOffStart"] = e->getFallOffStart();
+            jElement["FallOffEnd"] = e->getFallOffEnd();
+
+            saveFile["Light"]["Spot"].push_back(jElement);
+        }
+
+    }
+
+    /*gameobject*/
+
+    for (const auto& e : mGameObjects)
+    {
+        if (e.second->renderItem->renderType == RenderType::Composite ||
+            e.second->renderItem->renderType == RenderType::Terrain ||
+            e.second->renderItem->renderType == RenderType::TerrainNoShadow ||
+            e.second->renderItem->renderType == RenderType::TerrainWireFrame ||
+            e.second->renderItem->renderType == RenderType::Sobel ||
+            e.second->renderItem->renderType == RenderType::Sky ||
+            e.second->renderItem->renderType == RenderType::Debug ||
+            e.second->renderItem->renderType == RenderType::Hitbox ||
+            e.second->renderItem->renderType == RenderType::ShadowAlpha ||
+            e.second->renderItem->renderType == RenderType::ShadowDefault)
+            continue;
+
+
+        json jElement;
+
+        jElement["Name"] = e.second->name;
+        jElement["Model"] = e.second->renderItem->Model->name;
+        jElement["Material"] = e.second->renderItem->Mat->Name;
+
+        switch (e.second->renderItem->renderType)
+        {
+            case RenderType::Default: jElement["RenderType"] = "Default"; break;
+            case RenderType::DefaultAlpha: jElement["RenderType"] = "DefaultAlpha"; break;
+            case RenderType::DefaultNoNormal: jElement["RenderType"] = "DefaultNoNormal"; break;
+            case RenderType::DefaultTransparency: jElement["RenderType"] = "DefaultTransparency"; break;
+            default: continue; break;
+        }
+
+        jElement["CollisionEnabled"] = e.second->isCollisionEnabled;
+        jElement["DrawEnabled"] = e.second->isDrawEnabled;
+        jElement["ShadowEnabled"] = e.second->isShadowEnabled;
+        jElement["ShadowForced"] = e.second->isShadowForced;
+
+
+        jElement["Position"][0] = e.second->getPosition().x;
+        jElement["Position"][1] = e.second->getPosition().y;
+        jElement["Position"][2] = e.second->getPosition().z;
+
+        jElement["Scale"][0] = e.second->getScale().x;
+        jElement["Scale"][1] = e.second->getScale().y;
+        jElement["Scale"][2] = e.second->getScale().z;
+
+        jElement["Rotation"][0] = XMConvertToDegrees(e.second->getRotation().x);
+        jElement["Rotation"][1] = XMConvertToDegrees(e.second->getRotation().y);
+        jElement["Rotation"][2] = XMConvertToDegrees(e.second->getRotation().z);
+
+        jElement["TexTranslation"][0] = e.second->getTextureTranslation().x;
+        jElement["TexTranslation"][1] = e.second->getTextureTranslation().y;
+        jElement["TexTranslation"][2] = e.second->getTextureTranslation().z;
+
+        jElement["TexScale"][0] = e.second->getTextureScale().x;
+        jElement["TexScale"][1] = e.second->getTextureScale().y;
+        jElement["TexScale"][2] = e.second->getTextureScale().z;
+
+        jElement["TexRotation"][0] = XMConvertToDegrees(e.second->getTextureRotation().x);
+        jElement["TexRotation"][1] = XMConvertToDegrees(e.second->getTextureRotation().y);
+        jElement["TexRotation"][2] = XMConvertToDegrees(e.second->getTextureRotation().z);
+
+
+        saveFile["GameObject"].push_back(jElement);
+    }
+
+
+    std::ofstream file(loadedLevel);
+
+    if (!file.is_open())
+    {
+        LOG(Severity::Error, "Can not write to " << loadedLevel << "!");
+        return false;
+    }
+
+    file << saveFile.dump(4);
+    file.close();
 
     /*save terrain*/
     if (!mTerrain->save())
@@ -364,6 +518,9 @@ bool Level::parseSky(const json& skyJson)
     /*default cube map*/
     CD3DX12_GPU_DESCRIPTOR_HANDLE tempHandle(renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
     tempHandle.Offset(renderResource->mTextures[skyJson["DefaultCubeMap"]]->index, renderResource->mCbvSrvUavDescriptorSize);
+    defaultCubeMapStr = skyJson["DefaultCubeMap"];
+    skyMaterial = skyJson["Material"];
+
 
     defaultCubeMapHandle = tempHandle;
 

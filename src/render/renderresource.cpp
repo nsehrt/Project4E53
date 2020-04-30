@@ -1206,6 +1206,7 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Model> m = std::make_unique<Model>();
 
+    m->name = "box";
     m->meshes["box"] = std::move(geo);
     mModels["box"] = std::move(m);
 
@@ -1338,6 +1339,7 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Model> mGr = std::make_unique<Model>();
 
+    mGr->name = "grid";
     mGr->meshes["grid"] = std::move(geoGrid);
     mModels["grid"] = std::move(mGr);
 
@@ -1458,6 +1460,7 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Model> mSp = std::make_unique<Model>();
 
+    mSp->name = "sphere";
     mSp->meshes["sphere"] = std::move(geoSphere);
     mModels["sphere"] = std::move(mSp);
 
@@ -1567,6 +1570,7 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Model> mCyl = std::make_unique<Model>();
 
+    mCyl->name = "cylinder";
     mCyl->meshes["cylinder"] = std::move(geoCyl);
     mModels["cylinder"] = std::move(mCyl);
 

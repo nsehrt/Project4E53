@@ -51,6 +51,9 @@ public:
     std::vector<std::shared_ptr<Camera>> mCameras;
 
     CD3DX12_GPU_DESCRIPTOR_HANDLE defaultCubeMapHandle;
+    std::string defaultCubeMapStr;
+    std::string skyMaterial;
+    std::string loadedLevel;
 
 private:
 

@@ -43,6 +43,7 @@ Terrain::Terrain(const json& terrainInfo)
     }
 
     terrainHeightMapFile = lFile.str();
+    terrainHeightMapFileStem = terrainInfo["HeightMap"].get<std::string>();
 
     file.read((char*)&input[0], (std::streamsize)input.size() * sizeof(unsigned short));
     file.close();
@@ -54,6 +55,7 @@ Terrain::Terrain(const json& terrainInfo)
     lFile.str("");
     lFile << terrainPath << terrainInfo["BlendMap"].get<std::string>();
     terrainBlendMapFile = lFile.str();
+    terrainBlendMapFileStem = terrainInfo["BlendMap"].get<std::string>();
 
     file.open(lFile.str().c_str(), std::ios_base::binary);
 
