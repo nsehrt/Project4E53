@@ -281,6 +281,9 @@ void Level::draw()
 
 bool Level::save()
 {
+
+    auto startTime = std::chrono::system_clock::now();
+
     /*save level file*/
     json saveFile;
 
@@ -440,6 +443,14 @@ bool Level::save()
     {
         return false;
     }
+
+    LOG(Severity::Info, "Successfully wrote level data to file " << loadedLevel << ".");
+
+
+    auto endTime = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsedTime = endTime - startTime;
+
+    LOG(Severity::Info, "Level successfully saved. (" << elapsedTime.count() << " seconds)");
 
     return true;
 }
