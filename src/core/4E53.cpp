@@ -69,6 +69,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 				   _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
 #ifdef _DEBUG
+	//_CrtSetDbgFlag(_CrtSetDbgFlag(0) | _CRTDBG_CHECK_ALWAYS_DF);
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 #endif
@@ -417,9 +418,38 @@ void P_4E53::update(const GameTime& gt)
 			}
 			else if (editSettings->toolMode == EditTool::Object)
 			{
+				editSettings->toolMode = EditTool::Camera;
+				ServiceProvider::setActiveCamera(fpsCamera);
+			}
+			else if (editSettings->toolMode == EditTool::Camera)
+			{
 				editSettings->toolMode = EditTool::Height;
+				ServiceProvider::setActiveCamera(editCamera);
 			}
 		}
+
+		if (inputData.Pressed(BTN::LEFT_SHOULDER))
+		{
+			if (editSettings->toolMode == EditTool::Height)
+			{
+				editSettings->toolMode = EditTool::Camera;
+				ServiceProvider::setActiveCamera(fpsCamera);
+			}
+			else if (editSettings->toolMode == EditTool::Paint)
+			{
+				editSettings->toolMode = EditTool::Height;
+			}
+			else if (editSettings->toolMode == EditTool::Object)
+			{
+				editSettings->toolMode = EditTool::Paint;
+			}
+			else if (editSettings->toolMode == EditTool::Camera)
+			{
+				editSettings->toolMode = EditTool::Object;
+				ServiceProvider::setActiveCamera(editCamera);
+			}
+		}
+
 
 		/*wireframe on/off*/
 		if (inputData.Pressed(BTN::LEFT_THUMB))
@@ -439,21 +469,24 @@ void P_4E53::update(const GameTime& gt)
 		if (editSettings->legendAnim < 0.0f) editSettings->legendAnim = 0.0f;
 
 		/*edit selection update*/
-		editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
 
-		editSettings->Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSettings->Velocity * gt.DeltaTime();
-		editSettings->Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSettings->Velocity * gt.DeltaTime();
+		if (editSettings->toolMode != EditTool::Object && editSettings->toolMode != EditTool::Camera)
+		{
+			editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
 
-		float terrainHalf = activeLevel->mTerrain->terrainSize / 2.0f;
+			editSettings->Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSettings->Velocity * gt.DeltaTime();
+			editSettings->Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSettings->Velocity * gt.DeltaTime();
 
-		editSettings->Position.x = MathHelper::clampH(editSettings->Position.x,
-													  -terrainHalf + 5.0f,
-													  terrainHalf - 5.0f);
+			float terrainHalf = activeLevel->mTerrain->terrainSize / 2.0f;
 
-		editSettings->Position.y = MathHelper::clampH(editSettings->Position.y,
-													  -terrainHalf + 5.0f,
-													  terrainHalf - 5.0f);
+			editSettings->Position.x = MathHelper::clampH(editSettings->Position.x,
+														  -terrainHalf + 5.0f,
+														  terrainHalf - 5.0f);
 
+			editSettings->Position.y = MathHelper::clampH(editSettings->Position.y,
+														  -terrainHalf + 5.0f,
+														  terrainHalf - 5.0f);
+		}
 
 		/*falloff radius control*/
 		editSettings->FallOffRatio += inputData.current.trigger[TRG::THUMB_RX] * gt.DeltaTime() * (editSettings->fallOffRatioMax);
@@ -605,7 +638,7 @@ void P_4E53::update(const GameTime& gt)
 
 				if (editSettings->currentSelectionIndex == 0)
 				{
-					editSettings->currentSelectionIndex = validGameObjects.size() - 1;
+					editSettings->currentSelectionIndex = (int)validGameObjects.size() - 1;
 				}
 				else
 				{
@@ -617,12 +650,12 @@ void P_4E53::update(const GameTime& gt)
 			}
 
 			/*switch object transform tool*/
-			if (inputData.Pressed(BTN::Y))
+			if (inputData.Pressed(BTN::B))
 			{
 				editSettings->objTransformTool = (ObjectTransformTool)(((int)editSettings->objTransformTool + 1) % 3);
 			}
 
-			if (inputData.Pressed(BTN::B))
+			if (inputData.Pressed(BTN::A))
 			{
 				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
 				{
@@ -641,7 +674,7 @@ void P_4E53::update(const GameTime& gt)
 			}
 
 			/*reset to zero*/
-			if (inputData.Pressed(BTN::LEFT_SHOULDER))
+			if (inputData.Pressed(BTN::X))
 			{
 				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
 				{
@@ -677,7 +710,7 @@ void P_4E53::update(const GameTime& gt)
 			}
 
 			/*rotation next 45 degrees*/
-			if (inputData.Pressed(BTN::A) && editSettings->objTransformTool == ObjectTransformTool::Rotation)
+			if (inputData.Pressed(BTN::Y) && editSettings->objTransformTool == ObjectTransformTool::Rotation)
 			{
 				XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
 
@@ -799,7 +832,7 @@ void P_4E53::update(const GameTime& gt)
 
 		/*common camera update for paint & height*/
 
-		if (editSettings->toolMode != EditTool::Object)
+		if (editSettings->toolMode != EditTool::Object && editSettings->toolMode != EditTool::Camera)
 		{
 			zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -50.0f * gt.DeltaTime();
 
@@ -817,7 +850,7 @@ void P_4E53::update(const GameTime& gt)
 			editLight->setFallOffEnd(editSettings->BaseRadius);
 		}
 		/*camera update for object mode*/
-		else
+		else if(editSettings->toolMode == EditTool::Object)
 		{
 			zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -50.0f * gt.DeltaTime();
 
@@ -828,13 +861,20 @@ void P_4E53::update(const GameTime& gt)
 
 		}
 
-
-		editCamera->updateFixedCamera(newCamTarget,
+		if (editSettings->toolMode != EditTool::Camera)
+		{
+			editCamera->updateFixedCamera(newCamTarget,
 										  zoomDelta);
 
+		}
+		else
+		{
+			fpsCamera->updateFPSCamera(inputData.current, gt);
+		}
 
 		if (editModeHUD != nullptr)
-		editModeHUD->update();
+			editModeHUD->update();
+
 	}
 	else
 	{

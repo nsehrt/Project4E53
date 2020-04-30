@@ -135,11 +135,11 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
 
 
-        ThrowIfFailed(D3DCreateBlob(vbByteSize, &m->VertexBufferCPU));
-        CopyMemory(m->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+        //ThrowIfFailed(D3DCreateBlob(vbByteSize, &m->VertexBufferCPU));
+        //CopyMemory(m->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
-        ThrowIfFailed(D3DCreateBlob(ibByteSize, &m->IndexBufferCPU));
-        CopyMemory(m->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+        //ThrowIfFailed(D3DCreateBlob(ibByteSize, &m->IndexBufferCPU));
+        //CopyMemory(m->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
         m->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                             cmdList, vertices.data(), vbByteSize, m->VertexBufferUploader);

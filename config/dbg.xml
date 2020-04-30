@@ -31,7 +31,7 @@
     <Input>
         <InvertYAxis>1</InvertYAxis>
         <Sensitivity>4.0</Sensitivity>
-        <FPSCameraSpeed>100.0</FPSCameraSpeed>
+        <FPSCameraSpeed>25.0</FPSCameraSpeed>
     </Input>
 
     <Misc>

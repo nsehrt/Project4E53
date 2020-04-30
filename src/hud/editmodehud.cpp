@@ -69,7 +69,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\object.png",
         L"data\\texture\\hud\\gui\\edit\\tool_axis_select.png",
         L"data\\texture\\hud\\gui\\edit\\tool_axis_select_cursor.png",
-        L"data\\texture\\hud\\gui\\edit\\object_info.png"
+        L"data\\texture\\hud\\gui\\edit\\object_info.png",
+        L"data\\texture\\hud\\gui\\edit\\camera.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -136,8 +137,8 @@ void EditModeHUD::init()
 
     /*tool select window 0 - 3*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_WIN, { 0.93f,0.13f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::BUTTON_RSHOULDER, { 0.915f,0.205f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::RIGHT, { 0.96f,0.205f }, 0.6f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::BUTTON_LSHOULDER, { 0.905f,0.205f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::BUTTON_RSHOULDER, { 0.955f,0.205f }));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::HEIGHT, { 0.93f,0.108f }, 1.25f));
 
     /*save window 4 - 5*/
@@ -212,7 +213,10 @@ void EditModeHUD::update()
     auto editSetting = ServiceProvider::getEditSettings();
 
     /*show correct tool*/
-    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? TextureDescriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ? TextureDescriptors::PAINT : TextureDescriptors::OBJECT;
+    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? 
+        TextureDescriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ? 
+        TextureDescriptors::PAINT : editSetting->toolMode == EditTool::Object ?
+        TextureDescriptors::OBJECT : TextureDescriptors::CAMERA;
 
     /*save window*/
     mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? TextureDescriptors::SAVED : TextureDescriptors::FAILED;
@@ -406,7 +410,7 @@ void EditModeHUD::draw()
     {
         if (!e->Visible) continue;
         
-        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
+        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (ServiceProvider::getEditSettings()->toolMode == EditTool::Object || ServiceProvider::getEditSettings()->toolMode == EditTool::Camera)) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
         if (e->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::Object)continue;
@@ -425,7 +429,7 @@ void EditModeHUD::draw()
     for (const auto& f : mFontElements)
     {
         if (!f->Visible) continue;
-        if (f->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && ServiceProvider::getEditSettings()->toolMode == EditTool::Object) continue;
+        if (f->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (ServiceProvider::getEditSettings()->toolMode == EditTool::Object || ServiceProvider::getEditSettings()->toolMode == EditTool::Camera)) continue;
         if (f->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (f->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
         if (f->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::Object)continue;

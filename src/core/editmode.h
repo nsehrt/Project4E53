@@ -6,7 +6,8 @@ enum class EditTool
 {
     Height,
     Paint,
-    Object
+    Object,
+    Camera
 };
 
 enum class ObjectTransformTool : int
