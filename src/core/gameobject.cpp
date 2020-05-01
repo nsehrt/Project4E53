@@ -120,6 +120,8 @@ GameObject::GameObject(const json& objectJson, int index)
             /*invisible wall*/
             isCollisionEnabled = true;
             isDrawEnabled = false;
+            isShadowEnabled = false;
+            isShadowForced = false;
             rItem->Model = renderResource->mModels["box"].get();
             TextureScale = Scale;
             gameObjectType = GameObjectType::Wall;
@@ -142,7 +144,7 @@ GameObject::GameObject(const json& objectJson, int index)
     {
         if (gameObjectType == GameObjectType::Wall)
         {
-            rItem->Mat = renderResource->mMaterials["default"].get();
+            rItem->Mat = renderResource->mMaterials["invWall"].get();
         }
         else
         {
@@ -255,11 +257,17 @@ bool GameObject::draw()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
+    if (gameObjectType == GameObjectType::Wall)
+    {
+        int i = 1;
+    }
+
     if (!isDrawEnabled &&
         !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
     {
         return false;
     }
+
 
     /*frustum culling check*/
     if (isFrustumCulled)

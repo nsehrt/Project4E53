@@ -106,6 +106,26 @@ float4 PS(VertexOut pin) : SV_Target
     // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a;
 
+    /*test*/
+        // Calculate diffuse light amount
+    // float intensity = dot(normalize(DiffuseLightDirection), input.Normal);
+    // if(intensity < 0)
+    //     intensity = 0;
+ 
+    // Calculate what would normally be the final color, including texturing and diffuse lighting
+
+    // Discretize the intensity, based on a few cutoff points
+    // if (shadowFactor[0] > 0.95)
+    //     litColor = float4(1.0,1,1,1.0) * litColor;
+    // else if (shadowFactor[0] > 0.5)
+    //     litColor = float4(0.7,0.7,0.7,1.0) * litColor;
+    // else if (shadowFactor[0] > 0.05)
+    //     litColor = float4(0.35,0.35,0.35,1.0) * litColor;
+    // else
+    //     litColor = float4(0.1,0.1,0.1,1.0) * litColor;
+ 
+    
+
     //return litColor.rrra; /*grey scale image*/
     return litColor;
 }

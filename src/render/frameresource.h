@@ -8,7 +8,7 @@ struct ObjectConstants
 {
     DirectX::XMFLOAT4X4 World = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 TexTransform = MathHelper::identity4x4();
-    unsigned int MaterialIndex = -1;
+    unsigned int MaterialIndex = 0;
     unsigned int OnjPad0 = 0;
     unsigned int OnjPad1 = 0;
     unsigned int OnjPad2 = 0;

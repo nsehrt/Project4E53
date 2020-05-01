@@ -354,6 +354,7 @@ bool Level::save()
             jElement["Direction"][2] = e->getDirection().z;
             jElement["FallOffStart"] = e->getFallOffStart();
             jElement["FallOffEnd"] = e->getFallOffEnd();
+            jElement["SpotPower"] = e->getSpotPower();
 
             saveFile["Light"]["Spot"].push_back(jElement);
         }
@@ -380,7 +381,7 @@ bool Level::save()
         json jElement;
 
         jElement["Name"] = e.second->name;
-        jElement["Model"] = e.second->renderItem->Model->name;
+        jElement["Model"] = e.second->gameObjectType != GameObjectType::Wall ? e.second->renderItem->Model->name : "";
         jElement["Material"] = e.second->renderItem->Mat->Name;
 
         switch (e.second->renderItem->renderType)

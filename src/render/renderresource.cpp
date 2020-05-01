@@ -228,7 +228,7 @@ bool RenderResource::buildPostProcessSignature()
     srv1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
     uav0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
 
-    CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+    CD3DX12_ROOT_PARAMETER slotRootParameter[3]{};
 
     slotRootParameter[0].InitAsDescriptorTable(1, &srv0);
     slotRootParameter[1].InitAsDescriptorTable(1, &srv1);
@@ -1217,8 +1217,6 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
 
     hitboxBox->name = "hitbox";
-    hitboxBox->dTexture = "default";
-    hitboxBox->dNormal = "default_nmap";
     hitboxBox->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxBox->VertexByteStride = sizeof(Vertex);
     hitboxBox->VertexBufferByteSize = vbByteSize;
@@ -1384,8 +1382,6 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Mesh> hitboxGrid = std::make_unique<Mesh>();
 
     hitboxGrid->name = "hitbox";
-    hitboxGrid->dTexture = "default";
-    hitboxGrid->dNormal = "default_nmap";
     hitboxGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxGrid->VertexByteStride = sizeof(Vertex);
     hitboxGrid->VertexBufferByteSize = vbByteSize;
@@ -1495,8 +1491,6 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Mesh> hitboxSphere = std::make_unique<Mesh>();
 
     hitboxSphere->name = "hitbox";
-    hitboxSphere->dTexture = "default";
-    hitboxSphere->dNormal = "default_nmap";
     hitboxSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxSphere->VertexByteStride = sizeof(Vertex);
     hitboxSphere->VertexBufferByteSize = vbByteSize;
@@ -1606,8 +1600,6 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Mesh> hitboxCyl = std::make_unique<Mesh>();
 
     hitboxCyl->name = "hitbox";
-    hitboxCyl->dTexture = "default";
-    hitboxCyl->dNormal = "default_nmap";
     hitboxCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxCyl->VertexByteStride = sizeof(Vertex);
     hitboxCyl->VertexBufferByteSize = vbByteSize;

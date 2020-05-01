@@ -78,9 +78,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         file.read(bmap, slen);
         bmap[slen] = '\0';
 
-        m->dTexture = dmap;
-        m->dNormal = nmap;
-        m->dBump = bmap;
 
         delete[] dmap; delete[] nmap; delete[] bmap;
 
@@ -188,8 +185,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     std::unique_ptr<Mesh> hitbox = std::make_unique<Mesh>();
 
     hitbox->name = "hitbox";
-    hitbox->dTexture = "default";
-    hitbox->dNormal = "default_nmap";
     hitbox->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitbox->VertexByteStride = sizeof(Vertex);
     hitbox->VertexBufferByteSize = vbByteSize;
