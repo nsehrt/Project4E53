@@ -42,7 +42,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "palm",
+            "Model": "pinetree",
             "Name": "obj1",
             "Position": [
                 2.0,
@@ -121,7 +121,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "pinetree",
+            "Model": "palm",
             "Name": "tree1",
             "Position": [
                 -10.476417541503906,

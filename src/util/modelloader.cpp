@@ -60,11 +60,13 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* matStr = new char[(long long)slen +1];
+        char* matStr = new char[slen + 1];
         file.read(matStr, slen);
         matStr[slen] = '\0';
 
         m->materialName = matStr;
+
+        delete[] matStr;
 
         /*read number of vertices*/
         int vertCount = 0;
@@ -101,27 +103,21 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         }
 
         /*number of indices*/
-        std::vector<std::uint16_t> indices;
-
         int vInd = 0;
         file.read((char*)(&vInd), sizeof(vInd));
-        indices.resize(vInd);
+
+        std::vector<unsigned short> indices(vInd);
+
+        int temp = 0;
 
         for (int j = 0; j < vInd; j++)
         {
-            file.read((char*)(&indices[j]), sizeof(int));
+            file.read((char*)(&temp), sizeof(int));
+            indices.push_back((unsigned short)temp);
         }
 
         const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-        const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-
-
-        //ThrowIfFailed(D3DCreateBlob(vbByteSize, &m->VertexBufferCPU));
-        //CopyMemory(m->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-        //ThrowIfFailed(D3DCreateBlob(ibByteSize, &m->IndexBufferCPU));
-        //CopyMemory(m->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+        const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned short);
 
         m->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                             cmdList, vertices.data(), vbByteSize, m->VertexBufferUploader);
@@ -136,6 +132,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         m->IndexCount = (UINT)indices.size();
         
         mRet.model->meshes.push_back(std::move(m));
+        indices.clear();
     }
 
     /*create AABB*/
