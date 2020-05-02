@@ -643,7 +643,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "skullMat",
+            "Material": "skull",
             "Model": "skull",
             "Name": "skull1",
             "Position": [
@@ -683,7 +683,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "skullMat",
+            "Material": "skull",
             "Model": "skull",
             "Name": "skull2",
             "Position": [
@@ -883,7 +883,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "Rock01",
+            "Material": "rock01",
             "Model": "rock1",
             "Name": "Center",
             "Position": [

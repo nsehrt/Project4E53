@@ -103,7 +103,7 @@
     },
 
     {
-        "Name" : "skullMat",
+        "Name" : "skull",
         "Texture" : "white",
         "NormalMap" : "none",
         "DiffuseAlbedo" : [0.3,0.3,0.3,1.0],
@@ -112,7 +112,7 @@
     },
 
     {
-        "Name": "Rock01",
+        "Name": "rock01",
         "Texture": "Rock01",
         "NormalMap": "Rock01_Normals",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],

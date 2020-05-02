@@ -94,6 +94,12 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         {
             modelCounter++;
             mModels[entry.path().stem().string()] = std::move(mRet.model);
+            
+            /*set per sub mesh material*/
+            for (auto& e : mModels[entry.path().stem().string()]->meshes)
+            {
+                e.second->material = mMaterials[e.second->materialName].get();
+            }
         }
         else
         {
