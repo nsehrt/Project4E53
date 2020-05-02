@@ -3,7 +3,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "man",
             "Model": "man",
             "Name": "man5",
             "Position": [
@@ -43,15 +42,14 @@
         {
             "CollisionEnabled": false,
             "DrawEnabled": true,
-            "Material": "plant",
-            "Model": "plant",
+            "Model": "palm",
             "Name": "obj1",
             "Position": [
                 2.0,
                 16.25,
                 5.0
             ],
-            "RenderType": "Default",
+            "RenderType": "DefaultTransparency",
             "Rotation": [
                 0.0,
                 0.0,
@@ -643,7 +641,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "skull",
             "Model": "skull",
             "Name": "skull1",
             "Position": [
@@ -683,7 +680,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "skull",
             "Model": "skull",
             "Name": "skull2",
             "Position": [
@@ -883,7 +879,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "rock01",
             "Model": "rock1",
             "Name": "Center",
             "Position": [

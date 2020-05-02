@@ -122,7 +122,7 @@ Terrain::Terrain(const json& terrainInfo)
 
     terrainModel = std::make_unique<Model>();
     terrainModel->name = "TERRAIN";
-    terrainModel->meshes["TERRAIN"] = std::move(geoGrid);
+    terrainModel->meshes.push_back(std::move(geoGrid));
 
     if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     {
@@ -287,8 +287,8 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
     /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
     terrainVB->copyAll(mTerrainVertices[0]);
-    holder = terrainModel->meshes["TERRAIN"]->VertexBufferGPU;
-    terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
+    holder = terrainModel->meshes[0]->VertexBufferGPU;
+    terrainModel->meshes[0]->VertexBufferGPU = terrainVB->getResource();
 }
 
 void Terrain::paint(float x, float z, float fallStart, float fallEnd, float increase, int indexTexture, bool setZero)
@@ -380,7 +380,7 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
     /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
     terrainVB->copyAll(mTerrainVertices[0]);
-    holder = terrainModel->meshes["TERRAIN"]->VertexBufferGPU;
-    terrainModel->meshes["TERRAIN"]->VertexBufferGPU = terrainVB->getResource();
+    holder = terrainModel->meshes[0]->VertexBufferGPU;
+    terrainModel->meshes[0]->VertexBufferGPU = terrainVB->getResource();
 
 }

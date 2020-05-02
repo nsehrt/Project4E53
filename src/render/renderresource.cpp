@@ -83,6 +83,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
 
+    if (!buildMaterials())
+    {
+        return false;
+    }
 
     /*load all models*/
     ModelLoader mLoader(device, cmdList);
@@ -98,7 +102,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
             /*set per sub mesh material*/
             for (auto& e : mModels[entry.path().stem().string()]->meshes)
             {
-                e.second->material = mMaterials[e.second->materialName].get();
+                e->material = mMaterials[e->materialName].get();
             }
         }
         else
@@ -116,11 +120,6 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     LOG(Severity::Info, "Successfully created default models.");
 
     buildPSOs();
-
-    if (!buildMaterials())
-    {
-        return false;
-    }
 
     buildFrameResource();
 
@@ -984,8 +983,9 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
         // Only update the cbuffer data if the constants have changed.  
         if (e->NumFramesDirty > 0)
         {
-            //for (auto const& m : e->Model->meshes)
-            //{
+
+            for (int i = 0; i < e->Model->meshes.size(); i++)
+            {
                 XMMATRIX world = XMLoadFloat4x4(&e->World);
                 XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
 
@@ -993,18 +993,18 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
                 XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
                 XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
 
-                //if (e->uniformObjCB)
-                //{
-                //    objConstants.MaterialIndex = m->material->MatCBIndex;
-                //}
-                //else
-                //{
-                //    objConstants.MaterialIndex = e->Model->meshes[i]->material->MatCBIndex;
-                //}
-                //
-                objConstants.MaterialIndex = e->Mat->MatCBIndex;
+                if (e->MaterialOverwrite != nullptr)
+                {
+                    objConstants.MaterialIndex = e->MaterialOverwrite->MatCBIndex;
+                }
+                else
+                {
+                    objConstants.MaterialIndex = e->Model->meshes[i]->material->MatCBIndex;
+                }
+
                 currObjectCB->copyData(e->ObjCBIndex[0], objConstants);
-            //}
+            }
+
 
             // Next FrameResource need to be updated too.
             e->NumFramesDirty--;
@@ -1225,7 +1225,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> m = std::make_unique<Model>();
 
     m->name = "box";
-    m->meshes["box"] = std::move(geo);
+    m->meshes.push_back(std::move(geo));
     mModels["box"] = std::move(m);
 
     /*box hitbox*/
@@ -1301,7 +1301,7 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Model> mQu = std::make_unique<Model>();
 
-    mQu->meshes["quad"] = std::move(geoQuad);
+    mQu->meshes.push_back(std::move(geoQuad));
     mModels["quad"] = std::move(mQu);
 
 
@@ -1356,7 +1356,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mGr = std::make_unique<Model>();
 
     mGr->name = "grid";
-    mGr->meshes["grid"] = std::move(geoGrid);
+    mGr->meshes.push_back(std::move(geoGrid));
     mModels["grid"] = std::move(mGr);
 
 
@@ -1475,7 +1475,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mSp = std::make_unique<Model>();
 
     mSp->name = "sphere";
-    mSp->meshes["sphere"] = std::move(geoSphere);
+    mSp->meshes.push_back(std::move(geoSphere));
     mModels["sphere"] = std::move(mSp);
 
     /*sphere hitbox*/
@@ -1583,7 +1583,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mCyl = std::make_unique<Model>();
 
     mCyl->name = "cylinder";
-    mCyl->meshes["cylinder"] = std::move(geoCyl);
+    mCyl->meshes.push_back(std::move(geoCyl));
     mModels["cylinder"] = std::move(mCyl);
 
 

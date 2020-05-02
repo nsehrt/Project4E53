@@ -382,7 +382,12 @@ bool Level::save()
 
         jElement["Name"] = e.second->name;
         jElement["Model"] = e.second->gameObjectType != GameObjectType::Wall ? e.second->renderItem->Model->name : "";
-        jElement["Material"] = e.second->renderItem->Mat->Name;
+
+        if (e.second->renderItem->MaterialOverwrite != nullptr)
+        {
+            jElement["Material"] = e.second->renderItem->MaterialOverwrite->Name;
+        }
+        
 
         switch (e.second->renderItem->renderType)
         {
@@ -516,7 +521,7 @@ bool Level::parseSky(const json& skyJson)
     XMStoreFloat4x4(&rItem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.f));
     rItem->TexTransform = MathHelper::identity4x4();
     rItem->ObjCBIndex.push_back(amountGameObjects++);
-    rItem->Mat = renderResource->mMaterials[skyJson["Material"]].get();
+    rItem->MaterialOverwrite = renderResource->mMaterials[skyJson["Material"]].get();
     rItem->Model = renderResource->mModels["sphere"].get();
     rItem->renderType = RenderType::Sky;
 
@@ -642,8 +647,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
             continue;
         }
 
-        if (!exists(entryJson, "Model") ||
-            !exists(entryJson, "Material")
+        if (!exists(entryJson, "Model")
             )
         {
             LOG(Severity::Warning, "Skipping GameObject " << entryJson["Name"] << "due to missing properties!");
@@ -656,7 +660,8 @@ bool Level::parseGameObjects(const json& gameObjectJson)
             continue;
         }
 
-        auto gameObject = std::make_unique<GameObject>(entryJson, amountGameObjects++);
+        auto gameObject = std::make_unique<GameObject>(entryJson, amountGameObjects);
+        amountGameObjects += (int)gameObject->renderItem->Model->meshes.size();
 
         mGameObjects[gameObject->name] = std::move(gameObject);
 
@@ -699,7 +704,7 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->renderItem->renderType = RenderType::Terrain;
     terrainObject->gameObjectType = GameObjectType::Terrain;
     terrainObject->renderItem->Model = mTerrain->terrainModel.get();
-    terrainObject->renderItem->Mat = ServiceProvider::getRenderResource()->mMaterials["grass"].get();
+    terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["terrain"].get();
     XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 8, 
                     (float)mTerrain->terrainSlices / 8, (float)mTerrain->terrainSlices / 8));
 

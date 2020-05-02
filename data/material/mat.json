@@ -26,9 +26,9 @@
         "Roughness" : 0.3
     },
     {
-        "Name" : "grass",
-        "Texture" : "AutumnLeaves",
-        "NormalMap" : "AutumnLeaves_n",
+        "Name" : "terrain",
+        "Texture" : "default",
+        "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.9
@@ -114,6 +114,22 @@
     {
         "Name": "rock01",
         "Texture": "Rock01",
+        "NormalMap": "Rock01_Normals",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
+    },
+    {
+        "Name": "bark",
+        "Texture": "Bark",
+        "NormalMap": "Rock01_Normals",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
+    },
+    {
+        "Name": "leaves",
+        "Texture": "Leaves",
         "NormalMap": "Rock01_Normals",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],

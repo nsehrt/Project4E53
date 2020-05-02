@@ -109,7 +109,7 @@ struct Model
 {
     std::string name;
 
-    std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
+    std::vector<std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingBox boundingBox;
 
@@ -188,7 +188,8 @@ struct RenderItem
     std::vector<UINT>ObjCBIndex;
 
     Model* Model = nullptr;
-    Material* Mat = nullptr;
+
+    Material* MaterialOverwrite = nullptr;
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;

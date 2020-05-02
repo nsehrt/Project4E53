@@ -135,7 +135,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         m->IndexBufferByteSize = ibByteSize;
         m->IndexCount = (UINT)indices.size();
         
-        mRet.model->meshes[std::to_string(i)] = std::move(m);
+        mRet.model->meshes.push_back(std::move(m));
     }
 
     /*create AABB*/
