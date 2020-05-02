@@ -637,7 +637,7 @@ void RenderResource::buildPSOs()
     /* default no normal mapping PSO */
     D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultNoNormalDesc = defaultPSODesc;
 
-    defaultNoNormalDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    //defaultNoNormalDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
     defaultNoNormalDesc.VS =
     {
@@ -718,6 +718,9 @@ void RenderResource::buildPSOs()
     /*shadow alpha PSO*/
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapAlphaPsoDesc = smapPsoDesc;
+
+    smapAlphaPsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
     smapAlphaPsoDesc.PS =
     {
         reinterpret_cast<BYTE*>(mShaders["shadowAlphaPS"]->GetBufferPointer()),
