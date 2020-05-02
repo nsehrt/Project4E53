@@ -122,7 +122,7 @@
     {
         "Name": "bark",
         "Texture": "Bark",
-        "NormalMap": "Rock01_Normals",
+        "NormalMap": "Bark_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.95
@@ -130,10 +130,10 @@
     {
         "Name": "leaves",
         "Texture": "Leaves",
-        "NormalMap": "Rock01_Normals",
+        "NormalMap": "Leaves_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.95
+        "Roughness" : 0.8
     }
 
     ]

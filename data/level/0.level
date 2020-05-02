@@ -40,7 +40,7 @@
             ]
         },
         {
-            "CollisionEnabled": false,
+            "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "palm",
             "Name": "obj1",
@@ -49,7 +49,7 @@
                 16.25,
                 5.0
             ],
-            "RenderType": "DefaultTransparency",
+            "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
                 0.0,
@@ -92,7 +92,7 @@
             "RenderType": "Default",
             "Rotation": [
                 0.0,
-                3749.5341796875,
+                3776.837890625,
                 0.0
             ],
             "Scale": [
@@ -133,7 +133,7 @@
             "Rotation": [
                 0.0,
                 70.77674865722656,
-                -10.339580535888672
+                -10.339579582214355
             ],
             "Scale": [
                 1.0,
@@ -683,14 +683,14 @@
             "Model": "skull",
             "Name": "skull2",
             "Position": [
-                633.4406127929688,
+                638.2074584960938,
                 14.0,
                 -5.0
             ],
             "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                3839.4931640625,
+                3866.796630859375,
                 0.0
             ],
             "Scale": [
@@ -721,10 +721,10 @@
             "DrawEnabled": true,
             "Material": "transp",
             "Model": "box",
-            "Name": "boxT4",
+            "Name": "boxT",
             "Position": [
                 -10.0,
-                4.0,
+                2.0,
                 -10.0
             ],
             "RenderType": "DefaultTransparency",
@@ -761,10 +761,10 @@
             "DrawEnabled": true,
             "Material": "transp",
             "Model": "box",
-            "Name": "boxT",
+            "Name": "boxT4",
             "Position": [
                 -10.0,
-                2.0,
+                4.0,
                 -10.0
             ],
             "RenderType": "DefaultTransparency",
@@ -945,9 +945,9 @@
                 0.0
             ],
             "TexScale": [
-                12.0,
-                1.399999976158142,
-                3.130000114440918
+                10.318610191345215,
+                0.6543881893157959,
+                10.006077766418457
             ],
             "TexTranslation": [
                 0.0,
@@ -958,9 +958,7 @@
     ],
     "Light": {
         "AmbientLight": [
-            0.25,
-            0.23999999463558197,
-            0.25999999046325684
+            0.3,0.3,0.3
         ],
         "Directional": [
             {
@@ -1005,36 +1003,6 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 5.0,
-                "FallOffStart": 4.0,
-                "Name": "P2",
-                "Position": [
-                    5.0,
-                    2.0,
-                    10.0
-                ],
-                "Strength": [
-                    0.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            {
-                "FallOffEnd": 5.0,
-                "FallOffStart": 4.0,
-                "Name": "P3",
-                "Position": [
-                    10.0,
-                    2.0,
-                    10.0
-                ],
-                "Strength": [
-                    0.0,
-                    0.5,
-                    0.800000011920929
-                ]
-            },
-            {
                 "FallOffEnd": 1.8099253177642822,
                 "FallOffStart": 0.6358590722084045,
                 "Name": "P4",
@@ -1042,6 +1010,21 @@
                     1.04440176486969,
                     -6.319369316101074,
                     -0.28220900893211365
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
+                "FallOffEnd": 0.6000000238418579,
+                "FallOffStart": 0.35444313287734985,
+                "Name": "P2",
+                "Position": [
+                    0.0,
+                    -6.621850490570068,
+                    0.0
                 ],
                 "Strength": [
                     1.0,
@@ -1062,6 +1045,21 @@
                     1.0,
                     1.0,
                     1.0
+                ]
+            },
+            {
+                "FallOffEnd": 5.0,
+                "FallOffStart": 4.0,
+                "Name": "P3",
+                "Position": [
+                    10.0,
+                    2.0,
+                    10.0
+                ],
+                "Strength": [
+                    0.0,
+                    0.5,
+                    0.800000011920929
                 ]
             }
         ],

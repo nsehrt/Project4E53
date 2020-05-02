@@ -184,7 +184,6 @@ struct RenderItem
     int NumFramesDirty = gNumFrameResources;
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
-    bool uniformObjCB = true;
     std::vector<UINT>ObjCBIndex;
 
     Model* Model = nullptr;

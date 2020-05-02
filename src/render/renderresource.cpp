@@ -1002,7 +1002,7 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
                     objConstants.MaterialIndex = e->Model->meshes[i]->material->MatCBIndex;
                 }
 
-                currObjectCB->copyData(e->ObjCBIndex[0], objConstants);
+                currObjectCB->copyData(e->ObjCBIndex[i], objConstants);
             }
 
 

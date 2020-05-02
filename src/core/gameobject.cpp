@@ -306,10 +306,10 @@ bool GameObject::draw()
         renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
         renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
-        //D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[0];
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
 
-        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
-            (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;
+        //D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
+        //    (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;
 
 
         /*only if changed*/
@@ -347,8 +347,10 @@ bool GameObject::drawShadow()
         renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
         renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
-        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
-            (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
+
+       /* D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
+            (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;*/
 
         /*only if changed*/
         if (cachedObjCBAddress != objCBAddress)

@@ -64,9 +64,10 @@ float4 PS(VertexOut pin) : SV_Target
 
 
 #ifdef ALPHA_TEST
-    clip(diffuseAlbedo.a - 0.1f);
+    clip(diffuseAlbedo.a - 0.15f);
+    diffuseAlbedo.a = 1.0f;
 #endif
-
+    
 	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
 	
