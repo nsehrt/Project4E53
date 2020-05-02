@@ -978,15 +978,27 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
         // Only update the cbuffer data if the constants have changed.  
         if (e->NumFramesDirty > 0)
         {
-            XMMATRIX world = XMLoadFloat4x4(&e->World);
-            XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
+            //for (auto const& m : e->Model->meshes)
+            //{
+                XMMATRIX world = XMLoadFloat4x4(&e->World);
+                XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
 
-            ObjectConstants objConstants;
-            XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
-            XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
-            objConstants.MaterialIndex = e->Mat->MatCBIndex;
+                ObjectConstants objConstants;
+                XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
+                XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
 
-            currObjectCB->copyData(e->ObjCBIndex, objConstants);
+                //if (e->uniformObjCB)
+                //{
+                //    objConstants.MaterialIndex = m->material->MatCBIndex;
+                //}
+                //else
+                //{
+                //    objConstants.MaterialIndex = e->Model->meshes[i]->material->MatCBIndex;
+                //}
+                //
+                objConstants.MaterialIndex = e->Mat->MatCBIndex;
+                currObjectCB->copyData(e->ObjCBIndex[0], objConstants);
+            //}
 
             // Next FrameResource need to be updated too.
             e->NumFramesDirty--;

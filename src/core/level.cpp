@@ -515,7 +515,7 @@ bool Level::parseSky(const json& skyJson)
 
     XMStoreFloat4x4(&rItem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.f));
     rItem->TexTransform = MathHelper::identity4x4();
-    rItem->ObjCBIndex = amountGameObjects++;
+    rItem->ObjCBIndex.push_back(amountGameObjects++);
     rItem->Mat = renderResource->mMaterials[skyJson["Material"]].get();
     rItem->Model = renderResource->mModels["sphere"].get();
     rItem->renderType = RenderType::Sky;

@@ -184,10 +184,11 @@ struct RenderItem
     int NumFramesDirty = gNumFrameResources;
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
-    UINT ObjCBIndex = 0;
+    bool uniformObjCB = true;
+    std::vector<UINT>ObjCBIndex;
 
-    Material* Mat = nullptr;
     Model* Model = nullptr;
+    Material* Mat = nullptr;
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
