@@ -60,26 +60,11 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* dmap = new char[(long long)slen +1];
-        file.read(dmap, slen);
-        dmap[slen] = '\0';
+        char* matStr = new char[(long long)slen +1];
+        file.read(matStr, slen);
+        matStr[slen] = '\0';
 
-        slen = 0;
-        file.read((char*)(&slen), sizeof(short));
-
-        char* nmap = new char[(long long)slen + 1];
-        file.read(nmap, slen);
-        nmap[slen] = '\0';
-
-        slen = 0;
-        file.read((char*)(&slen), sizeof(short));
-
-        char* bmap = new char[(long long)slen + 1];
-        file.read(bmap, slen);
-        bmap[slen] = '\0';
-
-
-        delete[] dmap; delete[] nmap; delete[] bmap;
+        m->materialName = matStr;
 
         /*read number of vertices*/
         int vertCount = 0;
