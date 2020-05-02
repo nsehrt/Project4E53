@@ -121,15 +121,14 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "plant",
-            "Model": "plant",
-            "Name": "plant2",
+            "Model": "pinetree",
+            "Name": "tree1",
             "Position": [
                 -10.476417541503906,
-                1.3945168256759644,
+                3.3945168256759644,
                 10.991581916809082
             ],
-            "RenderType": "Default",
+            "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
                 70.77674865722656,
