@@ -30,7 +30,6 @@ void SoundEngine::init()
     isInit = true;
 }
 
-
 void SoundEngine::uninit()
 {
     for (auto& i : soundCollection)
@@ -52,7 +51,6 @@ void SoundEngine::uninit()
     isInit = false;
 }
 
-
 void SoundEngine::run()
 {
     /*logger*/
@@ -67,7 +65,6 @@ void SoundEngine::run()
 
     /*load all files*/
     int effectCounter = 0, musicCounter = 0;
-    
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(SOUND_PATH_MUSIC)))
     {
@@ -89,11 +86,11 @@ void SoundEngine::run()
         }
         else
         {
-            LOG(Severity::Warning, "Failed to load effect file " << entry.path().c_str() <<"!");
+            LOG(Severity::Warning, "Failed to load effect file " << entry.path().c_str() << "!");
         }
     }
 
-    LOG(Severity::Info, "Successfully loaded " << (musicCounter+effectCounter) << " audio files! (" << musicCounter << " tracks, " << effectCounter << " effects)");
+    LOG(Severity::Info, "Successfully loaded " << (musicCounter + effectCounter) << " audio files! (" << musicCounter << " tracks, " << effectCounter << " effects)");
 
     isLoaded = true;
 
@@ -106,9 +103,7 @@ void SoundEngine::run()
         update();
     }
 
-
     ServiceProvider::getLogger()->print<Severity::Info>("Shutting down audio engine.");
-
 }
 
 void SoundEngine::Stop()
@@ -116,11 +111,8 @@ void SoundEngine::Stop()
     looped = false;
 }
 
-
-
 bool SoundEngine::loadFile(const std::wstring& file, std::vector<BYTE>& data, WAVEFORMATEX** formatEx, unsigned int& length)
 {
-
     DWORD streamIndex = (DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM;
 
     /*open audio file*/
@@ -153,7 +145,6 @@ bool SoundEngine::loadFile(const std::wstring& file, std::vector<BYTE>& data, WA
         partType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
         partType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
         reader->SetCurrentMediaType(streamIndex, NULL, partType);
-
     }
 
     IMFMediaType* uncompressedType = nullptr;
@@ -190,7 +181,6 @@ bool SoundEngine::loadFile(const std::wstring& file, std::vector<BYTE>& data, WA
 
     return true;
 }
-
 
 bool SoundEngine::loadFile(const std::wstring& fileName, SoundType st)
 {
@@ -236,7 +226,6 @@ void SoundEngine::add(unsigned int audioGuid, const std::string& fileId)
     addQueue.push_back(std::move(data));
 }
 
-
 void SoundEngine::update()
 {
     std::lock_guard<std::mutex> lock(channelLock);
@@ -253,16 +242,12 @@ void SoundEngine::update()
 
         queueLock.unlock();
 
-
         if (soundCollection.find(data.fileId) == soundCollection.end() || data.id == 0)
         {
-
             LOG(Severity::Warning, "Trying to play unknown audio file: " << data.fileId << "!");
-
         }
         else
         {
-
             /*find open voice channel*/
             for (int i = 0; i < MAX_CHANNELS; i++)
             {
@@ -290,23 +275,19 @@ void SoundEngine::update()
                     ServiceProvider::getLogger()->print<Severity::Warning>("Failed to create xaudio2 source voice!");
                 }
             }
-
         }
     }
     else
     {
         queueLock.unlock();
     }
-    
 
     /*check queue and play if necessary*/
 
     for (auto& c : channels)
     {
-
         if (c->available == false)
         {
-
             c->timePlaying += audioTimer.DeltaTime();
 
             if (c->isPlaying == false)
@@ -338,13 +319,10 @@ void SoundEngine::update()
                     c->timePlaying = 0;
                     c->isPlaying = false;
                 }
-
             }
         }
     }
-
 }
-
 
 void SoundEngine::forceStop(unsigned int audioGuid)
 {

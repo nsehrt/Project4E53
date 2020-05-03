@@ -35,8 +35,10 @@ struct AudioInData
     std::string fileId = "";
 
     AudioInData(unsigned int _id, const std::string& _fileId) :
-        id(_id), fileId(_fileId) {}
-    AudioInData() : id(0), fileId(""){}
+        id(_id), fileId(_fileId)
+    {
+    }
+    AudioInData() : id(0), fileId("") {}
 };
 
 struct AudioData
@@ -63,7 +65,6 @@ public:
     SoundChannel() = default;
     friend class SoundEngine;
 };
-
 
 class SoundEngine
 {

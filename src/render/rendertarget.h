@@ -40,6 +40,4 @@ private:
     CD3DX12_GPU_DESCRIPTOR_HANDLE mGpuSrvHandle;
 
     Microsoft::WRL::ComPtr<ID3D12Resource> mOffscreenTexture = nullptr;
-
-
 };

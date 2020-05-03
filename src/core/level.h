@@ -73,10 +73,8 @@ private:
     std::vector<std::vector<GameObject*>> renderOrder;
     std::vector<std::vector<GameObject*>> shadowRenderOrder;
 
-
     bool exists(const nlohmann::json& j, const std::string& key)
     {
         return j.find(key) != j.end();
     }
-
 };

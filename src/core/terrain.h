@@ -5,7 +5,6 @@
 
 class Terrain
 {
-
 public:
 
     explicit Terrain(const json& terrainInfo);

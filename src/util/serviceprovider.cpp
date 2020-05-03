@@ -1,6 +1,5 @@
 #include "serviceprovider.h"
 
-
 std::shared_ptr<Logger<LogPolicy>>ServiceProvider::vsLogger = nullptr;
 
 std::shared_ptr<Settings>ServiceProvider::settings = nullptr;
@@ -15,8 +14,6 @@ std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<Ed
 std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 
 std::mutex ServiceProvider::audioLock;
-
-
 
 void ServiceProvider::setLoggingService(std::shared_ptr<Logger<LogPolicy>> providedFileLogger)
 {

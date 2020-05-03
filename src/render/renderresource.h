@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../util/d3dUtil.h"
-#include "../util/geogen.h" 
+#include "../util/geogen.h"
 #include "../core/camera.h"
 #include "../core/gametime.h"
 #include "../render/frameresource.h"
@@ -9,7 +9,6 @@
 #include "../render/rendertarget.h"
 #include "../render/sobel.h"
 #include <filesystem>
-
 
 #define MODEL_PATH "data/model"
 #define TEXTURE_PATH "data/texture"
@@ -20,7 +19,6 @@ using namespace DirectX::PackedVector;
 
 class RenderResource
 {
-
 public:
     explicit RenderResource(ComPtr<ID3D12DescriptorHeap> rtvHeap, ComPtr<ID3D12DescriptorHeap> dsvHeap)
     {
@@ -72,7 +70,6 @@ public:
     UINT mDsvDescriptorSize = 0;
     UINT mCbvSrvUavDescriptorSize = 0;
 
-
     ID3D12Device* device = nullptr;
     ID3D12GraphicsCommandList* cmdList = nullptr;
     ID3D12CommandQueue* cmdQueue = nullptr;
@@ -84,7 +81,7 @@ public:
     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
-    
+
     ShadowMap* getShadowMap()
     {
         return mShadowMap.get();
@@ -111,7 +108,6 @@ private:
     /*post process*/
     std::unique_ptr<RenderTarget> mRenderTarget = nullptr;
     std::unique_ptr<Sobel> mSobelFilter = nullptr;
-
 
     /*shadow map*/
 

@@ -11,8 +11,7 @@
 #include <map>
 #include <iomanip>
 
-
-/*USAGE: 
+/*USAGE:
  LOG(Severity::Info, "Var a = " << a);
 */
 #define LOG(sev, s )           \
@@ -21,7 +20,6 @@
    os_ << s;                   \
    ServiceProvider::getLogger()->print<sev>(os_.str().c_str());  \
 }
-
 
 enum Severity
 {
@@ -42,7 +40,6 @@ public:
     virtual void closeOutputStream() = 0;
     virtual void write(const std::string& msg) = 0;
 };
-
 
 /*implements vs output logger*/
 class LogPolicy : public LogPolicyAbstract

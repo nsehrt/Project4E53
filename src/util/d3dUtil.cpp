@@ -20,7 +20,6 @@ std::wstring DxException::toString()const
     return FunctionName + L" failed in " + FileName + L"; line " + std::to_wstring(LineNumber) + L"; error: " + msg;
 }
 
-
 bool d3dUtil::isKeyDown(int vKeyCode)
 {
     return (GetAsyncKeyState(vKeyCode) & 0x8000) != 0;
@@ -103,7 +102,7 @@ ComPtr<ID3DBlob> d3dUtil::CompileShader(
     ComPtr<ID3DBlob> byteCode = nullptr;
     ComPtr<ID3DBlob> errors;
     HRESULT hr = D3DCompileFromFile(fileName.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE,
-                            entryPoint.c_str(), target.c_str(), compileFlags, 0, &byteCode, &errors);
+                                    entryPoint.c_str(), target.c_str(), compileFlags, 0, &byteCode, &errors);
 
     if (errors != nullptr)
         OutputDebugStringA((char*)errors->GetBufferPointer());

@@ -29,8 +29,7 @@ public:
 
     ~GameObject() = default;
 
-
-    void update(const GameTime &gt);
+    void update(const GameTime& gt);
     bool draw();
     bool drawShadow();
     void drawHitbox();
@@ -39,12 +38,11 @@ public:
     std::unique_ptr<RenderItem> renderItem;
     GameObjectType gameObjectType = GameObjectType::Static;
 
-
     /*Transform getter/setter*/
     void setPosition(XMFLOAT3 _pos)
     {
         Position = _pos;
-        
+
         updateTransforms();
     }
 
@@ -114,7 +112,6 @@ public:
         return TextureRotation;
     }
 
-
     bool intersects(GameObject& obj);
     bool intersects(DirectX::BoundingBox& box);
     bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/
@@ -138,12 +135,10 @@ private:
     /*hitbox*/
     DirectX::BoundingBox hitBox;
 
-
     UINT objectCBSize = 0;
 
     bool exists(const nlohmann::json& j, const std::string& key)
     {
         return j.find(key) != j.end();
     }
-
 };

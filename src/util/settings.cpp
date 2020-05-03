@@ -4,7 +4,6 @@ using namespace tinyxml2;
 
 bool SettingsLoader::loadSettings(const std::string& path)
 {
-
     XMLDocument xmlDoc;
 
     XMLError eResult = xmlDoc.LoadFile(path.c_str());
@@ -99,7 +98,6 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.graphicSettings.ShadowEnabled = 1;
     }
 
-
     if (!setSetting(pGraphic, "SobelFilter", &settings.graphicSettings.SobelFilter))
         return false;
 
@@ -150,7 +148,7 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (settings.miscSettings.DebugEnabled != 0)
     {
         settings.miscSettings.DebugEnabled = 1;
-    }  
+    }
 
     if (!setSetting(pMisc, "DebugQuadEnabled", &settings.miscSettings.DebugQuadEnabled))
         return false;
@@ -182,7 +180,7 @@ bool SettingsLoader::setSetting(XMLElement* r, const char* id, int* target)
     XMLError eResult;
     XMLCheckExist(value);
     eResult = value->QueryIntText(target);
-    
+
     if (eResult != XML_SUCCESS)
     {
         return false;

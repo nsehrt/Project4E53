@@ -7,7 +7,6 @@
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "Pathcch.lib")
 
-
 bool LogPolicy::openOutputStream(const std::wstring& name)
 {
 #ifndef _DEBUG
@@ -16,7 +15,7 @@ bool LogPolicy::openOutputStream(const std::wstring& name)
     GetCurrentDirectory(MAX_PATH, NPath);
 
     std::wstringstream path;
-    path << NPath <<  L"\\logs";
+    path << NPath << L"\\logs";
 
     HRESULT hr = SHCreateDirectory(NULL, path.str().c_str());
 
@@ -33,17 +32,15 @@ bool LogPolicy::openOutputStream(const std::wstring& name)
     outputStream.precision(20);
 #endif // !_DEBUG
 
-
     return true;
 }
 
 void LogPolicy::closeOutputStream()
 {
 #ifndef _DEBUG
-    if(outputStream.is_open())
+    if (outputStream.is_open())
         outputStream.close();
 #endif // !_DEBUG
-
 }
 
 void LogPolicy::write(const std::string& msg)

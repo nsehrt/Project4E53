@@ -97,7 +97,7 @@ private:
 
     struct HUDElement
     {
-        HUDElement(TextureDescriptors a) : TexDescriptor(a){}
+        HUDElement(TextureDescriptors a) : TexDescriptor(a) {}
 
         TextureDescriptors TexDescriptor = TextureDescriptors::BUTTON_A;
         DirectX::SimpleMath::Vector2 NormalizedPosition = { 0.0f,0.0f };
@@ -143,5 +143,4 @@ private:
 
     std::unique_ptr<HUDElement> initHUDElement(TextureDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF = 1.0f);
     std::unique_ptr<FontElement> initFontElement(FontDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF = 1.0f);
-
 };

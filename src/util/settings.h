@@ -5,7 +5,7 @@
 #include <memory>
 
 #ifndef XMLCheckExist
-    #define XMLCheckExist(eResult) if(eResult == nullptr){return false;}
+#define XMLCheckExist(eResult) if(eResult == nullptr){return false;}
 #endif
 
 static int shadowMapSizes[] = { 512, 1024,2048,4096,8192 };
@@ -58,7 +58,6 @@ struct Misc
     int DebugQuadEnabled = true;
     int EditModeEnabled = false;
 };
-
 
 struct Settings
 {

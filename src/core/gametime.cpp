@@ -84,5 +84,4 @@ void GameTime::Tick()
     {
         mDeltaTime = 0.0;
     }
-
 }

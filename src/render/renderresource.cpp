@@ -21,7 +21,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     mRenderTarget = std::make_unique<RenderTarget>(
         device,
-        ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 
+        ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
         ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
         DXGI_FORMAT_R8G8B8A8_UNORM);
 
@@ -98,7 +98,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         {
             modelCounter++;
             mModels[entry.path().stem().string()] = std::move(mRet.model);
-            
+
             /*set per sub mesh material*/
             for (auto& e : mModels[entry.path().stem().string()]->meshes)
             {
@@ -130,7 +130,6 @@ void RenderResource::onResize()
 {
 }
 
-
 bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, TextureType type)
 {
     auto texMap = std::make_unique<Texture>();
@@ -149,16 +148,13 @@ bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, T
     {
         return false;
     }
-    
 }
 
 bool RenderResource::buildRootSignature()
 {
-
     auto staticSamplers = GetStaticSamplers();
 
     /*main root signature*/
-
 
     /*6 root parameter*/
     CD3DX12_ROOT_PARAMETER rootParameter[6];
@@ -210,7 +206,7 @@ bool RenderResource::buildRootSignature()
         serializedRootSignature->GetBufferPointer(),
         serializedRootSignature->GetBufferSize(),
         IID_PPV_ARGS(mMainRootSignature.GetAddressOf())
-        );
+    );
 
     if (hr != S_OK)
     {
@@ -242,9 +238,9 @@ bool RenderResource::buildPostProcessSignature()
     auto staticSamplers = GetStaticSamplers();
 
     CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter,
-                                                 (UINT)staticSamplers.size(),
-                                                 staticSamplers.data(),
-                                                 D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+                                            (UINT)staticSamplers.size(),
+                                            staticSamplers.data(),
+                                            D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
     ComPtr<ID3DBlob> serializedRootSig = nullptr;
     ComPtr<ID3DBlob> errorBlob = nullptr;
@@ -342,7 +338,6 @@ bool RenderResource::buildTerrainRootSignature()
 
 bool RenderResource::buildDescriptorHeap()
 {
-
     UINT texIndex = 0;
 
     /*SRV heap description*/
@@ -515,7 +510,6 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> RenderResource::GetStaticSample
 
 void RenderResource::buildShaders()
 {
-
     const D3D_SHADER_MACRO alphaTestDefines[] =
     {
         "ALPHA_TEST", "1",
@@ -555,21 +549,18 @@ void RenderResource::buildShaders()
 
     mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
-
-
 }
 
 #pragma endregion SHADER
 
 void RenderResource::buildInputLayouts()
 {
-
     mInputLayouts.push_back({
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    });
+                            });
 
     mInputLayouts.push_back({
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -578,10 +569,7 @@ void RenderResource::buildInputLayouts()
         { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
          {"TEXBLEND", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
                             });
-
 }
-
-
 
 #pragma region PSO
 
@@ -611,7 +599,7 @@ void RenderResource::buildPSOs()
     defaultPSODesc.NumRenderTargets = 1;
     defaultPSODesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     defaultPSODesc.SampleDesc.Count = 1;
-    defaultPSODesc.SampleDesc.Quality =  0;
+    defaultPSODesc.SampleDesc.Quality = 0;
     defaultPSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Default])));
 
@@ -632,7 +620,6 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultAlphaDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultAlpha])));
-
 
     /* default no normal mapping PSO */
     D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultNoNormalDesc = defaultPSODesc;
@@ -727,7 +714,6 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&smapAlphaPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::ShadowAlpha])));
 
-
     /*debug PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC debugPsoDesc = defaultPSODesc;
     debugPsoDesc.pRootSignature = mMainRootSignature.Get();
@@ -759,7 +745,6 @@ void RenderResource::buildPSOs()
         mShaders["skyPS"]->GetBufferSize()
     };
     ThrowIfFailed(device->CreateGraphicsPipelineState(&skyPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Sky])));
-
 
     /*hitbox PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC hitboxPSODesc = defaultPSODesc;
@@ -800,7 +785,6 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPSOs[RenderType::Composite])));
 
-
     /*sobel PSO*/
     D3D12_COMPUTE_PIPELINE_STATE_DESC sobelPSO = {};
 
@@ -812,8 +796,6 @@ void RenderResource::buildPSOs()
     sobelPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
     ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPSOs[RenderType::Sobel])));
-
-
 }
 
 #pragma endregion PSO
@@ -844,7 +826,7 @@ bool RenderResource::buildMaterials()
         material->MatCBIndex = matCounter;
 
         material->DiffuseAlbedo = XMFLOAT4(i["DiffuseAlbedo"][0], i["DiffuseAlbedo"][1],
-                                 i["DiffuseAlbedo"][2], i["DiffuseAlbedo"][3]);
+                                           i["DiffuseAlbedo"][2], i["DiffuseAlbedo"][3]);
         material->FresnelR0 = XMFLOAT3(i["FresnelR0"][0], i["FresnelR0"][1], i["FresnelR0"][2]);
         material->Roughness = i["Roughness"];
 
@@ -856,7 +838,6 @@ bool RenderResource::buildMaterials()
             LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing textures! Using default.");
 
             texName = "default.dds";
-            
         }
 
         if (mTextures.find(norName) == mTextures.end())
@@ -874,8 +855,6 @@ bool RenderResource::buildMaterials()
 
     return true;
 }
-
-
 
 void RenderResource::updateBuffers(const GameTime& gt)
 {
@@ -922,14 +901,11 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 
                 mShadowMap->setBoundsCenter(center);
             }
-
-
         }
         else
         {
             mShadowMap->setBoundsCenter(ServiceProvider::getEditSettings()->currentSelection->getPosition());
         }
-
     }
 
     /*TODO set shadow bounds to player center*/
@@ -974,17 +950,15 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 
 void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
 {
-
     auto currObjectCB = mCurrentFrameResource->ObjectCB.get();
 
     for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)
     {
         auto e = go.second->renderItem.get();
 
-        // Only update the cbuffer data if the constants have changed.  
+        // Only update the cbuffer data if the constants have changed.
         if (e->NumFramesDirty > 0)
         {
-
             for (int i = 0; i < e->Model->meshes.size(); i++)
             {
                 XMMATRIX world = XMLoadFloat4x4(&e->World);
@@ -1006,18 +980,14 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
                 currObjectCB->copyData(e->ObjCBIndex[i], objConstants);
             }
 
-
             // Next FrameResource need to be updated too.
             e->NumFramesDirty--;
         }
     }
-
 }
-
 
 void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
 {
-
     auto currMaterialBuffer = mCurrentFrameResource->MaterialBuffer.get();
     for (auto& e : ServiceProvider::getRenderResource()->mMaterials)
     {
@@ -1039,12 +1009,10 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
             mat->NumFramesDirty--;
         }
     }
-
 }
 
 void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 {
-
     XMMATRIX view = XMLoadFloat4x4(&mLightView);
     XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
 
@@ -1070,9 +1038,7 @@ void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();
     currPassCB->copyData(1, mShadowPassConstants);
-
 }
-
 
 void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
 {
@@ -1094,15 +1060,12 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     XMStoreFloat4x4(&mMainPassConstants.ShadowTransform, XMMatrixTranspose(XMLoadFloat4x4(&mShadowTransform)));
     mMainPassConstants.EyePosW = ServiceProvider::getActiveCamera()->getPosition3f();
 
-
-
     mMainPassConstants.RenderTargetSize = XMFLOAT2((float)ServiceProvider::getSettings()->displaySettings.ResolutionWidth, (float)ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
     mMainPassConstants.InvRenderTargetSize = XMFLOAT2(1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionWidth, 1.0f / ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
     mMainPassConstants.NearZ = 0.01f;
     mMainPassConstants.FarZ = 5000.0f;
     mMainPassConstants.TotalTime = gt.TotalTime();
     mMainPassConstants.DeltaTime = gt.DeltaTime();
-
 
     auto aLevel = ServiceProvider::getActiveLevel();
 
@@ -1123,18 +1086,15 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
             mMainPassConstants.Lights[i].FalloffEnd = aLevel->mCurrentLightObjects[i]->getFallOffEnd();
             mMainPassConstants.Lights[i].SpotPower = aLevel->mCurrentLightObjects[i]->getSpotPower();
         }
-
     }
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();
     currPassCB->copyData(0, mMainPassConstants);
-
 }
 
 /*Frame Resource*/
 void RenderResource::buildFrameResource()
 {
-
     for (int i = 0; i < gNumFrameResources; i++)
     {
         mFrameResources.push_back(std::make_unique<FrameResource>(device,
@@ -1144,7 +1104,6 @@ void RenderResource::buildFrameResource()
                                   (UINT)mMaterials.size(),
                                   250000 /*terrain vertices TODO*/));
     }
-
 }
 
 void RenderResource::cycleFrameResource()
@@ -1254,9 +1213,7 @@ void RenderResource::generateDefaultShapes()
     hitboxBox->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                              cmdList, indices.data(), ibByteSize, hitboxBox->IndexBufferUploader);
 
-
     mModels["box"]->boundingBoxMesh = std::move(hitboxBox);
-
 
     /*quad*/
 
@@ -1264,7 +1221,6 @@ void RenderResource::generateDefaultShapes()
     vertices.resize(quad.Vertices.size());
     indices.clear();
     indices.resize(quad.Indices32.size());
-
 
     for (size_t i = 0; i < quad.Vertices.size(); i++)
     {
@@ -1304,7 +1260,6 @@ void RenderResource::generateDefaultShapes()
 
     mQu->meshes.push_back(std::move(geoQuad));
     mModels["quad"] = std::move(mQu);
-
 
     /*grid*/
     vertices.clear();
@@ -1360,7 +1315,6 @@ void RenderResource::generateDefaultShapes()
     mGr->meshes.push_back(std::move(geoGrid));
     mModels["grid"] = std::move(mGr);
 
-
     /*grid hitbox*/
 
     XMFLOAT3 v;
@@ -1383,7 +1337,6 @@ void RenderResource::generateDefaultShapes()
     vertices.resize(boxMeshGrid.Vertices.size());
     indices.clear();
     indices.resize(boxMeshGrid.Indices32.size());
-
 
     for (size_t i = 0; i < boxMeshGrid.Vertices.size(); i++)
     {
@@ -1419,12 +1372,9 @@ void RenderResource::generateDefaultShapes()
     hitboxGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                               cmdList, indices.data(), ibByteSize, hitboxGrid->IndexBufferUploader);
 
-
     mModels["grid"]->boundingBoxMesh = std::move(hitboxGrid);
 
-
     /*sphere*/
-
 
     vertices.clear();
     vertices.resize(sphere.Vertices.size());
@@ -1493,7 +1443,6 @@ void RenderResource::generateDefaultShapes()
     indices.clear();
     indices.resize(boxMeshSp.Indices32.size());
 
-
     for (size_t i = 0; i < boxMeshSp.Vertices.size(); i++)
     {
         XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshSp.Vertices[i].Position), XMLoadFloat3(&mModels["sphere"]->boundingBox.Center)));
@@ -1528,11 +1477,9 @@ void RenderResource::generateDefaultShapes()
     hitboxSphere->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                                 cmdList, indices.data(), ibByteSize, hitboxSphere->IndexBufferUploader);
 
-
     mModels["sphere"]->boundingBoxMesh = std::move(hitboxSphere);
 
     /*cylinder*/
-
 
     vertices.clear();
     vertices.resize(cylinder.Vertices.size());
@@ -1587,7 +1534,6 @@ void RenderResource::generateDefaultShapes()
     mCyl->meshes.push_back(std::move(geoCyl));
     mModels["cylinder"] = std::move(mCyl);
 
-
     /*cylinder hitbox*/
 
     XMStoreFloat3(&mModels["cylinder"]->boundingBox.Center, 0.5f * (vMin + vMax));
@@ -1601,7 +1547,6 @@ void RenderResource::generateDefaultShapes()
     vertices.resize(boxMeshCyl.Vertices.size());
     indices.clear();
     indices.resize(boxMeshCyl.Indices32.size());
-
 
     for (size_t i = 0; i < boxMeshCyl.Vertices.size(); i++)
     {
@@ -1636,7 +1581,6 @@ void RenderResource::generateDefaultShapes()
 
     hitboxCyl->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                              cmdList, indices.data(), ibByteSize, hitboxCyl->IndexBufferUploader);
-
 
     mModels["cylinder"]->boundingBoxMesh = std::move(hitboxCyl);
 }

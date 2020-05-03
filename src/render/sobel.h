@@ -10,14 +10,12 @@ public:
                    UINT height,
                    DXGI_FORMAT format)
     {
-
         mDevice = device;
         mWidth = width;
         mHeight = height;
         mFormat = format;
 
         buildResource();
-
     };
 
     Sobel(const Sobel& rhs) = delete;
@@ -65,5 +63,4 @@ private:
     CD3DX12_GPU_DESCRIPTOR_HANDLE mGpuUavHandle;
 
     Microsoft::WRL::ComPtr<ID3D12Resource> mOutput = nullptr;
-
 };

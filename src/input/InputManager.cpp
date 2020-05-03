@@ -12,12 +12,10 @@ InputManager::InputManager()
 
     looped = true;
     inUse = -1;
-
 }
 
 InputManager::~InputManager()
 {
-
 }
 
 void InputManager::Loop()
@@ -39,10 +37,7 @@ void InputManager::Loop()
 
     CoUninitialize();
     ServiceProvider::getLogger()->print<Severity::Info>("Stopping the input manager.");
-
 }
-
-
 
 void InputManager::Stop()
 {
@@ -89,7 +84,7 @@ void InputManager::Update()
     inputData[currentWorkedOn] = EmptyInputData;
 
     //read controller
-    ControllerState *cs = controller->getState(0);
+    ControllerState* cs = controller->getState(0);
 
     if (!cs->isConnected)
     {
@@ -98,10 +93,9 @@ void InputManager::Update()
             ServiceProvider::getLogger()->print<Severity::Warning>("Unable to find active xinput controller!");
             return true;
         } ();
-        
+
         return;
     }
-
 
     /*buttons*/
     if (cs->state.Gamepad.wButtons != 0)
@@ -173,7 +167,6 @@ void InputManager::Update()
     inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbLY);
     inputData[currentWorkedOn].trigger[TRG::THUMB_RX] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRX);
     inputData[currentWorkedOn].trigger[TRG::THUMB_RY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRY);
-
 
     /*mark as finished*/
     lastFinished = currentWorkedOn;

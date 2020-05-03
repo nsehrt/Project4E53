@@ -42,7 +42,6 @@ GameObject::GameObject(const json& objectJson, int index)
         Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     }
 
-
     /*Texture Transforms*/
 
     if (exists(objectJson, "TexTranslation"))
@@ -130,7 +129,6 @@ GameObject::GameObject(const json& objectJson, int index)
 
             rItem->Model = renderResource->mModels["box"].get();
         }
-
     }
     else
     {
@@ -151,13 +149,11 @@ GameObject::GameObject(const json& objectJson, int index)
                 LOG(Severity::Warning, "GameObject " << name << " specified not loaded material " << objectJson["Material"] << "!");
                 rItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
             }
-
         }
         else
         {
             rItem->MaterialOverwrite = renderResource->mMaterials[objectJson["Material"]].get();
         }
-
     }
 
     ASSERT(rItem->Model->meshes.size() < 5);
@@ -204,8 +200,6 @@ GameObject::GameObject(const json& objectJson, int index)
         }
     }
 
-
-
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 
     renderItem = std::move(rItem);
@@ -222,7 +216,6 @@ GameObject::GameObject()
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
 }
 
 GameObject::GameObject(int index)
@@ -244,12 +237,10 @@ GameObject::GameObject(int index)
     tItem->Model = renderResource->mModels["box"].get();
 
     renderItem = std::move(tItem);
-
 }
 
 void GameObject::update(const GameTime& gt)
 {
-
     /*TODO*/
     if (renderItem->renderType != RenderType::Default && renderItem->renderType != RenderType::DefaultNoNormal) return;
     if (name != "box2" && name != "skull2")return;
@@ -278,7 +269,6 @@ bool GameObject::draw()
         return false;
     }
 
-
     /*frustum culling check*/
     if (isFrustumCulled)
     {
@@ -294,7 +284,6 @@ bool GameObject::draw()
         {
             return false;
         }
-
     }
 
     const auto renderResource = ServiceProvider::getRenderResource();
@@ -313,7 +302,6 @@ bool GameObject::draw()
 
         //D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
         //    (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;
-
 
         /*only if changed*/
         if (cachedObjCBAddress != objCBAddress)
@@ -335,7 +323,6 @@ bool GameObject::drawShadow()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-
     if (!isDrawEnabled || !isShadowEnabled) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
@@ -352,10 +339,10 @@ bool GameObject::drawShadow()
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
 
-       /* D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
-            (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;*/
+        /* D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
+             (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;*/
 
-        /*only if changed*/
+             /*only if changed*/
         if (cachedObjCBAddress != objCBAddress)
         {
             renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
@@ -372,15 +359,12 @@ bool GameObject::drawShadow()
 
 void GameObject::drawHitbox()
 {
-
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
-
 
     if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) return;
 
     const auto renderResource = ServiceProvider::getRenderResource();
-
 
     renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjRenderItem->Model->boundingBoxMesh.get()->VertexBufferView());
     renderResource->cmdList->IASetIndexBuffer(&gObjRenderItem->Model->boundingBoxMesh.get()->IndexBufferView());
@@ -391,9 +375,7 @@ void GameObject::drawHitbox()
     renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
     renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
-
 }
-
 
 bool GameObject::intersects(GameObject& obj)
 {
@@ -404,7 +386,6 @@ bool GameObject::intersects(GameObject& obj)
 
     return hitBox.Intersects(obj.hitBox);
 }
-
 
 bool GameObject::intersects(DirectX::BoundingBox& box)
 {
@@ -421,10 +402,8 @@ bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere)
     return hitBox.Intersects(sphere);
 }
 
-
 void GameObject::updateTransforms()
 {
-
     /*update transforms for constant buffer*/
     XMStoreFloat4x4(&renderItem->World, XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
                     XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
@@ -438,5 +417,4 @@ void GameObject::updateTransforms()
     renderItem->Model->boundingBox.Transform(hitBox, XMLoadFloat4x4(&renderItem->World));
 
     renderItem->NumFramesDirty = gNumFrameResources;
-
 }

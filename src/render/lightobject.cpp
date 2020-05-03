@@ -19,7 +19,6 @@ LightObject::LightObject(LightType type, const json& lightJson)
     /*directional light*/
     if (lightType == LightType::Directional)
     {
-
         if (!exists(lightJson, "Direction"))
         {
             LOG(Severity::Warning, "LightObject " << name << " misses Direction property!");
@@ -29,7 +28,6 @@ LightObject::LightObject(LightType type, const json& lightJson)
         properties.Direction.x = lightJson["Direction"][0];
         properties.Direction.y = lightJson["Direction"][1];
         properties.Direction.z = lightJson["Direction"][2];
-
     }
     /*point light*/
     else if (lightType == LightType::Point)
@@ -59,12 +57,10 @@ LightObject::LightObject(LightType type, const json& lightJson)
         }
 
         properties.FalloffEnd = lightJson["FallOffEnd"];
-
     }
     /*spot light*/
     else
     {
-
         if (!exists(lightJson, "Position"))
         {
             LOG(Severity::Warning, "LightObject " << name << " misses Position property!");
@@ -110,7 +106,6 @@ LightObject::LightObject(LightType type, const json& lightJson)
         properties.SpotPower = lightJson["SpotPower"];
     }
 
-
     updateHitbox();
 }
 
@@ -121,8 +116,6 @@ LightObject::LightObject()
 
 void LightObject::updateHitbox()
 {
-
     bounding.Center = getPosition();
     bounding.Radius = 0.5f;
-
 }

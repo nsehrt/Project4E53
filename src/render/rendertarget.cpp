@@ -35,7 +35,6 @@ void RenderTarget::buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE cpuSrvHandle, 
     buildDescriptors();
 }
 
-
 void RenderTarget::buildDescriptors()
 {
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -82,7 +81,6 @@ void RenderTarget::buildResource()
         &clearValue,
         IID_PPV_ARGS(&mOffscreenTexture)
     ));
-
 }
 
 void RenderTarget::onResize(UINT _width, UINT _height)
@@ -95,5 +93,4 @@ void RenderTarget::onResize(UINT _width, UINT _height)
         buildResource();
         buildDescriptors();
     }
-
 }

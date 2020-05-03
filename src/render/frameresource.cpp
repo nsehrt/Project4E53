@@ -1,9 +1,9 @@
 #include "frameresource.h"
 
 FrameResource::FrameResource(ID3D12Device* device,
-                             UINT passCount, 
-                             UINT objectCount, 
-                             UINT skinnedObjectCount, 
+                             UINT passCount,
+                             UINT objectCount,
+                             UINT skinnedObjectCount,
                              UINT materialCount,
                              UINT terrainVertexCount)
 {
@@ -22,5 +22,4 @@ FrameResource::FrameResource(ID3D12Device* device,
 
 FrameResource::~FrameResource()
 {
-
 }

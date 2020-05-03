@@ -75,7 +75,6 @@ struct InputSet
 
 class InputManager
 {
-
 public:
 
     InputManager();

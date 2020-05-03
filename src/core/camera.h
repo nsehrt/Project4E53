@@ -59,7 +59,6 @@ public:
 
     void roll(float angle);
 
-
     DirectX::BoundingFrustum getFrustum() const
     {
         return camFrustum;
@@ -78,7 +77,7 @@ protected:
     DirectX::BoundingBox baseHitbox;
     DirectX::BoundingFrustum camFrustum;
 
-    DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };   
+    DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mHitboxRotation = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 mHitboxScale = { 1.0f,1.0f,1.0f };
 
@@ -112,5 +111,4 @@ protected:
 
         baseHitbox.Transform(hitbox, DirectX::XMLoadFloat4x4(&mWorld));
     }
-
 };

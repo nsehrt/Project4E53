@@ -53,7 +53,6 @@ float DX12App::getAspectRatio()const
 
 void DX12App::setFullscreen(bool value)
 {
-
     if (value)
     {
         /*query for monitors*/
@@ -63,7 +62,7 @@ void DX12App::setFullscreen(bool value)
         IDXGIOutput* output = nullptr;
         if (adapter->EnumOutputs(ServiceProvider::getSettings()->displaySettings.Monitor, &output) == DXGI_ERROR_NOT_FOUND)
         {
-            HRESULT hr =  mSwapChain->SetFullscreenState(true, nullptr);
+            HRESULT hr = mSwapChain->SetFullscreenState(true, nullptr);
 
             if (hr != S_OK)
             {
@@ -85,7 +84,6 @@ void DX12App::setFullscreen(bool value)
 
             LOG(Severity::Info, "Switching to fullscreen mode on Monitor " << ServiceProvider::getSettings()->displaySettings.Monitor << ".");
         }
-
     }
     else
     {
@@ -93,7 +91,6 @@ void DX12App::setFullscreen(bool value)
 
         ServiceProvider::getLogger()->print<Severity::Info>("Leaving fullscreen mode.");
     }
-
 }
 
 bool DX12App::changeWindowSize()
@@ -103,7 +100,6 @@ bool DX12App::changeWindowSize()
 
     if (fX < 0) fX = 0;
     if (fY < 0) fY = 0;
-
 
     bool ret = SetWindowPos(mMainWindow, HWND_TOP, fX, fY, mWindowWidth, mWindowHeight, SWP_SHOWWINDOW);
 
@@ -137,7 +133,6 @@ int DX12App::run()
             update(mTimer);
             draw(mTimer);
         }
-
     }
 
     ServiceProvider::getLogger()->print<Severity::Info>("Main window has been flagged for destruction.");
@@ -150,7 +145,6 @@ int DX12App::run()
     return (int)msg.wParam;
 }
 
-
 bool DX12App::Initialize()
 {
     if (!initMainWindow())
@@ -162,7 +156,6 @@ bool DX12App::Initialize()
     {
         ServiceProvider::getLogger()->print<Severity::Info>("Created main window successfully.");
     }
-        
 
     if (!initDirect3D())
     {
@@ -187,7 +180,6 @@ bool DX12App::Initialize()
     return true;
 }
 
-
 void DX12App::createRtvAndDsvDescriptorHeaps()
 {
     D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
@@ -198,7 +190,6 @@ void DX12App::createRtvAndDsvDescriptorHeaps()
     ThrowIfFailed(mDevice->CreateDescriptorHeap(
         &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
 
-
     D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
     dsvHeapDesc.NumDescriptors = 1;
     dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
@@ -207,8 +198,6 @@ void DX12App::createRtvAndDsvDescriptorHeaps()
     ThrowIfFailed(mDevice->CreateDescriptorHeap(
         &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
 }
-
-
 
 void DX12App::onResize()
 {
@@ -254,7 +243,7 @@ void DX12App::onResize()
     depthStencilDesc.MipLevels = 1;
     depthStencilDesc.Format = mDepthStencilFormat;
     depthStencilDesc.SampleDesc.Count = 1;
-        depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.SampleDesc.Quality = 0;
     depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
@@ -296,23 +285,22 @@ void DX12App::onResize()
     mScissorRect = { 0, 0, mWindowWidth, mWindowHeight };
 }
 
-
 /***WIN32 Message Loop****/
 LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
-        // WM_ACTIVATE is sent when the window is activated or deactivated.  
-        // We pause the game when the window is deactivated and unpause it 
-        // when it becomes active.  
+        // WM_ACTIVATE is sent when the window is activated or deactivated.
+        // We pause the game when the window is deactivated and unpause it
+        // when it becomes active.
         case WM_ACTIVATE:
             return 0;
 
-            // WM_SIZE is sent when the user resizes the window.  
+            // WM_SIZE is sent when the user resizes the window.
         case WM_SIZE:
             if (mDevice)
             {
-                    onResize();
+                onResize();
             }
             return 0;
 
@@ -330,8 +318,8 @@ LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             PostQuitMessage(0);
             return 0;
 
-            // The WM_MENUCHAR message is sent when a menu is active and the user presses 
-            // a key that does not correspond to any mnemonic or accelerator key. 
+            // The WM_MENUCHAR message is sent when a menu is active and the user presses
+            // a key that does not correspond to any mnemonic or accelerator key.
         case WM_MENUCHAR:
             // Don't beep when we alt-enter.
             return MAKELRESULT(0, MNC_CLOSE);
@@ -351,7 +339,6 @@ LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
-
 
 bool DX12App::initMainWindow()
 {
@@ -382,14 +369,13 @@ bool DX12App::initMainWindow()
     if (ServiceProvider::getSettings()->displaySettings.WindowMode != 2)
     {
         mMainWindow = CreateWindow(L"MainWnd", mWindowCaption.c_str(),
-                            WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX ^ WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
+                                   WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX ^ WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
     }
     else
     {
         mMainWindow = CreateWindow(L"MainWnd", mWindowCaption.c_str(),
                                    WS_EX_TOPMOST | WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mAppInst, 0);
     }
-
 
     if (!mMainWindow)
     {
@@ -409,9 +395,6 @@ bool DX12App::initMainWindow()
 
     return true;
 }
-
-
-
 
 bool DX12App::initDirect3D()
 {
@@ -465,9 +448,7 @@ bool DX12App::initDirect3D()
     mdxgiFactory->MakeWindowAssociation(mMainWindow, DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_WINDOW_CHANGES);
 
     return true;
-
 }
-
 
 void DX12App::createCommandObjects()
 {
@@ -487,9 +468,7 @@ void DX12App::createCommandObjects()
         IID_PPV_ARGS(mCommandList.GetAddressOf())));
 
     mCommandList->Close();
-
 }
-
 
 void DX12App::createSwapChain()
 {
@@ -520,7 +499,6 @@ void DX12App::createSwapChain()
         mSwapChain.GetAddressOf()));
 }
 
-
 void DX12App::flushCommandQueue()
 {
     mCurrentFence++;
@@ -538,7 +516,6 @@ void DX12App::flushCommandQueue()
             WaitForSingleObject(eventHandle, INFINITE);
             CloseHandle(eventHandle);
         }
-
     }
 }
 
@@ -584,11 +561,8 @@ void DX12App::calculateFrameStats()
 
         frameCount = 0;
         timeElapsed += 0.25f;
-
     }
 }
-
-
 
 void DX12App::logAdapters()
 {
@@ -611,5 +585,4 @@ void DX12App::logAdapters()
 
         i++;
     }
-
 }

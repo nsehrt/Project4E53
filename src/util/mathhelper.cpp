@@ -33,7 +33,7 @@ XMVECTOR MathHelper::randUnitVec3()
 
     while (true)
     {
-        XMVECTOR v = XMVectorSet(MathHelper::randF(-1.0, 1.0f), MathHelper::randF(-1.0, 1.0f), MathHelper::randF(-1.0, 1.0f),0.0f);
+        XMVECTOR v = XMVectorSet(MathHelper::randF(-1.0, 1.0f), MathHelper::randF(-1.0, 1.0f), MathHelper::randF(-1.0, 1.0f), 0.0f);
 
         if (XMVector3Greater(XMVector3LengthSq(v), One))
             continue;
@@ -41,7 +41,6 @@ XMVECTOR MathHelper::randUnitVec3()
         return XMVector3Normalize(v);
     }
 }
-
 
 XMVECTOR MathHelper::randHemisphereUnitVec3(XMVECTOR n)
 {
@@ -56,7 +55,7 @@ XMVECTOR MathHelper::randHemisphereUnitVec3(XMVECTOR n)
             continue;
 
         if (XMVector3Less(XMVector3Dot(n, v), Zero))
-        continue;
+            continue;
 
         return XMVector3Normalize(v);
     }

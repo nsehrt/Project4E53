@@ -124,7 +124,7 @@ public:
             if (!gotResult)
                 std::rethrow_exception(spam);
         }
-        catch (const E & obj)
+        catch (const E& obj)
         {
             (void)obj;
             return true;

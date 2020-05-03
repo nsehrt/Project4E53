@@ -9,7 +9,6 @@ polls input and status data from up to 4 controllers
     ...
     *cstatei = i->getState(0);
 
-
 */
 
 #pragma once
@@ -24,7 +23,8 @@ polls input and status data from up to 4 controllers
   same controller is polled every CAP_BATTERY_POLL_TIME * COUNTOFCONTROLLER*/
 #define CAP_BATTERY_POLL_TIME 60.f
 
-struct ControllerState {
+struct ControllerState
+{
     XINPUT_STATE state;
     XINPUT_BATTERY_INFORMATION batteryInfo;
     XINPUT_CAPABILITIES capabilities;
@@ -93,26 +93,26 @@ XINPUT_CAPS_PMD_SUPPORTED 	Device supports plug-in modules. Note that plug-in mo
 XINPUT_CAPS_NO_NAVIGATION 	Device lacks menu navigation buttons (START, BACK, DPAD).
 */
 
-class ControllerInput{
+class ControllerInput
+{
+public:
+    ControllerInput();
+    ~ControllerInput();
 
-    public:
-        ControllerInput();
-        ~ControllerInput();
+    void Update();
+    void Enable();
+    void Disable();
+    bool isConnected(int index);
+    ControllerState* getState(int index);
+    float normalizeThumbs(int in);
+    float normalizeTriggers(int in);
 
-        void Update();
-        void Enable();
-        void Disable();
-        bool isConnected(int index);
-        ControllerState* getState(int index);
-        float normalizeThumbs(int in);
-        float normalizeTriggers(int in);
+private:
+    ControllerState controllers[MAX_CONTROLLERS];
+    void Update_Internal(bool init);
+    void resetControllerData(int index);
 
-    private:
-        ControllerState controllers[MAX_CONTROLLERS];
-        void Update_Internal(bool init);
-        void resetControllerData(int index);
-
-        float cTimer;
-        bool isInit;
-        int currentUpdate;
+    float cTimer;
+    bool isInit;
+    int currentUpdate;
 };

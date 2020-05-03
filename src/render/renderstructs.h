@@ -37,7 +37,7 @@ struct Material
 
     // Dirty flag indicating the material has changed and we need to update the constant buffer.
     // Because we have a material constant buffer for each FrameResource, we have to apply the
-    // update to each FrameResource.  Thus, when we modify a material we should set 
+    // update to each FrameResource.  Thus, when we modify a material we should set
     // NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
     int NumFramesDirty = gNumFrameResources;
 
@@ -46,7 +46,6 @@ struct Material
     DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
     float Roughness = .25f;
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
-
 };
 
 struct Mesh
@@ -57,7 +56,7 @@ struct Mesh
     Material* material = nullptr;
 
     // System memory copies.  Use Blobs because the vertex/index format can be generic.
-    // It is up to the client to cast appropriately.  
+    // It is up to the client to cast appropriately.
     Microsoft::WRL::ComPtr<ID3DBlob> VertexBufferCPU = nullptr;
     Microsoft::WRL::ComPtr<ID3DBlob> IndexBufferCPU = nullptr;
 
@@ -101,9 +100,7 @@ struct Mesh
         VertexBufferUploader = nullptr;
         IndexBufferUploader = nullptr;
     }
-
 };
-
 
 struct Model
 {
@@ -115,7 +112,6 @@ struct Model
 
     std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };
-
 
 struct Light
 {
@@ -195,5 +191,4 @@ struct RenderItem
 
     RenderType renderType = RenderType::Default;
     RenderType shadowType = RenderType::ShadowDefault;
-
 };

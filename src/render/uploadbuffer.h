@@ -5,7 +5,6 @@
 template<typename T>
 class UploadBuffer
 {
-
 public:
     UploadBuffer(ID3D12Device* _device, UINT _elementCount, bool isConstantBuffer) :
         mIsConstantBuffer(isConstantBuffer)

@@ -87,7 +87,6 @@ void EditModeHUD::init()
         CreateWICTextureFromFile(renderResource->device, resourceUpload, texPaths[i].c_str(),
                                  mTextures[i].ReleaseAndGetAddressOf());
 
-
         CreateShaderResourceView(renderResource->device, mTextures[i].Get(),
                                  m_resourceDescriptors->GetCpuHandle(i));
     }
@@ -96,16 +95,14 @@ void EditModeHUD::init()
     for (int i = 0; i < mFonts.size(); i++)
     {
         mFonts[i] = std::make_unique<SpriteFont>(renderResource->device, resourceUpload, fontPaths[i].c_str(),
-                                                 m_resourceDescriptors->GetCpuHandle(i + TextureDescriptors::TCount), 
+                                                 m_resourceDescriptors->GetCpuHandle(i + TextureDescriptors::TCount),
                                                  m_resourceDescriptors->GetGpuHandle(i + TextureDescriptors::TCount));
     }
-
 
     RenderTargetState rtState(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_D32_FLOAT);
 
     SpriteBatchPipelineStateDescription pd(rtState, &CommonStates::NonPremultiplied);
     mSpriteBatch = std::make_unique<SpriteBatch>(renderResource->device, resourceUpload, pd);
-
 
     auto uploadResourcesFinished = resourceUpload.End(renderResource->cmdQueue);
 
@@ -133,7 +130,7 @@ void EditModeHUD::init()
     mTexturePreview->SourceRectangle.top = 0;
     mTexturePreview->SourceRectangle.bottom = mTexturePreview->TextureSize.y;
 
-    mTexturePreview->NormalizedPosition = {0.93f,0.356f};
+    mTexturePreview->NormalizedPosition = { 0.93f,0.356f };
     mTexturePreview->ResolutionScale = resolutionScaleFactor * 0.06f;
 
     /*tool select window 0 - 3*/
@@ -164,19 +161,17 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::BUTTON_Y, { 0.915f,0.455f }, 0.7f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::RIGHT, { 0.96f,0.455f }, 0.6f));
 
-
     /*hud for game object mode 18-22*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_AXIS_WIN, { 0.905f, 0.825f }));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_AXIS_CURSOR, { 0.8525f, 0.734f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.837f, 0.7675f },0.5f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.837f, 0.7675f }, 0.5f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.8885f,  0.7675f }, 0.5f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.94f,  0.7675f }, 0.5f));
-
 
     mHUDElements.push_back(initHUDElement(TextureDescriptors::OBJECT_INFO_WIN, { 0.89f, 0.56f }));
 
     /*fonts 0-9*/
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f },0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.56f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.595f }, 0.2f));
 
@@ -207,7 +202,6 @@ void EditModeHUD::init()
     {
         mFontElements[i]->hudVisibility = HUDVisibility::BOTH_OBJECT;
     }
-
 }
 
 void EditModeHUD::update()
@@ -216,8 +210,8 @@ void EditModeHUD::update()
     auto editSetting = ServiceProvider::getEditSettings();
 
     /*show correct tool*/
-    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ? 
-        TextureDescriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ? 
+    mHUDElements[3]->TexDescriptor = editSetting->toolMode == EditTool::Height ?
+        TextureDescriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ?
         TextureDescriptors::PAINT : editSetting->toolMode == EditTool::ObjectTransform ?
         TextureDescriptors::OBJECT : editSetting->toolMode == EditTool::ObjectMeta ?
         TextureDescriptors::OBJECT_META : TextureDescriptors::CAMERA;
@@ -230,8 +224,8 @@ void EditModeHUD::update()
         if (editSetting->savedAnim > saveWindowLinger)
         {
             mHUDElements[4]->NormalizedPosition.y = MathHelper::lerpH(-saveWindowPos.y,
-                                                         saveWindowPos.y,
-                                                         1.0f - (editSetting->savedAnim - saveWindowLinger));
+                                                                      saveWindowPos.y,
+                                                                      1.0f - (editSetting->savedAnim - saveWindowLinger));
 
             mHUDElements[5]->NormalizedPosition.y = mHUDElements[4]->NormalizedPosition.y;
         }
@@ -255,7 +249,6 @@ void EditModeHUD::update()
                                                                                                               legendWindowPos.x,
                                                                                                               editSetting->legendAnim / editSetting->legenAnimDur);
         }
-
 
         /*radius slider*/
         mHUDElements[10]->NormalizedPosition.x = MathHelper::mapH(editSetting->BaseRadius,
@@ -298,7 +291,6 @@ void EditModeHUD::update()
                                                                             editSetting->heightIncreaseMax,
                                                                             0.0f,
                                                                             (float)mHUDElements[9]->TextureSize.x);
-
         }
         else if (editSetting->toolMode == EditTool::Paint)
         {
@@ -314,7 +306,6 @@ void EditModeHUD::update()
                                                                             0.0f,
                                                                             (float)mHUDElements[9]->TextureSize.x);
         }
-
     }
 
     /*update for object mode*/
@@ -358,7 +349,6 @@ void EditModeHUD::update()
         ss << s.z;
         mFontElements[5]->text = ss.str();
 
-
         ss.str(L"");
         ss << XMConvertToDegrees(r.x) << "*";
         mFontElements[6]->text = ss.str();
@@ -370,18 +360,13 @@ void EditModeHUD::update()
         ss.str(L"");
         ss << XMConvertToDegrees(r.z) << "*";
         mFontElements[8]->text = ss.str();
-
     }
-
-
 
     /*recalculate actual screen position*/
     for (auto& e : mHUDElements)
     {
-
         e->ScreenPosition.x = e->NormalizedPosition.x * dispSetting.ResolutionWidth;
         e->ScreenPosition.y = e->NormalizedPosition.y * dispSetting.ResolutionHeight;
-
     }
 
     for (auto& e : mFontElements)
@@ -392,7 +377,6 @@ void EditModeHUD::update()
 
     mTexturePreview->ScreenPosition.x = mTexturePreview->NormalizedPosition.x * dispSetting.ResolutionWidth;
     mTexturePreview->ScreenPosition.y = mTexturePreview->NormalizedPosition.y * dispSetting.ResolutionHeight;
-
 }
 
 void EditModeHUD::draw()
@@ -406,7 +390,7 @@ void EditModeHUD::draw()
     for (const auto& e : mHUDElements)
     {
         if (!e->Visible) continue;
-        
+
         if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (ServiceProvider::getEditSettings()->toolMode == EditTool::ObjectTransform || ServiceProvider::getEditSettings()->toolMode == EditTool::Camera || ServiceProvider::getEditSettings()->toolMode == EditTool::ObjectMeta)) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
@@ -414,13 +398,13 @@ void EditModeHUD::draw()
         if (e->hudVisibility == HUDVisibility::BOTH_OBJECT && (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)) continue;
 
         mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(e->TexDescriptor),
-                            e->TextureSize,
-                            e->ScreenPosition, 
-                            &e->SourceRectangle, 
-                            Colors::White, 
-                            e->Rotation,
-                            e->Origin,
-                            e->ResolutionScale * e->Scale);
+                           e->TextureSize,
+                           e->ScreenPosition,
+                           &e->SourceRectangle,
+                           Colors::White,
+                           e->Rotation,
+                           e->Origin,
+                           e->ResolutionScale * e->Scale);
     }
 
     /*draw font after textures*/
@@ -440,7 +424,6 @@ void EditModeHUD::draw()
                                     0.0f,
                                     f->Origin,
                                     f->ResolutionScale * f->Scale);
-
     }
 
     mSpriteBatch->End();
@@ -448,10 +431,8 @@ void EditModeHUD::draw()
     /*draw texture of paint mode*/
     if (ServiceProvider::getEditSettings()->toolMode == EditTool::Paint)
     {
-
         ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
         renderResource->cmdList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
 
         mSpriteBatch->Begin(renderResource->cmdList);
 
@@ -464,11 +445,8 @@ void EditModeHUD::draw()
                            mTexturePreview->Origin,
                            mTexturePreview->ResolutionScale * mTexturePreview->Scale);
 
-        
-
         mSpriteBatch->End();
     }
-
 }
 
 void EditModeHUD::commit()

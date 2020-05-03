@@ -23,7 +23,7 @@ enum class TranslationAxis : int
     XY,
     XZ,
     X,
-    Y, 
+    Y,
     Z
 };
 
@@ -48,7 +48,7 @@ struct EditSettings
     bool WireFrameOn = false;
 
     /*selection*/
-    DirectX::XMFLOAT2 Position = DirectX::XMFLOAT2(0.0f,0.0f);
+    DirectX::XMFLOAT2 Position = DirectX::XMFLOAT2(0.0f, 0.0f);
     float Velocity = 0.0f;
     float BaseVelocity = 150.0f;
     float BaseSelectSize = 60.0f;
@@ -58,7 +58,6 @@ struct EditSettings
     float FallOffRadius = 4.0f;
     float FallOffRatio = 0.5f;
 
-
     /*height*/
 
     float heightIncrease = 10.0f;
@@ -67,7 +66,6 @@ struct EditSettings
 
     const float heightIncreaseMin = 1.0f;
     const float heightIncreaseMax = 100.0f;
-
 
     /*paint*/
     float paintIncrease = 0.25f;

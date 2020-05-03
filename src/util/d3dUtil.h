@@ -26,7 +26,6 @@
 #include "../util/mathhelper.h"
 #include "../render/renderstructs.h"
 
-
 #ifndef ThrowIfFailed
 #define ThrowIfFailed(x)                                              \
 {                                                                     \
@@ -50,7 +49,7 @@
         OutputDebugString( os_.str().c_str() );\
         DebugBreak();\
     }
-#else 
+#else
 #define ASSERT(expr) //nothing
 #endif
 
@@ -105,7 +104,6 @@ public:
         CType.widen(str.data(), str.data() + str.length(), &wideStringBuffer[0]);
         return std::wstring(&wideStringBuffer[0], wideStringBuffer.size());
     }
-
 };
 
 class DxException
@@ -120,5 +118,4 @@ public:
     std::wstring FunctionName;
     std::wstring FileName;
     int LineNumber = -1;
-
 };

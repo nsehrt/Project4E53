@@ -7,9 +7,9 @@
             "Model": "",
             "Name": "man5",
             "Position": [
-                31.120441436767578,
-                3.187955379486084,
-                -5.0
+                12.231258392333984,
+                9.191841125488281,
+                6.484047889709473
             ],
             "RenderType": "DefaultTransparency",
             "Rotation": [
@@ -93,7 +93,7 @@
             "RenderType": "Default",
             "Rotation": [
                 0.0,
-                11710.423828125,
+                22477.419921875,
                 0.0
             ],
             "Scale": [
@@ -241,12 +241,12 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "tile0",
+            "Material": "default",
             "Model": "cylinder",
             "Name": "obj6",
             "Position": [
-                15.0,
-                1.100000023841858,
+                6.47245979309082,
+                -1.2204452753067017,
                 0.0
             ],
             "RenderType": "Default",
@@ -361,24 +361,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "mirror0",
-            "Model": "sphere",
+            "Model": "rock1",
             "Name": "obj8",
             "Position": [
-                15.0,
-                3.25,
-                0.0
+                26.54725456237793,
+                2.087811231613159,
+                -4.0857367515563965
             ],
             "RenderType": "Default",
             "Rotation": [
-                0.0,
-                0.0,
-                0.0
+                -22.058597564697266,
+                217.40444946289063,
+                1.2418910264968872
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                0.6026378870010376,
+                0.6026378870010376,
+                0.6026378870010376
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
@@ -481,23 +480,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "man",
+            "Model": "plant1",
             "Name": "man2",
             "Position": [
-                -13.0,
-                2.0,
-                -5.0
+                24.443002700805664,
+                1.443971872329712,
+                -10.108654975891113
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
-                0.0,
-                0.0,
-                0.0
+                -12.37310791015625,
+                -11.784597396850586,
+                9.620291709899902
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                1.0282877683639526,
+                1.0282877683639526,
+                1.0282877683639526
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
@@ -523,9 +522,9 @@
             "Model": "plant1",
             "Name": "man3",
             "Position": [
-                -15.0,
-                2.0,
-                -5.0
+                26.877775192260742,
+                1.6225779056549072,
+                -7.0477423667907715
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -559,24 +558,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "man",
-            "Model": "man",
+            "Model": "palm",
             "Name": "man4",
             "Position": [
-                -17.0,
-                2.0,
-                -5.0
+                22.892101287841797,
+                6.39008092880249,
+                -5.672651767730713
             ],
-            "RenderType": "Default",
+            "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                0.0,
+                200.66781616210938,
                 0.0
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                1.4339779615402222,
+                1.4791574478149414,
+                1.4339779615402222
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
@@ -681,14 +679,14 @@
             "Model": "skull",
             "Name": "skull2",
             "Position": [
-                2023.355224609375,
+                3902.808837890625,
                 14.0,
                 -5.0
             ],
             "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                11800.419921875,
+                22567.48046875,
                 0.0
             ],
             "Scale": [
@@ -719,10 +717,10 @@
             "DrawEnabled": true,
             "Material": "transp",
             "Model": "box",
-            "Name": "boxT",
+            "Name": "boxT4",
             "Position": [
                 -10.0,
-                2.0,
+                4.0,
                 -10.0
             ],
             "RenderType": "DefaultTransparency",
@@ -759,10 +757,10 @@
             "DrawEnabled": true,
             "Material": "transp",
             "Model": "box",
-            "Name": "boxT4",
+            "Name": "boxT",
             "Position": [
                 -10.0,
-                4.0,
+                2.0,
                 -10.0
             ],
             "RenderType": "DefaultTransparency",
@@ -837,24 +835,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "transp2",
-            "Model": "box",
+            "Model": "palm",
             "Name": "boxT3",
             "Position": [
-                -12.0,
-                4.0,
-                -10.0
+                24.47708511352539,
+                5.183620929718018,
+                -7.28956413269043
             ],
-            "RenderType": "DefaultTransparency",
+            "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                0.0,
+                15.210515975952148,
                 0.0
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                1.1072115898132324,
+                1.1072115898132324,
+                1.1072115898132324
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
@@ -880,9 +877,9 @@
             "Model": "pinetree",
             "Name": "Center",
             "Position": [
-                0.0,
-                0.0,
-                0.0
+                22.78307342529297,
+                3.0470218658447266,
+                -15.5738525390625
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -1003,28 +1000,13 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 4.186608791351318,
-                "FallOffStart": 1.7625625133514404,
+                "FallOffEnd": 3.683122158050537,
+                "FallOffStart": 1.5754098892211914,
                 "Name": "P3",
                 "Position": [
-                    -16.791902542114258,
-                    0.14020448923110962,
-                    -11.037111282348633
-                ],
-                "Strength": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            {
-                "FallOffEnd": 2.019467830657959,
-                "FallOffStart": 1.8981647491455078,
-                "Name": "P4",
-                "Position": [
-                    -16.69324493408203,
-                    0.3596000671386719,
-                    7.300782203674316
+                    15.043513298034668,
+                    4.035505294799805,
+                    3.2921042442321777
                 ],
                 "Strength": [
                     1.0,
@@ -1055,6 +1037,21 @@
                     2.3519322872161865,
                     -5.078141212463379,
                     3.6158125400543213
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
+                "FallOffEnd": 2.019467830657959,
+                "FallOffStart": 1.8981647491455078,
+                "Name": "P4",
+                "Position": [
+                    -16.69324493408203,
+                    0.3596000671386719,
+                    7.300782203674316
                 ],
                 "Strength": [
                     1.0,

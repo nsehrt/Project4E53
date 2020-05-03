@@ -12,5 +12,4 @@ public:
     ~FPSCamera() = default;
 
     void updateFPSCamera(InputData& input, const GameTime& gt);
-
 };

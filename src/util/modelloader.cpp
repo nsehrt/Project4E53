@@ -88,7 +88,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
             file.read((char*)(&vertices[j].Normal.y), sizeof(float));
             file.read((char*)(&vertices[j].Normal.z), sizeof(float));
 
-
             file.read((char*)(&vertices[j].TangentU.x), sizeof(float));
             file.read((char*)(&vertices[j].TangentU.y), sizeof(float));
             file.read((char*)(&vertices[j].TangentU.z), sizeof(float));
@@ -98,8 +97,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
             vMin = XMVectorMin(vMin, P);
             vMax = XMVectorMax(vMax, P);
-
-
         }
 
         /*number of indices*/
@@ -120,17 +117,17 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned short);
 
         m->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                            cmdList, vertices.data(), vbByteSize, m->VertexBufferUploader);
+                                                          cmdList, vertices.data(), vbByteSize, m->VertexBufferUploader);
 
         m->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                           cmdList, indices.data(), ibByteSize, m->IndexBufferUploader);
+                                                         cmdList, indices.data(), ibByteSize, m->IndexBufferUploader);
 
         m->VertexByteStride = sizeof(Vertex);
         m->VertexBufferByteSize = vbByteSize;
         m->IndexFormat = DXGI_FORMAT_R16_UINT;
         m->IndexBufferByteSize = ibByteSize;
         m->IndexCount = (UINT)indices.size();
-        
+
         mRet.model->meshes.push_back(std::move(m));
         indices.clear();
     }
@@ -148,7 +145,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     std::vector<Vertex> vertices(boxMesh.Vertices.size());
     std::vector<std::uint16_t> indices(boxMesh.Indices32.size());
 
-
     for (size_t i = 0; i < boxMesh.Vertices.size(); i++)
     {
         XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMesh.Vertices[i].Position), XMLoadFloat3(&mRet.model->boundingBox.Center)));
@@ -161,8 +157,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
     UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
     UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-
 
     std::unique_ptr<Mesh> hitbox = std::make_unique<Mesh>();
 
@@ -180,11 +174,10 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     CopyMemory(hitbox->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     hitbox->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                        cmdList, vertices.data(), vbByteSize, hitbox->VertexBufferUploader);
+                                                           cmdList, vertices.data(), vbByteSize, hitbox->VertexBufferUploader);
 
     hitbox->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
-                                                       cmdList, indices.data(), ibByteSize, hitbox->IndexBufferUploader);
-
+                                                          cmdList, indices.data(), ibByteSize, hitbox->IndexBufferUploader);
 
     mRet.model->boundingBoxMesh = std::move(hitbox);
     mRet.model->name = fileName.path().stem().string();

@@ -7,7 +7,7 @@ bool Level::load(const std::string& levelFile)
     LOG(Severity::Info, "Loading level " << levelFile << "...");
 
     /*open and parse the level file*/
-    std::ifstream levelStream (LEVEL_PATH + std::string("/") + levelFile);
+    std::ifstream levelStream(LEVEL_PATH + std::string("/") + levelFile);
 
     if (!levelStream.is_open())
     {
@@ -21,14 +21,15 @@ bool Level::load(const std::string& levelFile)
     {
         levelJson = json::parse(levelStream);
     }
-    catch(nlohmann::detail::parse_error){
+    catch (nlohmann::detail::parse_error)
+    {
         LOG(Severity::Critical, "Error while parsing level file! Check JSON validity!")
-        return false;
+            return false;
     }
     catch (...)
     {
         LOG(Severity::Critical, "Unknown error with level file!")
-        return false;
+            return false;
     }
 
     levelStream.close();
@@ -70,7 +71,6 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
-
     /*parse game objects*/
     if (!parseGameObjects(levelJson["GameObject"]))
     {
@@ -83,7 +83,7 @@ bool Level::load(const std::string& levelFile)
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
-    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountObjectCBs-1) << " GameObjects)");
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountObjectCBs - 1) << " GameObjects)");
 
     loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
 
@@ -103,14 +103,13 @@ void Level::update(const GameTime& gt)
 
     /*update order of light objects*/
 
-    auto cameraPos = aCamera->getPosition(); 
+    auto cameraPos = aCamera->getPosition();
 
     /*TODO mit Spielerposition statt Kameraposition*/
     std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
               mLightObjects.end() - AMOUNT_SPOT,
               [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b) -> bool
               {
-
                   XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                   XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
@@ -118,12 +117,11 @@ void Level::update(const GameTime& gt)
                   XMStoreFloat3(&result, XMVectorLess(lengthA, lengthB));
 
                   return result.x;
-
               });
 
-    for (UINT i = 3; i < (MAX_LIGHTS -1); i++)
+    for (UINT i = 3; i < (MAX_LIGHTS - 1); i++)
     {
-        if( i < mLightObjects.size() - 1)
+        if (i < mLightObjects.size() - 1)
             mCurrentLightObjects[i] = mLightObjects[i].get();
     }
 
@@ -139,7 +137,6 @@ void Level::update(const GameTime& gt)
             //LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
             ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
         }
-
     }
 
     if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
@@ -164,7 +161,6 @@ void Level::update(const GameTime& gt)
     //        }
     //    }
     //}
-
 }
 
 void Level::drawTerrain()
@@ -181,11 +177,10 @@ void Level::drawTerrain()
 
 void Level::draw()
 {
-
     UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 
     auto renderResource = ServiceProvider::getRenderResource();
-    
+
     /* Order of render items*/
     for (auto& v : renderOrder)
     {
@@ -201,22 +196,18 @@ void Level::draw()
     auto aCamera = ServiceProvider::getActiveCamera();
     XMVECTOR cameraPos = aCamera->getPosition();
 
-
     std::sort(renderOrder[(int)RenderType::DefaultTransparency].begin(),
               renderOrder[(int)RenderType::DefaultTransparency].end(),
               [&](const GameObject* a, const GameObject* b) -> bool
               {
-                  
                   XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                   XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
-                  
+
                   XMFLOAT3 result;
                   XMStoreFloat3(&result, XMVectorGreater(lengthA, lengthB));
 
                   return result.x;
-                  
-    });
-
+              });
 
     // draw the gameobjects
     UINT objectsDrawn = 0;
@@ -224,7 +215,7 @@ void Level::draw()
     for (UINT i = 0; i < renderOrder.size(); i++)
     {
         if (renderOrder[i].empty())continue;
-        if ( (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
+        if ((i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
             || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)
             || i == (UINT)RenderType::Terrain) continue;
 
@@ -252,15 +243,13 @@ void Level::draw()
             if (g->renderItem->renderType != RenderType::Sky)
             {
                 gameObject.second->drawHitbox();
-            }   
+            }
         }
     }
-
 }
 
 bool Level::save()
 {
-
     auto startTime = std::chrono::system_clock::now();
 
     /*save level file*/
@@ -286,7 +275,6 @@ bool Level::save()
 
     for (const auto& e : mLightObjects)
     {
-
         if (e->getLightType() == LightType::Directional)
         {
             json jElement;
@@ -337,7 +325,6 @@ bool Level::save()
 
             saveFile["Light"]["Spot"].push_back(jElement);
         }
-
     }
 
     /*gameobject*/
@@ -356,7 +343,6 @@ bool Level::save()
             e.second->renderItem->renderType == RenderType::ShadowDefault)
             continue;
 
-
         json jElement;
 
         jElement["Name"] = e.second->name;
@@ -366,7 +352,6 @@ bool Level::save()
         {
             jElement["Material"] = e.second->renderItem->MaterialOverwrite->Name;
         }
-        
 
         switch (e.second->renderItem->renderType)
         {
@@ -381,7 +366,6 @@ bool Level::save()
         jElement["DrawEnabled"] = e.second->isDrawEnabled;
         jElement["ShadowEnabled"] = e.second->isShadowEnabled;
         jElement["ShadowForced"] = e.second->isShadowForced;
-
 
         jElement["Position"][0] = e.second->getPosition().x;
         jElement["Position"][1] = e.second->getPosition().y;
@@ -407,10 +391,8 @@ bool Level::save()
         jElement["TexRotation"][1] = XMConvertToDegrees(e.second->getTextureRotation().y);
         jElement["TexRotation"][2] = XMConvertToDegrees(e.second->getTextureRotation().z);
 
-
         saveFile["GameObject"].push_back(jElement);
     }
-
 
     std::ofstream file(loadedLevel);
 
@@ -430,7 +412,6 @@ bool Level::save()
     }
 
     LOG(Severity::Info, "Successfully wrote level data to file " << loadedLevel << ".");
-
 
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
@@ -467,7 +448,7 @@ void Level::drawShadow()
     /*draw shadows*/
     for (UINT i = 0; i < shadowRenderOrder.size(); i++)
     {
-        renderResource->setPSO(RenderType((int)RenderType::ShadowDefault+i));
+        renderResource->setPSO(RenderType((int)RenderType::ShadowDefault + i));
 
         for (const auto& gameObject : shadowRenderOrder[i])
         {
@@ -475,9 +456,7 @@ void Level::drawShadow()
             {
                 objectsDrawn += gameObject->drawShadow();
             }
-                
         }
-
     }
 
     ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
@@ -485,7 +464,6 @@ void Level::drawShadow()
 
 void Level::calculateRenderOrder()
 {
-
     /*determine size of render orders*/
     std::vector<int> renderOrderSize((int)RenderType::COUNT);
     renderOrder.clear();
@@ -507,11 +485,8 @@ void Level::calculateRenderOrder()
         {
             shadowRenderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
         }
-
     }
-
 }
-
 
 bool Level::parseSky(const json& skyJson)
 {
@@ -546,7 +521,6 @@ bool Level::parseSky(const json& skyJson)
     defaultCubeMapStr = skyJson["DefaultCubeMap"];
     skyMaterial = skyJson["Material"];
 
-
     defaultCubeMapHandle = tempHandle;
 
     return true;
@@ -557,7 +531,9 @@ bool Level::parseLights(const json& lightJson)
     if (!exists(lightJson, "AmbientLight"))
     {
         LOG(Severity::Warning, "Level misses AmbientLight property!");
-    }else{
+    }
+    else
+    {
         AmbientLight.x = lightJson["AmbientLight"][0];
         AmbientLight.y = lightJson["AmbientLight"][1];
         AmbientLight.z = lightJson["AmbientLight"][2];
@@ -600,11 +576,9 @@ bool Level::parseLights(const json& lightJson)
 
             auto lightObj = std::make_unique<LightObject>(LightType::Point, entryJson);
 
-
             mLightObjects.push_back(std::move(lightObj));
         }
     }
-
 
     /*spot light*/
     lightCounter = 0;
@@ -634,7 +608,7 @@ bool Level::parseLights(const json& lightJson)
     mCurrentLightObjects[2] = mLightObjects[2].get();
 
     /*spot*/
-    mCurrentLightObjects[7] = mLightObjects[mLightObjects.size()-1].get();
+    mCurrentLightObjects[7] = mLightObjects[mLightObjects.size() - 1].get();
 
     return true;
 }
@@ -646,7 +620,6 @@ bool Level::parseCameras(const json& cameraJson) /*TODO*/
 
 bool Level::parseGameObjects(const json& gameObjectJson)
 {
-
     for (auto const& entryJson : gameObjectJson)
     {
         if (!exists(entryJson, "Name"))
@@ -672,9 +645,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
         amountObjectCBs += 4;// (int)gameObject->renderItem->Model->meshes.size();
 
         mGameObjects[gameObject->name] = std::move(gameObject);
-
     }
-
 
     auto debugObject = std::make_unique<GameObject>(amountObjectCBs);
 
@@ -713,7 +684,7 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->gameObjectType = GameObjectType::Terrain;
     terrainObject->renderItem->Model = mTerrain->terrainModel.get();
     terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["terrain"].get();
-    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 8, 
+    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 8,
                     (float)mTerrain->terrainSlices / 8, (float)mTerrain->terrainSlices / 8));
 
     mGameObjects["TERRAIN"] = std::move(terrainObject);

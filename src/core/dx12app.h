@@ -9,7 +9,6 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 
-
 class DX12App
 {
 protected:
@@ -98,7 +97,6 @@ protected:
     UINT mDsvDescriptorSize = 0;
     UINT mCbvSrvUavDescriptorSize = 0;
 
-
     std::wstring mWindowCaption = L"dx12 app";
     D3D_DRIVER_TYPE mDriverType = D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE;
     DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -108,5 +106,4 @@ protected:
 
     int priResX = 0;
     int priResY = 0;
-
 };

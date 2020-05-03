@@ -11,7 +11,7 @@ Terrain::Terrain(const json& terrainInfo)
 
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData grid = geoGen.CreateGrid((float)terrainSize, (float)terrainSize,
-                                                              terrainSlices, terrainSlices);
+                                                         terrainSlices, terrainSlices);
 
     /*create texture descriptor handles*/
     CD3DX12_GPU_DESCRIPTOR_HANDLE baseDescriptor(renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
@@ -23,11 +23,10 @@ Terrain::Terrain(const json& terrainInfo)
         textureStrings[i] = terrainInfo["BlendTextures"][i];
     }
 
-
     heightScale = terrainInfo["HeightScale"];
 
     /*load height map*/
-    mHeightMap.resize(terrainSlices * terrainSlices,0);
+    mHeightMap.resize(terrainSlices * terrainSlices, 0);
     std::vector<unsigned short> input(terrainSlices * terrainSlices);
 
     std::stringstream lFile;
@@ -38,7 +37,7 @@ Terrain::Terrain(const json& terrainInfo)
 
     if (!file.is_open())
     {
-        LOG(Severity::Error, "Unable to open height map file "<< lFile.str() << "!");
+        LOG(Severity::Error, "Unable to open height map file " << lFile.str() << "!");
         return;
     }
 
@@ -50,7 +49,6 @@ Terrain::Terrain(const json& terrainInfo)
 
     /*load blend map*/
     mBlendMap.resize(terrainSlices * terrainSlices, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
-  
 
     lFile.str("");
     lFile << terrainPath << terrainInfo["BlendMap"].get<std::string>();
@@ -66,7 +64,6 @@ Terrain::Terrain(const json& terrainInfo)
     else
     {
         LOG(Severity::Warning, "Unable to open blend map file " << lFile.str() << "! Proceeding with default values.");
-
     }
 
     file.close();
@@ -74,9 +71,8 @@ Terrain::Terrain(const json& terrainInfo)
     /*copy to actual height map*/
     for (UINT i = 0; i < (UINT)input.size(); i++)
     {
-        mHeightMap[i] = (input[i] / 65536.0f) * heightScale - (heightScale/2.0f);
+        mHeightMap[i] = (input[i] / 65536.0f) * heightScale - (heightScale / 2.0f);
     }
-
 
     mTerrainVertices.resize(grid.Vertices.size());
     std::vector<std::uint32_t> indices(grid.Indices32.size());
@@ -91,7 +87,6 @@ Terrain::Terrain(const json& terrainInfo)
         mTerrainVertices[i].TangentU = grid.Vertices[i].TangentU;
 
         mTerrainVertices[i].TexBlend = mBlendMap[i];
-        
     }
 
     indices.insert(indices.end(), std::begin(grid.Indices32), std::end(grid.Indices32));
@@ -109,16 +104,16 @@ Terrain::Terrain(const json& terrainInfo)
     geoGrid->IndexCount = (UINT)indices.size();
 
     geoGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(renderResource->device,
-                                                                renderResource->cmdList,
-                                                                mTerrainVertices.data(),
-                                                                vertexByteSize,
-                                                                geoGrid->VertexBufferUploader);
+                                                            renderResource->cmdList,
+                                                            mTerrainVertices.data(),
+                                                            vertexByteSize,
+                                                            geoGrid->VertexBufferUploader);
 
     geoGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(renderResource->device,
-                                                               renderResource->cmdList,
-                                                               indices.data(),
-                                                               indexByteSize,
-                                                               geoGrid->IndexBufferUploader);
+                                                           renderResource->cmdList,
+                                                           indices.data(),
+                                                           indexByteSize,
+                                                           geoGrid->IndexBufferUploader);
 
     terrainModel = std::make_unique<Model>();
     terrainModel->name = "TERRAIN";
@@ -133,7 +128,6 @@ Terrain::Terrain(const json& terrainInfo)
 
 bool Terrain::save()
 {
-
     auto fileHandle = std::fstream(terrainHeightMapFile.c_str(), std::ios::out | std::ios::binary);
 
     if (!fileHandle.is_open())
@@ -149,11 +143,10 @@ bool Terrain::save()
         temp = (unsigned short)((mHeightMap[i] + heightScale / 2) / heightScale * 65536);
         fileHandle.write(reinterpret_cast<const char*>(&temp), sizeof(unsigned short));
     }
- 
+
     fileHandle.close();
 
     LOG(Severity::Info, "Successfully wrote height map to file " << terrainHeightMapFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
-
 
     auto bFileHandle = std::fstream(terrainBlendMapFile.c_str(), std::ios::out | std::ios::binary);
 
@@ -217,7 +210,7 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
     float mainVertexHeight = getHeight(x, z) + increase;
 
     /*iterate over all vertices in the fallEnd * fallEnd cluster*/
-    int iterations = static_cast<int>(fallEnd*2 / cellSpacing) + 1;
+    int iterations = static_cast<int>(fallEnd * 2 / cellSpacing) + 1;
     if (iterations % 2 != 0) iterations++;
 
     float startX = x - (iterations / 2.0f * cellSpacing);
@@ -250,7 +243,7 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
             if (lengthBetween > fallEnd) continue;
 
             /*return if height already higher than height of main selected vertex*/
-            if (currentIndex > mHeightMap.size() -1|| currentIndex < 0) continue;
+            if (currentIndex > mHeightMap.size() - 1 || currentIndex < 0) continue;
 
             if (!setHeight)
             {
@@ -279,10 +272,8 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
 
             mHeightMap[currentIndex] = MathHelper::clampH(mHeightMap[currentIndex], -heightScale / 2.0f, heightScale / 2.0f);
             mTerrainVertices[currentIndex].Pos.y = mHeightMap[currentIndex];
-
         }
     }
-
 
     /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
@@ -293,7 +284,6 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
 
 void Terrain::paint(float x, float z, float fallStart, float fallEnd, float increase, int indexTexture, bool setZero)
 {
-
     /*iterate over all vertices in the fallEnd * fallEnd cluster*/
     int iterations = static_cast<int>(fallEnd * 2 / cellSpacing) + 1;
     if (iterations % 2 != 0) iterations++;
@@ -347,40 +337,37 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
 
             switch (indexTexture)
             {
-                case 0: 
+                case 0:
                     mBlendMap[currentIndex].x = MathHelper::clampH(mBlendMap[currentIndex].x + normIncrease,
-                                                                       0.0f, 1.0f);
-                        if (setZero) mBlendMap[currentIndex].x = 0.0f;
-                        break;
-                case 1: 
+                                                                   0.0f, 1.0f);
+                    if (setZero) mBlendMap[currentIndex].x = 0.0f;
+                    break;
+                case 1:
                     mBlendMap[currentIndex].y = MathHelper::clampH(mBlendMap[currentIndex].y + normIncrease,
-                                                                       0.0f, 1.0f);
+                                                                   0.0f, 1.0f);
                     if (setZero) mBlendMap[currentIndex].y = 0.0f;
                     break;
-                case 2: 
+                case 2:
                     mBlendMap[currentIndex].z = MathHelper::clampH(mBlendMap[currentIndex].z + normIncrease,
                                                                    0.0f, 1.0f);
                     if (setZero) mBlendMap[currentIndex].z = 0.0f;
                     break;
-                case 3: 
+                case 3:
                     mBlendMap[currentIndex].w = MathHelper::clampH(mBlendMap[currentIndex].w + normIncrease,
-                                                                       0.0f, 1.0f);
+                                                                   0.0f, 1.0f);
                     if (setZero) mBlendMap[currentIndex].w = 0.0f;
                     break;
             }
-            
+
             XMVECTOR t = XMVector4Normalize(XMLoadFloat4(&mBlendMap[currentIndex]));
             XMStoreFloat4(&mBlendMap[currentIndex], t);
             mTerrainVertices[currentIndex].TexBlend = mBlendMap[currentIndex];
-
         }
     }
-
 
     /*copy to gpu*/
     auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
     terrainVB->copyAll(mTerrainVertices[0]);
     holder = terrainModel->meshes[0]->VertexBufferGPU;
     terrainModel->meshes[0]->VertexBufferGPU = terrainVB->getResource();
-
 }

@@ -13,7 +13,6 @@ public:
     void Stop();
     void Tick();
 
-
 private:
     double mSecondsPerCount;
     double mDeltaTime;
