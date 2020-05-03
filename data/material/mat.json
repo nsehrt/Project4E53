@@ -125,7 +125,7 @@
         "NormalMap": "Bark_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.95
+        "Roughness" : 0.7
     },
     {
         "Name": "leaves",
@@ -133,7 +133,7 @@
         "NormalMap": "Leaves_n",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.8
+        "Roughness" : 0.7
     }
 
     ]

@@ -649,6 +649,13 @@ void P_4E53::update(const GameTime& gt)
 
 			}
 
+			if (inputData.Pressed(BTN::LEFT_THUMB))
+			{
+				editSettings->currentSelection->renderItem->Model = renderResource->mModels["plant"].get();
+				editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
+				editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+			}
+
 			/*switch object transform tool*/
 			if (inputData.Pressed(BTN::B))
 			{

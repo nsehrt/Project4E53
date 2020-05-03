@@ -64,7 +64,7 @@ float4 PS(VertexOut pin) : SV_Target
 
 
 #ifdef ALPHA_TEST
-    clip(diffuseAlbedo.a - 0.15f);
+    clip(diffuseAlbedo.a - 0.05f);
 #endif
     
 	// Interpolating normal can unnormalize it, so renormalize it.
@@ -103,10 +103,10 @@ float4 PS(VertexOut pin) : SV_Target
 	float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
     litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
 	
-    // Common convention to take alpha from diffuse albedo.
+    // // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a; 
     
 
-    //return litColor.rrra; /*grey scale image*/
+    // //return litColor.rrra; /*grey scale image*/
     return litColor;
 }

@@ -160,7 +160,9 @@ GameObject::GameObject(const json& objectJson, int index)
 
     }
 
-    for (int i = 0; i < rItem->Model->meshes.size(); i++)
+    ASSERT(rItem->Model->meshes.size() < 5);
+
+    for (int i = 0; i < 4; i++)//rItem->Model->meshes.size(); i++)
     {
         rItem->ObjCBIndex.push_back(index + i);
     }
@@ -237,6 +239,7 @@ GameObject::GameObject(int index)
 
     auto tItem = std::make_unique<RenderItem>();
     tItem->ObjCBIndex.push_back(index);
+    tItem->ObjCBIndex.push_back(0); tItem->ObjCBIndex.push_back(0); tItem->ObjCBIndex.push_back(0);
     tItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
     tItem->Model = renderResource->mModels["box"].get();
 

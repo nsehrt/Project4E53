@@ -519,7 +519,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "brush1",
+            "Model": "plant1",
             "Name": "man3",
             "Position": [
                 -15.0,

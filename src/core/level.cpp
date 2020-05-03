@@ -104,7 +104,7 @@ bool Level::load(const std::string& levelFile)
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
-    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountGameObjects-1) << " GameObjects)");
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountObjectCBs-1) << " GameObjects)");
 
     loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
 
@@ -520,7 +520,7 @@ bool Level::parseSky(const json& skyJson)
 
     XMStoreFloat4x4(&rItem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.f));
     rItem->TexTransform = MathHelper::identity4x4();
-    rItem->ObjCBIndex.push_back(amountGameObjects++);
+    rItem->ObjCBIndex.push_back(amountObjectCBs++);
     rItem->MaterialOverwrite = renderResource->mMaterials[skyJson["Material"]].get();
     rItem->Model = renderResource->mModels["sphere"].get();
     rItem->renderType = RenderType::Sky;
@@ -660,15 +660,15 @@ bool Level::parseGameObjects(const json& gameObjectJson)
             continue;
         }
 
-        auto gameObject = std::make_unique<GameObject>(entryJson, amountGameObjects);
-        amountGameObjects += (int)gameObject->renderItem->Model->meshes.size();
+        auto gameObject = std::make_unique<GameObject>(entryJson, amountObjectCBs);
+        amountObjectCBs += 4;// (int)gameObject->renderItem->Model->meshes.size();
 
         mGameObjects[gameObject->name] = std::move(gameObject);
 
     }
 
 
-    auto debugObject = std::make_unique<GameObject>(amountGameObjects);
+    auto debugObject = std::make_unique<GameObject>(amountObjectCBs);
 
     debugObject->name = "debug";
     debugObject->isFrustumCulled = false;
@@ -694,7 +694,7 @@ bool Level::parseTerrain(const json& terrainJson)
     mTerrain = std::make_unique<Terrain>(terrainJson);
 
     /*create terrain gameobject*/
-    auto terrainObject = std::make_unique<GameObject>(amountGameObjects++);
+    auto terrainObject = std::make_unique<GameObject>(amountObjectCBs++);
 
     terrainObject->name = "TERRAIN";
     terrainObject->isFrustumCulled = false;

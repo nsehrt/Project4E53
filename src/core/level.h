@@ -58,6 +58,7 @@ public:
 private:
 
     /* total amount of game objects in the level, includes sky sphere*/
+    int amountObjectCBs = 0;
     int amountGameObjects = 0;
 
     bool parseSky(const json& skyJson);
