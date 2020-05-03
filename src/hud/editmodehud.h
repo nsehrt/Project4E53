@@ -74,6 +74,7 @@ private:
         TOOL_AXIS_CURSOR,
         OBJECT_INFO_WIN,
         CAMERA,
+        OBJECT_META,
         TCount
     };
 
@@ -89,7 +90,9 @@ private:
         HEIGHT_AND_PAINT,
         HEIGHT,
         PAINT,
-        OBJECT
+        OBJECT,
+        OBJECT_META,
+        BOTH_OBJECT
     };
 
     struct HUDElement

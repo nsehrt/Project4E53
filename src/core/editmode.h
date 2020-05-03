@@ -6,7 +6,8 @@ enum class EditTool
 {
     Height,
     Paint,
-    Object,
+    ObjectTransform,
+    ObjectMeta,
     Camera
 };
 

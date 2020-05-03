@@ -414,9 +414,13 @@ void P_4E53::update(const GameTime& gt)
 			}
 			else if(editSettings->toolMode == EditTool::Paint)
 			{
-				editSettings->toolMode = EditTool::Object;
+				editSettings->toolMode = EditTool::ObjectTransform;
 			}
-			else if (editSettings->toolMode == EditTool::Object)
+			else if (editSettings->toolMode == EditTool::ObjectTransform)
+			{
+				editSettings->toolMode = EditTool::ObjectMeta;
+			}
+			else if (editSettings->toolMode == EditTool::ObjectMeta)
 			{
 				editSettings->toolMode = EditTool::Camera;
 				ServiceProvider::setActiveCamera(fpsCamera);
@@ -439,13 +443,17 @@ void P_4E53::update(const GameTime& gt)
 			{
 				editSettings->toolMode = EditTool::Height;
 			}
-			else if (editSettings->toolMode == EditTool::Object)
+			else if (editSettings->toolMode == EditTool::ObjectTransform)
 			{
 				editSettings->toolMode = EditTool::Paint;
 			}
+			else if (editSettings->toolMode == EditTool::ObjectMeta)
+			{
+				editSettings->toolMode = EditTool::ObjectTransform;
+			}
 			else if (editSettings->toolMode == EditTool::Camera)
 			{
-				editSettings->toolMode = EditTool::Object;
+				editSettings->toolMode = EditTool::ObjectMeta;
 				ServiceProvider::setActiveCamera(editCamera);
 			}
 		}
@@ -470,7 +478,9 @@ void P_4E53::update(const GameTime& gt)
 
 		/*edit selection update*/
 
-		if (editSettings->toolMode != EditTool::Object && editSettings->toolMode != EditTool::Camera)
+		if (editSettings->toolMode != EditTool::ObjectTransform && 
+			editSettings->toolMode != EditTool::ObjectMeta &&
+			editSettings->toolMode != EditTool::Camera)
 		{
 			editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
 
@@ -590,7 +600,7 @@ void P_4E53::update(const GameTime& gt)
 			}
 
 		}
-		else if (editSettings->toolMode == EditTool::Object)
+		else if (editSettings->toolMode == EditTool::ObjectTransform || editSettings->toolMode == EditTool::ObjectMeta)
 		{
 			/*switch to next object*/
 			if (inputData.Pressed(BTN::DPAD_RIGHT))
@@ -649,188 +659,195 @@ void P_4E53::update(const GameTime& gt)
 
 			}
 
-			if (inputData.Pressed(BTN::LEFT_THUMB))
+			if (editSettings->toolMode == EditTool::ObjectTransform)
 			{
-				editSettings->currentSelection->renderItem->Model = renderResource->mModels["plant"].get();
-				editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
-				editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
-			}
 
-			/*switch object transform tool*/
-			if (inputData.Pressed(BTN::B))
-			{
-				editSettings->objTransformTool = (ObjectTransformTool)(((int)editSettings->objTransformTool + 1) % 3);
-			}
+				/*switch object transform tool*/
+				if (inputData.Pressed(BTN::B))
+				{
+					editSettings->objTransformTool = (ObjectTransformTool)(((int)editSettings->objTransformTool + 1) % 3);
+				}
 
-			if (inputData.Pressed(BTN::A))
-			{
+				if (inputData.Pressed(BTN::A))
+				{
+					if (editSettings->objTransformTool == ObjectTransformTool::Translation)
+					{
+						editSettings->translationAxis = (TranslationAxis)(((int)editSettings->translationAxis + 1) % 5);
+					}
+					else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
+					{
+						editSettings->scaleAxis = (ScaleAxis)(((int)editSettings->scaleAxis + 1) % 4);
+					}
+					else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
+					{
+						editSettings->rotationAxis = (RotationAxis)(((int)editSettings->rotationAxis + 1) % 3);
+					}
+
+
+				}
+
+				/*reset to zero*/
+				if (inputData.Pressed(BTN::X))
+				{
+					if (editSettings->objTransformTool == ObjectTransformTool::Translation)
+					{
+						XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
+						switch (editSettings->translationAxis)
+						{
+							case TranslationAxis::XY: nPos.x = 0.0f; nPos.y = 0.0f; break;
+							case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
+							case TranslationAxis::X: nPos.x = 0.0f; break;
+							case TranslationAxis::Y: nPos.y = 0.0f; break;
+							case TranslationAxis::Z: nPos.z = 0.0f; break;
+						}
+
+						editSettings->currentSelection->setPosition(nPos);
+					}
+					else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
+					{
+						editSettings->currentSelection->setScale({ 1.0f,1.0f,1.0f });
+					}
+					else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
+					{
+						XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
+						switch (editSettings->rotationAxis)
+						{
+							case RotationAxis::X: nRotation.x = 0.0f; break;
+							case RotationAxis::Y: nRotation.y = 0.0f; break;
+							case RotationAxis::Z: nRotation.z = 0.0f; break;
+						}
+
+						editSettings->currentSelection->setRotation(nRotation);
+					}
+
+				}
+
+				/*rotation next 45 degrees*/
+				if (inputData.Pressed(BTN::Y) && editSettings->objTransformTool == ObjectTransformTool::Rotation)
+				{
+					XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
+
+					float rot;
+					switch (editSettings->rotationAxis)
+					{
+						case RotationAxis::X: rot = nRotation.x; break;
+						case RotationAxis::Y: rot = nRotation.y; break;
+						case RotationAxis::Z: rot = nRotation.z; break;
+					}
+
+					int counter = 0;
+					for (int i = 0; i < 16; i++)
+					{
+						counter++;
+
+						if (rot < ((counter - 1) * (XM_PIDIV4 / 2)))
+						{
+							break;
+						}
+					}
+
+					rot = counter == 16 ? 0.0f : counter * (XM_PIDIV4 / 2);
+
+					switch (editSettings->rotationAxis)
+					{
+						case RotationAxis::X: nRotation.x = rot; break;
+						case RotationAxis::Y: nRotation.y = rot; break;
+						case RotationAxis::Z: nRotation.z = rot;  break;
+					}
+
+					editSettings->currentSelection->setRotation(nRotation);
+				}
+
+				/*translation tool*/
 				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
 				{
-					editSettings->translationAxis = (TranslationAxis)(((int)editSettings->translationAxis + 1) % 5);
-				}
-				else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
-				{
-					editSettings->scaleAxis = (ScaleAxis)(((int)editSettings->scaleAxis + 1) % 4);
-				}
-				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
-				{
-					editSettings->rotationAxis = (RotationAxis)(((int)editSettings->rotationAxis + 1) % 3);
-				}
 
-				
-			}
-
-			/*reset to zero*/
-			if (inputData.Pressed(BTN::X))
-			{
-				if (editSettings->objTransformTool == ObjectTransformTool::Translation)
-				{
 					XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
+
+					float thumbX = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
+					float thumbY = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
+
+
 					switch (editSettings->translationAxis)
 					{
-						case TranslationAxis::XY: nPos.x = 0.0f; nPos.y = 0.0f; break;
-						case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
-						case TranslationAxis::X: nPos.x = 0.0f; break;
-						case TranslationAxis::Y: nPos.y = 0.0f; break;
-						case TranslationAxis::Z: nPos.z = 0.0f; break;
+						case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
+						case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
+						case TranslationAxis::X: nPos.x += thumbX; break;
+						case TranslationAxis::Y: nPos.y += thumbY; break;
+						case TranslationAxis::Z: nPos.z += thumbY; break;
 					}
+
 
 					editSettings->currentSelection->setPosition(nPos);
+
 				}
-				else if (editSettings->objTransformTool == ObjectTransformTool::Scale)
+
+				/*scale and rotation tool*/
+				if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
 				{
-					editSettings->currentSelection->setScale({ 1.0f,1.0f,1.0f });
-				}
-				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
-				{
-					XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
-					switch (editSettings->rotationAxis)
+					/*which trigger pressed more*/
+
+					float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
+						-inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
+
+
+					/*scale*/
+					if (editSettings->objTransformTool == ObjectTransformTool::Scale)
 					{
-						case RotationAxis::X: nRotation.x = 0.0f; break;
-						case RotationAxis::Y: nRotation.y = 0.0f; break;
-						case RotationAxis::Z: nRotation.z = 0.0f; break;
+
+						XMFLOAT3 nScale = editSettings->currentSelection->getScale();
+
+						float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
+
+						switch (editSettings->scaleAxis)
+						{
+							case ScaleAxis::XYZ:
+								nScale.x += increase;
+								nScale.y += increase;
+								nScale.z += increase;
+								break;
+							case ScaleAxis::X: nScale.x += increase; break;
+							case ScaleAxis::Y: nScale.y += increase; break;
+							case ScaleAxis::Z: nScale.z += increase; break;
+						}
+
+
+						editSettings->currentSelection->setScale(nScale);
+
+						/*rotation*/
+					}
+					else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
+					{
+
+						XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
+
+						float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
+
+						switch (editSettings->rotationAxis)
+						{
+							case RotationAxis::X: nRotation.x += increase; if (nRotation.x > XM_2PI) nRotation.x -= XM_2PI; break;
+							case RotationAxis::Y: nRotation.y += increase; if (nRotation.y > XM_2PI) nRotation.y -= XM_2PI; break;
+							case RotationAxis::Z: nRotation.z += increase; if (nRotation.z > XM_2PI) nRotation.z -= XM_2PI; break;
+						}
+
+
+						editSettings->currentSelection->setRotation(nRotation);
+
 					}
 
-					editSettings->currentSelection->setRotation(nRotation);
+
 				}
 
 			}
-
-			/*rotation next 45 degrees*/
-			if (inputData.Pressed(BTN::Y) && editSettings->objTransformTool == ObjectTransformTool::Rotation)
+			else if (editSettings->toolMode == EditTool::ObjectMeta)
 			{
-				XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
 
-				float rot;
-				switch (editSettings->rotationAxis)
-				{
-					case RotationAxis::X: rot = nRotation.x; break;
-					case RotationAxis::Y: rot = nRotation.y; break;
-					case RotationAxis::Z: rot = nRotation.z; break;
-				}
-
-				int counter = 0;
-				for (int i = 0; i < 16; i++)
-				{
-					counter++;
-
-					if (rot < ((counter-1) * (XM_PIDIV4 / 2)))
-					{
-						break;
-					}
-				}
-
-				rot = counter == 16 ? 0.0f : counter * (XM_PIDIV4 / 2);
-
-				switch (editSettings->rotationAxis)
-				{
-					case RotationAxis::X: nRotation.x = rot; break;
-					case RotationAxis::Y: nRotation.y = rot; break;
-					case RotationAxis::Z: nRotation.z = rot;  break;
-				}
-
-				editSettings->currentSelection->setRotation(nRotation);
-			}
-
-			/*translation tool*/
-			if (editSettings->objTransformTool == ObjectTransformTool::Translation)
-			{
-
-				XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
-
-				float thumbX = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
-				float thumbY = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
-
-
-				switch (editSettings->translationAxis)
-				{
-					case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
-					case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
-					case TranslationAxis::X: nPos.x += thumbX; break;
-					case TranslationAxis::Y: nPos.y += thumbY; break;
-					case TranslationAxis::Z: nPos.z += thumbY; break;
-				}
-
-
-				editSettings->currentSelection->setPosition(nPos);
-
-			}
-
-			/*scale and rotation tool*/
-			if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
-			{
-				/*which trigger pressed more*/
-
-				float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
-					-inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
-
-
-				/*scale*/
-				if (editSettings->objTransformTool == ObjectTransformTool::Scale)
-				{
-
-					XMFLOAT3 nScale = editSettings->currentSelection->getScale();
-
-					float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
-
-					switch (editSettings->scaleAxis)
-					{
-						case ScaleAxis::XYZ: 
-							nScale.x += increase;
-							nScale.y += increase;
-							nScale.z += increase;
-							break;
-						case ScaleAxis::X: nScale.x += increase; break;
-						case ScaleAxis::Y: nScale.y += increase; break;
-						case ScaleAxis::Z: nScale.z += increase; break;
-					}
-
-
-					editSettings->currentSelection->setScale(nScale);
-
-				/*rotation*/
-				}
-				else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
-				{
-
-					XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
-
-					float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
-
-					switch (editSettings->rotationAxis)
-					{
-						case RotationAxis::X: nRotation.x += increase; if (nRotation.x > XM_2PI) nRotation.x -= XM_2PI; break;
-						case RotationAxis::Y: nRotation.y += increase; if (nRotation.y > XM_2PI) nRotation.y -= XM_2PI; break;
-						case RotationAxis::Z: nRotation.z += increase; if (nRotation.z > XM_2PI) nRotation.z -= XM_2PI; break;
-					}
-
-
-					editSettings->currentSelection->setRotation(nRotation);
-
-				}
+				
 
 
 			}
+
+
 
 		}
 
@@ -839,7 +856,9 @@ void P_4E53::update(const GameTime& gt)
 
 		/*common camera update for paint & height*/
 
-		if (editSettings->toolMode != EditTool::Object && editSettings->toolMode != EditTool::Camera)
+		if (editSettings->toolMode != EditTool::ObjectTransform && 
+			editSettings->toolMode != EditTool::ObjectMeta &&
+			editSettings->toolMode != EditTool::Camera)
 		{
 			zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -50.0f * gt.DeltaTime();
 
@@ -857,7 +876,7 @@ void P_4E53::update(const GameTime& gt)
 			editLight->setFallOffEnd(editSettings->BaseRadius);
 		}
 		/*camera update for object mode*/
-		else if(editSettings->toolMode == EditTool::Object)
+		else if(editSettings->toolMode == EditTool::ObjectTransform || editSettings->toolMode == EditTool::ObjectMeta)
 		{
 			zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -50.0f * gt.DeltaTime();
 
