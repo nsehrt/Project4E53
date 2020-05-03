@@ -841,8 +841,114 @@ void P_4E53::update(const GameTime& gt)
 			}
 			else if (editSettings->toolMode == EditTool::ObjectMeta)
 			{
+				if (inputData.Pressed(BTN::RIGHT_THUMB))
+				{
+					editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
+					editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
+					editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
+					editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
+					editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+					editSettings->currentSelection->isDrawEnabled = false;
+					editSettings->currentSelection->isShadowEnabled = false;
+					editSettings->currentSelection->isShadowForced = false;
+					editSettings->currentSelection->isCollisionEnabled= true;
 
-				
+					activeLevel->calculateRenderOrder();
+				}
+				else if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+				{
+
+					bool next = false;
+
+					for (const auto& m : renderResource->mModels)
+					{
+						if (next && m.second->name != "")
+						{
+							editSettings->currentSelection->renderItem->Model = m.second.get();
+							next = false;
+							break;
+						}
+
+						if (m.second.get() == editSettings->currentSelection->renderItem->Model)
+						{
+							next = true;
+						}
+					}
+
+					if (next)
+					{
+						editSettings->currentSelection->renderItem->Model = renderResource->mModels.begin()->second.get();
+					}
+					
+					std::string mName = editSettings->currentSelection->renderItem->Model->name;
+
+					if (mName == "box" || mName == "grid" || mName == "sphere" || mName == "cylinder" || mName == "quad")
+					{
+						editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
+					}
+					else
+					{
+						editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
+					}
+					
+					editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+					
+				}
+				else if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+				{
+
+						Model* temp = nullptr;
+
+						for (const auto& m : renderResource->mModels)
+						{
+
+							if (m.second.get() == editSettings->currentSelection->renderItem->Model)
+							{
+								break;
+							}
+
+							if (m.second->name != "")
+							{
+								temp = m.second.get();
+							}
+							
+						}
+
+						if (!temp)
+						{
+							for (const auto& m : renderResource->mModels)
+							{
+								temp = m.second.get();
+							}
+						}
+
+						editSettings->currentSelection->renderItem->Model = temp;
+
+						std::string mName = editSettings->currentSelection->renderItem->Model->name;
+
+						if (mName == "box" || mName == "grid" || mName == "sphere" || mName == "cylinder" || mName == "quad")
+						{
+							editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
+						}
+						else
+						{
+							editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
+						}
+
+						editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+				}
+				else if (inputData.Pressed(BTN::A) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+				{
+					switch (editSettings->currentSelection->renderItem->renderType)
+					{
+						case RenderType::Default: editSettings->currentSelection->renderItem->renderType = RenderType::DefaultAlpha; break;
+						case RenderType::DefaultAlpha: editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency; break;
+						case RenderType::DefaultTransparency: editSettings->currentSelection->renderItem->renderType = RenderType::DefaultNoNormal; break;
+						case RenderType::DefaultNoNormal: editSettings->currentSelection->renderItem->renderType = RenderType::Default; break;
+					}
+					activeLevel->calculateRenderOrder();
+				}
 
 
 			}

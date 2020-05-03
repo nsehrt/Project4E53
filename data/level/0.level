@@ -2,26 +2,27 @@
     "GameObject": [
         {
             "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "plant",
+            "DrawEnabled": false,
+            "Material": "invWall",
+            "Model": "",
             "Name": "man5",
             "Position": [
-                11.804293632507324,
-                2.5308077335357666,
+                28.072296142578125,
+                3.749291181564331,
                 -5.0
             ],
-            "RenderType": "Default",
+            "RenderType": "DefaultTransparency",
             "Rotation": [
                 0.0,
                 0.0,
                 0.0
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                9.579070091247559,
+                6.062520980834961,
+                0.30439436435699463
             ],
-            "ShadowEnabled": true,
+            "ShadowEnabled": false,
             "ShadowForced": false,
             "TexRotation": [
                 0.0,
@@ -29,9 +30,9 @@
                 0.0
             ],
             "TexScale": [
-                1.0,
-                1.0,
-                1.0
+                9.579070091247559,
+                6.062520980834961,
+                0.30439436435699463
             ],
             "TexTranslation": [
                 0.0,
@@ -92,7 +93,7 @@
             "RenderType": "Default",
             "Rotation": [
                 0.0,
-                5870.56005859375,
+                8704.3447265625,
                 0.0
             ],
             "Scale": [
@@ -131,7 +132,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                3.342280626296997,
+                3.3422787189483643,
                 -10.339578628540039
             ],
             "Scale": [
@@ -320,13 +321,13 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "default",
+            "Material": "tile0",
             "Model": "grid",
             "Name": "GRID",
             "Position": [
-                0.0,
-                -5.0,
-                0.0
+                0.12213318794965744,
+                -3.9562201499938965,
+                -1.2417504787445068
             ],
             "RenderType": "Default",
             "Rotation": [
@@ -335,9 +336,9 @@
                 0.0
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                0.33036404848098755,
+                0.33036404848098755,
+                0.33036404848098755
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
@@ -680,14 +681,14 @@
             "Model": "skull",
             "Name": "skull2",
             "Position": [
-                1003.6050415039063,
+                1498.3223876953125,
                 14.0,
                 -5.0
             ],
             "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                5960.51904296875,
+                8794.33984375,
                 0.0
             ],
             "Scale": [
@@ -1002,13 +1003,13 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 0.892630398273468,
-                "FallOffStart": 0.6284196972846985,
-                "Name": "P4",
+                "FallOffEnd": 1.823933482170105,
+                "FallOffStart": 0.9534052610397339,
+                "Name": "P2",
                 "Position": [
-                    22.963550567626953,
-                    1.1144559383392334,
-                    -9.946073532104492
+                    3.2911369800567627,
+                    -4.758332252502441,
+                    3.2368478775024414
                 ],
                 "Strength": [
                     1.0,
@@ -1017,12 +1018,12 @@
                 ]
             },
             {
-                "FallOffEnd": 0.6000000238418579,
-                "FallOffStart": 0.35444313287734985,
-                "Name": "P2",
+                "FallOffEnd": 2.5234174728393555,
+                "FallOffStart": 1.3608520030975342,
+                "Name": "P3",
                 "Position": [
                     0.0,
-                    -6.621850490570068,
+                    -6.140995979309082,
                     0.0
                 ],
                 "Strength": [
@@ -1047,18 +1048,18 @@
                 ]
             },
             {
-                "FallOffEnd": 5.0,
-                "FallOffStart": 4.0,
-                "Name": "P3",
+                "FallOffEnd": 2.019467830657959,
+                "FallOffStart": 1.8981647491455078,
+                "Name": "P4",
                 "Position": [
-                    10.0,
-                    2.0,
-                    10.0
+                    -16.69324493408203,
+                    0.3596000671386719,
+                    7.300782203674316
                 ],
                 "Strength": [
-                    0.0,
-                    0.5,
-                    0.800000011920929
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             }
         ],

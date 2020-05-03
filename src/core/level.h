@@ -39,6 +39,8 @@ public:
 
     void drawShadow();
 
+    void calculateRenderOrder();
+
     std::unique_ptr<Terrain> mTerrain;
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;

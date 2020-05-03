@@ -431,6 +431,7 @@ void EditModeHUD::draw()
         if (f->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
         if (f->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
         if (f->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform)continue;
+        if (f->hudVisibility == HUDVisibility::BOTH_OBJECT && (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)) continue;
 
         mFonts[f->font]->DrawString(mSpriteBatch.get(),
                                     f->text.c_str(),

@@ -78,28 +78,7 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
-
-    /*determine size of render orders*/
-    std::vector<int> renderOrderSize((int)RenderType::COUNT);
-
-    for (const auto& gameOject : mGameObjects)
-    {
-        renderOrderSize[(int)gameOject.second->renderItem->renderType]++;
-        renderOrderSize[(int)gameOject.second->renderItem->shadowType]++;
-    }
-
-    for (int i = 0; i < renderOrderSize.size(); i++)
-    {
-        if (i < (int)RenderType::COUNT - 2)
-        {
-            renderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
-        }
-        else
-        {
-            shadowRenderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
-        }
-       
-    }
+    calculateRenderOrder();
 
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
@@ -502,6 +481,35 @@ void Level::drawShadow()
     }
 
     ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
+}
+
+void Level::calculateRenderOrder()
+{
+
+    /*determine size of render orders*/
+    std::vector<int> renderOrderSize((int)RenderType::COUNT);
+    renderOrder.clear();
+    shadowRenderOrder.clear();
+
+    for (const auto& gameOject : mGameObjects)
+    {
+        renderOrderSize[(int)gameOject.second->renderItem->renderType]++;
+        renderOrderSize[(int)gameOject.second->renderItem->shadowType]++;
+    }
+
+    for (int i = 0; i < renderOrderSize.size(); i++)
+    {
+        if (i < (int)RenderType::COUNT - 2)
+        {
+            renderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
+        }
+        else
+        {
+            shadowRenderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
+        }
+
+    }
+
 }
 
 
