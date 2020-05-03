@@ -637,8 +637,6 @@ void RenderResource::buildPSOs()
     /* default no normal mapping PSO */
     D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultNoNormalDesc = defaultPSODesc;
 
-    //defaultNoNormalDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
     defaultNoNormalDesc.VS =
     {
         reinterpret_cast<BYTE*>(mShaders["defaultNoNormalVS"]->GetBufferPointer()),
@@ -676,7 +674,7 @@ void RenderResource::buildPSOs()
     ThrowIfFailed(device->CreateGraphicsPipelineState(&terrainWFPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::TerrainWireFrame])));
 
     /* Transparency PSO*/
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC transparencyPSODesc = defaultPSODesc;
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC transparencyPSODesc = defaultAlphaDesc;
 
     D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc;
     transparencyBlendDesc.BlendEnable = true;
