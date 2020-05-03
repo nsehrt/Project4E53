@@ -847,6 +847,7 @@ void P_4E53::update(const GameTime& gt)
 					editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
 					editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
 					editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
+					editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
 					editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
 					editSettings->currentSelection->isDrawEnabled = false;
 					editSettings->currentSelection->isShadowEnabled = false;
@@ -942,10 +943,18 @@ void P_4E53::update(const GameTime& gt)
 				{
 					switch (editSettings->currentSelection->renderItem->renderType)
 					{
-						case RenderType::Default: editSettings->currentSelection->renderItem->renderType = RenderType::DefaultAlpha; break;
-						case RenderType::DefaultAlpha: editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency; break;
-						case RenderType::DefaultTransparency: editSettings->currentSelection->renderItem->renderType = RenderType::DefaultNoNormal; break;
-						case RenderType::DefaultNoNormal: editSettings->currentSelection->renderItem->renderType = RenderType::Default; break;
+						case RenderType::Default:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultAlpha; 
+													editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+													break;
+						case RenderType::DefaultAlpha:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
+														editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+														break;
+						case RenderType::DefaultTransparency:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultNoNormal;
+																editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
+																break;
+						case RenderType::DefaultNoNormal:	editSettings->currentSelection->renderItem->renderType = RenderType::Default;
+															editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
+															break;
 					}
 					activeLevel->calculateRenderOrder();
 				}
