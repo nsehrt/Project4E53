@@ -547,7 +547,7 @@ void DX12App::calculateFrameStats()
     if ((mTimer.TotalTime() - timeElapsed) >= 0.25f)
     {
         float fps = (float)frameCount * 4;
-        float mspf = 250.0f / fps;
+        float mspf = 1000.0f / fps;
 
         wstring fpsStr = to_wstring(fps);
         wstring mspfStr = to_wstring(mspf);

@@ -921,7 +921,11 @@ void P_4E53::update(const GameTime& gt)
                 {
                     
                     json newGO = editSettings->currentSelection->toJson();
-                    newGO["Name"] = newGO["Name"].get<std::string>() + "_1";
+
+                    while (activeLevel->mGameObjects.find(newGO["Name"]) != activeLevel->mGameObjects.end())
+                    {
+                        newGO["Name"] = newGO["Name"].get<std::string>() + "_1";
+                    }
 
                     activeLevel->addGameObject(newGO);
 
