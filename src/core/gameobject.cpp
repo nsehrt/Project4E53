@@ -363,6 +363,7 @@ void GameObject::drawHitbox()
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
     if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) return;
+    if (!isCollisionEnabled) return;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -375,6 +376,59 @@ void GameObject::drawHitbox()
     renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
     renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
+}
+
+json GameObject::toJson()
+{
+    json jElement;
+
+    jElement["Name"] = name;
+    jElement["Model"] = gameObjectType != GameObjectType::Wall ? renderItem->Model->name : "";
+
+    if (renderItem->MaterialOverwrite != nullptr)
+    {
+        jElement["Material"] = renderItem->MaterialOverwrite->Name;
+    }
+
+    switch (renderItem->renderType)
+    {
+        case RenderType::Default: jElement["RenderType"] = "Default"; break;
+        case RenderType::DefaultAlpha: jElement["RenderType"] = "DefaultAlpha"; break;
+        case RenderType::DefaultNoNormal: jElement["RenderType"] = "DefaultNoNormal"; break;
+        case RenderType::DefaultTransparency: jElement["RenderType"] = "DefaultTransparency"; break;
+        default: LOG(Severity::Warning, "GameObject with impossible RenderType"); break;
+    }
+
+    jElement["CollisionEnabled"] = isCollisionEnabled;
+    jElement["DrawEnabled"] = isDrawEnabled;
+    jElement["ShadowEnabled"] = isShadowEnabled;
+    jElement["ShadowForced"] = isShadowForced;
+
+    jElement["Position"][0] = getPosition().x;
+    jElement["Position"][1] = getPosition().y;
+    jElement["Position"][2] = getPosition().z;
+
+    jElement["Scale"][0] = getScale().x;
+    jElement["Scale"][1] = getScale().y;
+    jElement["Scale"][2] = getScale().z;
+
+    jElement["Rotation"][0] = XMConvertToDegrees(getRotation().x);
+    jElement["Rotation"][1] = XMConvertToDegrees(getRotation().y);
+    jElement["Rotation"][2] = XMConvertToDegrees(getRotation().z);
+
+    jElement["TexTranslation"][0] = getTextureTranslation().x;
+    jElement["TexTranslation"][1] = getTextureTranslation().y;
+    jElement["TexTranslation"][2] = getTextureTranslation().z;
+
+    jElement["TexScale"][0] = getTextureScale().x;
+    jElement["TexScale"][1] = getTextureScale().y;
+    jElement["TexScale"][2] = getTextureScale().z;
+
+    jElement["TexRotation"][0] = XMConvertToDegrees(getTextureRotation().x);
+    jElement["TexRotation"][1] = XMConvertToDegrees(getTextureRotation().y);
+    jElement["TexRotation"][2] = XMConvertToDegrees(getTextureRotation().z);
+
+    return jElement;
 }
 
 bool GameObject::intersects(GameObject& obj)

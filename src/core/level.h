@@ -41,6 +41,13 @@ public:
 
     void calculateRenderOrder();
 
+    void addGameObject(json goJson)
+    {
+        mGameObjects[goJson["Name"]] = std::make_unique<GameObject>(goJson, amountObjectCBs);
+        amountObjectCBs += 4;
+        calculateRenderOrder();
+    }
+
     std::unique_ptr<Terrain> mTerrain;
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;

@@ -436,7 +436,7 @@ void P_4E53::update(const GameTime& gt)
         }
 
         /*wireframe on/off*/
-        if (inputData.Pressed(BTN::LEFT_THUMB))
+        if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->toolMode == EditTool::Camera)
         {
             editSettings->WireFrameOn = !editSettings->WireFrameOn;
         }
@@ -791,8 +791,13 @@ void P_4E53::update(const GameTime& gt)
                     }
                 }
             }
+
+            /****Object Meta Mode*/
+            /*********************/
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
+
+                /*switch to invisible wall*/
                 if (inputData.Pressed(BTN::RIGHT_THUMB))
                 {
                     editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
@@ -808,6 +813,8 @@ void P_4E53::update(const GameTime& gt)
 
                     activeLevel->calculateRenderOrder();
                 }
+
+                /*switch model*/
                 else if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     bool next = false;
@@ -843,6 +850,7 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
                     }
 
+                    editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                 }
                 else if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
@@ -883,8 +891,11 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
                     }
 
+                    editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                 }
+
+                /*switch render type*/
                 else if (inputData.Pressed(BTN::A) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     switch (editSettings->currentSelection->renderItem->renderType)
@@ -903,6 +914,55 @@ void P_4E53::update(const GameTime& gt)
                             break;
                     }
                     activeLevel->calculateRenderOrder();
+                }
+
+                /*copy to new object*/
+                else if (inputData.Pressed(BTN::Y) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                {
+                    
+                    json newGO = editSettings->currentSelection->toJson();
+                    newGO["Name"] = newGO["Name"].get<std::string>() + "_1";
+
+                    activeLevel->addGameObject(newGO);
+
+                    UINT counter = 0;
+                    for (const auto& e : activeLevel->mGameObjects)
+                    {
+                        if (e.second->name == newGO["Name"])
+                        {
+                            editSettings->currentSelection = e.second.get();
+                            editSettings->currentSelectionIndex = counter;
+                        }
+                        counter++;
+                    }
+
+                }
+
+                /*game object property*/
+                else if (inputData.Pressed(BTN::DPAD_UP))
+                {
+                    
+                    switch (editSettings->gameObjectProperty)
+                    {
+                        case GameObjectProperty::Collision: editSettings->gameObjectProperty = GameObjectProperty::Draw; break;
+                        case GameObjectProperty::Draw: editSettings->gameObjectProperty = GameObjectProperty::Shadow; break;
+                        case GameObjectProperty::Shadow: editSettings->gameObjectProperty = GameObjectProperty::ShadowForce; break;
+                        case GameObjectProperty::ShadowForce: editSettings->gameObjectProperty = GameObjectProperty::Collision; break;
+                    }
+
+                }
+
+                else if (inputData.Pressed(BTN::LEFT_THUMB))
+                {
+
+                    switch (editSettings->gameObjectProperty)
+                    {
+                        case GameObjectProperty::Collision: editSettings->currentSelection->isCollisionEnabled = !editSettings->currentSelection->isCollisionEnabled;  break;
+                        case GameObjectProperty::Draw: editSettings->currentSelection->isDrawEnabled = !editSettings->currentSelection->isDrawEnabled;  break;
+                        case GameObjectProperty::Shadow: editSettings->currentSelection->isShadowEnabled = !editSettings->currentSelection->isShadowEnabled;  break;
+                        case GameObjectProperty::ShadowForce: editSettings->currentSelection->isShadowForced = !editSettings->currentSelection->isShadowForced;  break;
+                    }
+
                 }
             }
         }

@@ -34,6 +34,8 @@ public:
     bool drawShadow();
     void drawHitbox();
 
+    json toJson();
+
     std::string name;
     std::unique_ptr<RenderItem> renderItem;
     GameObjectType gameObjectType = GameObjectType::Static;

@@ -159,7 +159,7 @@ private:
     PassConstants mMainPassConstants;
     PassConstants mShadowPassConstants;
 
-    const UINT MAX_GAME_OBJECTS = 512;
+    const UINT MAX_GAME_OBJECTS = 2048;
 
     void buildFrameResource();
 

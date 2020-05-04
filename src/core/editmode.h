@@ -42,6 +42,14 @@ enum class RotationAxis : int
     Z
 };
 
+enum class GameObjectProperty : int
+{
+    Collision,
+    Draw,
+    Shadow,
+    ShadowForce
+};
+
 struct EditSettings
 {
     EditTool toolMode = EditTool::Height;
@@ -91,6 +99,9 @@ struct EditSettings
     const float translationIncreaseBase = 10.0f;
     const float scaleIncreaseBase = 2.0f;
     const float rotationIncreaseBase = XM_PIDIV2;
+
+    /*game object meta tool*/
+    GameObjectProperty gameObjectProperty = GameObjectProperty::Collision;
 
     /*gui*/
     float savedAnim = 0.0f;

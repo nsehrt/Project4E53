@@ -83,7 +83,7 @@ bool Level::load(const std::string& levelFile)
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
-    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << (amountObjectCBs - 1) << " GameObjects)");
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << amountGameObjects << " GameObjects)");
 
     loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
 
@@ -126,7 +126,7 @@ void Level::update(const GameTime& gt)
     }
 
     /*TODO Collision test*/
-
+    if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     for (const auto& gameObj : mGameObjects)
     {
         if (gameObj.second->gameObjectType != GameObjectType::Static &&
@@ -343,55 +343,7 @@ bool Level::save()
             e.second->renderItem->renderType == RenderType::ShadowDefault)
             continue;
 
-        json jElement;
-
-        jElement["Name"] = e.second->name;
-        jElement["Model"] = e.second->gameObjectType != GameObjectType::Wall ? e.second->renderItem->Model->name : "";
-
-        if (e.second->renderItem->MaterialOverwrite != nullptr)
-        {
-            jElement["Material"] = e.second->renderItem->MaterialOverwrite->Name;
-        }
-
-        switch (e.second->renderItem->renderType)
-        {
-            case RenderType::Default: jElement["RenderType"] = "Default"; break;
-            case RenderType::DefaultAlpha: jElement["RenderType"] = "DefaultAlpha"; break;
-            case RenderType::DefaultNoNormal: jElement["RenderType"] = "DefaultNoNormal"; break;
-            case RenderType::DefaultTransparency: jElement["RenderType"] = "DefaultTransparency"; break;
-            default: continue; break;
-        }
-
-        jElement["CollisionEnabled"] = e.second->isCollisionEnabled;
-        jElement["DrawEnabled"] = e.second->isDrawEnabled;
-        jElement["ShadowEnabled"] = e.second->isShadowEnabled;
-        jElement["ShadowForced"] = e.second->isShadowForced;
-
-        jElement["Position"][0] = e.second->getPosition().x;
-        jElement["Position"][1] = e.second->getPosition().y;
-        jElement["Position"][2] = e.second->getPosition().z;
-
-        jElement["Scale"][0] = e.second->getScale().x;
-        jElement["Scale"][1] = e.second->getScale().y;
-        jElement["Scale"][2] = e.second->getScale().z;
-
-        jElement["Rotation"][0] = XMConvertToDegrees(e.second->getRotation().x);
-        jElement["Rotation"][1] = XMConvertToDegrees(e.second->getRotation().y);
-        jElement["Rotation"][2] = XMConvertToDegrees(e.second->getRotation().z);
-
-        jElement["TexTranslation"][0] = e.second->getTextureTranslation().x;
-        jElement["TexTranslation"][1] = e.second->getTextureTranslation().y;
-        jElement["TexTranslation"][2] = e.second->getTextureTranslation().z;
-
-        jElement["TexScale"][0] = e.second->getTextureScale().x;
-        jElement["TexScale"][1] = e.second->getTextureScale().y;
-        jElement["TexScale"][2] = e.second->getTextureScale().z;
-
-        jElement["TexRotation"][0] = XMConvertToDegrees(e.second->getTextureRotation().x);
-        jElement["TexRotation"][1] = XMConvertToDegrees(e.second->getTextureRotation().y);
-        jElement["TexRotation"][2] = XMConvertToDegrees(e.second->getTextureRotation().z);
-
-        saveFile["GameObject"].push_back(jElement);
+       saveFile["GameObject"].push_back(e.second->toJson());
     }
 
     std::ofstream file(loadedLevel);
