@@ -75,6 +75,8 @@ private:
         OBJECT_INFO_WIN,
         CAMERA,
         OBJECT_META,
+        MODEL_PROP,
+        SUCCESS,
         TCount
     };
 

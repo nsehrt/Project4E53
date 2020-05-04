@@ -33,6 +33,9 @@ public:
 
 private:
 
+    bool saveBlendMap();
+    bool saveHeightMap();
+
     const std::string terrainPath = "data/level/";
 
     std::string terrainHeightMapFile;

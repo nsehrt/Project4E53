@@ -126,45 +126,6 @@ Terrain::Terrain(const json& terrainInfo)
     }
 }
 
-bool Terrain::save()
-{
-    auto fileHandle = std::fstream(terrainHeightMapFile.c_str(), std::ios::out | std::ios::binary);
-
-    if (!fileHandle.is_open())
-    {
-        LOG(Severity::Error, "Can not write to " << terrainHeightMapFile << "!");
-        return false;
-    }
-
-    unsigned short temp = 0;
-
-    for (UINT i = 0; i < mHeightMap.size(); i++)
-    {
-        temp = (unsigned short)((mHeightMap[i] + heightScale / 2) / heightScale * 65536);
-        fileHandle.write(reinterpret_cast<const char*>(&temp), sizeof(unsigned short));
-    }
-
-    fileHandle.close();
-
-    LOG(Severity::Info, "Successfully wrote height map to file " << terrainHeightMapFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
-
-    auto bFileHandle = std::fstream(terrainBlendMapFile.c_str(), std::ios::out | std::ios::binary);
-
-    if (!bFileHandle.is_open())
-    {
-        LOG(Severity::Error, "Can not write to " << terrainBlendMapFile << "!");
-        return false;
-    }
-
-    bFileHandle.write(reinterpret_cast<const char*>(&mBlendMap[0]), sizeof(DirectX::XMFLOAT4) * mBlendMap.size());
-
-    bFileHandle.close();
-
-    LOG(Severity::Info, "Successfully wrote blend map to file " << terrainBlendMapFile << ". (" << (sizeof(DirectX::XMFLOAT4) * mBlendMap.size() / 1024.0f) << " kB)");
-
-    return true;
-}
-
 float Terrain::getHeight(float x, float z)
 {
     // Transform from terrain local space to "cell" space.
@@ -370,4 +331,53 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
     terrainVB->copyAll(mTerrainVertices[0]);
     holder = terrainModel->meshes[0]->VertexBufferGPU;
     terrainModel->meshes[0]->VertexBufferGPU = terrainVB->getResource();
+}
+
+bool Terrain::save()
+{
+    return saveBlendMap() && saveHeightMap();
+}
+
+bool Terrain::saveBlendMap()
+{
+    auto fileHandle = std::ofstream(terrainBlendMapFile.c_str(), std::ios::out | std::ios::binary);
+
+    if (!fileHandle.is_open())
+    {
+        LOG(Severity::Error, "Can not write to " << terrainBlendMapFile << "! " << errno);
+        return false;
+    }
+
+    fileHandle.write(reinterpret_cast<const char*>(&mBlendMap[0]), sizeof(DirectX::XMFLOAT4) * mBlendMap.size());
+
+    fileHandle.close();
+
+    LOG(Severity::Info, "Successfully wrote blend map to file " << terrainBlendMapFile << ". (" << (sizeof(DirectX::XMFLOAT4) * mBlendMap.size() / 1024.0f) << " kB)");
+
+    return true;
+}
+
+bool Terrain::saveHeightMap()
+{
+    auto fileHandle = std::ofstream(terrainHeightMapFile.c_str(), std::ios::out | std::ios::binary);
+
+    if (!fileHandle.is_open())
+    {
+        LOG(Severity::Error, "Can not write to " << terrainHeightMapFile << "! " << errno);
+        return false;
+    }
+
+    unsigned short temp = 0;
+
+    for (UINT i = 0; i < mHeightMap.size(); i++)
+    {
+        temp = (unsigned short)((mHeightMap[i] + heightScale / 2) / heightScale * 65536);
+        fileHandle.write(reinterpret_cast<const char*>(&temp), sizeof(unsigned short));
+    }
+
+    fileHandle.close();
+
+    LOG(Severity::Info, "Successfully wrote height map to file " << terrainHeightMapFile << ". (" << (sizeof(unsigned short) * mHeightMap.size() / 1024.0f) << " kB)");
+
+    return true;
 }
