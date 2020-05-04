@@ -879,7 +879,7 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 {
     if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     {
-        if (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform)
+        if (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)
         {
             if (ServiceProvider::getEditSettings()->toolMode != EditTool::Camera)
             {
