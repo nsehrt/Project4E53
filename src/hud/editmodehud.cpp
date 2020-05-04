@@ -196,9 +196,9 @@ void EditModeHUD::init()
 
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.795f,0.46f }, 0.3f));
 
-    /*object meta font 10*/
+    /*object meta font 10-11*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.88f,0.715f }, 0.3f));
-
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.835f,0.88f }, 0.2f));
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
@@ -223,6 +223,7 @@ void EditModeHUD::init()
         mFontElements[i]->hudVisibility = HUDVisibility::BOTH_OBJECT;
     }
     mFontElements[10]->hudVisibility = HUDVisibility::OBJECT_META;
+    mFontElements[11]->hudVisibility = HUDVisibility::OBJECT_META;
 
 }
 
@@ -345,6 +346,11 @@ void EditModeHUD::update()
         else if (editSetting->toolMode == EditTool::ObjectMeta)
         {
             mFontElements[10]->text = d3dUtil::convertStringToWstring(editSetting->currentSelection->renderItem->Model->name);
+            mFontElements[11]->text = editSetting->currentSelection->renderItem->renderType == RenderType::Default ?
+                L"Mode: Default" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultAlpha ?
+                L"Mode: DefaultAlpha" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultTransparency ?
+                L"Mode: DefaultTransparency" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultNoNormal ?
+                L"Mode: DefaultNoNormalMap" : L"Mode: unknown";
 
             mHUDElements[25]->NormalizedPosition.y = 0.775f + (int)editSetting->gameObjectProperty * 0.025f;
 
