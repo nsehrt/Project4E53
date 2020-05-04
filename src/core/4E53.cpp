@@ -943,7 +943,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*game object property*/
-                else if (inputData.Pressed(BTN::DPAD_UP))
+                else if (inputData.Pressed(BTN::DPAD_DOWN))
                 {
                     
                     switch (editSettings->gameObjectProperty)
@@ -1048,7 +1048,7 @@ void P_4E53::update(const GameTime& gt)
     }
 
     /*debug actions*/
-    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.DebugEnabled || settingsData->miscSettings.EditModeEnabled))
+    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.DebugEnabled && (settingsData->miscSettings.EditModeEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera)))
     {
         renderResource->toggleHitBoxDraw();
     }
