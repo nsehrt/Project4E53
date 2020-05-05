@@ -521,34 +521,34 @@ void RenderResource::buildShaders()
         NULL, NULL
     };
 
-    mShaders["defaultVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["defaultPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
-    mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
+    mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
+    mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
-    mShaders["defaultNoNormalVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "VS", "vs_5_1");
-    mShaders["defaultNoNormalPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "PS", "ps_5_1");
+    mShaders["defaultNoNormalVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", normalMapDefines, "VS", "vs_5_1");
+    mShaders["defaultNoNormalPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", normalMapDefines, "PS", "ps_5_1");
 
-    mShaders["terrainVS"] = d3dUtil::CompileShader(L"data\\shader\\Terrain.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["terrainPS"] = d3dUtil::CompileShader(L"data\\shader\\Terrain.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["terrainVS"] = d3dUtil::CompileShader(L"shader\\Terrain.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["terrainPS"] = d3dUtil::CompileShader(L"shader\\Terrain.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["skyPS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["skyVS"] = d3dUtil::CompileShader(L"shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["skyPS"] = d3dUtil::CompileShader(L"shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["hitboxVS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["hitboxVS"] = d3dUtil::CompileShader(L"shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["hitboxPS"] = d3dUtil::CompileShader(L"shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["shadowVS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["compositeVS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["compositePS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
+    mShaders["sobelCS"] = d3dUtil::CompileShader(L"shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
 
-    mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["debugVS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["debugPS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
 }
 
 #pragma endregion SHADER
