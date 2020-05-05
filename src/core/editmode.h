@@ -98,7 +98,7 @@ struct EditSettings
     ScaleAxis scaleAxis = ScaleAxis::XYZ;
     RotationAxis rotationAxis = RotationAxis::X;
 
-    const float translationIncreaseBase = 25.0f;
+    const float translationIncreaseBase = 60.0f;
     const float scaleIncreaseBase = 2.0f;
     const float rotationIncreaseBase = XM_PIDIV2;
 
