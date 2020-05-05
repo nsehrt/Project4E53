@@ -53,6 +53,8 @@ enum class GameObjectProperty : int
 struct EditSettings
 {
     EditTool toolMode = EditTool::Height;
+    EditTool prevTool = EditTool::Height;
+
     bool WireFrameOn = false;
 
     /*selection*/
@@ -96,7 +98,7 @@ struct EditSettings
     ScaleAxis scaleAxis = ScaleAxis::XYZ;
     RotationAxis rotationAxis = RotationAxis::X;
 
-    const float translationIncreaseBase = 10.0f;
+    const float translationIncreaseBase = 25.0f;
     const float scaleIncreaseBase = 2.0f;
     const float rotationIncreaseBase = XM_PIDIV2;
 

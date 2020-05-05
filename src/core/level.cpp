@@ -139,10 +139,10 @@ void Level::update(const GameTime& gt)
         }
     }
 
-    if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
-    {
+    //if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
+    //{
         //LOG(Severity::Info, "Box collision");
-    }
+    //}
 
     //for (auto& gameObj : mGameObjects)
     //{
@@ -371,6 +371,114 @@ bool Level::save()
     LOG(Severity::Info, "Level successfully saved. (" << elapsedTime.count() << " seconds)");
 
     return true;
+}
+
+bool Level::createNew(const std::string& levelFile)
+{
+    json newLevel;
+
+    newLevel["Sky"]["DefaultCubeMap"] = "grasscube1024.dds";
+    newLevel["Sky"]["Material"] = "sky";
+
+    newLevel["Terrain"]["BlendMap"] = levelFile + ".bld";
+    newLevel["Terrain"]["HeightMap"] = levelFile + ".raw";
+    newLevel["Terrain"]["HeightScale"] = 200.0f;
+    newLevel["Terrain"]["BlendTextures"][0] = "ForestFloorGreen.dds";
+    newLevel["Terrain"]["BlendTextures"][1] = "DirtGround.dds";
+    newLevel["Terrain"]["BlendTextures"][2] = "FlowerField.dds";
+    newLevel["Terrain"]["BlendTextures"][3] = "SimpleSand.dds";
+
+    json light1;
+
+    light1["Name"] = "D1";
+    light1["Direction"][0] = -0.57f;
+    light1["Direction"][1] = -0.57f;
+    light1["Direction"][2] = 0.57f;
+    light1["Strength"][0] = 0.8f;
+    light1["Strength"][1] = 0.8f;
+    light1["Strength"][2] = 0.8f;
+
+    newLevel["Light"]["Directional"].push_back(light1);
+
+    json light2;
+
+    light2["Name"] = "D2";
+    light2["Direction"][0] = 0.57f;
+    light2["Direction"][1] = -0.57f;
+    light2["Direction"][2] = 0.57f;
+    light2["Strength"][0] = 0.4f;
+    light2["Strength"][1] = 0.4f;
+    light2["Strength"][2] = 0.4f;
+
+    newLevel["Light"]["Directional"].push_back(light2);
+
+    json light3;
+
+    light3["Name"] = "D3";
+    light3["Direction"][0] = 0.0f;
+    light3["Direction"][1] = -0.7f;
+    light3["Direction"][2] = -0.7f;
+    light3["Strength"][0] = 0.2f;
+    light3["Strength"][1] = 0.2f;
+    light3["Strength"][2] = 0.2f;
+
+    newLevel["Light"]["Directional"].push_back(light3);
+
+    json light4;
+
+    light4["Name"] = "P1";
+    light4["Position"][0] = 0.0f;
+    light4["Position"][1] = 2.0f;
+    light4["Position"][2] = 0.0f;
+    light4["Strength"][0] = 1.0f;
+    light4["Strength"][1] = 1.0f;
+    light4["Strength"][2] = 1.0f;
+    light4["FallOffStart"] = 4.0f;
+    light4["FallOffEnd"] = 5.0f;
+
+    newLevel["Light"]["Point"].push_back(light4);
+
+    json light5;
+
+    light5["Name"] = "P2";
+    light5["Position"][0] = -3.0f;
+    light5["Position"][1] = 3.0f;
+    light5["Position"][2] = 0.0f;
+    light5["Strength"][0] = 1.0f;
+    light5["Strength"][1] = 0.0f;
+    light5["Strength"][2] = 0.25f;
+    light5["FallOffStart"] = 10.0f;
+    light5["FallOffEnd"] = 12.0f;
+
+    newLevel["Light"]["Point"].push_back(light5);
+
+    newLevel["Light"]["AmbientLight"] = { 0.3f,0.3f,0.3f };
+
+    json gameObj;
+
+    gameObj["Name"] = "box";
+    gameObj["Model"] = "box";
+    gameObj["RenderType"] = "Default";
+    gameObj["Material"] = "default";
+
+    newLevel["GameObject"].push_back(gameObj);
+
+    std::ofstream out (LEVEL_PATH + std::string("/") + levelFile + ".level");
+
+    if (!out.is_open())
+    {
+        return false;
+    }
+
+    out << newLevel.dump(4);
+    out.close();
+
+    return true;
+}
+
+bool Level::levelExists(const std::string& levelFile)
+{
+    return std::filesystem::exists(LEVEL_PATH + std::string("/") + levelFile);
 }
 
 void Level::drawShadow()

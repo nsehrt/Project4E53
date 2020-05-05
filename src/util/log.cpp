@@ -48,6 +48,6 @@ void LogPolicy::write(const std::string& msg)
 #ifdef _DEBUG
     OutputDebugStringA(msg.c_str());
 #else
-    outputStream << msg;
+    outputStream << msg << std::flush;
 #endif
 }

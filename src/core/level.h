@@ -37,6 +37,10 @@ public:
     /*save gamobjects terrain etc*/
     bool save();
 
+    /*create new level*/
+    bool createNew(const std::string& levelFile);
+    static bool levelExists(const std::string& levelFile);
+
     void drawShadow();
 
     void calculateRenderOrder();

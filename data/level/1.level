@@ -1,0 +1,216 @@
+{
+    "GameObject": [
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "pinetree",
+            "Name": "box_1_1",
+            "Position": [
+                -7.376755237579346,
+                2.901933431625366,
+                0.0
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                -2.1279449462890625
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "pinetree",
+            "Name": "box_1",
+            "Position": [
+                -0.17570623755455017,
+                2.9843404293060303,
+                0.0
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "plant",
+            "Name": "box",
+            "Position": [
+                6.436460971832275,
+                2.2350072860717773,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "Light": {
+        "AmbientLight": [
+            0.30000001192092896,
+            0.30000001192092896,
+            0.30000001192092896
+        ],
+        "Directional": [
+            {
+                "Direction": [
+                    -0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D1",
+                "Strength": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            },
+            {
+                "Direction": [
+                    0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D2",
+                "Strength": [
+                    0.4000000059604645,
+                    0.4000000059604645,
+                    0.4000000059604645
+                ]
+            },
+            {
+                "Direction": [
+                    0.0,
+                    -0.699999988079071,
+                    -0.699999988079071
+                ],
+                "Name": "D3",
+                "Strength": [
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
+                ]
+            }
+        ],
+        "Point": [
+            {
+                "FallOffEnd": 0.8168774247169495,
+                "FallOffStart": 0.2205033004283905,
+                "Name": "P1",
+                "Position": [
+                    -7.517617225646973,
+                    0.20116759836673737,
+                    0.46768051385879517
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
+                "FallOffEnd": 12.0,
+                "FallOffStart": 10.0,
+                "Name": "P2",
+                "Position": [
+                    -3.0,
+                    3.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.0,
+                    0.25
+                ]
+            }
+        ]
+    },
+    "Sky": {
+        "DefaultCubeMap": "grasscube1024.dds",
+        "Material": "sky"
+    },
+    "Terrain": {
+        "BlendMap": "1.bld",
+        "BlendTextures": [
+            "ForestFloorGreen.dds",
+            "DirtGround.dds",
+            "FlowerField.dds",
+            "SimpleSand.dds"
+        ],
+        "HeightMap": "1.raw",
+        "HeightScale": 200.0
+    }
+}

@@ -27,7 +27,7 @@ Terrain::Terrain(const json& terrainInfo)
 
     /*load height map*/
     mHeightMap.resize(terrainSlices * terrainSlices, 0);
-    std::vector<unsigned short> input(terrainSlices * terrainSlices);
+    std::vector<unsigned short> input(terrainSlices * terrainSlices, 32767);
 
     std::stringstream lFile;
     lFile << terrainPath << terrainInfo["HeightMap"].get<std::string>();
@@ -37,15 +37,18 @@ Terrain::Terrain(const json& terrainInfo)
 
     if (!file.is_open())
     {
-        LOG(Severity::Error, "Unable to open height map file " << lFile.str() << "!");
-        return;
+        LOG(Severity::Error, "Unable to open height map file " << lFile.str() << "! Proceeding with default values.");
+        file.close();
+        
+    }
+    else
+    {
+        file.read((char*)&input[0], (std::streamsize)input.size() * sizeof(unsigned short));
+        file.close();
     }
 
     terrainHeightMapFile = lFile.str();
     terrainHeightMapFileStem = terrainInfo["HeightMap"].get<std::string>();
-
-    file.read((char*)&input[0], (std::streamsize)input.size() * sizeof(unsigned short));
-    file.close();
 
     /*load blend map*/
     mBlendMap.resize(terrainSlices * terrainSlices, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));

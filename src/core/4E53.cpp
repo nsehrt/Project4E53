@@ -71,7 +71,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 #endif
-
+    
     auto startTime = std::chrono::system_clock::now();
 
     int status = 0;
@@ -221,9 +221,28 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
     /*load first level*/
+    std::string levelFile = "0";
+
     auto level = std::make_shared<Level>();
 
-    if (!level->load("0.level"))
+    if (__argc == 2)
+    {
+        levelFile = __argv[1];
+    }
+
+    if (!Level::levelExists(levelFile + ".level"))
+    {
+        LOG(Severity::Info, levelFile << ".level not found, creating new..");
+        if (!level->createNew(levelFile))
+        {
+            LOG(Severity::Error, "Failed to create new level!");
+            return 0;
+        }
+    }
+
+    levelFile += ".level";
+
+    if (!level->load(levelFile))
     {
         return 0;
     }
@@ -399,22 +418,15 @@ void P_4E53::update(const GameTime& gt)
             }
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
-                editSettings->toolMode = EditTool::Camera;
-                ServiceProvider::setActiveCamera(fpsCamera);
-            }
-            else if (editSettings->toolMode == EditTool::Camera)
-            {
                 editSettings->toolMode = EditTool::Height;
-                ServiceProvider::setActiveCamera(editCamera);
             }
         }
 
-        if (inputData.Pressed(BTN::LEFT_SHOULDER))
+        else if (inputData.Pressed(BTN::LEFT_SHOULDER))
         {
             if (editSettings->toolMode == EditTool::Height)
             {
-                editSettings->toolMode = EditTool::Camera;
-                ServiceProvider::setActiveCamera(fpsCamera);
+                editSettings->toolMode = EditTool::ObjectMeta;
             }
             else if (editSettings->toolMode == EditTool::Paint)
             {
@@ -428,10 +440,20 @@ void P_4E53::update(const GameTime& gt)
             {
                 editSettings->toolMode = EditTool::ObjectTransform;
             }
-            else if (editSettings->toolMode == EditTool::Camera)
+        }
+
+        else if (inputData.Pressed(BTN::DPAD_UP))
+        {
+            if (editSettings->toolMode == EditTool::Camera)
             {
-                editSettings->toolMode = EditTool::ObjectMeta;
+                editSettings->toolMode = editSettings->prevTool;
                 ServiceProvider::setActiveCamera(editCamera);
+            }
+            else
+            {
+                editSettings->prevTool = editSettings->toolMode;
+                editSettings->toolMode = EditTool::Camera;
+                ServiceProvider::setActiveCamera(fpsCamera);
             }
         }
 
@@ -590,7 +612,7 @@ void P_4E53::update(const GameTime& gt)
                     }
                 }
 
-                if (editSettings->currentSelectionIndex == validGameObjects.size() - 1)
+                if (editSettings->currentSelectionIndex >= validGameObjects.size() - 1)
                 {
                     editSettings->currentSelectionIndex = 0;
                 }
@@ -728,16 +750,18 @@ void P_4E53::update(const GameTime& gt)
                 {
                     XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
 
-                    float thumbX = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
-                    float thumbY = editSettings->translationIncreaseBase * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
+                    float camDistance = editCamera->cameraPosNormalize();
+
+                    float thumbX = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
+                    float thumbY = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
 
                     switch (editSettings->translationAxis)
                     {
                         case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
                         case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
-                        case TranslationAxis::X: nPos.x += thumbX; break;
-                        case TranslationAxis::Y: nPos.y += thumbY; break;
-                        case TranslationAxis::Z: nPos.z += thumbY; break;
+                        case TranslationAxis::X: nPos.x += thumbX * 0.5f; break;
+                        case TranslationAxis::Y: nPos.y += thumbY * 0.5f; break;
+                        case TranslationAxis::Z: nPos.z += thumbY * 0.5f; break;
                     }
 
                     editSettings->currentSelection->setPosition(nPos);
