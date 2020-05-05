@@ -748,23 +748,23 @@ void P_4E53::update(const GameTime& gt)
                 /*translation tool*/
                 //if (editSettings->objTransformTool == ObjectTransformTool::Translation)
                 //{
-                    XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
+                XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
 
-                    float camDistance = editCamera->cameraPosNormalize();
+                float camDistance = editCamera->cameraPosNormalize();
 
-                    float thumbX = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
-                    float thumbY = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
+                float thumbX = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
+                float thumbY = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
 
-                    switch (editSettings->translationAxis)
-                    {
-                        case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
-                        case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
-                        case TranslationAxis::X: nPos.x += thumbX * 0.5f; break;
-                        case TranslationAxis::Y: nPos.y += thumbY * 0.5f; break;
-                        case TranslationAxis::Z: nPos.z += thumbY * 0.5f; break;
-                    }
+                switch (editSettings->translationAxis)
+                {
+                    case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
+                    case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
+                    case TranslationAxis::X: nPos.x += thumbX * 0.2f; break;
+                    case TranslationAxis::Y: nPos.y += thumbY * 0.2f; break;
+                    case TranslationAxis::Z: nPos.z += thumbY * 0.2f; break;
+                }
 
-                    editSettings->currentSelection->setPosition(nPos);
+                editSettings->currentSelection->setPosition(nPos);
                 //}
 
                 /*scale and rotation tool*/
