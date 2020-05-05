@@ -206,6 +206,9 @@ void EditModeHUD::init()
     mHUDElements[16]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[17]->hudVisibility = HUDVisibility::PAINT;
 
+    mHUDElements[13]->Visible = false;
+    mHUDElements[14]->Visible = false;
+
     for (int i = 18; i < 23; i++)
     {
         mHUDElements[i]->hudVisibility = HUDVisibility::OBJECT;

@@ -464,15 +464,15 @@ void P_4E53::update(const GameTime& gt)
         }
 
         /*legend on/off*/
-        if (inputData.Pressed(BTN::DPAD_UP))
-        {
-            editSettings->legendAnim = editSettings->legenAnimDur;
-            editSettings->legendStatus = !editSettings->legendStatus;
-        }
+        //if (inputData.Pressed(BTN::DPAD_UP))
+        //{
+        //    editSettings->legendAnim = editSettings->legenAnimDur;
+        //    editSettings->legendStatus = !editSettings->legendStatus;
+        //}
 
-        editSettings->legendAnim -= gt.DeltaTime();
+        //editSettings->legendAnim -= gt.DeltaTime();
 
-        if (editSettings->legendAnim < 0.0f) editSettings->legendAnim = 0.0f;
+        //if (editSettings->legendAnim < 0.0f) editSettings->legendAnim = 0.0f;
 
         /*edit selection update*/
 
@@ -508,7 +508,7 @@ void P_4E53::update(const GameTime& gt)
         if (editSettings->toolMode == EditTool::Height)
         {
             /*reset height save*/
-            if (inputData.Pressed(BTN::RIGHT_THUMB))
+            if (inputData.Pressed(BTN::Y))
             {
                 editSettings->resetHeight = activeLevel->mTerrain->getHeight(editSettings->Position.x,
                                                                              editSettings->Position.y);
@@ -524,7 +524,7 @@ void P_4E53::update(const GameTime& gt)
                                                       editSettings->BaseRadius,
                                                       gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
                                                       editSettings->resetHeight,
-                                                      inputData.current.buttons[BTN::Y]);
+                                                      inputData.current.buttons[BTN::A]);
             }
 
             if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
@@ -535,7 +535,7 @@ void P_4E53::update(const GameTime& gt)
                                                       editSettings->BaseRadius,
                                                       gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
                                                       editSettings->resetHeight,
-                                                      inputData.current.buttons[BTN::Y]);
+                                                      inputData.current.buttons[BTN::A]);
             }
 
             /*control increase value*/
@@ -746,8 +746,8 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*translation tool*/
-                if (editSettings->objTransformTool == ObjectTransformTool::Translation)
-                {
+                //if (editSettings->objTransformTool == ObjectTransformTool::Translation)
+                //{
                     XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
 
                     float camDistance = editCamera->cameraPosNormalize();
@@ -765,7 +765,7 @@ void P_4E53::update(const GameTime& gt)
                     }
 
                     editSettings->currentSelection->setPosition(nPos);
-                }
+                //}
 
                 /*scale and rotation tool*/
                 if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
@@ -920,7 +920,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*switch render type*/
-                else if (inputData.Pressed(BTN::A) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     switch (editSettings->currentSelection->renderItem->renderType)
                     {
@@ -980,7 +980,7 @@ void P_4E53::update(const GameTime& gt)
 
                 }
 
-                else if (inputData.Pressed(BTN::LEFT_THUMB))
+                else if (inputData.Pressed(BTN::A))
                 {
 
                     switch (editSettings->gameObjectProperty)
