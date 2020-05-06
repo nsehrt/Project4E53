@@ -621,6 +621,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelectionIndex++;
                 }
 
+                
+
                 editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
             }
 
@@ -946,22 +948,51 @@ void P_4E53::update(const GameTime& gt)
                     
                     json newGO = editSettings->currentSelection->toJson();
 
+                    std::string baseName = newGO["Name"];
+                    baseName = baseName.substr(0, baseName.find_last_of("_"));
+
+                    UINT counter = 1;
                     while (activeLevel->mGameObjects.find(newGO["Name"]) != activeLevel->mGameObjects.end())
                     {
-                        newGO["Name"] = newGO["Name"].get<std::string>() + "_1";
+                        newGO["Name"] = baseName + "_(" + std::to_string(counter) + ")";
+                        counter++;
                     }
 
                     activeLevel->addGameObject(newGO);
 
-                    UINT counter = 0;
                     for (const auto& e : activeLevel->mGameObjects)
                     {
                         if (e.second->name == newGO["Name"])
                         {
                             editSettings->currentSelection = e.second.get();
-                            editSettings->currentSelectionIndex = counter;
+
+
+                            /*find out the selection index*/
+                            std::vector<GameObject*> validGameObjects;
+
+                            for (const auto& g : activeLevel->mGameObjects)
+                            {
+                                if (g.second->gameObjectType == GameObjectType::Static ||
+                                    g.second->gameObjectType == GameObjectType::Wall ||
+                                    g.second->gameObjectType == GameObjectType::Dynamic)
+                                {
+                                    validGameObjects.push_back(g.second.get());
+                                }
+                            }
+
+                            UINT icounter = 0;
+                            for (const auto e : validGameObjects)
+                            {
+                                if (e == editSettings->currentSelection)
+                                {
+                                    break;
+                                }
+                                icounter++;
+                            }
+
+                            editSettings->currentSelectionIndex = icounter;
+
                         }
-                        counter++;
                     }
 
                 }
