@@ -844,13 +844,13 @@ bool Level::parseWater(const json& waterJson)
         waterObject->isShadowEnabled = false;
         waterObject->isCollisionEnabled = false;
         waterObject->isShadowForced = false;
-        waterObject->isFrustumCulled = true; /*TODO*/
+        waterObject->isFrustumCulled = true;
         waterObject->gameObjectType = GameObjectType::Water;
 
         waterObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
         waterObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[entry["Material"]].get();
         waterObject->renderItem->renderType = RenderType::Water;
-        waterObject->setTextureScale({ 2.5f,2.5f,2.5f });
+        waterObject->setTextureScale({ 4.f,4.f,4.f });
 
         waterObject->updateTransforms();
 

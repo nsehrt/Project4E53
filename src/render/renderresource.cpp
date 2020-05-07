@@ -157,7 +157,7 @@ bool RenderResource::buildRootSignature()
     /*main root signature*/
 
     /*6 root parameter*/
-    CD3DX12_ROOT_PARAMETER rootParameter[6];
+    CD3DX12_ROOT_PARAMETER rootParameter[8];
 
     /*1 texture in register 0*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
@@ -170,6 +170,13 @@ bool RenderResource::buildRootSignature()
     CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
     textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, 0);
 
+    /*displacement*/
+    CD3DX12_DESCRIPTOR_RANGE displacement1Reg;
+    displacement1Reg.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, 0);
+
+    CD3DX12_DESCRIPTOR_RANGE displacement2Reg;
+    displacement2Reg.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0);
+
     /*constant buffer views in register b0 and b1*/
     rootParameter[0].InitAsConstantBufferView(0);
     rootParameter[1].InitAsConstantBufferView(1);
@@ -181,6 +188,10 @@ bool RenderResource::buildRootSignature()
     rootParameter[3].InitAsDescriptorTable(1, &shadowMapReg, D3D12_SHADER_VISIBILITY_PIXEL);
     rootParameter[4].InitAsDescriptorTable(1, &textureTableReg0, D3D12_SHADER_VISIBILITY_PIXEL);
     rootParameter[5].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_PIXEL);
+
+    /*2 displacements in t3/4*/
+    rootParameter[6].InitAsDescriptorTable(1, &displacement1Reg, D3D12_SHADER_VISIBILITY_PIXEL);
+    rootParameter[7].InitAsDescriptorTable(1, &displacement2Reg, D3D12_SHADER_VISIBILITY_PIXEL);
 
     /*get the static samplers and bind them to root signature description*/
 
@@ -524,6 +535,8 @@ void RenderResource::buildShaders()
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
+    mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "Water_VS", "vs_5_1");
+
     mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
     mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
@@ -684,6 +697,11 @@ void RenderResource::buildPSOs()
     D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = transparencyPSODesc;
 
     /*TODO*/
+    waterPSODesc.VS = {
+        reinterpret_cast<BYTE*>(mShaders["waterVS"]->GetBufferPointer()),
+        mShaders["waterVS"]->GetBufferSize()
+    };
+
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&waterPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Water])));
 
