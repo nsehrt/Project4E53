@@ -4,7 +4,7 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "pinetree",
-            "Name": "Center11_new_new_new_new_new_new",
+            "Name": "Center11_new_5",
             "Position": [
                 32.9030876159668,
                 4.667750835418701,
@@ -1915,5 +1915,13 @@
         ],
         "HeightMap": "0.raw",
         "HeightScale": 200.0
-    }
+    },
+    "Water": [
+            {
+                "Name": "water1",
+                "Material": "water",
+                "Position": [0.0,-4.0,0.0]
+            }
+    ]
+
 }

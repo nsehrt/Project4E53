@@ -14,7 +14,8 @@ enum class GameObjectType
     Sky,
     Dynamic,
     Debug,
-    Terrain
+    Terrain,
+    Water
 };
 
 class GameObject

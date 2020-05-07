@@ -637,6 +637,7 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultNoNormal])));
 
+
     /*terrain PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC terrainPSODesc = defaultPSODesc;
     terrainPSODesc.pRootSignature = mTerrainRootSignature.Get();
@@ -678,6 +679,14 @@ void RenderResource::buildPSOs()
     transparencyPSODesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&transparencyPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultTransparency])));
+
+    /*water PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = transparencyPSODesc;
+
+    /*TODO*/
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&waterPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Water])));
+
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
@@ -1129,6 +1138,7 @@ void RenderResource::generateDefaultShapes()
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
+    GeometryGenerator::MeshData waterGrid = geoGen.CreateGrid(10.0f, 10.0f, 256, 256);
     GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
     GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
     GeometryGenerator::MeshData quad = geoGen.CreateQuad(0.f, 0.f, 0.5f, 0.5f, 0.0f);
@@ -1373,6 +1383,120 @@ void RenderResource::generateDefaultShapes()
                                                               cmdList, indices.data(), ibByteSize, hitboxGrid->IndexBufferUploader);
 
     mModels["grid"]->boundingBoxMesh = std::move(hitboxGrid);
+
+
+    /*water grid*/
+    vertices.clear();
+    vertices.resize(grid.Vertices.size());
+    indices.clear();
+    indices.resize(grid.Indices32.size());
+
+    vMin = XMLoadFloat3(&cMin);
+    vMax = XMLoadFloat3(&cMax);
+
+    for (size_t i = 0; i < grid.Vertices.size(); i++)
+    {
+        vertices[i].Pos = grid.Vertices[i].Position;
+        vertices[i].Normal = grid.Vertices[i].Normal;
+        vertices[i].TexC = grid.Vertices[i].TexC;
+        vertices[i].TangentU = grid.Vertices[i].TangentU;
+
+        XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
+
+        vMin = XMVectorMin(vMin, P);
+        vMax = XMVectorMax(vMax, P);
+    }
+
+    indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    auto geoWaterGrid = std::make_unique<Mesh>();
+    geoWaterGrid->name = "watergrid";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoWaterGrid->VertexBufferCPU));
+    CopyMemory(geoWaterGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoWaterGrid->IndexBufferCPU));
+    CopyMemory(geoWaterGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    geoWaterGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                            cmdList, vertices.data(), vbByteSize, geoWaterGrid->VertexBufferUploader);
+
+    geoWaterGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                           cmdList, indices.data(), ibByteSize, geoWaterGrid->IndexBufferUploader);
+
+    geoWaterGrid->VertexByteStride = sizeof(Vertex);
+    geoWaterGrid->VertexBufferByteSize = vbByteSize;
+    geoWaterGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geoWaterGrid->IndexBufferByteSize = ibByteSize;
+    geoWaterGrid->IndexCount = (UINT)indices.size();
+
+    std::unique_ptr<Model> mWGr = std::make_unique<Model>();
+
+    mWGr->name = "grid";
+    mWGr->meshes.push_back(std::move(geoWaterGrid));
+    mModels["watergrid"] = std::move(mWGr);
+
+    /*watergrid hitbox*/
+
+    XMStoreFloat3(&v, vMin);
+    v.y = -0.025f;
+    vMin = XMLoadFloat3(&v);
+
+    XMStoreFloat3(&v, vMax);
+    v.y = 0.025f;
+    vMax = XMLoadFloat3(&v);
+
+    XMStoreFloat3(&mModels["watergrid"]->boundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["watergrid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+
+    GeometryGenerator::MeshData boxMeshWGrid = geoGen.CreateBox(mModels["watergrid"]->boundingBox.Extents.x * 2.f,
+                                                               mModels["watergrid"]->boundingBox.Extents.y * 2.f,
+                                                               mModels["watergrid"]->boundingBox.Extents.z * 2.f,
+                                                               0);
+    vertices.clear();
+    vertices.resize(boxMeshWGrid.Vertices.size());
+    indices.clear();
+    indices.resize(boxMeshWGrid.Indices32.size());
+
+    for (size_t i = 0; i < boxMeshWGrid.Vertices.size(); i++)
+    {
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshWGrid.Vertices[i].Position), XMLoadFloat3(&mModels["watergrid"]->boundingBox.Center)));
+        vertices[i].Normal = boxMeshWGrid.Vertices[i].Normal;
+        vertices[i].TexC = boxMeshWGrid.Vertices[i].TexC;
+        vertices[i].TangentU = boxMeshWGrid.Vertices[i].TangentU;
+    }
+
+    indices.insert(indices.end(), std::begin(boxMeshWGrid.GetIndices16()), std::end(boxMeshWGrid.GetIndices16()));
+
+    vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+    ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+    std::unique_ptr<Mesh> hitboxWGrid = std::make_unique<Mesh>();
+
+    hitboxWGrid->name = "hitbox";
+    hitboxWGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
+    hitboxWGrid->VertexByteStride = sizeof(Vertex);
+    hitboxWGrid->VertexBufferByteSize = vbByteSize;
+    hitboxWGrid->IndexBufferByteSize = ibByteSize;
+    hitboxWGrid->IndexCount = (UINT)indices.size();
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxWGrid->VertexBufferCPU));
+    CopyMemory(hitboxWGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxWGrid->IndexBufferCPU));
+    CopyMemory(hitboxWGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+    hitboxWGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                               cmdList, vertices.data(), vbByteSize, hitboxWGrid->VertexBufferUploader);
+
+    hitboxWGrid->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
+                                                              cmdList, indices.data(), ibByteSize, hitboxWGrid->IndexBufferUploader);
+
+    mModels["watergrid"]->boundingBoxMesh = std::move(hitboxWGrid);
+
 
     /*sphere*/
 

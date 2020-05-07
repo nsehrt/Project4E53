@@ -153,6 +153,7 @@ struct Texture
 enum class RenderType
 {
     Terrain,
+    Water,
     Default,
     DefaultNoNormal,
     DefaultAlpha,
@@ -166,7 +167,7 @@ enum class RenderType
     TerrainWireFrame,
     ShadowDefault,
     ShadowAlpha,
-    COUNT = 14
+    COUNT = 15
 };
 
 struct RenderItem

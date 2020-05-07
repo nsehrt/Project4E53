@@ -48,6 +48,13 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    /*parse water*/
+    if (!parseWater(levelJson["Water"]))
+    {
+        LOG(Severity::Critical, "Failed to load water!");
+        return false;
+    }
+
     /*parse lights*/
     if (!parseLights(levelJson["Light"]))
     {
@@ -125,6 +132,9 @@ void Level::update(const GameTime& gt)
             mCurrentLightObjects[i] = mLightObjects[i].get();
     }
 
+    /*water*/
+    updateWater(gt);
+
     /*TODO Collision test*/
     if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     for (const auto& gameObj : mGameObjects)
@@ -161,6 +171,48 @@ void Level::update(const GameTime& gt)
     //        }
     //    }
     //}
+}
+
+void Level::updateWater(const GameTime& gt)
+{
+
+    auto waterMat = ServiceProvider::getRenderResource()->mMaterials["water"].get();
+
+    float& tu = waterMat->MatTransform(3, 0);
+    float& tv = waterMat->MatTransform(3, 1);
+
+    tu += 0.085f * gt.DeltaTime();
+    tv += 0.02f * gt.DeltaTime();
+
+    /*reset if > 1*/
+    if (tu >= 1.0f)
+        tu -= 1.0f;
+
+    if (tv >= 1.0f)
+        tv -= 1.0f;
+
+    waterMat->MatTransform(3, 0) = tu;
+    waterMat->MatTransform(3, 1) = tv;
+
+    // Material has changed, so need to update cbuffer.
+    waterMat->NumFramesDirty = gNumFrameResources;
+
+}
+
+void Level::drawWater()
+{
+    auto renderResource = ServiceProvider::getRenderResource();
+
+    renderResource->setPSO(RenderType::Water);
+
+    for (auto const& i : mGameObjects)
+    {
+        if (i.second->renderItem->renderType == RenderType::Water)
+        {
+            i.second->draw();
+            break;
+        }
+    }
 }
 
 void Level::drawTerrain()
@@ -217,7 +269,8 @@ void Level::draw()
         if (renderOrder[i].empty())continue;
         if ((i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
             || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)
-            || i == (UINT)RenderType::Terrain) continue;
+            || i == (UINT)RenderType::Terrain || i == (UINT)RenderType::Water
+            ) continue;
 
         /*set PSO*/
 
@@ -680,7 +733,7 @@ bool Level::parseCameras(const json& cameraJson) /*TODO*/
 
 bool Level::parseGameObjects(const json& gameObjectJson)
 {
-    for (auto const& entryJson : gameObjectJson)
+    for (const auto& entryJson : gameObjectJson)
     {
         if (!exists(entryJson, "Name"))
         {
@@ -748,6 +801,63 @@ bool Level::parseTerrain(const json& terrainJson)
                     (float)mTerrain->terrainSlices / 8, (float)mTerrain->terrainSlices / 8));
 
     mGameObjects["TERRAIN"] = std::move(terrainObject);
+
+    return true;
+}
+
+bool Level::parseWater(const json& waterJson)
+{
+    for (const auto& entry : waterJson)
+    {
+        /*check validity*/
+        if (!exists(entry, "Name"))
+        {
+            LOG(Severity::Error, "Water is missing name!");
+            return false;
+        }
+        if (!exists(entry, "Material"))
+        {
+            LOG(Severity::Error, "Water is missing material!");
+            return false;
+        }
+        if (!exists(entry, "Position"))
+        {
+            LOG(Severity::Error, "Water is missing position!");
+        }
+
+        if (mGameObjects.find(entry["Name"]) != mGameObjects.end())
+        {
+            LOG(Severity::Warning, "Water " << entry["Name"] << " already exists!");
+            continue;
+        }
+
+        auto waterObject = std::make_unique<GameObject>(amountObjectCBs++);
+        XMFLOAT3 pos;
+
+        waterObject->name = entry["Name"];
+
+        pos.x = entry["Position"][0];
+        pos.y = entry["Position"][1];
+        pos.z = entry["Position"][2];
+        waterObject->setPosition(pos);
+
+        waterObject->isShadowEnabled = false;
+        waterObject->isCollisionEnabled = false;
+        waterObject->isShadowForced = false;
+        waterObject->isFrustumCulled = true; /*TODO*/
+        waterObject->gameObjectType = GameObjectType::Water;
+
+        waterObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
+        waterObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[entry["Material"]].get();
+        waterObject->renderItem->renderType = RenderType::Water;
+        waterObject->setTextureScale({ 2.5f,2.5f,2.5f });
+
+        waterObject->updateTransforms();
+
+        waterObject->renderItem->NumFramesDirty = gNumFrameResources;
+        mGameObjects[waterObject->name] = std::move(waterObject);
+    }
+
 
     return true;
 }

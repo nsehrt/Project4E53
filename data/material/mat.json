@@ -34,6 +34,14 @@
         "Roughness" : 0.9
     },
     {
+        "Name" : "water",
+        "Texture" : "water",
+        "NormalMap" : "water_n",
+        "DiffuseAlbedo" : [1.0,0.75,1.0,0.75],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.0
+    },
+    {
         "Name" : "brick0",
         "Texture" : "Bricks",
         "NormalMap" : "Bricks_n",

@@ -216,6 +216,8 @@ GameObject::GameObject()
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+    objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 }
 
 GameObject::GameObject(int index)
@@ -232,11 +234,13 @@ GameObject::GameObject(int index)
 
     auto tItem = std::make_unique<RenderItem>();
     tItem->ObjCBIndex.push_back(index);
-    tItem->ObjCBIndex.push_back(0); tItem->ObjCBIndex.push_back(0); tItem->ObjCBIndex.push_back(0);
+    tItem->ObjCBIndex.push_back(index); tItem->ObjCBIndex.push_back(index); tItem->ObjCBIndex.push_back(index);
     tItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
     tItem->Model = renderResource->mModels["box"].get();
 
     renderItem = std::move(tItem);
+
+    objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 }
 
 void GameObject::update(const GameTime& gt)
