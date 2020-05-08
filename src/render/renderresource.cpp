@@ -521,10 +521,16 @@ void RenderResource::buildShaders()
         NULL, NULL
     };
 
+    const D3D_SHADER_MACRO waterDefines[] = {
+    "WATER", "1",
+    NULL, NULL
+    };
+
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["waterPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", waterDefines, "PS", "ps_5_1");
 
     mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
     mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
@@ -692,6 +698,10 @@ void RenderResource::buildPSOs()
         mShaders["waterVS"]->GetBufferSize()
     };
 
+    waterPSODesc.PS = {
+    reinterpret_cast<BYTE*>(mShaders["waterPS"]->GetBufferPointer()),
+    mShaders["waterPS"]->GetBufferSize()
+    };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&waterPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Water])));
 
@@ -895,6 +905,34 @@ bool RenderResource::buildMaterials()
             }
         }
 
+        if (exists(i, "Displacement_Normal_1"))
+        {
+            std::string dispName = std::string(i["Displacement_Normal_1"]) + ".dds";
+
+            if (mTextures.find(dispName) == mTextures.end())
+            {
+                LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
+            }
+            else
+            {
+                material->Displacement1NormalHeapIndex = mTextures[dispName]->index;
+            }
+        }
+
+        if (exists(i, "Displacement_Normal_2"))
+        {
+            std::string dispName = std::string(i["Displacement_Normal_2"]) + ".dds";
+
+            if (mTextures.find(dispName) == mTextures.end())
+            {
+                LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
+            }
+            else
+            {
+                material->Displacement2NormalHeapIndex = mTextures[dispName]->index;
+            }
+        }
+
         mMaterials[material->Name] = std::move(material);
 
         matCounter++;
@@ -1056,6 +1094,8 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
             matData.NormalMapIndex = mat->NormalSrvHeapIndex;
             matData.Displacement1Index = mat->Displacement1HeapIndex;
             matData.Displacement2Index = mat->Displacement2HeapIndex;
+            matData.Displacement1NormalIndex = mat->Displacement1NormalHeapIndex;
+            matData.Displacement2NormalIndex = mat->Displacement2NormalHeapIndex;
 
             currMaterialBuffer->copyData(mat->MatCBIndex, matData);
 

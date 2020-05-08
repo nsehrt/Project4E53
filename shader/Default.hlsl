@@ -78,6 +78,16 @@ float4 PS(VertexOut pin) : SV_Target
     bumpedNormalW = pin.NormalW;
 #endif
 
+#ifdef WATER
+    float3 normalMapSample0 = gTextureMaps[matData.Displacement1NormalIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+    float3 bumpedNormalW0 = NormalSampleToWorldSpace(normalMapSample0, pin.NormalW, pin.TangentW);
+
+    float3 normalMapSample1 = gTextureMaps[matData.Displacement2NormalIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+    float3 bumpedNormalW1 = NormalSampleToWorldSpace(normalMapSample1, pin.NormalW, pin.TangentW);
+
+    bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
+#endif
+
 
     // Vector from point being lit to eye. 
     float3 toEyeW = normalize(gEyePosW - pin.PosW);
