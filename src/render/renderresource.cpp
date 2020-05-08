@@ -157,7 +157,7 @@ bool RenderResource::buildRootSignature()
     /*main root signature*/
 
     /*6 root parameter*/
-    CD3DX12_ROOT_PARAMETER rootParameter[8];
+    CD3DX12_ROOT_PARAMETER rootParameter[6] = {};
 
     /*1 texture in register 0*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
@@ -170,13 +170,6 @@ bool RenderResource::buildRootSignature()
     CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
     textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, 0);
 
-    /*displacement*/
-    CD3DX12_DESCRIPTOR_RANGE displacement1Reg;
-    displacement1Reg.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, 0);
-
-    CD3DX12_DESCRIPTOR_RANGE displacement2Reg;
-    displacement2Reg.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0);
-
     /*constant buffer views in register b0 and b1*/
     rootParameter[0].InitAsConstantBufferView(0);
     rootParameter[1].InitAsConstantBufferView(1);
@@ -187,11 +180,7 @@ bool RenderResource::buildRootSignature()
     /*t0,t1 visible for pixel shader*/
     rootParameter[3].InitAsDescriptorTable(1, &shadowMapReg, D3D12_SHADER_VISIBILITY_PIXEL);
     rootParameter[4].InitAsDescriptorTable(1, &textureTableReg0, D3D12_SHADER_VISIBILITY_PIXEL);
-    rootParameter[5].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_PIXEL);
-
-    /*2 displacements in t3/4*/
-    rootParameter[6].InitAsDescriptorTable(1, &displacement1Reg, D3D12_SHADER_VISIBILITY_PIXEL);
-    rootParameter[7].InitAsDescriptorTable(1, &displacement2Reg, D3D12_SHADER_VISIBILITY_PIXEL);
+    rootParameter[5].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_ALL);
 
     /*get the static samplers and bind them to root signature description*/
 
@@ -296,7 +285,7 @@ bool RenderResource::buildTerrainRootSignature()
     srv3.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, 0);
     srvShadoww.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0);
 
-    CD3DX12_ROOT_PARAMETER slotRootParameter[8];
+    CD3DX12_ROOT_PARAMETER slotRootParameter[8] = {};
 
     /*constant buffer views in register b0 and b1*/
     slotRootParameter[0].InitAsConstantBufferView(0);
@@ -535,7 +524,7 @@ void RenderResource::buildShaders()
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "Water_VS", "vs_5_1");
+    mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
 
     mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
     mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
@@ -696,7 +685,8 @@ void RenderResource::buildPSOs()
     /*water PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = transparencyPSODesc;
 
-    /*TODO*/
+    //waterPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
     waterPSODesc.VS = {
         reinterpret_cast<BYTE*>(mShaders["waterVS"]->GetBufferPointer()),
         mShaders["waterVS"]->GetBufferSize()
@@ -875,6 +865,36 @@ bool RenderResource::buildMaterials()
 
         material->DiffuseSrvHeapIndex = mTextures[texName]->index;
         material->NormalSrvHeapIndex = mTextures[norName]->index;
+
+        if (exists(i, "Displacement_1"))
+        {
+            std::string dispName = std::string(i["Displacement_1"]) + ".dds";
+
+            if (mTextures.find(dispName) == mTextures.end())
+            {
+                LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
+            }
+            else
+            {
+                material->Displacement1HeapIndex = mTextures[dispName]->index;
+            }
+        }
+
+
+        if (exists(i, "Displacement_2"))
+        {
+            std::string dispName = std::string(i["Displacement_2"]) + ".dds";
+
+            if (mTextures.find(dispName) == mTextures.end())
+            {
+                LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
+            }
+            else
+            {
+                material->Displacement2HeapIndex = mTextures[dispName]->index;
+            }
+        }
+
         mMaterials[material->Name] = std::move(material);
 
         matCounter++;
@@ -1022,14 +1042,20 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
         if (mat->NumFramesDirty > 0)
         {
             XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
+            XMMATRIX disp1Transform = XMLoadFloat4x4(&mat->Displacement1Transform);
+            XMMATRIX disp2Transform = XMLoadFloat4x4(&mat->Displacement2Transform);
 
             MaterialData matData;
             matData.DiffuseAlbedo = mat->DiffuseAlbedo;
             matData.FresnelR0 = mat->FresnelR0;
             matData.Roughness = mat->Roughness;
             XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
+            XMStoreFloat4x4(&matData.Displacement1Transform, XMMatrixTranspose(disp1Transform));
+            XMStoreFloat4x4(&matData.Displacement2Transform, XMMatrixTranspose(disp2Transform));
             matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
             matData.NormalMapIndex = mat->NormalSrvHeapIndex;
+            matData.Displacement1Index = mat->Displacement1HeapIndex;
+            matData.Displacement2Index = mat->Displacement2HeapIndex;
 
             currMaterialBuffer->copyData(mat->MatCBIndex, matData);
 
@@ -1156,7 +1182,7 @@ void RenderResource::generateDefaultShapes()
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
-    GeometryGenerator::MeshData waterGrid = geoGen.CreateGrid(10.0f, 10.0f, 256, 256);
+    GeometryGenerator::MeshData waterGrid = geoGen.CreateGrid(10.0f, 10.0f, 128, 128);
     GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
     GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
     GeometryGenerator::MeshData quad = geoGen.CreateQuad(0.f, 0.f, 0.5f, 0.5f, 0.0f);
@@ -1405,19 +1431,19 @@ void RenderResource::generateDefaultShapes()
 
     /*water grid*/
     vertices.clear();
-    vertices.resize(grid.Vertices.size());
+    vertices.resize(waterGrid.Vertices.size());
     indices.clear();
-    indices.resize(grid.Indices32.size());
+    indices.resize(waterGrid.Indices32.size());
 
     vMin = XMLoadFloat3(&cMin);
     vMax = XMLoadFloat3(&cMax);
 
-    for (size_t i = 0; i < grid.Vertices.size(); i++)
+    for (size_t i = 0; i < waterGrid.Vertices.size(); i++)
     {
-        vertices[i].Pos = grid.Vertices[i].Position;
-        vertices[i].Normal = grid.Vertices[i].Normal;
-        vertices[i].TexC = grid.Vertices[i].TexC;
-        vertices[i].TangentU = grid.Vertices[i].TangentU;
+        vertices[i].Pos = waterGrid.Vertices[i].Position;
+        vertices[i].Normal = waterGrid.Vertices[i].Normal;
+        vertices[i].TexC = waterGrid.Vertices[i].TexC;
+        vertices[i].TangentU = waterGrid.Vertices[i].TangentU;
 
         XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
 
@@ -1425,7 +1451,7 @@ void RenderResource::generateDefaultShapes()
         vMax = XMVectorMax(vMax, P);
     }
 
-    indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+    indices.insert(indices.end(), std::begin(waterGrid.GetIndices16()), std::end(waterGrid.GetIndices16()));
 
     vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);

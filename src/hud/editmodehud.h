@@ -105,7 +105,7 @@ private:
         DirectX::SimpleMath::Vector2 NormalizedPosition = { 0.0f,0.0f };
         DirectX::SimpleMath::Vector2 ScreenPosition = { 0.0f,0.0f };
         DirectX::SimpleMath::Vector2 Origin = { 0.0f,0.0f };
-        RECT SourceRectangle;
+        RECT SourceRectangle = {};
         DirectX::XMUINT2 TextureSize = { 0,0 };
         float ResolutionScale = 1.0f;
         float Scale = 1.0f;

@@ -53,11 +53,14 @@ struct MaterialData
 
     // Used in texture mapping.
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 Displacement1Transform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 Displacement2Transform = MathHelper::identity4x4();
 
     UINT DiffuseMapIndex = 0;
     UINT NormalMapIndex = 0;
-    UINT MaterialPad1 = 0;
-    UINT MaterialPad2 = 0;
+    UINT Displacement1Index = 0;
+    UINT Displacement2Index = 0;
+    UINT pad = 0; UINT pad2 = 0; UINT pad3 = 0;
 };
 
 struct Vertex

@@ -20,17 +20,20 @@ struct MaterialData
 	float3   FresnelR0;
 	float    Roughness;
 	float4x4 MatTransform;
+    float4x4 Displacement1Transform;
+    float4x4 Displacement2Transform;
 	uint     DiffuseMapIndex;
 	uint     NormalMapIndex;
-	uint     MatPad1;
-	uint     MatPad2;
+	uint     Displacement1Index;
+	uint     Displacement2Index;
+    uint pad;
+    uint pad2;
+    uint pad3;
 };
 
 TextureCube gCubeMap : register(t0);
 Texture2D gShadowMap : register(t1);
 Texture2D gTextureMaps[128] : register(t2);
-Texture2D gDisplacement1 : register(t3);
-Texture2D gDisplacement2 : register(t4);
 
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 

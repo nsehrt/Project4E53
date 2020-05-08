@@ -35,6 +35,9 @@ struct Material
     // Index into SRV heap for normal texture.
     int NormalSrvHeapIndex = -1;
 
+    int Displacement1HeapIndex = -1;
+    int Displacement2HeapIndex = -1;
+
     // Dirty flag indicating the material has changed and we need to update the constant buffer.
     // Because we have a material constant buffer for each FrameResource, we have to apply the
     // update to each FrameResource.  Thus, when we modify a material we should set
@@ -46,6 +49,8 @@ struct Material
     DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
     float Roughness = .25f;
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 Displacement1Transform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 Displacement2Transform = MathHelper::identity4x4();
 };
 
 struct Mesh

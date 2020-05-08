@@ -31,15 +31,27 @@
         "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.9
+        "Roughness" : 0.99
     },
     {
         "Name" : "water",
         "Texture" : "water",
         "NormalMap" : "water_n",
-        "DiffuseAlbedo" : [1.0,0.75,1.0,0.75],
+        "Displacement_1": "water_h",
+        "Displacement_2": "water_h2",
+        "DiffuseAlbedo" : [0.9,0.8,1.0,0.85],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.0
+    },
+    {
+        "Name" : "lava",
+        "Texture" : "LavaGround",
+        "NormalMap" : "LavaGround_n",
+        "Displacement_1": "water_h",
+        "Displacement_2": "water_h2",
+        "DiffuseAlbedo" : [1.9,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.9
     },
     {
         "Name" : "brick0",

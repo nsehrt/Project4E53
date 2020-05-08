@@ -5,6 +5,7 @@
 #include "../util/serviceprovider.h"
 #include "../core/lightobject.h"
 #include "../core/terrain.h"
+#include "../core/water.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -60,6 +61,7 @@ public:
 
     std::array<LightObject*, MAX_LIGHTS> mCurrentLightObjects;
     std::vector<std::unique_ptr<LightObject>> mLightObjects;
+    std::vector<std::unique_ptr<Water>> mWater;
 
     XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
 
@@ -71,6 +73,8 @@ public:
     std::string loadedLevel;
 
 private:
+
+    float waterUpdate = 0.0f;
 
     /* total amount of game objects in the level, includes sky sphere*/
     int amountObjectCBs = 0;

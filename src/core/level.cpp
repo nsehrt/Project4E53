@@ -176,26 +176,10 @@ void Level::update(const GameTime& gt)
 void Level::updateWater(const GameTime& gt)
 {
 
-    auto waterMat = ServiceProvider::getRenderResource()->mMaterials["water"].get();
-
-    float& tu = waterMat->MatTransform(3, 0);
-    float& tv = waterMat->MatTransform(3, 1);
-
-    tu += 0.085f * gt.DeltaTime();
-    tv += 0.02f * gt.DeltaTime();
-
-    /*reset if > 1*/
-    if (tu >= 1.0f)
-        tu -= 1.0f;
-
-    if (tv >= 1.0f)
-        tv -= 1.0f;
-
-    waterMat->MatTransform(3, 0) = tu;
-    waterMat->MatTransform(3, 1) = tv;
-
-    // Material has changed, so need to update cbuffer.
-    waterMat->NumFramesDirty = gNumFrameResources;
+    for (auto& w : mWater)
+    {
+        w->update(gt);
+    }
 
 }
 
@@ -210,7 +194,6 @@ void Level::drawWater()
         if (i.second->renderItem->renderType == RenderType::Water)
         {
             i.second->draw();
-            break;
         }
     }
 }
@@ -281,6 +264,8 @@ void Level::draw()
             objectsDrawn += gameObject->draw();
         }
     }
+
+    drawWater();
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
 
@@ -393,11 +378,54 @@ bool Level::save()
             e.second->renderItem->renderType == RenderType::Debug ||
             e.second->renderItem->renderType == RenderType::Hitbox ||
             e.second->renderItem->renderType == RenderType::ShadowAlpha ||
-            e.second->renderItem->renderType == RenderType::ShadowDefault)
+            e.second->renderItem->renderType == RenderType::ShadowDefault ||
+            e.second->gameObjectType == GameObjectType::Water)
             continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());
     }
+
+    /*water*/
+    for (auto& w : mWater)
+    {
+        w->isSaved = false;
+    }
+
+    for (const auto& e : mGameObjects)
+    {
+
+        if (e.second->gameObjectType == GameObjectType::Water)
+        {
+            json wElement;
+
+            wElement["Name"] = e.second->name;
+            wElement["Position"][0] = e.second->getPosition().x;
+            wElement["Position"][1] = e.second->getPosition().y;
+            wElement["Position"][2] = e.second->getPosition().z;
+
+            wElement["TexScale"][0] = e.second->getTextureScale().x;
+            wElement["TexScale"][1] = e.second->getTextureScale().y;
+            wElement["TexScale"][2] = e.second->getTextureScale().z;
+
+            wElement["Material"] = e.second->renderItem->MaterialOverwrite->Name;
+
+            for (auto& w : mWater)
+            {
+                if (wElement["Material"] == w->getName())
+                {
+                    if (!w->isSaved)
+                    {
+                        w->addPropertiesToJson(wElement);
+                        w->isSaved = true;
+                    }
+                }
+            }
+
+            saveFile["Water"].push_back(wElement);
+        }
+
+    }
+
 
     std::ofstream file(loadedLevel);
 
@@ -825,6 +853,11 @@ bool Level::parseWater(const json& waterJson)
             LOG(Severity::Error, "Water is missing position!");
         }
 
+        if (!exists(entry, "TexScale"))
+        {
+            LOG(Severity::Error, "Water is missing texture scale!");
+        }
+
         if (mGameObjects.find(entry["Name"]) != mGameObjects.end())
         {
             LOG(Severity::Warning, "Water " << entry["Name"] << " already exists!");
@@ -850,12 +883,33 @@ bool Level::parseWater(const json& waterJson)
         waterObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
         waterObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[entry["Material"]].get();
         waterObject->renderItem->renderType = RenderType::Water;
-        waterObject->setTextureScale({ 4.f,4.f,4.f });
+        waterObject->setTextureScale({ entry["TexScale"][0],
+                                       entry["TexScale"][1], 
+                                       entry["TexScale"][2] });
 
         waterObject->updateTransforms();
 
         waterObject->renderItem->NumFramesDirty = gNumFrameResources;
         mGameObjects[waterObject->name] = std::move(waterObject);
+
+        /*create water material updater if needed*/
+
+        bool needed = true;
+
+        for (const auto& w : mWater)
+        {
+            if (w->getName() == entry["Material"])
+            {
+                needed = false;
+                break;
+            }
+        }
+
+        if (needed)
+        {
+            mWater.push_back(std::make_unique<Water>(ServiceProvider::getRenderResource(), entry));
+        }
+
     }
 
 

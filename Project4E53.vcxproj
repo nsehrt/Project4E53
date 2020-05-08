@@ -162,6 +162,7 @@
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\core\level.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
+    <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
     <ClCompile Include="src\extern\tinyxml2.cpp" />
     <ClCompile Include="src\hud\editmodehud.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\core\gametime.h" />
     <ClInclude Include="src\core\level.h" />
     <ClInclude Include="src\core\terrain.h" />
+    <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
     <ClInclude Include="src\extern\json.hpp" />

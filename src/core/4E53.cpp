@@ -1213,7 +1213,6 @@ void P_4E53::draw(const GameTime& gt)
     mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->defaultCubeMapHandle);
     mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
-    ServiceProvider::getActiveLevel()->drawWater();
     ServiceProvider::getActiveLevel()->draw();
 
     /*to srv read*/

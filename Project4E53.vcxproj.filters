@@ -133,6 +133,9 @@
     <ClInclude Include="src\extern\d3dx12.h">
       <Filter>Source Files\src\extern</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\water.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="src\hud\editmodehud.cpp">
       <Filter>Source Files\src\hud</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\water.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
