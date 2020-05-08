@@ -942,9 +942,13 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*copy to new object*/
-                else if (inputData.Pressed(BTN::Y) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::Y) && 
+                        (editSettings->currentSelection->gameObjectType == GameObjectType::Static || 
+                         editSettings->currentSelection->gameObjectType == GameObjectType::Water ||
+                         editSettings->currentSelection->gameObjectType == GameObjectType::Wall))
                 {
-                    
+                    auto prevGO = editSettings->currentSelection;
+
                     json newGO = editSettings->currentSelection->toJson();
 
                     std::string baseName = newGO["Name"];
@@ -992,6 +996,13 @@ void P_4E53::update(const GameTime& gt)
                             editSettings->currentSelectionIndex = icounter;
 
                         }
+                    }
+
+                    editSettings->currentSelection->gameObjectType = prevGO->gameObjectType;
+
+                    if (editSettings->currentSelection->gameObjectType == GameObjectType::Water)
+                    {
+                        editSettings->currentSelection->renderItem->renderType = RenderType::Water;
                     }
 
                 }
