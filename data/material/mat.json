@@ -39,7 +39,7 @@
         "NormalMap" : "water_n",
         "Displacement_1": "water_h",
         "Displacement_2": "water_h2",
-        "DiffuseAlbedo" : [0.9,0.8,1.0,0.85],
+        "DiffuseAlbedo" : [0.5,0.5,1.0,0.85],
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.0
     },

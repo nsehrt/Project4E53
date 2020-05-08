@@ -403,6 +403,14 @@ bool Level::save()
             wElement["Position"][1] = e.second->getPosition().y;
             wElement["Position"][2] = e.second->getPosition().z;
 
+            wElement["Scale"][0] = e.second->getScale().x;
+            wElement["Scale"][1] = e.second->getScale().y;
+            wElement["Scale"][2] = e.second->getScale().z;
+
+            wElement["Rotation"][0] = XMConvertToDegrees(e.second->getRotation().x);
+            wElement["Rotation"][1] = XMConvertToDegrees(e.second->getRotation().y);
+            wElement["Rotation"][2] = XMConvertToDegrees(e.second->getRotation().z);
+
             wElement["TexScale"][0] = e.second->getTextureScale().x;
             wElement["TexScale"][1] = e.second->getTextureScale().y;
             wElement["TexScale"][2] = e.second->getTextureScale().z;
@@ -852,6 +860,14 @@ bool Level::parseWater(const json& waterJson)
         {
             LOG(Severity::Error, "Water is missing position!");
         }
+        if (!exists(entry, "Scale"))
+        {
+            LOG(Severity::Error, "Water is missing scale!");
+        }
+        if (!exists(entry, "Rotation"))
+        {
+            LOG(Severity::Error, "Water is missing rotation!");
+        }
 
         if (!exists(entry, "TexScale"))
         {
@@ -865,7 +881,7 @@ bool Level::parseWater(const json& waterJson)
         }
 
         auto waterObject = std::make_unique<GameObject>(amountObjectCBs++);
-        XMFLOAT3 pos;
+        XMFLOAT3 pos, scale, rot;
 
         waterObject->name = entry["Name"];
 
@@ -873,6 +889,16 @@ bool Level::parseWater(const json& waterJson)
         pos.y = entry["Position"][1];
         pos.z = entry["Position"][2];
         waterObject->setPosition(pos);
+
+        scale.x = entry["Scale"][0];
+        scale.y = entry["Scale"][1];
+        scale.z = entry["Scale"][2];
+        waterObject->setScale(scale);
+
+        rot.x = XMConvertToRadians(entry["Rotation"][0]);
+        rot.y = XMConvertToRadians(entry["Rotation"][1]);
+        rot.z = XMConvertToRadians(entry["Rotation"][2]);
+        waterObject->setRotation(rot);
 
         waterObject->isShadowEnabled = false;
         waterObject->isCollisionEnabled = false;

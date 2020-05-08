@@ -606,7 +606,8 @@ void P_4E53::update(const GameTime& gt)
                 {
                     if (g.second->gameObjectType == GameObjectType::Static ||
                         g.second->gameObjectType == GameObjectType::Wall ||
-                        g.second->gameObjectType == GameObjectType::Dynamic)
+                        g.second->gameObjectType == GameObjectType::Dynamic ||
+                        g.second->gameObjectType == GameObjectType::Water)
                     {
                         validGameObjects.push_back(g.second.get());
                     }
@@ -634,7 +635,8 @@ void P_4E53::update(const GameTime& gt)
                 {
                     if (g.second->gameObjectType == GameObjectType::Static ||
                         g.second->gameObjectType == GameObjectType::Wall ||
-                        g.second->gameObjectType == GameObjectType::Dynamic)
+                        g.second->gameObjectType == GameObjectType::Dynamic ||
+                        g.second->gameObjectType == GameObjectType::Water)
                     {
                         validGameObjects.push_back(g.second.get());
                     }
@@ -748,8 +750,6 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*translation tool*/
-                //if (editSettings->objTransformTool == ObjectTransformTool::Translation)
-                //{
                 XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
 
                 float camDistance = editCamera->cameraPosNormalize();
@@ -767,7 +767,6 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 editSettings->currentSelection->setPosition(nPos);
-                //}
 
                 /*scale and rotation tool*/
                 if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
