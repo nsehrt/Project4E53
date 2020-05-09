@@ -20,5 +20,5 @@ void FixedCamera::initFixedDistance(float minDistance, float maxDistance)
 {
     mMinDistance = minDistance;
     mMaxDistance = maxDistance;
-    mCurrentDistance = minDistance;
+    mCurrentDistance = (maxDistance - minDistance) * 0.15f + minDistance;
 }

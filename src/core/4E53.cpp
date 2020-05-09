@@ -265,7 +265,7 @@ bool P_4E53::Initialize()
     if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     {
         editCamera = std::make_shared<FixedCamera>();
-        editCamera->initFixedDistance(10.0f, 100.0f);
+        editCamera->initFixedDistance(2.0f, 80.0f);
         editCamera->setLens();
         editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0f);
 
@@ -501,7 +501,8 @@ void P_4E53::update(const GameTime& gt)
         editSettings->FallOffRatio = MathHelper::clampH(editSettings->FallOffRatio, editSettings->fallOffRatioMin,
                                                         editSettings->fallOffRatioMax);
 
-        editSettings->BaseRadius = editCamera->cameraPosNormalize() * (editCamera->cameraPosNormalize() * editSettings->BaseSelectSize);
+        editSettings->BaseRadius = editCamera->cameraPosNormalize() * editSettings->BaseSelectSize;
+        if (editSettings->BaseRadius < 1.0f) editSettings->BaseRadius = 1.0f;
         editSettings->FallOffRadius = editSettings->BaseRadius * editSettings->FallOffRatio;
 
         /*control for height tool*/
