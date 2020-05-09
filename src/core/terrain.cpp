@@ -173,6 +173,8 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
     /*get height of main vertex*/
     float mainVertexHeight = getHeight(x, z) + increase;
 
+    if (setHeight && getHeight(x, z) >= resetHeight) return;
+
     /*iterate over all vertices in the fallEnd * fallEnd cluster*/
     int iterations = static_cast<int>(fallEnd * 2 / cellSpacing) + 1;
     if (iterations % 2 != 0) iterations++;
@@ -209,30 +211,32 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
             /*return if height already higher than height of main selected vertex*/
             if (currentIndex > mHeightMap.size() - 1 || currentIndex < 0) continue;
 
-            if (!setHeight)
+
+            if (mHeightMap[currentIndex] > mainVertexHeight && increase > 0) continue;
+            if (mHeightMap[currentIndex] < mainVertexHeight && increase < 0) continue;
+
+            /*normalize distance from center*/
+            float normalizedDistance;
+
+            if (lengthBetween < fallStart)
             {
-                if (mHeightMap[currentIndex] > mainVertexHeight && increase > 0) continue;
-                if (mHeightMap[currentIndex] < mainVertexHeight && increase < 0) continue;
-
-                /*normalize distance from center*/
-                float normalizedDistance;
-
-                if (lengthBetween < fallStart)
-                {
-                    normalizedDistance = 1.0f;
-                }
-                else
-                {
-                    normalizedDistance = 1.0f - ((lengthBetween - fallStart) / (fallEnd - fallStart));
-                }
-
-                /*increase height*/
-                mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
+                normalizedDistance = 1.0f;
             }
             else
             {
-                mHeightMap[currentIndex] = resetHeight;
+                normalizedDistance = 1.0f - ((lengthBetween - fallStart) / (fallEnd - fallStart));
             }
+
+            /*increase height*/
+            mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
+
+            if (setHeight)
+            {
+                if(mHeightMap[currentIndex] < (resetHeight * sin(normalizedDistance * XM_PIDIV2)))
+                    mHeightMap[currentIndex] = resetHeight * sin(normalizedDistance * XM_PIDIV2);
+            }
+
+   
 
             mHeightMap[currentIndex] = MathHelper::clampH(mHeightMap[currentIndex], -heightScale / 2.0f, heightScale / 2.0f);
             mTerrainVertices[currentIndex].Pos.y = mHeightMap[currentIndex];

@@ -977,7 +977,8 @@ void P_4E53::update(const GameTime& gt)
                             {
                                 if (g.second->gameObjectType == GameObjectType::Static ||
                                     g.second->gameObjectType == GameObjectType::Wall ||
-                                    g.second->gameObjectType == GameObjectType::Dynamic)
+                                    g.second->gameObjectType == GameObjectType::Dynamic || 
+                                    g.second->gameObjectType == GameObjectType::Water)
                                 {
                                     validGameObjects.push_back(g.second.get());
                                 }
