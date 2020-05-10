@@ -476,7 +476,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "rock1",
+            "Model": "Rock03",
             "Name": "obj8",
             "Position": [
                 26.54725456237793,
@@ -790,7 +790,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "rock1",
+            "Model": "Rock03",
             "Name": "man6",
             "Position": [
                 18.93893051147461,
