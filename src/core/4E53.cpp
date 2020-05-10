@@ -687,10 +687,15 @@ void P_4E53::update(const GameTime& gt)
                         XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
                         switch (editSettings->translationAxis)
                         {
-                            case TranslationAxis::XY: nPos.x = 0.0f; nPos.y = 0.0f; break;
+                            case TranslationAxis::XY: nPos.x = 0.0f; 
+                                                      nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
+                                                               editSettings->currentSelection->renderItem->Model->boundingBox.Extents.y;  
+                                                      break;
                             case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
                             case TranslationAxis::X: nPos.x = 0.0f; break;
-                            case TranslationAxis::Y: nPos.y = 0.0f; break;
+                            case TranslationAxis::Y: nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) + 
+                                                              editSettings->currentSelection->renderItem->Model->boundingBox.Extents.y; 
+                                                    break;
                             case TranslationAxis::Z: nPos.z = 0.0f; break;
                         }
 
