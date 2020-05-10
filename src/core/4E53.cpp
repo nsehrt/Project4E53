@@ -221,7 +221,7 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
     /*load first level*/
-    std::string levelFile = "1";
+    std::string levelFile = "0";
 
     auto level = std::make_shared<Level>();
 
@@ -689,12 +689,12 @@ void P_4E53::update(const GameTime& gt)
                         {
                             case TranslationAxis::XY: nPos.x = 0.0f; 
                                                       nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
-                                                               editSettings->currentSelection->renderItem->Model->boundingBox.Extents.y;  
+                                                                editSettings->currentSelection->getExtentY();
                                                       break;
                             case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
                             case TranslationAxis::X: nPos.x = 0.0f; break;
-                            case TranslationAxis::Y: nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) + 
-                                                              editSettings->currentSelection->renderItem->Model->boundingBox.Extents.y; 
+                            case TranslationAxis::Y: nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
+                                                                editSettings->currentSelection->getExtentY();
                                                     break;
                             case TranslationAxis::Z: nPos.z = 0.0f; break;
                         }

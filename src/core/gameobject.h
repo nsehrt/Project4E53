@@ -115,6 +115,11 @@ public:
         return TextureRotation;
     }
 
+    float getExtentY()
+    {
+        return hitBox.Extents.y;
+    }
+
     bool intersects(GameObject& obj);
     bool intersects(DirectX::BoundingBox& box);
     bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/
