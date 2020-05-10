@@ -3,89 +3,12 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "pinetree",
-            "Name": "box_1_1",
-            "Position": [
-                -7.376755237579346,
-                2.901933431625366,
-                0.0
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                0.0,
-                -2.1279449462890625
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "pinetree",
-            "Name": "box_1",
-            "Position": [
-                -0.17570623755455017,
-                2.9843404293060303,
-                0.0
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "plant",
+            "Model": "box",
             "Name": "box",
+            "Material": "default",
             "Position": [
-                6.436460971832275,
-                2.2350072860717773,
+                0,
+                4,
                 0.0
             ],
             "RenderType": "Default",

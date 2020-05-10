@@ -53,6 +53,8 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
         {
+            if (entry.is_directory())continue;
+
             texTotal++;
 
             if (loadTexture(entry, static_cast<TextureType>(tC)))
@@ -93,6 +95,8 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(_modelPath))
     {
+        if (entry.is_directory())continue;
+
         ModelReturn mRet = mLoader.loadB3D(entry);
         if (mRet.errorCode == 0)
         {
@@ -522,8 +526,8 @@ void RenderResource::buildShaders()
     };
 
     const D3D_SHADER_MACRO waterDefines[] = {
-    "WATER", "1",
-    NULL, NULL
+        "WATER", "1",
+        NULL, NULL
     };
 
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");

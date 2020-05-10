@@ -833,8 +833,8 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->gameObjectType = GameObjectType::Terrain;
     terrainObject->renderItem->Model = mTerrain->terrainModel.get();
     terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["terrain"].get();
-    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 8,
-                    (float)mTerrain->terrainSlices / 8, (float)mTerrain->terrainSlices / 8));
+    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 2,
+                    (float)mTerrain->terrainSlices / 2, (float)mTerrain->terrainSlices / 2));
 
     mGameObjects["TERRAIN"] = std::move(terrainObject);
 
