@@ -35,7 +35,7 @@
     </Input>
 
     <Misc>
-        <DebugEnabled>1</DebugEnabled>
+        <DebugEnabled>0</DebugEnabled>
         <DebugQuadEnabled>0</DebugQuadEnabled>
         <EditModeEnabled>0</EditModeEnabled>
     </Misc>
