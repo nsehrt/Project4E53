@@ -33,7 +33,6 @@ public:
     void updateWater(const GameTime& gt);
 
     /* draw the level */
-    void drawWater();
     void drawTerrain();
     void draw();
 
@@ -85,6 +84,7 @@ private:
     bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
     bool parseTerrain(const json& terrainJson);
+    bool parseGrass(const json& grassJson);
     bool parseWater(const json& waterJson);
 
     /*render order*/

@@ -15,7 +15,8 @@ enum class GameObjectType
     Dynamic,
     Debug,
     Terrain,
-    Water
+    Water,
+    Grass
 };
 
 class GameObject

@@ -536,6 +536,11 @@ void RenderResource::buildShaders()
     mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["waterPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", waterDefines, "PS", "ps_5_1");
 
+    mShaders["grassVS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["grassGS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "GS", "gs_5_1");
+    mShaders["grassPS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "PS", "ps_5_1");
+
+
     mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
     mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
@@ -567,6 +572,7 @@ void RenderResource::buildShaders()
 
 void RenderResource::buildInputLayouts()
 {
+    /*standard*/
     mInputLayouts.push_back({
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -574,12 +580,19 @@ void RenderResource::buildInputLayouts()
         { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
                             });
 
+    /*terrain*/
     mInputLayouts.push_back({
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
          {"TEXBLEND", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
+                            });
+
+    /*grass*/
+    mInputLayouts.push_back({
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        {"SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
                             });
 }
 
@@ -708,6 +721,35 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&waterPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Water])));
+
+
+    /*grass PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC grassPSODesc = defaultPSODesc;
+
+    grassPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+    grassPSODesc.InputLayout = { mInputLayouts[2].data(), (UINT)mInputLayouts[2].size() };
+    grassPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+    grassPSODesc.VS = 
+    {
+        reinterpret_cast<BYTE*>(mShaders["grassVS"]->GetBufferPointer()),
+        mShaders["grassVS"]->GetBufferSize()
+    };
+
+    grassPSODesc.GS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["grassGS"]->GetBufferPointer()),
+        mShaders["grassGS"]->GetBufferSize()
+    };
+
+    grassPSODesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["grassPS"]->GetBufferPointer()),
+        mShaders["grassPS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&grassPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Grass])));
+
 
 
     /*shadow pass PSO*/

@@ -82,6 +82,12 @@ struct TerrainVertex
     DirectX::XMFLOAT4 TexBlend;
 };
 
+struct BillBoardVertex
+{
+    DirectX::XMFLOAT3 Pos;
+    DirectX::XMFLOAT2 Size;
+};
+
 struct SkinnedVertex
 {
     DirectX::XMFLOAT3 Pos;

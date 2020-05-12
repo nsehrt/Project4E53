@@ -55,6 +55,13 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    /*parse grass*/
+    if (!parseGrass(levelJson["Grass"]))
+    {
+        LOG(Severity::Critical, "Failed to load grass!");
+        return false;
+    }
+
     /*parse lights*/
     if (!parseLights(levelJson["Light"]))
     {
@@ -183,21 +190,6 @@ void Level::updateWater(const GameTime& gt)
 
 }
 
-void Level::drawWater()
-{
-    auto renderResource = ServiceProvider::getRenderResource();
-
-    renderResource->setPSO(RenderType::Water);
-
-    for (auto const& i : mGameObjects)
-    {
-        if (i.second->renderItem->renderType == RenderType::Water)
-        {
-            i.second->draw();
-        }
-    }
-}
-
 void Level::drawTerrain()
 {
     for (auto const& i : mGameObjects)
@@ -252,7 +244,7 @@ void Level::draw()
         if (renderOrder[i].empty())continue;
         if ((i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
             || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)
-            || i == (UINT)RenderType::Terrain || i == (UINT)RenderType::Water
+            || i == (UINT)RenderType::Terrain
             ) continue;
 
         /*set PSO*/
@@ -264,8 +256,6 @@ void Level::draw()
             objectsDrawn += gameObject->draw();
         }
     }
-
-    drawWater();
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
 
@@ -837,6 +827,27 @@ bool Level::parseTerrain(const json& terrainJson)
                     (float)mTerrain->terrainSlices / 2, (float)mTerrain->terrainSlices / 2));
 
     mGameObjects["TERRAIN"] = std::move(terrainObject);
+
+    return true;
+}
+
+bool Level::parseGrass(const json& grassJson)
+{
+
+    //auto terrainObject = std::make_unique<GameObject>(amountObjectCBs++);
+
+    //terrainObject->name = "TERRAIN";
+    //terrainObject->isFrustumCulled = false;
+    //terrainObject->isShadowEnabled = false;
+    //terrainObject->isDrawEnabled = true;
+    //terrainObject->isCollisionEnabled = false;
+    //terrainObject->gameObjectType = GameObjectType::Grass;
+    //terrainObject->renderItem->renderType = RenderType::Grass;
+    //terrainObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["grid"].get();
+    //terrainObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+    //terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["grass_1"].get();
+
+    //mGameObjects["GRASS"] = std::move(terrainObject);
 
     return true;
 }
