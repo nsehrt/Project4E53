@@ -78,7 +78,7 @@ struct EditSettings
     const float heightIncreaseMax = 100.0f;
 
     /*paint*/
-    float paintIncrease = 0.25f;
+    float paintIncrease = 0.5f;
     int usedTextureIndex = 0;
 
     const float paintIncreaseMin = 0.05f;
@@ -87,6 +87,12 @@ struct EditSettings
     const float fallOffRatioMax = 0.95f;
 
     const int textureMax = 4;
+
+    /*model switch*/
+    std::map<std::string, std::vector<Model*>> orderedModels;
+    std::vector<Model*>::iterator selectedModel;
+    std::string selectedGroup = "";
+
 
     /*game object tool*/
     GameObject* currentSelection = nullptr;

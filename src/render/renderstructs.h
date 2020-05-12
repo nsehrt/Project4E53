@@ -58,7 +58,6 @@ struct Material
 
 struct Mesh
 {
-    std::string name;
     std::string materialName;
 
     Material* material = nullptr;
@@ -113,6 +112,8 @@ struct Mesh
 struct Model
 {
     std::string name;
+
+    std::string group;
 
     std::vector<std::unique_ptr<Mesh>> meshes;
 

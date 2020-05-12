@@ -98,7 +98,7 @@ Terrain::Terrain(const json& terrainInfo)
     UINT indexByteSize = (UINT)indices.size() * sizeof(std::uint32_t);
 
     auto geoGrid = std::make_unique<Mesh>();
-    geoGrid->name = "TERRAIN";
+    //geoGrid->name = "TERRAIN";
 
     geoGrid->VertexByteStride = sizeof(TerrainVertex);
     geoGrid->VertexBufferByteSize = vertexByteSize;

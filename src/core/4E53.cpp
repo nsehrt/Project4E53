@@ -55,6 +55,8 @@ private:
     std::vector<std::shared_ptr<Level>> mLevel;
 
     void drawToShadowMap();
+    void setModelSelection();
+
 };
 
 int gNumFrameResources = 3;
@@ -290,7 +292,39 @@ bool P_4E53::Initialize()
 
             ServiceProvider::getEditSettings()->currentSelectionIndex = 0;
             ServiceProvider::getEditSettings()->currentSelection = validGameObjects[ServiceProvider::getEditSettings()->currentSelectionIndex];
+
         }
+
+
+        /*init ordered Models*/
+        for (const auto& e : renderResource->mModels)
+        {
+            ServiceProvider::getEditSettings()->orderedModels[e.second->group].push_back(e.second.get());
+        }
+
+        for (auto& e : ServiceProvider::getEditSettings()->orderedModels)
+        {
+            std::sort(e.second.begin(), e.second.end(),
+                      [&](const Model* a, const Model* b) -> bool
+                      {
+                          return a->name < b->name;
+                      });
+        }
+
+        setModelSelection();
+
+        /*print all groups and their models*/
+        //for (const auto& e : ServiceProvider::getEditSettings()->orderedModels)
+        //{
+        //    LOG(Severity::Debug, e.first);
+
+        //    for (const auto& f : e.second)
+        //    {
+        //        LOG(Severity::Debug, "\t" << f->name);
+        //    }
+
+        //}
+
     }
 
     // Execute the initialization commands.
@@ -623,9 +657,9 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelectionIndex++;
                 }
 
-                
-
                 editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
+
+                setModelSelection();
             }
 
             if (inputData.Pressed(BTN::DPAD_LEFT))
@@ -653,6 +687,8 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
+
+                setModelSelection();
             }
 
             if (editSettings->toolMode == EditTool::ObjectTransform)
@@ -843,36 +879,78 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->isCollisionEnabled = true;
 
                     activeLevel->calculateRenderOrder();
+
+                    setModelSelection();
                 }
+
+                /*switch model group*/
+                else if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                {
+
+                    for (auto it = editSettings->orderedModels.begin();
+                         it != editSettings->orderedModels.end();
+                         it++)
+                    {
+                        if ((*it).first == editSettings->selectedGroup)
+                        {
+
+                            if ( std::next(it) == editSettings->orderedModels.end())
+                            {
+                                editSettings->selectedGroup = editSettings->orderedModels.begin()->first;
+                            }
+                            else
+                            {
+                                editSettings->selectedGroup = (++it)->first;
+                            }
+
+                        }
+                    }
+
+                    editSettings->currentSelection->renderItem->Model = editSettings->orderedModels[editSettings->selectedGroup][0];
+
+                    if (editSettings->selectedGroup == "default")
+                    {
+                        editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
+                    }
+                    else
+                    {
+                        editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
+                    }
+
+                    editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+                    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+                    setModelSelection();
+                }
+
 
                 /*switch model*/
                 else if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
-                    bool next = false;
-
-                    for (const auto& m : renderResource->mModels)
+                    for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
+                         it != editSettings->orderedModels[editSettings->selectedGroup].end();
+                         it++)
                     {
-                        if (next && m.second->name != "")
+                        if ( *it == *(editSettings->selectedModel))
                         {
-                            editSettings->currentSelection->renderItem->Model = m.second.get();
-                            next = false;
+
+                            if (std::next(it) != editSettings->orderedModels[editSettings->selectedGroup].end())
+                            {
+                                editSettings->selectedModel = std::next(it);
+                            }
+                            else
+                            {
+                                editSettings->selectedModel = editSettings->orderedModels[editSettings->selectedGroup].begin();
+                            }
+
                             break;
                         }
-
-                        if (m.second.get() == editSettings->currentSelection->renderItem->Model)
-                        {
-                            next = true;
-                        }
                     }
 
-                    if (next)
-                    {
-                        editSettings->currentSelection->renderItem->Model = renderResource->mModels.begin()->second.get();
-                    }
+                    editSettings->currentSelection->renderItem->Model = *(editSettings->selectedModel);
 
-                    std::string mName = editSettings->currentSelection->renderItem->Model->name;
 
-                    if (mName == "box" || mName == "grid" || mName == "sphere" || mName == "cylinder" || mName == "quad")
+                    if (editSettings->selectedGroup == "default")
                     {
                         editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
                     }
@@ -884,36 +962,34 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                 }
+
+
                 else if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
-                    Model* temp = nullptr;
-
-                    for (const auto& m : renderResource->mModels)
+                    for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
+                         it != editSettings->orderedModels[editSettings->selectedGroup].end();
+                         it++)
                     {
-                        if (m.second.get() == editSettings->currentSelection->renderItem->Model)
+                        if (*it == *(editSettings->selectedModel))
                         {
+
+                            if (it != editSettings->orderedModels[editSettings->selectedGroup].begin())
+                            {
+                                editSettings->selectedModel = std::prev(it);
+                            }
+                            else
+                            {
+                                editSettings->selectedModel = std::prev(editSettings->orderedModels[editSettings->selectedGroup].end());
+                            }
+
                             break;
                         }
-
-                        if (m.second->name != "")
-                        {
-                            temp = m.second.get();
-                        }
                     }
 
-                    if (!temp)
-                    {
-                        for (const auto& m : renderResource->mModels)
-                        {
-                            temp = m.second.get();
-                        }
-                    }
+                    editSettings->currentSelection->renderItem->Model = *(editSettings->selectedModel);
 
-                    editSettings->currentSelection->renderItem->Model = temp;
 
-                    std::string mName = editSettings->currentSelection->renderItem->Model->name;
-
-                    if (mName == "box" || mName == "grid" || mName == "sphere" || mName == "cylinder" || mName == "quad")
+                    if (editSettings->selectedGroup == "default")
                     {
                         editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
                     }
@@ -926,8 +1002,10 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                 }
 
+
+
                 /*switch render type*/
-                else if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::START) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     switch (editSettings->currentSelection->renderItem->renderType)
                     {
@@ -1012,6 +1090,7 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->renderType = RenderType::Water;
                     }
 
+                    setModelSelection();
                 }
 
                 /*game object property*/
@@ -1327,4 +1406,25 @@ void P_4E53::drawToShadowMap()
     // Change back to GENERIC_READ so we can read the texture in a shader.
     mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
                                   D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
+}
+
+void P_4E53::setModelSelection()
+{
+
+    auto editSettings = ServiceProvider::getEditSettings();
+
+    editSettings->selectedGroup = editSettings->currentSelection->renderItem->Model->group;
+
+    for (editSettings->selectedModel = editSettings->orderedModels[editSettings->selectedGroup].begin(); 
+         editSettings->selectedModel != editSettings->orderedModels[editSettings->selectedGroup].end();
+         editSettings->selectedModel++)
+    {
+        if (*editSettings->selectedModel == editSettings->currentSelection->renderItem->Model)
+        {
+            break;
+        }
+    }
+
+    LOG(Severity::Debug, editSettings->selectedGroup << " " << (*editSettings->selectedModel)->name);
+
 }

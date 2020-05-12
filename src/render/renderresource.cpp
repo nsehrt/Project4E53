@@ -96,7 +96,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     for (const auto& entry : std::filesystem::recursive_directory_iterator(_modelPath))
     {
         if (entry.is_directory())continue;
-
+        
         ModelReturn mRet = mLoader.loadB3D(entry);
         if (mRet.errorCode == 0)
         {
@@ -1260,7 +1260,6 @@ void RenderResource::generateDefaultShapes()
     UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geo = std::make_unique<Mesh>();
-    geo->name = "box";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
     CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -1283,6 +1282,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> m = std::make_unique<Model>();
 
     m->name = "box";
+    m->group = "default";
     m->meshes.push_back(std::move(geo));
     mModels["box"] = std::move(m);
 
@@ -1292,7 +1292,6 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
 
-    hitboxBox->name = "hitbox";
     hitboxBox->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxBox->VertexByteStride = sizeof(Vertex);
     hitboxBox->VertexBufferByteSize = vbByteSize;
@@ -1334,7 +1333,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoQuad = std::make_unique<Mesh>();
-    geoQuad->name = "quad";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoQuad->VertexBufferCPU));
     CopyMemory(geoQuad->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -1357,6 +1355,8 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mQu = std::make_unique<Model>();
 
     mQu->meshes.push_back(std::move(geoQuad));
+    mQu->name = "quad";
+    mQu->group = "default";
     mModels["quad"] = std::move(mQu);
 
     /*grid*/
@@ -1387,7 +1387,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoGrid = std::make_unique<Mesh>();
-    geoGrid->name = "grid";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoGrid->VertexBufferCPU));
     CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -1410,6 +1409,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mGr = std::make_unique<Model>();
 
     mGr->name = "grid";
+    mGr->group = "default";
     mGr->meshes.push_back(std::move(geoGrid));
     mModels["grid"] = std::move(mGr);
 
@@ -1451,7 +1451,6 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Mesh> hitboxGrid = std::make_unique<Mesh>();
 
-    hitboxGrid->name = "hitbox";
     hitboxGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxGrid->VertexByteStride = sizeof(Vertex);
     hitboxGrid->VertexBufferByteSize = vbByteSize;
@@ -1501,7 +1500,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoWaterGrid = std::make_unique<Mesh>();
-    geoWaterGrid->name = "watergrid";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoWaterGrid->VertexBufferCPU));
     CopyMemory(geoWaterGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -1524,6 +1522,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mWGr = std::make_unique<Model>();
 
     mWGr->name = "grid";
+    mWGr->group = "default";
     mWGr->meshes.push_back(std::move(geoWaterGrid));
     mModels["watergrid"] = std::move(mWGr);
 
@@ -1564,7 +1563,6 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Mesh> hitboxWGrid = std::make_unique<Mesh>();
 
-    hitboxWGrid->name = "hitbox";
     hitboxWGrid->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxWGrid->VertexByteStride = sizeof(Vertex);
     hitboxWGrid->VertexBufferByteSize = vbByteSize;
@@ -1615,7 +1613,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoSphere = std::make_unique<Mesh>();
-    geoSphere->name = "sphere";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoSphere->VertexBufferCPU));
     CopyMemory(geoSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -1638,6 +1635,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mSp = std::make_unique<Model>();
 
     mSp->name = "sphere";
+    mSp->group = "default";
     mSp->meshes.push_back(std::move(geoSphere));
     mModels["sphere"] = std::move(mSp);
 
@@ -1670,7 +1668,6 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Mesh> hitboxSphere = std::make_unique<Mesh>();
 
-    hitboxSphere->name = "hitbox";
     hitboxSphere->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxSphere->VertexByteStride = sizeof(Vertex);
     hitboxSphere->VertexBufferByteSize = vbByteSize;
@@ -1720,7 +1717,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoCyl = std::make_unique<Mesh>();
-    geoCyl->name = "cylinder";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoCyl->VertexBufferCPU));
     CopyMemory(geoCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -1743,6 +1739,7 @@ void RenderResource::generateDefaultShapes()
     std::unique_ptr<Model> mCyl = std::make_unique<Model>();
 
     mCyl->name = "cylinder";
+    mCyl->group = "default";
     mCyl->meshes.push_back(std::move(geoCyl));
     mModels["cylinder"] = std::move(mCyl);
 
@@ -1775,7 +1772,6 @@ void RenderResource::generateDefaultShapes()
 
     std::unique_ptr<Mesh> hitboxCyl = std::make_unique<Mesh>();
 
-    hitboxCyl->name = "hitbox";
     hitboxCyl->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitboxCyl->VertexByteStride = sizeof(Vertex);
     hitboxCyl->VertexBufferByteSize = vbByteSize;

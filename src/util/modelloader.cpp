@@ -128,6 +128,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         m->IndexBufferByteSize = ibByteSize;
         m->IndexCount = (UINT)indices.size();
 
+        mRet.model->group = fileName.path().parent_path().filename().string();
         mRet.model->meshes.push_back(std::move(m));
         indices.clear();
     }
@@ -160,7 +161,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
     std::unique_ptr<Mesh> hitbox = std::make_unique<Mesh>();
 
-    hitbox->name = "hitbox";
     hitbox->IndexFormat = DXGI_FORMAT_R16_UINT;
     hitbox->VertexByteStride = sizeof(Vertex);
     hitbox->VertexBufferByteSize = vbByteSize;
