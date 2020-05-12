@@ -174,12 +174,12 @@ void EditModeHUD::init()
 
     /*object meta mode 24-29*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::MODEL_PROP, { 0.905f, 0.825f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.83f, 0.775f }, 0.35f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.83f, 0.8f }, 0.35f));
 
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.775f }, 0.3f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.80f }, 0.3f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.825f }, 0.3f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.85f }, 0.3f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.875f }, 0.3f));
 
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
@@ -197,8 +197,9 @@ void EditModeHUD::init()
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.795f,0.46f }, 0.3f));
 
     /*object meta font 10-11*/
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.715f }, 0.25f));
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.835f,0.88f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.735f }, 0.25f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.93f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.71f }, 0.25f));
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
@@ -227,7 +228,7 @@ void EditModeHUD::init()
     }
     mFontElements[10]->hudVisibility = HUDVisibility::OBJECT_META;
     mFontElements[11]->hudVisibility = HUDVisibility::OBJECT_META;
-
+    mFontElements[12]->hudVisibility = HUDVisibility::OBJECT_META;
 }
 
 void EditModeHUD::update()
@@ -349,13 +350,14 @@ void EditModeHUD::update()
         else if (editSetting->toolMode == EditTool::ObjectMeta)
         {
             mFontElements[10]->text = d3dUtil::convertStringToWstring(editSetting->currentSelection->renderItem->Model->name);
+            mFontElements[12]->text = L"Group: " + d3dUtil::convertStringToWstring(editSetting->selectedGroup);
             mFontElements[11]->text = editSetting->currentSelection->renderItem->renderType == RenderType::Default ?
                 L"Mode: Default" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultAlpha ?
                 L"Mode: DefaultAlpha" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultTransparency ?
                 L"Mode: DefaultTransparency" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultNoNormal ?
                 L"Mode: DefaultNoNormalMap" : L"Mode: unknown";
 
-            mHUDElements[25]->NormalizedPosition.y = 0.775f + (int)editSetting->gameObjectProperty * 0.025f;
+            mHUDElements[25]->NormalizedPosition.y = 0.8f + (int)editSetting->gameObjectProperty * 0.025f;
 
             mHUDElements[26]->TexDescriptor = editSetting->currentSelection->isCollisionEnabled ? TextureDescriptors::SUCCESS : TextureDescriptors::FAILED;
             mHUDElements[27]->TexDescriptor = editSetting->currentSelection->isDrawEnabled ? TextureDescriptors::SUCCESS : TextureDescriptors::FAILED;

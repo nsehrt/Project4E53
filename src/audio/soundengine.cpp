@@ -43,7 +43,15 @@ void SoundEngine::uninit()
     }
 
     MFShutdown();
-    masterVoice->DestroyVoice();
+    try
+    {
+        masterVoice->DestroyVoice();
+    }
+    catch (...)
+    {
+        LOG(Severity::Warning, "Destroying voice failed!");
+    }
+
     xaudioMain->StopEngine();
 
     CoUninitialize();

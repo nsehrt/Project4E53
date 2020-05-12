@@ -1425,6 +1425,6 @@ void P_4E53::setModelSelection()
         }
     }
 
-    LOG(Severity::Debug, editSettings->selectedGroup << " " << (*editSettings->selectedModel)->name);
+    //LOG(Severity::Debug, editSettings->selectedGroup << " " << (*editSettings->selectedModel)->name);
 
 }
