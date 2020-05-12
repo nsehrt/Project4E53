@@ -834,20 +834,67 @@ bool Level::parseTerrain(const json& terrainJson)
 bool Level::parseGrass(const json& grassJson)
 {
 
-    //auto terrainObject = std::make_unique<GameObject>(amountObjectCBs++);
+    for (const auto& entry : grassJson)
+    {
+        /*check validity*/
+        if (!exists(entry, "Size"))
+        {
+            LOG(Severity::Error, "Grass is missing size!");
+            return false;
+        }
 
-    //terrainObject->name = "TERRAIN";
-    //terrainObject->isFrustumCulled = false;
-    //terrainObject->isShadowEnabled = false;
-    //terrainObject->isDrawEnabled = true;
-    //terrainObject->isCollisionEnabled = false;
-    //terrainObject->gameObjectType = GameObjectType::Grass;
-    //terrainObject->renderItem->renderType = RenderType::Grass;
-    //terrainObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["grid"].get();
-    //terrainObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-    //terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["grass_1"].get();
+        if (!exists(entry, "Position"))
+        {
+            LOG(Severity::Error, "Grass is missing position!");
+            return false;
+        }
 
-    //mGameObjects["GRASS"] = std::move(terrainObject);
+        if (!exists(entry, "Material"))
+        {
+            LOG(Severity::Error, "Grass is missing material!");
+            return false;
+        }
+
+        if (!exists(entry, "Density"))
+        {
+            LOG(Severity::Error, "Grass is missing density!");
+            return false;
+        }
+
+        if (!exists(entry, "QuadSize"))
+        {
+            LOG(Severity::Error, "Grass is missing quad size!");
+            return false;
+        }
+
+        if (!exists(entry, "SizeVariation"))
+        {
+            LOG(Severity::Error, "Grass is missing size variation!");
+            return false;
+        }
+
+        auto grass = std::make_unique<Grass>(ServiceProvider::getRenderResource());
+
+        grass->create(entry, mTerrain.get());
+
+        mGrass.push_back(std::move(grass));
+
+        auto grassObject = std::make_unique<GameObject>(amountObjectCBs++);
+
+        grassObject->name = "GRASS_PATCH";
+        grassObject->isFrustumCulled = false;
+        grassObject->isShadowEnabled = false;
+        grassObject->isDrawEnabled = true;
+        grassObject->isCollisionEnabled = false;
+        grassObject->gameObjectType = GameObjectType::Grass;
+        grassObject->renderItem->renderType = RenderType::Grass;
+        grassObject->renderItem->Model = mGrass.back()->getPatchModel();
+        grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+        grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
+        grassObject->setPosition(mGrass.back()->getPosition());
+
+        mGameObjects["GRASS"] = std::move(grassObject);
+    }
 
     return true;
 }

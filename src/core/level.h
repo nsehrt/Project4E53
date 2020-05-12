@@ -6,6 +6,7 @@
 #include "../core/lightobject.h"
 #include "../core/terrain.h"
 #include "../core/water.h"
+#include "../core/grass.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -61,6 +62,7 @@ public:
     std::array<LightObject*, MAX_LIGHTS> mCurrentLightObjects;
     std::vector<std::unique_ptr<LightObject>> mLightObjects;
     std::vector<std::unique_ptr<Water>> mWater;
+    std::vector<std::unique_ptr<Grass>> mGrass;
 
     XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
 
@@ -86,6 +88,8 @@ private:
     bool parseTerrain(const json& terrainJson);
     bool parseGrass(const json& grassJson);
     bool parseWater(const json& waterJson);
+
+    std::unique_ptr<Model> grassModel;
 
     /*render order*/
     std::vector<std::vector<GameObject*>> renderOrder;

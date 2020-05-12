@@ -136,6 +136,9 @@
     <ClInclude Include="src\core\water.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\grass.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -223,6 +226,9 @@
       <Filter>Source Files\src\hud</Filter>
     </ClCompile>
     <ClCompile Include="src\core\water.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\grass.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>

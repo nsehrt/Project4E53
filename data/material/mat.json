@@ -19,7 +19,7 @@
     },
     {
         "Name" : "sky",
-        "Texture" : "Weed_1",
+        "Texture" : "default",
         "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],
@@ -27,7 +27,7 @@
     },
     {
         "Name" : "grass_1",
-        "Texture" : "Weed_01",
+        "Texture" : "Grass_01",
         "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.1,0.1,0.1],

@@ -160,6 +160,7 @@
     <ClCompile Include="src\core\fpscamera.cpp" />
     <ClCompile Include="src\core\gameobject.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
+    <ClCompile Include="src\core\grass.cpp" />
     <ClCompile Include="src\core\level.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="src\core\fpscamera.h" />
     <ClInclude Include="src\core\gameobject.h" />
     <ClInclude Include="src\core\gametime.h" />
+    <ClInclude Include="src\core\grass.h" />
     <ClInclude Include="src\core\level.h" />
     <ClInclude Include="src\core\terrain.h" />
     <ClInclude Include="src\core\water.h" />

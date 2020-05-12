@@ -4,7 +4,7 @@
 
 struct VertexIn
 {
-	float3 PosW  : POSITION;
+	float3 PosL  : POSITION;
 	float2 SizeW : SIZE;
 };
 
@@ -27,7 +27,7 @@ struct GeoOut
 VertexOut VS(VertexIn vin, uint vertID: SV_VERTEXID){
     VertexOut vout;
 
-    vout.CenterW = vin.PosW;
+    vout.CenterW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
     vout.SizeW = vin.SizeW;
 
     return vout;
@@ -38,11 +38,17 @@ void GS(point VertexOut gin[1],
         uint primID : SV_PrimitiveID,
         inout TriangleStream<GeoOut> triStream){
 
+    /*billboard*/
     float3 up = float3(0.0f,1.0f,0.0f);
     float3 look = gEyePosW - gin[0].CenterW;
     look.y = 0.0f;
     look = normalize(look);
     float3 right = cross(up,look);
+
+    /*fixed*/
+    // float3 up = float3(0.0f,1.0f,0.0f);
+    // float3 look = float3(0.0f,0.0f,0.5f);
+    // float3 right = float3(1.0f,0.0f,0.0f);
 
     float halfW = 0.5f * gin[0].SizeW.x;
     float halfH = 0.5f * gin[0].SizeW.y;
@@ -78,9 +84,14 @@ void GS(point VertexOut gin[1],
 
 float4 PS(GeoOut pin) : SV_Target
 {
-    MaterialData matData = gMaterialData[gMaterialIndex];
+	MaterialData matData = gMaterialData[gMaterialIndex];
+	float4 diffuseAlbedo = matData.DiffuseAlbedo;
+	float3 fresnelR0 = matData.FresnelR0;
+	float  roughness = matData.Roughness;
+	uint diffuseMapIndex = matData.DiffuseMapIndex;
+	uint normalMapIndex = matData.NormalMapIndex;
 
-    float4 diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC) * matData.DiffuseAlbedo;
+    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC) * diffuseAlbedo;
 
     clip(diffuseAlbedo.a - 0.1f);
 

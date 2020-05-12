@@ -2033,6 +2033,16 @@
         "HeightMap": "0.raw",
         "HeightScale": 200.0
     },
+    "Grass": [
+        {
+            "Position": [-15.0,0.0,0.0],
+            "Size": [10.0,10.0],
+            "Density": [18,18],
+            "Material": "grass_1",
+            "QuadSize": [1.0,1.0],
+            "SizeVariation": 0.2
+        }
+    ],
     "Water": [
         {
             "Displacement1Scale": [
