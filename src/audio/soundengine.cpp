@@ -42,9 +42,9 @@ void SoundEngine::uninit()
         delete i;
     }
 
-    MFShutdown();
     try
     {
+        MFShutdown();
         masterVoice->DestroyVoice();
     }
     catch (...)
