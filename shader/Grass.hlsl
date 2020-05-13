@@ -17,7 +17,7 @@ struct VertexOut
 struct GeoOut
 {
 	float4 PosH    : SV_POSITION;
-    float3 PosW    : POSITION;
+    float3 PosW    : POSITION0;
     float3 NormalW : NORMAL;
     float2 TexC    : TEXCOORD;
     uint   PrimID  : SV_PrimitiveID;
@@ -99,7 +99,26 @@ float4 PS(GeoOut pin) : SV_Target
 
     clip(diffuseAlbedo.a - 0.1f);
 
-    return diffuseAlbedo;
+    //return diffuseAlbedo;
 
+    /*lighting*/
+    float3 bumpedNormalW = pin.NormalW;
 
+   // Vector from point being lit to eye. 
+    float3 toEyeW = normalize(gEyePosW - pin.PosW);
+
+    // Only the first light casts a shadow.
+    float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
+
+    const float shininess = (1.0f - roughness);
+    Material mat = { diffuseAlbedo, fresnelR0, shininess };
+    float4 directLight = ComputeLightingNoDirectional(gLights, mat, pin.PosW,
+        bumpedNormalW, toEyeW, shadowFactor);
+
+    float4 litColor = diffuseAlbedo + directLight;
+	
+    // Common convention to take alpha from diffuse albedo.
+    litColor.a = diffuseAlbedo.a; 
+
+    return litColor;
 }
