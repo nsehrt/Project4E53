@@ -95,7 +95,7 @@ float4 PS(GeoOut pin) : SV_Target
 	uint diffuseMapIndex = matData.DiffuseMapIndex;
 	uint normalMapIndex = matData.NormalMapIndex;
 
-    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC) * diffuseAlbedo;
+    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicClamp, pin.TexC) * diffuseAlbedo;
 
     clip(diffuseAlbedo.a - 0.1f);
 

@@ -34,6 +34,38 @@
         "Roughness" : 0.9
     },
     {
+        "Name" : "grass_2",
+        "Texture" : "Grass_02",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.9
+    },
+    {
+        "Name" : "grass_3",
+        "Texture" : "Grass_03",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.9
+    },
+    {
+        "Name" : "grass_4",
+        "Texture" : "Grass_04",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.9
+    },
+    {
+        "Name" : "grass_5",
+        "Texture" : "Grass_05",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.9
+    },
+    {
         "Name" : "terrain",
         "Texture" : "default",
         "NormalMap" : "default_nmap",
