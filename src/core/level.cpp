@@ -891,7 +891,7 @@ bool Level::parseGrass(const json& grassJson)
         auto grassObject = std::make_unique<GameObject>(amountObjectCBs++);
 
         grassObject->name = "GRASS_PATCH";
-        grassObject->isFrustumCulled = false;
+        grassObject->isFrustumCulled = true;
         grassObject->isShadowEnabled = false;
         grassObject->isDrawEnabled = true;
         grassObject->isCollisionEnabled = false;
@@ -901,6 +901,8 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
+        grassObject->setHitboxExtents(XMFLOAT3(mGrass.back()->getSize().x, 20.0f, mGrass.back()->getSize().y));
+
 
         mGameObjects["GRASS" + counter] = std::move(grassObject);
 

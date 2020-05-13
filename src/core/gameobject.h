@@ -121,6 +121,11 @@ public:
         return hitBox.Extents.y;
     }
 
+    void setHitboxExtents(DirectX::XMFLOAT3 e)
+    {
+        hitBox.Extents = e;
+    }
+
     bool intersects(GameObject& obj);
     bool intersects(DirectX::BoundingBox& box);
     bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/

@@ -262,11 +262,6 @@ bool GameObject::draw()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-    if (gameObjectType == GameObjectType::Wall)
-    {
-        int i = 1;
-    }
-
     if (!isDrawEnabled &&
         !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
     {
@@ -304,9 +299,6 @@ bool GameObject::draw()
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
 
-        //D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
-        //    (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;
-
         /*only if changed*/
         if (cachedObjCBAddress != objCBAddress)
         {
@@ -343,10 +335,7 @@ bool GameObject::drawShadow()
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
 
-        /* D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() +
-             (gObjRenderItem->uniformObjCB ? (long long)gObjRenderItem->ObjCBIndex[0] : (long long)gObjRenderItem->ObjCBIndex[meshCounter]) * objectCBSize;*/
-
-             /*only if changed*/
+        /*only if changed*/
         if (cachedObjCBAddress != objCBAddress)
         {
             renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
