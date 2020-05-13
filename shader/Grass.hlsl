@@ -59,6 +59,10 @@ void GS(point VertexOut gin[1],
     v[2] = float4(gin[0].CenterW - halfW * right - halfH*up, 1.0f);
     v[3] = float4(gin[0].CenterW - halfW * right + halfH*up, 1.0f);
 
+    /*test grass sway*/
+    v[1].x += sin(gTotalTime) * 0.1f;
+    v[3].x += sin(gTotalTime) * 0.1f;
+
     float2 texCoord[4] = 
     {
         float2(0.0f,1.0f),

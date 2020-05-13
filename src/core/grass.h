@@ -10,6 +10,7 @@ public:
     }
 
     void create(const json& grassJson, Terrain* terrain);
+    json toJson();
 
     Model* getPatchModel()
     {

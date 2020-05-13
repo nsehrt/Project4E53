@@ -38,7 +38,13 @@ void Grass::create(const json& grassJson, Terrain* terrain)
         worldPos.z += position.z;
 
         vertices[i].Pos.y = terrain->getHeight(worldPos.x, worldPos.z) + (quadSize.y * 0.5f);
+
+        float variation = MathHelper::randF(0, 2 * sizeVariation) - sizeVariation;
+
         vertices[i].Size = quadSize;
+        vertices[i].Size.x += variation;
+        vertices[i].Size.y += variation;
+
     }
 
     for (int i = 0; i < indices.size(); i++)
@@ -75,4 +81,28 @@ void Grass::create(const json& grassJson, Terrain* terrain)
     grassPatchModel->group = "grass";
     grassPatchModel->meshes.push_back(std::move(geo));
 
+}
+
+json Grass::toJson()
+{
+    json jElement;
+
+    jElement["Position"][0] = getPosition().x;
+    jElement["Position"][1] = getPosition().y;
+    jElement["Position"][2] = getPosition().z;
+
+    jElement["Size"][0] = getSize().x;
+    jElement["Size"][1] = getSize().y;
+
+    jElement["Material"] = getMaterialName();
+
+    jElement["QuadSize"][0] = quadSize.x;
+    jElement["QuadSize"][1] = quadSize.y;
+
+    jElement["Density"][0] = getDensity().x;
+    jElement["Density"][1] = getDensity().y;
+
+    jElement["SizeVariation"] = sizeVariation;
+
+    return jElement;
 }

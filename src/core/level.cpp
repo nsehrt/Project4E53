@@ -369,11 +369,19 @@ bool Level::save()
             e.second->renderItem->renderType == RenderType::Hitbox ||
             e.second->renderItem->renderType == RenderType::ShadowAlpha ||
             e.second->renderItem->renderType == RenderType::ShadowDefault ||
-            e.second->gameObjectType == GameObjectType::Water)
+            e.second->gameObjectType == GameObjectType::Water ||
+            e.second->gameObjectType == GameObjectType::Grass)
             continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());
     }
+
+    /*grass*/
+    for (const auto& e : mGrass)
+    {
+        saveFile["Grass"].push_back(e->toJson());
+    }
+
 
     /*water*/
     for (auto& w : mWater)
@@ -833,6 +841,7 @@ bool Level::parseTerrain(const json& terrainJson)
 
 bool Level::parseGrass(const json& grassJson)
 {
+    int counter = 0;
 
     for (const auto& entry : grassJson)
     {
@@ -893,7 +902,9 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
 
-        mGameObjects["GRASS"] = std::move(grassObject);
+        mGameObjects["GRASS" + counter] = std::move(grassObject);
+
+        counter++;
     }
 
     return true;
