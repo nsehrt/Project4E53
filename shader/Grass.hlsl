@@ -59,9 +59,13 @@ void GS(point VertexOut gin[1],
     v[2] = float4(gin[0].CenterW - halfW * right - halfH*up, 1.0f);
     v[3] = float4(gin[0].CenterW - halfW * right + halfH*up, 1.0f);
 
-    /*test grass sway*/
-    v[1].x += sin(gTotalTime) * 0.1f;
-    v[3].x += sin(gTotalTime) * 0.1f;
+    /*grass sway*/
+    float swayFactor = gMaterialData[gMaterialIndex].DiffuseAlbedo.a * sin(gTotalTime + primID);
+    swayFactor -= swayFactor * 0.5f;
+    v[1].x += swayFactor;
+    v[3].x += swayFactor;
+    v[1].z += swayFactor*0.7f;
+    v[3].z += swayFactor*0.7f;
 
     float2 texCoord[4] = 
     {
@@ -95,7 +99,7 @@ float4 PS(GeoOut pin) : SV_Target
 	uint diffuseMapIndex = matData.DiffuseMapIndex;
 	uint normalMapIndex = matData.NormalMapIndex;
 
-    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicClamp, pin.TexC) * diffuseAlbedo;
+    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicClamp, pin.TexC) * float4(diffuseAlbedo.xyz, 1.0f);
 
     clip(diffuseAlbedo.a - 0.1f);
 
