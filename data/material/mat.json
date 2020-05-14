@@ -191,7 +191,7 @@
     },
     {
         "Name": "house1",
-        "Texture": "house_r",
+        "Texture": "house_b",
         "NormalMap": "defaultNormal",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],

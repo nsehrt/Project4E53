@@ -193,10 +193,12 @@ GameObject::GameObject(const json& objectJson, int index)
         else if (objectJson["RenderType"] == "DefaultTransparency")
         {
             rItem->renderType = RenderType::DefaultTransparency;
+            rItem->shadowType = RenderType::ShadowAlpha;
         }
         else if (objectJson["RenderType"] == "NoCullNoNormal")
         {
             rItem->renderType = RenderType::NoCullNoNormal;
+            rItem->shadowType = RenderType::ShadowAlpha;
         }
         else
         {

@@ -17,7 +17,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     mShadowMap = std::make_unique<ShadowMap>(device,
                                              ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
                                              ServiceProvider::getSettings()->graphicSettings.ShadowQuality,
-                                             40);
+                                             SHADOW_RADIUS);
 
     mRenderTarget = std::make_unique<RenderTarget>(
         device,
