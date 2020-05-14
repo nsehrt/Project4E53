@@ -662,6 +662,12 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultNoNormalDesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultNoNormal])));
 
+    /* no cull no normal pso*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC noCullnoNormalPSO = defaultNoNormalDesc;
+
+    noCullnoNormalPSO.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&noCullnoNormalPSO, IID_PPV_ARGS(&mPSOs[RenderType::NoCullNoNormal])));
 
     /*terrain PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC terrainPSODesc = defaultPSODesc;

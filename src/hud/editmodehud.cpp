@@ -355,7 +355,8 @@ void EditModeHUD::update()
                 L"Mode: Default" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultAlpha ?
                 L"Mode: DefaultAlpha" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultTransparency ?
                 L"Mode: DefaultTransparency" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultNoNormal ?
-                L"Mode: DefaultNoNormalMap" : L"Mode: unknown";
+                L"Mode: DefaultNoNormalMap" : editSetting->currentSelection->renderItem->renderType == RenderType::NoCullNoNormal ? 
+                L"Mode: NoCullNoNormal" : L"Mode: unknown";
 
             mHUDElements[25]->NormalizedPosition.y = 0.8f + (int)editSetting->gameObjectProperty * 0.025f;
 
@@ -379,15 +380,15 @@ void EditModeHUD::update()
 
         ss.str(L"");
         ss << p.y;
-        mFontElements[1]->text = ss.str();
+        mFontElements[3]->text = ss.str();
 
         ss.str(L"");
         ss << p.z;
-        mFontElements[2]->text = ss.str();
+        mFontElements[6]->text = ss.str();
 
         ss.str(L"");
         ss << s.x;
-        mFontElements[3]->text = ss.str();
+        mFontElements[1]->text = ss.str();
 
         ss.str(L"");
         ss << s.y;
@@ -395,15 +396,15 @@ void EditModeHUD::update()
 
         ss.str(L"");
         ss << s.z;
-        mFontElements[5]->text = ss.str();
+        mFontElements[7]->text = ss.str();
 
         ss.str(L"");
         ss << XMConvertToDegrees(r.x) << "*";
-        mFontElements[6]->text = ss.str();
+        mFontElements[2]->text = ss.str();
 
         ss.str(L"");
         ss << XMConvertToDegrees(r.y) << "*";
-        mFontElements[7]->text = ss.str();
+        mFontElements[5]->text = ss.str();
 
         ss.str(L"");
         ss << XMConvertToDegrees(r.z) << "*";

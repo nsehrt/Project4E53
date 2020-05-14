@@ -194,6 +194,10 @@ GameObject::GameObject(const json& objectJson, int index)
         {
             rItem->renderType = RenderType::DefaultTransparency;
         }
+        else if (objectJson["RenderType"] == "NoCullNoNormal")
+        {
+            rItem->renderType = RenderType::NoCullNoNormal;
+        }
         else
         {
             rItem->renderType = RenderType::Default;
@@ -389,6 +393,7 @@ json GameObject::toJson()
         case RenderType::DefaultAlpha: jElement["RenderType"] = "DefaultAlpha"; break;
         case RenderType::DefaultNoNormal: jElement["RenderType"] = "DefaultNoNormal"; break;
         case RenderType::DefaultTransparency: jElement["RenderType"] = "DefaultTransparency"; break;
+        case RenderType::NoCullNoNormal: jElement["RenderType"] = "NoCullNoNormal"; break;
         default: LOG(Severity::Warning, "GameObject with impossible RenderType"); break;
     }
 

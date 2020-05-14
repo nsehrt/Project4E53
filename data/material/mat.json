@@ -191,40 +191,24 @@
     },
     {
         "Name": "house1",
-        "Texture": "house1",
-        "NormalMap": "house1_n",
+        "Texture": "house_r",
+        "NormalMap": "defaultNormal",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.95
     },
     {
         "Name": "house2",
-        "Texture": "house2",
-        "NormalMap": "house2_n",
+        "Texture": "house_g",
+        "NormalMap": "defaultNormal",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.95
     },
     {
         "Name": "house3",
-        "Texture": "house3",
-        "NormalMap": "house3_n",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.95
-    },
-    {
-        "Name": "house4",
-        "Texture": "house4",
-        "NormalMap": "house4_n",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.95
-    },
-    {
-        "Name": "house_props",
-        "Texture": "house_props",
-        "NormalMap": "house_props_n",
+        "Texture": "house_b",
+        "NormalMap": "defaultNormal",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.95

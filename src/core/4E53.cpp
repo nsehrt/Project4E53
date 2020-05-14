@@ -1018,7 +1018,10 @@ void P_4E53::update(const GameTime& gt)
                         case RenderType::DefaultTransparency:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultNoNormal;
                             editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
                             break;
-                        case RenderType::DefaultNoNormal:	editSettings->currentSelection->renderItem->renderType = RenderType::Default;
+                        case RenderType::DefaultNoNormal:	editSettings->currentSelection->renderItem->renderType = RenderType::NoCullNoNormal;
+                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
+                            break;
+                        case RenderType::NoCullNoNormal: editSettings->currentSelection->renderItem->renderType = RenderType::Default;
                             editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
                             break;
                     }

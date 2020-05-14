@@ -166,6 +166,7 @@ enum class RenderType
     Grass,
     Default,
     DefaultNoNormal,
+    NoCullNoNormal,
     DefaultAlpha,
     Debug,
     Sky,
@@ -177,7 +178,7 @@ enum class RenderType
     TerrainWireFrame,
     ShadowDefault,
     ShadowAlpha,
-    COUNT = 16
+    COUNT = 17
 };
 
 struct RenderItem
