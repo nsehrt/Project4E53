@@ -40,8 +40,8 @@ void Water::update(const GameTime& gt)
         float tv = material->MatTransform(3, 1);
 
 
-        tu += materialTranslation.x * updateTime;
-        tv += materialTranslation.y * updateTime;
+        tu += materialTranslation.x * updFixedTime;
+        tv += materialTranslation.y * updFixedTime;
 
         border(tu); border(tv);
 
@@ -53,8 +53,8 @@ void Water::update(const GameTime& gt)
         tu = material->Displacement1Transform(3, 0);
         tv = material->Displacement1Transform(3, 1);
 
-        tu += displacement1Translation.x * updateTime;
-        tv += displacement1Translation.y * updateTime;
+        tu += displacement1Translation.x * updFixedTime;
+        tv += displacement1Translation.y * updFixedTime;
 
         border(tu); border(tv);
 
@@ -65,8 +65,8 @@ void Water::update(const GameTime& gt)
         tu = material->Displacement2Transform(3, 0);
         tv = material->Displacement2Transform(3, 1);
 
-        tu += displacement2Translation.x * updateTime;
-        tv += displacement2Translation.y * updateTime;
+        tu += displacement2Translation.x * updFixedTime;
+        tv += displacement2Translation.y * updFixedTime;
 
         border(tu); border(tv);
 

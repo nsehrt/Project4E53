@@ -525,16 +525,11 @@ void RenderResource::buildShaders()
         NULL, NULL
     };
 
-    const D3D_SHADER_MACRO waterDefines[] = {
-        "WATER", "1",
-        NULL, NULL
-    };
-
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["waterPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", waterDefines, "PS", "ps_5_1");
+    mShaders["waterPS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["grassVS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["grassGS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "GS", "gs_5_1");
