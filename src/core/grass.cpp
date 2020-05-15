@@ -20,6 +20,8 @@ void Grass::create(const json& grassJson, Terrain* terrain)
 
     sizeVariation = grassJson["SizeVariation"];
 
+    name = grassJson["Name"];
+
     /*create mesh from parameters*/
 
     GeometryGenerator geoGen;
@@ -103,6 +105,8 @@ json Grass::toJson()
     jElement["Density"][1] = getDensity().y;
 
     jElement["SizeVariation"] = sizeVariation;
+
+    jElement["Name"] = name;
 
     return jElement;
 }

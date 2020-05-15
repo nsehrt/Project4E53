@@ -37,6 +37,11 @@ public:
         return size;
     }
 
+    std::string getName()
+    {
+        return name;
+    }
+
 private:
     RenderResource* renderResource;
     std::unique_ptr<Model> grassPatchModel = nullptr;
@@ -46,5 +51,6 @@ private:
     float sizeVariation = 0.0f;
     DirectX::XMINT2 density = { 32,32 };
     std::string materialName;
+    std::string name;
 
 };

@@ -1261,7 +1261,7 @@ void P_4E53::update(const GameTime& gt)
     }
 
     /*debug actions*/
-    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.DebugEnabled && (settingsData->miscSettings.EditModeEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera)))
+    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.EditModeEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera))
     {
         renderResource->toggleHitBoxDraw();
     }

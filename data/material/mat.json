@@ -81,7 +81,7 @@
         "Displacement_2": "water_h2",
         "Displacement_Normal_1": "water_h_n",       
         "Displacement_Normal_2": "water_h2_n",
-        "DiffuseAlbedo" : [0.55,0.55,1.0,0.75],
+        "DiffuseAlbedo" : [0.45,0.45,1.0,0.85],
         "FresnelR0" : [0.2,0.2,0.2],
         "Roughness" : 0.3
     },

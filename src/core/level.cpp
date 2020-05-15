@@ -388,9 +388,15 @@ bool Level::save()
     }
 
     /*grass*/
+    int c = 0;
     for (const auto& e : mGrass)
     {
         saveFile["Grass"].push_back(e->toJson());
+
+        saveFile["Grass"][c]["Position"][0] = mGameObjects[e->getName()]->getPosition().x;
+        saveFile["Grass"][c]["Position"][2] = mGameObjects[e->getName()]->getPosition().z;
+
+        c++;
     }
 
 
@@ -857,6 +863,12 @@ bool Level::parseGrass(const json& grassJson)
     for (const auto& entry : grassJson)
     {
         /*check validity*/
+        if (!exists(entry, "Name"))
+        {
+            LOG(Severity::Error, "Grass is missing name!");
+            return false;
+        }
+
         if (!exists(entry, "Size"))
         {
             LOG(Severity::Error, "Grass is missing size!");
@@ -901,7 +913,7 @@ bool Level::parseGrass(const json& grassJson)
 
         auto grassObject = std::make_unique<GameObject>(amountObjectCBs++);
 
-        grassObject->name = "GRASS_PATCH";
+        grassObject->name = mGrass.back()->getName();
         grassObject->isFrustumCulled = true;
         grassObject->isShadowEnabled = false;
         grassObject->isDrawEnabled = true;
@@ -915,7 +927,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->setHitboxExtents(XMFLOAT3(mGrass.back()->getSize().x, 1.0f, mGrass.back()->getSize().y));
 
 
-        mGameObjects["GRASS" + counter] = std::move(grassObject);
+        mGameObjects[mGrass.back()->getName()] = std::move(grassObject);
 
         counter++;
     }
