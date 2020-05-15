@@ -270,7 +270,7 @@ void EditModeHUD::update()
         mHUDElements[5]->NormalizedPosition.y = -saveWindowIconPos.y;
     }
 
-    if (editSetting->toolMode != EditTool::ObjectTransform && editSetting->toolMode != EditTool::ObjectMeta)
+    if (editSetting->toolMode != EditTool::ObjectTransform && editSetting->toolMode != EditTool::ObjectMeta && editSetting->toolMode != EditTool::Camera)
     {
         /*legend window*/
         if (editSetting->legendAnim > 0.0f)
@@ -444,17 +444,19 @@ void EditModeHUD::draw()
 
     mSpriteBatch->Begin(renderResource->cmdList);
 
+    auto toolMode = ServiceProvider::getEditSettings()->toolMode;
+
     for (const auto& e : mHUDElements)
     {
         if (!e->Visible) continue;
 
-        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (ServiceProvider::getEditSettings()->toolMode == EditTool::ObjectTransform || ServiceProvider::getEditSettings()->toolMode == EditTool::Camera || ServiceProvider::getEditSettings()->toolMode == EditTool::ObjectMeta)) continue;
-        if (e->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
-        if (e->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
-        if (e->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform)continue;
-        if (e->hudVisibility == HUDVisibility::BOTH_OBJECT && (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)) continue;
-        if (e->hudVisibility == HUDVisibility::OBJECT_META && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)continue;
-        if (e->hudVisibility == HUDVisibility::FPS_CAMERA && ServiceProvider::getEditSettings()->toolMode != EditTool::Camera) continue;
+        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (toolMode == EditTool::ObjectTransform || toolMode == EditTool::Camera || toolMode == EditTool::ObjectMeta)) continue;
+        if (e->hudVisibility == HUDVisibility::HEIGHT && toolMode != EditTool::Height)continue;
+        if (e->hudVisibility == HUDVisibility::PAINT && toolMode != EditTool::Paint)continue;
+        if (e->hudVisibility == HUDVisibility::OBJECT && toolMode != EditTool::ObjectTransform)continue;
+        if (e->hudVisibility == HUDVisibility::BOTH_OBJECT && (toolMode != EditTool::ObjectTransform && toolMode != EditTool::ObjectMeta && toolMode != EditTool::Camera)) continue;
+        if (e->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
+        if (e->hudVisibility == HUDVisibility::FPS_CAMERA && toolMode != EditTool::Camera) continue;
 
         mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(e->TexDescriptor),
                            e->TextureSize,
@@ -470,12 +472,12 @@ void EditModeHUD::draw()
     for (const auto& f : mFontElements)
     {
         if (!f->Visible) continue;
-        if (f->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (ServiceProvider::getEditSettings()->toolMode == EditTool::ObjectTransform || ServiceProvider::getEditSettings()->toolMode == EditTool::Camera)) continue;
-        if (f->hudVisibility == HUDVisibility::HEIGHT && ServiceProvider::getEditSettings()->toolMode != EditTool::Height)continue;
-        if (f->hudVisibility == HUDVisibility::PAINT && ServiceProvider::getEditSettings()->toolMode != EditTool::Paint)continue;
-        if (f->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform)continue;
-        if (f->hudVisibility == HUDVisibility::BOTH_OBJECT && (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)) continue;
-        if (f->hudVisibility == HUDVisibility::OBJECT_META && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)continue;
+        if (f->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (toolMode == EditTool::ObjectTransform || toolMode == EditTool::Camera)) continue;
+        if (f->hudVisibility == HUDVisibility::HEIGHT && toolMode != EditTool::Height)continue;
+        if (f->hudVisibility == HUDVisibility::PAINT && toolMode != EditTool::Paint)continue;
+        if (f->hudVisibility == HUDVisibility::OBJECT && toolMode != EditTool::ObjectTransform)continue;
+        if (f->hudVisibility == HUDVisibility::BOTH_OBJECT && (toolMode != EditTool::ObjectTransform && toolMode != EditTool::ObjectMeta && toolMode != EditTool::Camera)) continue;
+        if (f->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
 
         mFonts[f->font]->DrawString(mSpriteBatch.get(),
                                     f->text.c_str(),
@@ -489,7 +491,7 @@ void EditModeHUD::draw()
     mSpriteBatch->End();
 
     /*draw texture of paint mode*/
-    if (ServiceProvider::getEditSettings()->toolMode == EditTool::Paint)
+    if (toolMode == EditTool::Paint)
     {
         ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
         renderResource->cmdList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -537,7 +539,7 @@ std::unique_ptr<EditModeHUD::FontElement> EditModeHUD::initFontElement(FontDescr
 {
     auto element = std::make_unique<FontElement>();
 
-    element->text = L"Hello!";
+    element->text = L"-";
     element->NormalizedPosition = nPos;
     element->ResolutionScale = resolutionScaleFactor * scaleF;
 

@@ -126,6 +126,11 @@ public:
         hitBox.Extents = e;
     }
 
+    DirectX::BoundingBox& getHitbox()
+    {
+        return hitBox;
+    }
+
     bool intersects(GameObject& obj);
     bool intersects(DirectX::BoundingBox& box);
     bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/

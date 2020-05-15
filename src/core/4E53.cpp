@@ -1167,6 +1167,65 @@ void P_4E53::update(const GameTime& gt)
         }
         else
         {
+            if (inputData.Pressed(BTN::A))
+            {
+                float dist = 0.0f;
+                float tMin = MathHelper::Infinity;
+
+                GameObject* selectedObject = nullptr;
+
+                for (const auto& e : activeLevel->mGameObjects)
+                {
+                    if (e.second->getHitbox().Intersects(fpsCamera->getPosition(),
+                        fpsCamera->getLook(),
+                        dist))
+                    {
+                        if (dist < tMin)
+                        {
+                            tMin = dist;
+                            selectedObject = e.second.get();
+                        }
+                        
+                    }
+                }
+
+                if (selectedObject)
+                {
+                    LOG(Severity::Debug, "Picked " << selectedObject->name);
+
+                    std::vector<GameObject*> validGameObjects;
+
+                    for (const auto& g : activeLevel->mGameObjects)
+                    {
+                        if (g.second->gameObjectType == GameObjectType::Static ||
+                            g.second->gameObjectType == GameObjectType::Wall ||
+                            g.second->gameObjectType == GameObjectType::Dynamic ||
+                            g.second->gameObjectType == GameObjectType::Water)
+                        {
+                            validGameObjects.push_back(g.second.get());
+                        }
+                    }
+
+                    int index = 0;
+
+                    for (const auto& e : validGameObjects)
+                    {
+                        if (e == selectedObject)
+                        {
+                            break;
+                        }
+                        index++;
+                    }
+
+                    editSettings->currentSelection = selectedObject;
+                    editSettings->currentSelectionIndex = index;
+
+                    setModelSelection();
+
+                }
+
+            }
+
             fpsCamera->updateFPSCamera(inputData.current, gt);
         }
 

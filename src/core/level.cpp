@@ -901,7 +901,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
-        grassObject->setHitboxExtents(XMFLOAT3(mGrass.back()->getSize().x, 20.0f, mGrass.back()->getSize().y));
+        grassObject->setHitboxExtents(XMFLOAT3(mGrass.back()->getSize().x, 1.0f, mGrass.back()->getSize().y));
 
 
         mGameObjects["GRASS" + counter] = std::move(grassObject);
