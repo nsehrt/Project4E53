@@ -169,6 +169,7 @@ enum class RenderType
     NoCullNoNormal,
     DefaultAlpha,
     Debug,
+    Outline,
     Sky,
     DefaultTransparency,
     Hitbox,
@@ -178,7 +179,7 @@ enum class RenderType
     TerrainWireFrame,
     ShadowDefault,
     ShadowAlpha,
-    COUNT = 17
+    COUNT = 18
 };
 
 struct RenderItem

@@ -1191,7 +1191,7 @@ void P_4E53::update(const GameTime& gt)
 
                 if (selectedObject)
                 {
-                    LOG(Severity::Debug, "Picked " << selectedObject->name);
+                    LOG(Severity::Info, "Picked GameObject " << selectedObject->name << ".");
 
                     std::vector<GameObject*> validGameObjects;
 

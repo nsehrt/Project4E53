@@ -239,6 +239,7 @@ void Level::draw()
     // draw the gameobjects
     UINT objectsDrawn = 0;
 
+
     for (UINT i = 0; i < renderOrder.size(); i++)
     {
         if (renderOrder[i].empty())continue;
@@ -274,6 +275,16 @@ void Level::draw()
             }
         }
     }
+
+    /*draw outlined obj if needed*/
+    if (ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
+        ServiceProvider::getEditSettings()->currentSelection != nullptr &&
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Grass)
+    {
+        renderResource->setPSO(RenderType::Outline);
+        ServiceProvider::getEditSettings()->currentSelection->draw();
+    }
+
 }
 
 bool Level::save()

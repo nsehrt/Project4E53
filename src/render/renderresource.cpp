@@ -566,6 +566,10 @@ void RenderResource::buildShaders()
 
     mShaders["debugVS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
+
+    mShaders["outlineVS"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["outlinePS"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "PS", "ps_5_1");
+
 }
 
 #pragma endregion SHADER
@@ -756,7 +760,25 @@ void RenderResource::buildPSOs()
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&grassPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Grass])));
 
+    /*outline PSO*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC outlinePSO = defaultPSODesc;
 
+    outlinePSO.VS = 
+    {
+        reinterpret_cast<BYTE*>(mShaders["outlineVS"]->GetBufferPointer()),
+        mShaders["outlineVS"]->GetBufferSize()
+    };
+
+    outlinePSO.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["outlinePS"]->GetBufferPointer()),
+        mShaders["outlinePS"]->GetBufferSize()
+    };
+
+    outlinePSO.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+    outlinePSO.DepthStencilState.DepthEnable = false;
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPSOs[RenderType::Outline])));
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
