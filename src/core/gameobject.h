@@ -34,7 +34,7 @@ public:
     void update(const GameTime& gt);
     bool draw();
     bool drawShadow();
-    void drawHitbox();
+    void drawRoughHitbox();
 
     json toJson();
 
@@ -116,23 +116,24 @@ public:
         return TextureRotation;
     }
 
-    float getExtentY()
+    float getRoughHitBoxExtentY()
     {
-        return hitBox.Extents.y;
+        return roughBoundingBox.Extents.y;
     }
 
-    void setHitboxExtents(DirectX::XMFLOAT3 e)
+    void setRoughHitBoxExtents(DirectX::XMFLOAT3 e)
     {
-        hitBox.Extents = e;
+        roughBoundingBox.Extents = e;
     }
 
-    DirectX::BoundingBox& getHitbox()
+    DirectX::BoundingBox& getRoughBoundingBox()
     {
-        return hitBox;
+        return roughBoundingBox;
     }
 
-    bool intersects(GameObject& obj);
-    bool intersects(DirectX::BoundingBox& box);
+    bool intersectsRough(GameObject& obj);
+    bool intersectsRough(DirectX::BoundingBox& box);
+
     bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/
 
     void updateTransforms();
@@ -151,8 +152,10 @@ private:
 
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
 
-    /*hitbox*/
-    DirectX::BoundingBox hitBox;
+    /*rough hitbox*/
+    DirectX::BoundingBox roughBoundingBox;
+
+    /*precise hitbox needed*/
 
     UINT objectCBSize = 0;
 

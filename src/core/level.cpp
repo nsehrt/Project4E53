@@ -119,7 +119,7 @@ void Level::update(const GameTime& gt)
 
     auto cameraPos = aCamera->getPosition();
 
-    /*TODO mit Spielerposition statt Kameraposition*/
+    /*order transparent objects by distance from camera*/
     std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
               mLightObjects.end() - AMOUNT_SPOT,
               [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b) -> bool
@@ -142,14 +142,14 @@ void Level::update(const GameTime& gt)
     /*water*/
     updateWater(gt);
 
-    /*TODO Collision test*/
+    /*TEST Collision test*/
     if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
     for (const auto& gameObj : mGameObjects)
     {
         if (gameObj.second->gameObjectType != GameObjectType::Static &&
             gameObj.second->gameObjectType != GameObjectType::Wall) continue;
 
-        if (gameObj.second->intersects(ServiceProvider::getActiveCamera()->hitbox))
+        if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->hitbox))
         {
             //LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
             ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
@@ -271,7 +271,7 @@ void Level::draw()
 
             if (g->renderItem->renderType != RenderType::Sky)
             {
-                gameObject.second->drawHitbox();
+                gameObject.second->drawRoughHitbox();
             }
         }
     }
@@ -924,7 +924,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
-        grassObject->setHitboxExtents(XMFLOAT3(mGrass.back()->getSize().x, 1.0f, mGrass.back()->getSize().y));
+        grassObject->setRoughHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, 1.0f, mGrass.back()->getSize().y));
 
 
         mGameObjects[mGrass.back()->getName()] = std::move(grassObject);

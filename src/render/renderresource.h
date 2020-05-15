@@ -33,7 +33,7 @@ public:
     /*set up render resource*/
     bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
 
-    void onResize(); /*TODO some time*/
+    void onResize();
 
     void toggleHitBoxDraw()
     {

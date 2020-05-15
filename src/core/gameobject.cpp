@@ -285,7 +285,7 @@ bool GameObject::draw()
         BoundingFrustum localSpaceFrustum;
         cam->getFrustum().Transform(localSpaceFrustum, invView);
 
-        if (localSpaceFrustum.Contains(hitBox) == DirectX::DISJOINT)
+        if (localSpaceFrustum.Contains(roughBoundingBox) == DirectX::DISJOINT)
         {
             return false;
         }
@@ -356,7 +356,7 @@ bool GameObject::drawShadow()
     return true;
 }
 
-void GameObject::drawHitbox()
+void GameObject::drawRoughHitbox()
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
@@ -431,29 +431,29 @@ json GameObject::toJson()
     return jElement;
 }
 
-bool GameObject::intersects(GameObject& obj)
+bool GameObject::intersectsRough(GameObject& obj)
 {
     if (!isCollisionEnabled || !obj.isCollisionEnabled)
     {
         return false;
     }
 
-    return hitBox.Intersects(obj.hitBox);
+    return roughBoundingBox.Intersects(obj.roughBoundingBox);
 }
 
-bool GameObject::intersects(DirectX::BoundingBox& box)
+bool GameObject::intersectsRough(DirectX::BoundingBox& box)
 {
     if (!isCollisionEnabled)
     {
         return false;
     }
 
-    return hitBox.Intersects(box);
+    return roughBoundingBox.Intersects(box);
 }
 
 bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere)
 {
-    return hitBox.Intersects(sphere);
+    return roughBoundingBox.Intersects(sphere);
 }
 
 void GameObject::updateTransforms()
@@ -467,8 +467,10 @@ void GameObject::updateTransforms()
                     XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
                     XMMatrixTranslationFromVector(XMLoadFloat3(&TextureTranslation)));
 
-    /*update hitbox*/
-    renderItem->Model->boundingBox.Transform(hitBox, XMLoadFloat4x4(&renderItem->World));
+    /*update rough hitbox*/
+    renderItem->Model->boundingBox.Transform(roughBoundingBox, XMLoadFloat4x4(&renderItem->World));
+
+    /*update for precise hitbox needed*/
 
     renderItem->NumFramesDirty = gNumFrameResources;
 }

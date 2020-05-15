@@ -1062,8 +1062,6 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
         }
     }
 
-    /*TODO set shadow bounds to player center*/
-
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());
     XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir + XMLoadFloat3(&mShadowMap->shadowBounds.Center);
@@ -1264,7 +1262,7 @@ void RenderResource::buildFrameResource()
                                   MAX_GAME_OBJECTS,
                                   0,
                                   (UINT)mMaterials.size(),
-                                  250000 /*terrain vertices TODO*/));
+                                  250000 /*terrain vertices*/));
     }
 }
 

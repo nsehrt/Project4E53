@@ -725,12 +725,12 @@ void P_4E53::update(const GameTime& gt)
                         {
                             case TranslationAxis::XY: nPos.x = 0.0f; 
                                                       nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
-                                                                editSettings->currentSelection->getExtentY();
+                                                                editSettings->currentSelection->getRoughHitBoxExtentY();
                                                       break;
                             case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
                             case TranslationAxis::X: nPos.x = 0.0f; break;
                             case TranslationAxis::Y: nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
-                                                                editSettings->currentSelection->getExtentY();
+                                                                editSettings->currentSelection->getRoughHitBoxExtentY();
                                                     break;
                             case TranslationAxis::Z: nPos.z = 0.0f; break;
                         }
@@ -1176,7 +1176,7 @@ void P_4E53::update(const GameTime& gt)
 
                 for (const auto& e : activeLevel->mGameObjects)
                 {
-                    if (e.second->getHitbox().Intersects(fpsCamera->getPosition(),
+                    if (e.second->getRoughBoundingBox().Intersects(fpsCamera->getPosition(),
                         fpsCamera->getLook(),
                         dist))
                     {
