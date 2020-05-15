@@ -112,6 +112,7 @@ void Level::update(const GameTime& gt)
     /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
+        gameObj.second->checkInViewFrustum();
         gameObj.second->update(gt);
     }
 
@@ -140,7 +141,10 @@ void Level::update(const GameTime& gt)
     }
 
     /*water*/
-    updateWater(gt);
+    for (auto& w : mWater)
+    {
+        w->update(gt);
+    }
 
     /*TEST Collision test*/
     if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
@@ -178,16 +182,6 @@ void Level::update(const GameTime& gt)
     //        }
     //    }
     //}
-}
-
-void Level::updateWater(const GameTime& gt)
-{
-
-    for (auto& w : mWater)
-    {
-        w->update(gt);
-    }
-
 }
 
 void Level::drawTerrain()

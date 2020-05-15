@@ -131,6 +131,13 @@ public:
         return roughBoundingBox;
     }
 
+    bool getIsInFrustum()
+    {
+        return isInFrustum;
+    }
+
+    void checkInViewFrustum();
+
     bool intersectsRough(GameObject& obj);
     bool intersectsRough(DirectX::BoundingBox& box);
 
@@ -154,6 +161,8 @@ private:
 
     /*rough hitbox*/
     DirectX::BoundingBox roughBoundingBox;
+
+    bool isInFrustum = false;
 
     /*precise hitbox needed*/
 

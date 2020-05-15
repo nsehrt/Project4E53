@@ -275,21 +275,22 @@ bool GameObject::draw()
     }
 
     /*frustum culling check*/
-    if (isFrustumCulled)
-    {
-        auto cam = ServiceProvider::getActiveCamera();
+    //if (isFrustumCulled)
+    //{
+    //    auto cam = ServiceProvider::getActiveCamera();
 
-        XMMATRIX world = XMLoadFloat4x4(&gObjRenderItem->World);
-        XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
+    //    XMMATRIX world = XMLoadFloat4x4(&gObjRenderItem->World);
+    //    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
 
-        BoundingFrustum localSpaceFrustum;
-        cam->getFrustum().Transform(localSpaceFrustum, invView);
+    //    BoundingFrustum localSpaceFrustum;
+    //    cam->getFrustum().Transform(localSpaceFrustum, invView);
 
-        if (localSpaceFrustum.Contains(roughBoundingBox) == DirectX::DISJOINT)
-        {
-            return false;
-        }
-    }
+    //    if (localSpaceFrustum.Contains(roughBoundingBox) == DirectX::DISJOINT)
+    //    {
+    //        return false;
+    //    }
+    //}
+    if (!isInFrustum) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -429,6 +430,29 @@ json GameObject::toJson()
     jElement["TexRotation"][2] = XMConvertToDegrees(getTextureRotation().z);
 
     return jElement;
+}
+
+void GameObject::checkInViewFrustum()
+{
+
+    if (isFrustumCulled)
+    {
+        auto cam = ServiceProvider::getActiveCamera();
+
+        XMMATRIX world = XMLoadFloat4x4(&renderItem->World);
+        XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
+
+        BoundingFrustum localSpaceFrustum;
+        cam->getFrustum().Transform(localSpaceFrustum, invView);
+
+        isInFrustum = !(localSpaceFrustum.Contains(roughBoundingBox) == DirectX::DISJOINT);
+
+    }
+    else
+    {
+        isInFrustum = true;
+    }
+
 }
 
 bool GameObject::intersectsRough(GameObject& obj)

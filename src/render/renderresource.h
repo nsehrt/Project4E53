@@ -35,7 +35,7 @@ public:
 
     void onResize();
 
-    void toggleHitBoxDraw()
+    void toggleRoughHitBoxDraw()
     {
         drawHitbox = !drawHitbox;
     }

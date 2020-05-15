@@ -1263,7 +1263,7 @@ void P_4E53::update(const GameTime& gt)
     /*debug actions*/
     if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.EditModeEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera))
     {
-        renderResource->toggleHitBoxDraw();
+        renderResource->toggleRoughHitBoxDraw();
     }
 
     //if (inputData.Released(BTN::DPAD_UP) && settingsData->miscSettings.DebugEnabled)
@@ -1276,8 +1276,8 @@ void P_4E53::update(const GameTime& gt)
     //	ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
     //}
 
-    activeLevel->update(gt);
     ServiceProvider::getActiveCamera()->updateViewMatrix();
+    activeLevel->update(gt);
     renderResource->updateBuffers(gt);
 
     /*save input for next frame*/

@@ -31,10 +31,11 @@ public:
 
     /* update all game objects in the level */
     void update(const GameTime& gt);
-    void updateWater(const GameTime& gt);
+
+    /*needed because a different root signature is used*/
+    void drawTerrain();
 
     /* draw the level */
-    void drawTerrain();
     void draw();
 
     /*save gamobjects terrain etc*/
@@ -42,10 +43,14 @@ public:
 
     /*create new level*/
     bool createNew(const std::string& levelFile);
+
+    /*checks if level file exists*/
     static bool levelExists(const std::string& levelFile);
 
+    /*shadow equivalent of draw()*/
     void drawShadow();
 
+    /*need to call this if new object is added or render type is changed*/
     void calculateRenderOrder();
 
     void addGameObject(json goJson)
@@ -88,8 +93,6 @@ private:
     bool parseTerrain(const json& terrainJson);
     bool parseGrass(const json& grassJson);
     bool parseWater(const json& waterJson);
-
-    std::unique_ptr<Model> grassModel;
 
     /*render order*/
     std::vector<std::vector<GameObject*>> renderOrder;
