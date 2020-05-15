@@ -73,7 +73,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\camera.png",
         L"data\\texture\\hud\\gui\\edit\\meta.png",
         L"data\\texture\\hud\\gui\\edit\\model_prop.png",
-        L"data\\texture\\hud\\gui\\edit\\success.png"
+        L"data\\texture\\hud\\gui\\edit\\success.png",
+        L"data\\texture\\hud\\gui\\edit\\crosshair.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -181,6 +182,9 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.85f }, 0.3f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.9125f, 0.875f }, 0.3f));
 
+    /*camera crosshair 30*/
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::CROSSHAIR, { 0.5f, 0.5f }, 1.0f));
+
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.56f }, 0.2f));
@@ -221,6 +225,8 @@ void EditModeHUD::init()
     {
         mHUDElements[i]->hudVisibility = HUDVisibility::OBJECT_META;
     }
+    mHUDElements[30]->hudVisibility = HUDVisibility::FPS_CAMERA;
+
 
     for (int i = 0; i < mFontElements.size(); i++)
     {
@@ -229,6 +235,7 @@ void EditModeHUD::init()
     mFontElements[10]->hudVisibility = HUDVisibility::OBJECT_META;
     mFontElements[11]->hudVisibility = HUDVisibility::OBJECT_META;
     mFontElements[12]->hudVisibility = HUDVisibility::OBJECT_META;
+    
 }
 
 void EditModeHUD::update()
@@ -447,6 +454,7 @@ void EditModeHUD::draw()
         if (e->hudVisibility == HUDVisibility::OBJECT && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform)continue;
         if (e->hudVisibility == HUDVisibility::BOTH_OBJECT && (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)) continue;
         if (e->hudVisibility == HUDVisibility::OBJECT_META && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)continue;
+        if (e->hudVisibility == HUDVisibility::FPS_CAMERA && ServiceProvider::getEditSettings()->toolMode != EditTool::Camera) continue;
 
         mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(e->TexDescriptor),
                            e->TextureSize,

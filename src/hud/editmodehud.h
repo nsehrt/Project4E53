@@ -77,6 +77,7 @@ private:
         OBJECT_META,
         MODEL_PROP,
         SUCCESS,
+        CROSSHAIR,
         TCount
     };
 
@@ -94,7 +95,8 @@ private:
         PAINT,
         OBJECT,
         OBJECT_META,
-        BOTH_OBJECT
+        BOTH_OBJECT,
+        FPS_CAMERA
     };
 
     struct HUDElement
