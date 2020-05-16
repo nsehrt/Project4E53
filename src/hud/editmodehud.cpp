@@ -535,7 +535,7 @@ std::unique_ptr<EditModeHUD::HUDElement> EditModeHUD::initHUDElement(TextureDesc
     return std::move(element);
 }
 
-std::unique_ptr<EditModeHUD::FontElement> EditModeHUD::initFontElement(FontDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF)
+std::unique_ptr<EditModeHUD::FontElement> EditModeHUD::initFontElement(EditModeHUD::FontDescriptors desc, DirectX::SimpleMath::Vector2 nPos, float scaleF)
 {
     auto element = std::make_unique<FontElement>();
 

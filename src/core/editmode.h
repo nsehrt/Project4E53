@@ -62,7 +62,6 @@ struct EditSettings
     float Velocity = 0.0f;
     float BaseVelocity = 150.0f;
     float BaseSelectSize = 20.0f;
-    float BaseSelectSizeMax;
 
     float BaseRadius = 8.0f;
     float FallOffRadius = 4.0f;
