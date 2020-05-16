@@ -109,10 +109,15 @@ void Level::update(const GameTime& gt)
     auto renderResource = ServiceProvider::getRenderResource();
     auto aCamera = ServiceProvider::getActiveCamera();
 
+    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(aCamera->getView()), aCamera->getView());
+
+    BoundingFrustum localSpaceFrustum;
+    aCamera->getFrustum().Transform(localSpaceFrustum, invView);
+
     /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
-        gameObj.second->checkInViewFrustum();
+        gameObj.second->checkInViewFrustum(localSpaceFrustum);
         gameObj.second->update(gt);
     }
 
@@ -389,6 +394,12 @@ bool Level::save()
 
         saveFile["Grass"][c]["Position"][0] = mGameObjects[e->getName()]->getPosition().x;
         saveFile["Grass"][c]["Position"][2] = mGameObjects[e->getName()]->getPosition().z;
+
+        saveFile["Grass"][c]["Size"][0] = mGameObjects[e->getName()]->getScale().x * e->getSize().x;
+        saveFile["Grass"][c]["Size"][1] = mGameObjects[e->getName()]->getScale().z * e->getSize().y;
+
+        saveFile["Grass"][c]["Density"][0] = (int)(mGameObjects[e->getName()]->getScale().x * e->getSize().x * 3.2f);
+        saveFile["Grass"][c]["Density"][1] = (int)(mGameObjects[e->getName()]->getScale().z * e->getSize().y * 3.2f);
 
         c++;
     }

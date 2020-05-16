@@ -139,6 +139,8 @@ float Terrain::getHeight(float x, float z)
     int row = (int)floorf(d);
     int col = (int)floorf(c);
 
+    if (row < 0 || col < 0) return 0.0f;
+    if (row > terrainSlices - 2 || col > terrainSlices - 2) return 0.0f;
 
     // Grab the heights of the cell we are in.
     // A*--*B

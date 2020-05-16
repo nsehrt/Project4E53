@@ -146,7 +146,7 @@ public:
         return isInFrustum;
     }
 
-    void checkInViewFrustum();
+    void checkInViewFrustum(BoundingFrustum& localCamFrustum);
 
     bool intersectsRough(GameObject& obj);
     bool intersectsRough(DirectX::BoundingOrientedBox& box);

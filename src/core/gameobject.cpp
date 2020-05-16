@@ -416,20 +416,15 @@ json GameObject::toJson()
     return jElement;
 }
 
-void GameObject::checkInViewFrustum()
+void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
 {
 
     if (isFrustumCulled)
     {
-        auto cam = ServiceProvider::getActiveCamera();
 
         XMMATRIX world = XMLoadFloat4x4(&renderItem->World);
-        XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
 
-        BoundingFrustum localSpaceFrustum;
-        cam->getFrustum().Transform(localSpaceFrustum, invView);
-
-        isInFrustum = !(localSpaceFrustum.Contains(frustumCheckBoundingBox) == DirectX::DISJOINT);
+        isInFrustum = !(localCamFrustum.Contains(frustumCheckBoundingBox) == DirectX::DISJOINT);
 
     }
     else
@@ -461,7 +456,7 @@ bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box)
 
 bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere)
 {
-    return roughBoundingBox.Intersects(sphere);
+    return frustumCheckBoundingBox.Intersects(sphere);
 }
 
 void GameObject::updateTransforms()

@@ -223,7 +223,7 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
     /*load first level*/
-    std::string levelFile = "0";
+    std::string levelFile = "1";
 
     auto level = std::make_shared<Level>();
 
@@ -1189,7 +1189,7 @@ void P_4E53::update(const GameTime& gt)
                     }
                 }
 
-                if (selectedObject)
+                if (selectedObject && selectedObject->gameObjectType != GameObjectType::Sky)
                 {
                     LOG(Severity::Info, "Picked GameObject " << selectedObject->name << ".");
 

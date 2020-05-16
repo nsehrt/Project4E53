@@ -25,7 +25,7 @@ void Grass::create(const json& grassJson, Terrain* terrain)
     /*create mesh from parameters*/
 
     GeometryGenerator geoGen;
-    GeometryGenerator::MeshData grassTest = geoGen.CreateGrid(size.x, size.y, density.x, density.y);
+    GeometryGenerator::MeshData grassTest = geoGen.CreateGrid(size.x, size.y, density.y, density.x);
 
     std::vector<BillBoardVertex> vertices(grassTest.Vertices.size());
     std::vector<std::uint16_t> indices(grassTest.Vertices.size());
