@@ -126,9 +126,19 @@ public:
         roughBoundingBox.Extents = e;
     }
 
+    void setFrustumHitBoxExtents(DirectX::XMFLOAT3 e)
+    {
+        frustumCheckBoundingBox.Extents = e;
+    }
+
     DirectX::BoundingOrientedBox& getRoughBoundingBox()
     {
         return roughBoundingBox;
+    }
+
+    DirectX::BoundingBox& getFrustumCheckBoundingBox()
+    {
+        return frustumCheckBoundingBox;
     }
 
     bool getIsInFrustum()
@@ -161,6 +171,7 @@ private:
 
     /*rough hitbox*/
     DirectX::BoundingOrientedBox roughBoundingBox;
+    DirectX::BoundingBox frustumCheckBoundingBox;
 
     bool isInFrustum = false;
 

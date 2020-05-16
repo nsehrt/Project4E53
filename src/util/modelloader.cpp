@@ -137,6 +137,10 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     XMStoreFloat3(&mRet.model->boundingBox.Center, 0.5f * (vMin + vMax));
     XMStoreFloat3(&mRet.model->boundingBox.Extents, 0.5f * (vMax - vMin));
 
+    /*create sphere*/
+    XMStoreFloat3(&mRet.model->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mRet.model->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
+
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData boxMesh = geoGen.CreateBox(mRet.model->boundingBox.Extents.x * 2.f,
                                                            mRet.model->boundingBox.Extents.y * 2.f,

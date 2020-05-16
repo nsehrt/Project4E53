@@ -82,9 +82,8 @@ private:
 
     float waterUpdate = 0.0f;
 
-    /* total amount of game objects in the level, includes sky sphere*/
+    /* total amount of object cbs used in the level*/
     int amountObjectCBs = 0;
-    int amountGameObjects = 0;
 
     bool parseSky(const json& skyJson);
     bool parseLights(const json& lightJson);

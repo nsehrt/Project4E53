@@ -1276,8 +1276,12 @@ void P_4E53::update(const GameTime& gt)
     //	ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
     //}
 
+
+    /*first update camera, then the level*/
     ServiceProvider::getActiveCamera()->updateViewMatrix();
+
     activeLevel->update(gt);
+
     renderResource->updateBuffers(gt);
 
     /*save input for next frame*/

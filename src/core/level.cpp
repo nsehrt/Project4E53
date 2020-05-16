@@ -97,7 +97,7 @@ bool Level::load(const std::string& levelFile)
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
-    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << amountGameObjects << " GameObjects)");
+    LOG(Severity::Info, "Loaded level " << levelFile << " successfully. (" << elapsedTime.count() << " seconds, " << mGameObjects.size() << " GameObjects, " << amountObjectCBs << " ObjectCBs)");
 
     loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
 
@@ -918,7 +918,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
-        grassObject->setRoughHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y));
+        grassObject->setFrustumHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y));
 
 
         mGameObjects[mGrass.back()->getName()] = std::move(grassObject);

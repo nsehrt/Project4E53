@@ -118,6 +118,7 @@ struct Model
     std::vector<std::unique_ptr<Mesh>> meshes;
 
     DirectX::BoundingOrientedBox boundingBox;
+    DirectX::BoundingBox frustumBoundingBox;
 
     std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };
@@ -168,10 +169,10 @@ enum class RenderType
     DefaultNoNormal,
     NoCullNoNormal,
     DefaultAlpha,
+    Sky, /*everything before transparent objects*/
+    DefaultTransparency,
     Debug,
     Outline,
-    Sky,
-    DefaultTransparency,
     Hitbox,
     Composite,
     Sobel,
@@ -179,7 +180,7 @@ enum class RenderType
     TerrainWireFrame,
     ShadowDefault,
     ShadowAlpha,
-    COUNT = 18
+    COUNT
 };
 
 struct RenderItem

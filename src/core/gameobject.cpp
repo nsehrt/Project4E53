@@ -274,22 +274,6 @@ bool GameObject::draw()
         return false;
     }
 
-    /*frustum culling check*/
-    //if (isFrustumCulled)
-    //{
-    //    auto cam = ServiceProvider::getActiveCamera();
-
-    //    XMMATRIX world = XMLoadFloat4x4(&gObjRenderItem->World);
-    //    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(cam->getView()), cam->getView());
-
-    //    BoundingFrustum localSpaceFrustum;
-    //    cam->getFrustum().Transform(localSpaceFrustum, invView);
-
-    //    if (localSpaceFrustum.Contains(roughBoundingBox) == DirectX::DISJOINT)
-    //    {
-    //        return false;
-    //    }
-    //}
     if (!isInFrustum) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
@@ -445,7 +429,7 @@ void GameObject::checkInViewFrustum()
         BoundingFrustum localSpaceFrustum;
         cam->getFrustum().Transform(localSpaceFrustum, invView);
 
-        isInFrustum = !(localSpaceFrustum.Contains(roughBoundingBox) == DirectX::DISJOINT);
+        isInFrustum = !(localSpaceFrustum.Contains(frustumCheckBoundingBox) == DirectX::DISJOINT);
 
     }
     else
@@ -493,6 +477,7 @@ void GameObject::updateTransforms()
 
     /*update rough hitbox*/
     renderItem->Model->boundingBox.Transform(roughBoundingBox, XMLoadFloat4x4(&renderItem->World));
+    renderItem->Model->frustumBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&renderItem->World));
 
     /*update for precise hitbox needed*/
 
