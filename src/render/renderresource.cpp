@@ -1601,6 +1601,7 @@ void RenderResource::generateDefaultShapes()
 
     XMStoreFloat3(&mModels["watergrid"]->boundingBox.Center, 0.5f * (vMin + vMax));
     XMStoreFloat3(&mModels["watergrid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+    mModels["watergrid"]->boundingBox.Extents.y = 5.0f;
 
     GeometryGenerator::MeshData boxMeshWGrid = geoGen.CreateBox(mModels["watergrid"]->boundingBox.Extents.x * 2.f,
                                                                mModels["watergrid"]->boundingBox.Extents.y * 2.f,

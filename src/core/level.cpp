@@ -153,10 +153,10 @@ void Level::update(const GameTime& gt)
         if (gameObj.second->gameObjectType != GameObjectType::Static &&
             gameObj.second->gameObjectType != GameObjectType::Wall) continue;
 
-        if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->hitbox))
+        if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
         {
-            //LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
-            ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
+            LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
+            //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
         }
     }
 
@@ -918,7 +918,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
-        grassObject->setRoughHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, 1.0f, mGrass.back()->getSize().y));
+        grassObject->setRoughHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y));
 
 
         mGameObjects[mGrass.back()->getName()] = std::move(grassObject);

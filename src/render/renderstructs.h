@@ -117,7 +117,7 @@ struct Model
 
     std::vector<std::unique_ptr<Mesh>> meshes;
 
-    DirectX::BoundingBox boundingBox;
+    DirectX::BoundingOrientedBox boundingBox;
 
     std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };

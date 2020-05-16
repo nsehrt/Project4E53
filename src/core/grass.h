@@ -42,6 +42,11 @@ public:
         return name;
     }
 
+    float getHighestPoint()
+    {
+        return highestPoint;
+    }
+
 private:
     RenderResource* renderResource;
     std::unique_ptr<Model> grassPatchModel = nullptr;
@@ -52,5 +57,6 @@ private:
     DirectX::XMINT2 density = { 32,32 };
     std::string materialName;
     std::string name;
+    float highestPoint = 0.0f;
 
 };

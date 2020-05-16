@@ -30,6 +30,8 @@ void Grass::create(const json& grassJson, Terrain* terrain)
     std::vector<BillBoardVertex> vertices(grassTest.Vertices.size());
     std::vector<std::uint16_t> indices(grassTest.Vertices.size());
 
+    highestPoint = -MathHelper::Infinity;
+
     for (size_t i = 0; i < grassTest.Vertices.size(); i++)
     {
         vertices[i].Pos = grassTest.Vertices[i].Position;
@@ -40,6 +42,8 @@ void Grass::create(const json& grassJson, Terrain* terrain)
         worldPos.z += position.z;
 
         vertices[i].Pos.y = terrain->getHeight(worldPos.x, worldPos.z) + (quadSize.y * 0.5f);
+
+        highestPoint = MathHelper::maxH(highestPoint, vertices[i].Pos.y);
 
         float variation = MathHelper::randF(0, 2 * sizeVariation) - sizeVariation;
 

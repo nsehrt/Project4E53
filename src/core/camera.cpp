@@ -9,9 +9,10 @@ Camera::Camera()
     setPosition(0, 0, 0);
     yAxis = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 
-    baseHitbox = DirectX::BoundingBox(XMFLOAT3(0, 0, 0), XMFLOAT3(CAMERA_HITBOX_SIZE_EXTENTS,
-                                      CAMERA_HITBOX_SIZE_EXTENTS,
-                                      CAMERA_HITBOX_SIZE_EXTENTS));
+    baseHitbox.Center = XMFLOAT3(0, 0, 0);
+    baseHitbox.Extents = XMFLOAT3(CAMERA_HITBOX_SIZE_EXTENTS,
+                                  CAMERA_HITBOX_SIZE_EXTENTS,
+                                  CAMERA_HITBOX_SIZE_EXTENTS);
 }
 
 XMVECTOR Camera::getPosition()const

@@ -29,6 +29,11 @@ public:
     float getFovY()const;
     float getFovX()const;
 
+    DirectX::BoundingOrientedBox& getBoundingBox()
+    {
+        return boundingBox;
+    }
+
     float getNearWindowWidth()const;
     float getNearWindowHeight()const;
     float getFarWindowWidth()const;
@@ -69,12 +74,13 @@ public:
 
     bool isCollisionEnabled = true;
 
-    DirectX::BoundingBox hitbox;
+    
     DirectX::XMFLOAT3 mPreviousPosition = { 0.0f,0.0f,0.0f };
 
 protected:
 
-    DirectX::BoundingBox baseHitbox;
+    DirectX::BoundingOrientedBox boundingBox;
+    DirectX::BoundingOrientedBox baseHitbox;
     DirectX::BoundingFrustum camFrustum;
 
     DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };
@@ -109,6 +115,6 @@ protected:
                                  DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&mHitboxRotation)) *
                                  DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&mPosition)));
 
-        baseHitbox.Transform(hitbox, DirectX::XMLoadFloat4x4(&mWorld));
+        baseHitbox.Transform(boundingBox, DirectX::XMLoadFloat4x4(&mWorld));
     }
 };

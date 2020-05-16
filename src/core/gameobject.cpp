@@ -465,7 +465,7 @@ bool GameObject::intersectsRough(GameObject& obj)
     return roughBoundingBox.Intersects(obj.roughBoundingBox);
 }
 
-bool GameObject::intersectsRough(DirectX::BoundingBox& box)
+bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box)
 {
     if (!isCollisionEnabled)
     {

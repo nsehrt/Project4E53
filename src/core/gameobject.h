@@ -126,7 +126,7 @@ public:
         roughBoundingBox.Extents = e;
     }
 
-    DirectX::BoundingBox& getRoughBoundingBox()
+    DirectX::BoundingOrientedBox& getRoughBoundingBox()
     {
         return roughBoundingBox;
     }
@@ -139,7 +139,7 @@ public:
     void checkInViewFrustum();
 
     bool intersectsRough(GameObject& obj);
-    bool intersectsRough(DirectX::BoundingBox& box);
+    bool intersectsRough(DirectX::BoundingOrientedBox& box);
 
     bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/
 
@@ -160,7 +160,7 @@ private:
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
 
     /*rough hitbox*/
-    DirectX::BoundingBox roughBoundingBox;
+    DirectX::BoundingOrientedBox roughBoundingBox;
 
     bool isInFrustum = false;
 
