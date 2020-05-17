@@ -8,7 +8,7 @@
 #define XMLCheckExist(eResult) if(eResult == nullptr){return false;}
 #endif
 
-static int shadowMapSizes[] = { 512, 1024,2048,4096,8192 };
+static int shadowMapSizes[] = { 512, 1024,2048,4096 };
 
 struct DisplaySettings
 {
@@ -35,7 +35,7 @@ struct GraphicSettings
     int numFrameResources = 3;
     int AnisotropicFiltering = 16;
     int ShadowEnabled = 1;
-    int ShadowQuality = 4;
+    int ShadowQuality = 3;
     int SobelFilter = true;
 };
 

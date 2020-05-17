@@ -73,18 +73,14 @@ float4 PS(VertexOut pin) : SV_Target
     
 	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
-	
-	float4 normalMapSample = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
-	float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample.rgb, pin.NormalW, pin.TangentW);
 
-
-    float4 normalMapSample0 = gTextureMaps[matData.Displacement1NormalIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+    float4 normalMapSample0 = gTextureMaps[matData.Displacement1Index].Sample(gsamAnisotropicWrap, pin.TexC);
     float3 bumpedNormalW0 = NormalSampleToWorldSpace(normalMapSample0.rgb, pin.NormalW, pin.TangentW);
 
-    float4 normalMapSample1 = gTextureMaps[matData.Displacement2NormalIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+    float4 normalMapSample1 = gTextureMaps[matData.Displacement2Index].Sample(gsamAnisotropicWrap, pin.TexC);
     float3 bumpedNormalW1 = NormalSampleToWorldSpace(normalMapSample1.rgb, pin.NormalW, pin.TangentW);
 
-    bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
+    float3 bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
 
     // Vector from point being lit to eye. 
     float3 toEyeW = normalize(gEyePosW - pin.PosW);
@@ -97,7 +93,7 @@ float4 PS(VertexOut pin) : SV_Target
     
     shadowFactor[0] = saturate(CalcShadowFactor(pin.ShadowPosH) + SHADOW_ADD_BRIGHTNESS);
 
-    const float shininess = (1.0f - roughness) * normalMapSample.a;
+    const float shininess = (1.0f - roughness);
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
     float4 directLight = ComputeLighting(gLights, mat, pin.PosW,
         bumpedNormalW, toEyeW, shadowFactor);

@@ -559,7 +559,8 @@ void P_4E53::update(const GameTime& gt)
                                                       editSettings->BaseRadius,
                                                       gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
                                                       editSettings->resetHeight,
-                                                      inputData.current.buttons[BTN::A]);
+                                                      inputData.current.buttons[BTN::A],
+                                                      inputData.current.buttons[BTN::X]);
             }
 
             if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
@@ -570,7 +571,8 @@ void P_4E53::update(const GameTime& gt)
                                                       editSettings->BaseRadius,
                                                       gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
                                                       editSettings->resetHeight,
-                                                      inputData.current.buttons[BTN::A]);
+                                                      inputData.current.buttons[BTN::A],
+                                                      inputData.current.buttons[BTN::X]);
             }
 
             /*control increase value*/

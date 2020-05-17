@@ -24,7 +24,7 @@
         <NumFrameResources>3</NumFrameResources>
         <AnisotropicFiltering>16</AnisotropicFiltering>
         <ShadowEnabled>1</ShadowEnabled>
-        <ShadowQuality>4</ShadowQuality>
+        <ShadowQuality>1</ShadowQuality>
         <SobelFilter>1</SobelFilter>
     </Graphic>
 

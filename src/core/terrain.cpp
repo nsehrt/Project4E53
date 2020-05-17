@@ -139,7 +139,7 @@ float Terrain::getHeight(float x, float z)
     int col = (int)floorf(c);
 
     if (row < 0 || col < 0) return 0.0f;
-    if (row > terrainSlices - 2 || col > terrainSlices - 2) return 0.0f;
+    if (row > ((int)terrainSlices - 2) || col > ((int)terrainSlices - 2)) return 0.0f;
 
     // Grab the heights of the cell we are in.
     // A*--*B
@@ -170,7 +170,7 @@ float Terrain::getHeight(float x, float z)
     }
 }
 
-void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, float increase, float resetHeight, bool setHeight)
+void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, float increase, float resetHeight, bool setHeight, bool setZero)
 {
     /*get height of main vertex*/
     float mainVertexHeight = getHeight(x, z) + increase;
@@ -238,6 +238,10 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
                     mHeightMap[currentIndex] = resetHeight * sin(normalizedDistance * XM_PIDIV2);
             }
 
+            if (setZero)
+            {
+                mHeightMap[currentIndex] = 0.0f;
+            }
    
 
             mHeightMap[currentIndex] = MathHelper::clampH(mHeightMap[currentIndex], -heightScale / 2.0f, heightScale / 2.0f);

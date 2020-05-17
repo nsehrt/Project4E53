@@ -60,8 +60,8 @@ struct MaterialData
     UINT NormalMapIndex = 0;
     UINT Displacement1Index = 0;
     UINT Displacement2Index = 0;
-    UINT Displacement1NormalIndex = 0; 
-    UINT Displacement2NormalIndex = 0;
+    UINT MiscTexture1Index = 0; 
+    UINT MiscTexture2Index = 0;
     UINT pad3 = 0;
 };
 

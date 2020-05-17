@@ -26,8 +26,8 @@ struct MaterialData
 	uint     NormalMapIndex;
 	uint     Displacement1Index;
 	uint     Displacement2Index;
-    uint     Displacement1NormalIndex;
-    uint     Displacement2NormalIndex;
+    uint     MiscTexture1Index;
+    uint     MiscTexture2Index;
     uint pad3;
 };
 

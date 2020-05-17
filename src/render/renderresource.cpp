@@ -974,33 +974,33 @@ bool RenderResource::buildMaterials()
             }
         }
 
-        if (exists(i, "Displacement_Normal_1"))
-        {
-            std::string dispName = std::string(i["Displacement_Normal_1"]) + ".dds";
+        //if (exists(i, "Displacement_Normal_1"))
+        //{
+        //    std::string dispName = std::string(i["Displacement_Normal_1"]) + ".dds";
 
-            if (mTextures.find(dispName) == mTextures.end())
-            {
-                LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
-            }
-            else
-            {
-                material->Displacement1NormalHeapIndex = mTextures[dispName]->index;
-            }
-        }
+        //    if (mTextures.find(dispName) == mTextures.end())
+        //    {
+        //        LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
+        //    }
+        //    else
+        //    {
+        //        material->MiscTexture1Index = mTextures[dispName]->index;
+        //    }
+        //}
 
-        if (exists(i, "Displacement_Normal_2"))
-        {
-            std::string dispName = std::string(i["Displacement_Normal_2"]) + ".dds";
+        //if (exists(i, "Displacement_Normal_2"))
+        //{
+        //    std::string dispName = std::string(i["Displacement_Normal_2"]) + ".dds";
 
-            if (mTextures.find(dispName) == mTextures.end())
-            {
-                LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
-            }
-            else
-            {
-                material->Displacement2NormalHeapIndex = mTextures[dispName]->index;
-            }
-        }
+        //    if (mTextures.find(dispName) == mTextures.end())
+        //    {
+        //        LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
+        //    }
+        //    else
+        //    {
+        //        material->MiscTexture2Index = mTextures[dispName]->index;
+        //    }
+        //}
 
         mMaterials[material->Name] = std::move(material);
 
@@ -1173,8 +1173,8 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
             matData.NormalMapIndex = mat->NormalSrvHeapIndex;
             matData.Displacement1Index = mat->Displacement1HeapIndex;
             matData.Displacement2Index = mat->Displacement2HeapIndex;
-            matData.Displacement1NormalIndex = mat->Displacement1NormalHeapIndex;
-            matData.Displacement2NormalIndex = mat->Displacement2NormalHeapIndex;
+            matData.MiscTexture1Index = mat->MiscTexture1Index;
+            matData.MiscTexture2Index = mat->MiscTexture2Index;
 
             currMaterialBuffer->copyData(mat->MatCBIndex, matData);
 
