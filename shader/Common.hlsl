@@ -28,7 +28,7 @@ struct MaterialData
 	uint     Displacement2Index;
     uint     MiscTexture1Index;
     uint     MiscTexture2Index;
-    uint pad3;
+    uint pad1;
 };
 
 TextureCube gCubeMap : register(t0);
