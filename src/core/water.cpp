@@ -24,6 +24,10 @@ Water::Water(RenderResource* r, const json& waterJson)
     displacement2Scale.y = waterJson["Displacement2Scale"][1];
     displacement2Scale.z = waterJson["Displacement2Scale"][2];
 
+    matScale.x = waterJson["TexScale"][0];
+    matScale.y = waterJson["TexScale"][1];
+    matScale.z = waterJson["TexScale"][2];
+
     /*random offset so dont all materials get updated on the same frame*/
     updateTime = getRandomFloat(0.0f, updFixedTime);
 
@@ -48,9 +52,9 @@ void Water::update(const GameTime& gt)
         material->MatTransform(3, 0) = tu;
         material->MatTransform(3, 1) = tv;
 
-        material->MatTransform(0, 0) = 10;
-        material->MatTransform(1, 1) = 10;
-        material->MatTransform(2, 2) = 1;
+        material->MatTransform(0, 0) = matScale.x;
+        material->MatTransform(1, 1) = matScale.y;
+        material->MatTransform(2, 2) = matScale.z;
 
         /*displacement 1*/
         tu = material->DisplacementTransform0(3, 0);

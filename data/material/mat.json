@@ -79,9 +79,9 @@
         "NormalMap" : "water_n",
         "Displacement_1": "water_h",
         "Displacement_2": "water_h2",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "DiffuseAlbedo" : [1.0, 1.0, 1.0, 1.0],
         "FresnelR0" : [0.1,0.1,0.1],
-        "Roughness" : 0.6
+        "Roughness" : 0.3
     },
     {
         "Name" : "lava",

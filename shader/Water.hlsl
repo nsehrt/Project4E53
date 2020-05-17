@@ -4,8 +4,8 @@ struct VertexIn
 {
 	float3 PosL    : POSITION;
     float3 NormalL : NORMAL;
-	float2 TexC    : TEXCOORD;
-	float3 TangentU : TANGENT;
+	float2 Tex    : TEXCOORD;
+	float3 TangentL : TANGENT;
 };
 
 struct VertexOut
@@ -13,7 +13,7 @@ struct VertexOut
     float3 PosW           : POSITION;
     float3 NormalW        : NORMAL;
 	float3 TangentW       : TANGENT;
-	float2 TexC           : TEXCOORD0;
+	float2 Tex           : TEXCOORD0;
 	float2 WaveDispTex0   : TEXCOORD1;
 	float2 WaveDispTex1   : TEXCOORD2;
 	float2 WaveNormalTex0 : TEXCOORD3;
@@ -21,43 +21,12 @@ struct VertexOut
 	float  TessFactor     : TESS;
 };
 
-struct PatchTess
-{
-	float EdgeTess[3] : SV_TessFactor;
-	float InsideTess  : SV_InsideTessFactor;
-};
-
-struct HullOut
-{
-	float3 PosW     : POSITION;
-    float3 NormalW  : NORMAL;
-	float3 TangentW : TANGENT;
-	float2 Tex            : TEXCOORD0;
-	float2 WaveDispTex0   : TEXCOORD1;
-	float2 WaveDispTex1   : TEXCOORD2;
-	float2 WaveNormalTex0 : TEXCOORD3;
-	float2 WaveNormalTex1 : TEXCOORD4;
-};
-
-struct DomainOut
-{
-	float4 PosH     : SV_POSITION;
-    float3 PosW     : POSITION;
-    float3 NormalW  : NORMAL;
-	float3 TangentW : TANGENT;
-	float2 Tex            : TEXCOORD0;
-	float2 WaveDispTex0   : TEXCOORD1;
-	float2 WaveDispTex1   : TEXCOORD2;
-	float2 WaveNormalTex0 : TEXCOORD3;
-	float2 WaveNormalTex1 : TEXCOORD4;
-};
-
 static const float gHeightScale0 = 0.4f;
-static const float gHeightScale1 = 0.8f;
-static const float gMaxTessDistance = 3.0f;
+static const float gHeightScale1 = 1.2f;
+static const float gMaxTessDistance = 4.0f;
 static const float gMinTessDistance = 30.0f;
 static const float gMinTessFactor = 2.0f;
-static const float gMaxTessFactor = 16.0f;
+static const float gMaxTessFactor = 6.0f;
 
 VertexOut VS(VertexIn vin)
 {
@@ -68,25 +37,27 @@ VertexOut VS(VertexIn vin)
 	// Transform to world space space.
 	vout.PosW     = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
 	vout.NormalW  = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
-	vout.TangentW = mul(vin.TangentU, (float3x3)gWorld);
+	vout.TangentW = mul(vin.TangentL, (float3x3)gWorld);
 
 	// Output vertex attributes for interpolation across triangle.
-	vout.TexC            = mul(float4(vin.TexC, 0.0f, 1.0f), matData.MatTransform).xy;
-	vout.WaveDispTex0   = mul(float4(vin.TexC, 0.0f, 1.0f), matData.Displacement1Transform).xy;
-	vout.WaveDispTex1   = mul(float4(vin.TexC, 0.0f, 1.0f), matData.Displacement2Transform).xy;
+	vout.Tex            = mul(float4(vin.Tex, 0.0f, 1.0f), matData.MatTransform).xy;
+	vout.WaveDispTex0   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement1Transform).xy;
+	vout.WaveDispTex1   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement2Transform).xy;
 
     float4x4 normalDispl0 = matData.Displacement1Transform;
     normalDispl0._m00 = 22;
     normalDispl0._m11 = 22;
     normalDispl0._m22 = 22;
 
+
     float4x4 normalDispl1 = matData.Displacement2Transform;
     normalDispl1._m00 = 16;
     normalDispl1._m11 = 16;
     normalDispl1._m22 = 16;
 
-	vout.WaveNormalTex0 = mul(float4(vin.TexC, 0.0f, 1.0f), normalDispl0).xy;
-	vout.WaveNormalTex1 = mul(float4(vin.TexC, 0.0f, 1.0f), normalDispl1).xy;
+
+	vout.WaveNormalTex0 = mul(float4(vin.Tex, 0.0f, 1.0f), normalDispl0).xy;
+	vout.WaveNormalTex1 = mul(float4(vin.Tex, 0.0f, 1.0f), normalDispl1).xy;
 	
 	float d = distance(vout.PosW, gEyePosW);
 
@@ -95,6 +66,14 @@ VertexOut VS(VertexIn vin)
 
 	return vout;
 }
+
+
+struct PatchTess
+{
+	float EdgeTess[3] : SV_TessFactor;
+	float InsideTess  : SV_InsideTessFactor;
+};
+
 
 PatchTess ConstantHS(InputPatch<VertexOut,3> patch, 
                   uint patchID : SV_PrimitiveID)
@@ -109,12 +88,25 @@ PatchTess ConstantHS(InputPatch<VertexOut,3> patch,
 	return pt;
 }
 
+
+struct HullOut
+{
+	float3 PosW     : POSITION;
+    float3 NormalW  : NORMAL;
+	float3 TangentW : TANGENT;
+	float2 Tex            : TEXCOORD0;
+	float2 WaveDispTex0   : TEXCOORD1;
+	float2 WaveDispTex1   : TEXCOORD2;
+	float2 WaveNormalTex0 : TEXCOORD3;
+	float2 WaveNormalTex1 : TEXCOORD4;
+};
+
+
 [domain("tri")]
 [partitioning("fractional_odd")]
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(3)]
 [patchconstantfunc("ConstantHS")]
-[maxtessfactor(64.0f)]
 HullOut HS(InputPatch<VertexOut,3> p, 
            uint i : SV_OutputControlPointID,
            uint patchId : SV_PrimitiveID)
@@ -125,7 +117,7 @@ HullOut HS(InputPatch<VertexOut,3> p,
 	hout.PosW           = p[i].PosW;
 	hout.NormalW        = p[i].NormalW;
 	hout.TangentW       = p[i].TangentW;
-	hout.Tex            = p[i].TexC;
+	hout.Tex            = p[i].Tex;
 	hout.WaveDispTex0   = p[i].WaveDispTex0;
 	hout.WaveDispTex1   = p[i].WaveDispTex1;
 	hout.WaveNormalTex0 = p[i].WaveNormalTex0;
@@ -134,6 +126,18 @@ HullOut HS(InputPatch<VertexOut,3> p,
 	return hout;
 }
 
+struct DomainOut
+{
+	float4 PosH     : SV_POSITION;
+    float3 PosW     : POSITION;
+    float3 NormalW  : NORMAL;
+	float3 TangentW : TANGENT;
+	float2 Tex            : TEXCOORD0;
+	float2 WaveDispTex0   : TEXCOORD1;
+	float2 WaveDispTex1   : TEXCOORD2;
+	float2 WaveNormalTex0 : TEXCOORD3;
+	float2 WaveNormalTex1 : TEXCOORD4;
+};
 
 [domain("tri")]
 DomainOut DS(PatchTess patchTess, 
@@ -197,13 +201,13 @@ float4 PS(DomainOut pin) : SV_Target
 
 	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Tex);
 
-    float3 normalMapSample0 = gTextureMaps[matData.Displacement1Index].Sample(gsamLinearWrap, pin.Tex).rgb;
-    float3 bumpedNormalW0 = NormalSampleToWorldSpace(normalMapSample0.rgb, pin.NormalW, pin.TangentW);
+	float3 normalMapSample0 = gTextureMaps[matData.Displacement1Index].Sample(gsamLinearWrap, pin.WaveNormalTex0).rgb;
+	float3 bumpedNormalW0 = NormalSampleToWorldSpace(normalMapSample0, pin.NormalW, pin.TangentW);
 
-    float3 normalMapSample1 = gTextureMaps[matData.Displacement2Index].Sample(gsamLinearWrap, pin.Tex).rgb;
-    float3 bumpedNormalW1 = NormalSampleToWorldSpace(normalMapSample1.rgb, pin.NormalW, pin.TangentW);
-
-    float3 bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
+	float3 normalMapSample1 = gTextureMaps[matData.Displacement2Index].Sample(gsamLinearWrap, pin.WaveNormalTex1).rgb;
+	float3 bumpedNormalW1 = NormalSampleToWorldSpace(normalMapSample1, pin.NormalW, pin.TangentW);
+	 
+	float3 bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
 
     // Light terms.
     float4 ambient = gAmbientLight*diffuseAlbedo;
@@ -220,6 +224,11 @@ float4 PS(DomainOut pin) : SV_Target
 
     float4 litColor = ambient + directLight;
 	
+	float3 r = reflect(-toEyeW, bumpedNormalW);
+	float4 reflectionColor = gCubeMap.Sample(gsamLinearWrap, r);
+	float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
+    litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
+
     // // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a; 
     

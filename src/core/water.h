@@ -33,6 +33,8 @@ private:
     DirectX::XMFLOAT2 displacement1Translation = { 0.0f,0.0f };
     DirectX::XMFLOAT2 displacement2Translation = { 0.0f,0.0f };
 
+    DirectX::XMFLOAT3 matScale = { 1.0f,1.0f,1.0f };
+
     const float updFixedTime = 1.0f / 60.0f;
 
 

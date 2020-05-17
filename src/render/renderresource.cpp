@@ -713,7 +713,7 @@ void RenderResource::buildPSOs()
     ThrowIfFailed(device->CreateGraphicsPipelineState(&transparencyPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultTransparency])));
 
     /*water PSO*/
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = transparencyPSODesc;
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = defaultPSODesc;
 
     //waterPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
     waterPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
