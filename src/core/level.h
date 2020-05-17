@@ -51,13 +51,16 @@ public:
     void drawShadow();
 
     /*need to call this if new object is added or render type is changed*/
+    void calculateRenderOrderSizes();
+
     void calculateRenderOrder();
+    void calculateShadowRenderOrder();
 
     void addGameObject(json goJson)
     {
         mGameObjects[goJson["Name"]] = std::make_unique<GameObject>(goJson, amountObjectCBs);
         amountObjectCBs += 4;
-        calculateRenderOrder();
+        calculateRenderOrderSizes();
     }
 
     std::unique_ptr<Terrain> mTerrain;

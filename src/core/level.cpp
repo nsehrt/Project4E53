@@ -92,7 +92,7 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
-    calculateRenderOrder();
+    calculateRenderOrderSizes();
 
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
@@ -206,17 +206,6 @@ void Level::draw()
     UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 
     auto renderResource = ServiceProvider::getRenderResource();
-
-    /* Order of render items*/
-    for (auto& v : renderOrder)
-    {
-        v.clear();
-    }
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        renderOrder[(int)gameObject.second->renderItem->renderType].push_back(&(*gameObject.second));
-    }
 
     /*sort the transparent objects by distance from camera*/
     auto aCamera = ServiceProvider::getActiveCamera();
@@ -599,21 +588,6 @@ void Level::drawShadow()
 
     UINT objectsDrawn = 0;
 
-    /*order shadow render order*/
-    for (auto& v : shadowRenderOrder)
-    {
-        v.clear();
-    }
-
-    for (const auto& gameObject : mGameObjects)
-    {
-        if (gameObject.second->renderItem->renderType == RenderType::Sky ||
-            gameObject.second->renderItem->renderType == RenderType::Debug ||
-            gameObject.second->renderItem->renderType == RenderType::Terrain) continue;
-
-        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - ((int)RenderType::COUNT - 2)].push_back(&(*gameObject.second));
-    }
-
     /*draw shadows*/
     for (UINT i = 0; i < shadowRenderOrder.size(); i++)
     {
@@ -621,7 +595,7 @@ void Level::drawShadow()
 
         for (const auto& gameObject : shadowRenderOrder[i])
         {
-            if (gameObject->intersectsShadowBounds(renderResource->getShadowMap()->maxShadowDraw))
+            if (gameObject->intersectsShadowBounds(renderResource->getShadowMap()->shadowBounds))
             {
                 objectsDrawn += gameObject->drawShadow();
             }
@@ -631,7 +605,7 @@ void Level::drawShadow()
     ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
 }
 
-void Level::calculateRenderOrder()
+void Level::calculateRenderOrderSizes()
 {
     /*determine size of render orders*/
     std::vector<int> renderOrderSize((int)RenderType::COUNT);
@@ -654,6 +628,41 @@ void Level::calculateRenderOrder()
         {
             shadowRenderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
         }
+    }
+
+    calculateRenderOrder();
+    calculateShadowRenderOrder();
+}
+
+void Level::calculateRenderOrder()
+{
+    /* Order of render items*/
+    for (auto& v : renderOrder)
+    {
+        v.clear();
+    }
+
+    for (const auto& gameObject : mGameObjects)
+    {
+        renderOrder[(int)gameObject.second->renderItem->renderType].push_back(&(*gameObject.second));
+    }
+}
+
+void Level::calculateShadowRenderOrder()
+{
+    /*order shadow render order*/
+    for (auto& v : shadowRenderOrder)
+    {
+        v.clear();
+    }
+
+    for (const auto& gameObject : mGameObjects)
+    {
+        if (gameObject.second->renderItem->renderType == RenderType::Sky ||
+            gameObject.second->renderItem->renderType == RenderType::Debug ||
+            gameObject.second->renderItem->renderType == RenderType::Terrain) continue;
+
+        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - ((int)RenderType::COUNT - 2)].push_back(&(*gameObject.second));
     }
 }
 

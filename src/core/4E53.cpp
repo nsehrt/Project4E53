@@ -878,7 +878,7 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->isShadowForced = false;
                     editSettings->currentSelection->isCollisionEnabled = true;
 
-                    activeLevel->calculateRenderOrder();
+                    activeLevel->calculateRenderOrderSizes();
 
                     setModelSelection();
                 }
@@ -1025,7 +1025,7 @@ void P_4E53::update(const GameTime& gt)
                             editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
                             break;
                     }
-                    activeLevel->calculateRenderOrder();
+                    activeLevel->calculateRenderOrderSizes();
                 }
 
                 /*copy to new object*/
