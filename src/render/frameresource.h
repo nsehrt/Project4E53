@@ -7,7 +7,7 @@
 struct ObjectConstants
 {
     DirectX::XMFLOAT4X4 World = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 TexTransform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 WorldInvTranspose = MathHelper::identity4x4();
     unsigned int MaterialIndex = 0;
     unsigned int OnjPad0 = 0;
     unsigned int OnjPad1 = 0;
@@ -53,8 +53,8 @@ struct MaterialData
 
     // Used in texture mapping.
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 Displacement1Transform = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 Displacement2Transform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 DisplacementTransform0 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 DisplacementTransform1 = MathHelper::identity4x4();
 
     UINT DiffuseMapIndex = 0;
     UINT NormalMapIndex = 0;

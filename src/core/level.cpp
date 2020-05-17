@@ -1017,6 +1017,7 @@ bool Level::parseWater(const json& waterJson)
         waterObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
         waterObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[entry["Material"]].get();
         waterObject->renderItem->renderType = RenderType::Water;
+        waterObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
         waterObject->setTextureScale({ entry["TexScale"][0],
                                        entry["TexScale"][1], 
                                        entry["TexScale"][2] });

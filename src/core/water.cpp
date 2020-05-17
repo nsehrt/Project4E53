@@ -48,29 +48,32 @@ void Water::update(const GameTime& gt)
         material->MatTransform(3, 0) = tu;
         material->MatTransform(3, 1) = tv;
 
+        material->MatTransform(0, 0) = 10;
+        material->MatTransform(1, 1) = 10;
+        material->MatTransform(2, 2) = 1;
 
         /*displacement 1*/
-        tu = material->Displacement1Transform(3, 0);
-        tv = material->Displacement1Transform(3, 1);
+        tu = material->DisplacementTransform0(3, 0);
+        tv = material->DisplacementTransform0(3, 1);
 
         tu += displacement1Translation.x * updFixedTime;
         tv += displacement1Translation.y * updFixedTime;
 
         border(tu); border(tv);
 
-        XMStoreFloat4x4(&material->Displacement1Transform,
+        XMStoreFloat4x4(&material->DisplacementTransform0,
                         XMMatrixScaling(displacement1Scale.x,displacement1Scale.y, displacement1Scale.z) * XMMatrixTranslation(tu, 0.0f, tv));
 
         /*displacement 2*/
-        tu = material->Displacement2Transform(3, 0);
-        tv = material->Displacement2Transform(3, 1);
+        tu = material->DisplacementTransform1(3, 0);
+        tv = material->DisplacementTransform1(3, 1);
 
         tu += displacement2Translation.x * updFixedTime;
         tv += displacement2Translation.y * updFixedTime;
 
         border(tu); border(tv);
 
-        XMStoreFloat4x4(&material->Displacement2Transform,
+        XMStoreFloat4x4(&material->DisplacementTransform1,
                         XMMatrixScaling(displacement2Scale.x, displacement2Scale.y, displacement2Scale.z) * XMMatrixTranslation(tu, 0.0f, tv));
 
 

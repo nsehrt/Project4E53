@@ -52,8 +52,10 @@ struct Material
     DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
     float Roughness = .25f;
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 Displacement1Transform = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 Displacement2Transform = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 DisplacementTransform0 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 DisplacementTransform1 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 NormalTexTransform0 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 NormalTexTransform1 = MathHelper::identity4x4();
 };
 
 struct Mesh

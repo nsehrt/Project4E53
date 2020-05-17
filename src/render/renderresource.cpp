@@ -529,6 +529,8 @@ void RenderResource::buildShaders()
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["waterDS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "DS", "ds_5_1");
+    mShaders["waterHS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "HS", "hs_5_1");
     mShaders["waterPS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["grassVS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "VS", "vs_5_1");
@@ -714,10 +716,21 @@ void RenderResource::buildPSOs()
     D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = transparencyPSODesc;
 
     //waterPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+    waterPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 
     waterPSODesc.VS = {
         reinterpret_cast<BYTE*>(mShaders["waterVS"]->GetBufferPointer()),
         mShaders["waterVS"]->GetBufferSize()
+    };
+
+    waterPSODesc.HS = {
+        reinterpret_cast<BYTE*>(mShaders["waterHS"]->GetBufferPointer()),
+        mShaders["waterHS"]->GetBufferSize()
+    };
+
+    waterPSODesc.DS = {
+    reinterpret_cast<BYTE*>(mShaders["waterDS"]->GetBufferPointer()),
+    mShaders["waterDS"]->GetBufferSize()
     };
 
     waterPSODesc.PS = {
@@ -974,34 +987,6 @@ bool RenderResource::buildMaterials()
             }
         }
 
-        //if (exists(i, "Displacement_Normal_1"))
-        //{
-        //    std::string dispName = std::string(i["Displacement_Normal_1"]) + ".dds";
-
-        //    if (mTextures.find(dispName) == mTextures.end())
-        //    {
-        //        LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
-        //    }
-        //    else
-        //    {
-        //        material->MiscTexture1Index = mTextures[dispName]->index;
-        //    }
-        //}
-
-        //if (exists(i, "Displacement_Normal_2"))
-        //{
-        //    std::string dispName = std::string(i["Displacement_Normal_2"]) + ".dds";
-
-        //    if (mTextures.find(dispName) == mTextures.end())
-        //    {
-        //        LOG(Severity::Critical, "Can't create material " << material->Name << " due to missing displacment map! Using default.");
-        //    }
-        //    else
-        //    {
-        //        material->MiscTexture2Index = mTextures[dispName]->index;
-        //    }
-        //}
-
         mMaterials[material->Name] = std::move(material);
 
         matCounter++;
@@ -1126,11 +1111,19 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
             for (int i = 0; i < e->Model->meshes.size(); i++)
             {
                 XMMATRIX world = XMLoadFloat4x4(&e->World);
-                XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
 
                 ObjectConstants objConstants;
                 XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
-                XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
+
+                if (e->renderType == RenderType::Water)
+                {
+                    XMStoreFloat4x4(&objConstants.WorldInvTranspose, MathHelper::inverseTranspose(world));
+                }
+                else if (e->renderType == RenderType::Terrain)
+                {
+                    XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
+                    XMStoreFloat4x4(&objConstants.WorldInvTranspose, texTransform);
+                }
 
                 if (e->MaterialOverwrite != nullptr)
                 {
@@ -1159,16 +1152,21 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
         if (mat->NumFramesDirty > 0)
         {
             XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
-            XMMATRIX disp1Transform = XMLoadFloat4x4(&mat->Displacement1Transform);
-            XMMATRIX disp2Transform = XMLoadFloat4x4(&mat->Displacement2Transform);
+            XMMATRIX disp1Transform = XMLoadFloat4x4(&mat->DisplacementTransform0);
+            XMMATRIX disp2Transform = XMLoadFloat4x4(&mat->DisplacementTransform1);
+            XMMATRIX n0Transform = XMLoadFloat4x4(&mat->NormalTexTransform0);
+            XMMATRIX n1Transform = XMLoadFloat4x4(&mat->NormalTexTransform1);
 
             MaterialData matData;
             matData.DiffuseAlbedo = mat->DiffuseAlbedo;
             matData.FresnelR0 = mat->FresnelR0;
             matData.Roughness = mat->Roughness;
             XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
-            XMStoreFloat4x4(&matData.Displacement1Transform, XMMatrixTranspose(disp1Transform));
-            XMStoreFloat4x4(&matData.Displacement2Transform, XMMatrixTranspose(disp2Transform));
+            XMStoreFloat4x4(&matData.DisplacementTransform0, XMMatrixTranspose(disp1Transform));
+            XMStoreFloat4x4(&matData.DisplacementTransform1, XMMatrixTranspose(disp2Transform));
+            //XMStoreFloat4x4(&matData.NormalTexTransform0, XMMatrixTranspose(n0Transform));
+            //XMStoreFloat4x4(&matData.DisplacementTransform1, XMMatrixTranspose(n1Transform));
+
             matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
             matData.NormalMapIndex = mat->NormalSrvHeapIndex;
             matData.Displacement1Index = mat->Displacement1HeapIndex;
@@ -1301,7 +1299,7 @@ void RenderResource::generateDefaultShapes()
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
-    GeometryGenerator::MeshData waterGrid = geoGen.CreateGrid(10.0f, 10.0f, 64, 64);
+    GeometryGenerator::MeshData waterGrid = geoGen.CreateGrid(20.0f, 30.0f, 50, 40);// (20.0f, 30.0f, 50, 40, grid);
     GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 32, 32);
     GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(1.0f, 1.0f, 2.0f, 32, 32);
     GeometryGenerator::MeshData quad = geoGen.CreateQuad(0.f, 0.f, 0.5f, 0.5f, 0.0f);

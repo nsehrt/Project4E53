@@ -25,8 +25,7 @@ VertexOut VS(VertexIn vin)
     // Transform to homogeneous clip space.
     vout.PosH = mul(posW, gViewProj);
 
-	float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
-	vout.TexC = mul(texC, matData.MatTransform).xy;
+	vout.TexC = mul(float4(vin.TexC, 0.0f, 1.0f), matData.MatTransform).xy;
 
     return vout;
 }

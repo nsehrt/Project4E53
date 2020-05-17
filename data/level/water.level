@@ -1,0 +1,186 @@
+{
+    "GameObject": [
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box",
+            "Position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "Light": {
+        "AmbientLight": [
+            0.30000001192092896,
+            0.30000001192092896,
+            0.30000001192092896
+        ],
+        "Directional": [
+            {
+                "Direction": [
+                    -0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D1",
+                "Strength": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            },
+            {
+                "Direction": [
+                    0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D2",
+                "Strength": [
+                    0.4000000059604645,
+                    0.4000000059604645,
+                    0.4000000059604645
+                ]
+            },
+            {
+                "Direction": [
+                    0.0,
+                    -0.699999988079071,
+                    -0.699999988079071
+                ],
+                "Name": "D3",
+                "Strength": [
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
+                ]
+            }
+        ],
+        "Point": [
+            {
+                "FallOffEnd": 1.854330062866211,
+                "FallOffStart": 1.0339890718460083,
+                "Name": "P1",
+                "Position": [
+                    0.0,
+                    0.46053075790405273,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
+                "FallOffEnd": 12.0,
+                "FallOffStart": 10.0,
+                "Name": "P2",
+                "Position": [
+                    -3.0,
+                    3.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.0,
+                    0.25
+                ]
+            }
+        ]
+    },
+    "Sky": {
+        "DefaultCubeMap": "grasscube1024.dds",
+        "Material": "sky"
+    },
+    "Terrain": {
+        "BlendMap": "water.bld",
+        "BlendTextures": [
+            "ForestFloorGreen.dds",
+            "DirtGround.dds",
+            "FlowerField.dds",
+            "SimpleSand.dds"
+        ],
+        "HeightMap": "water.raw",
+        "HeightScale": 200.0
+    },
+    "Water": [
+        {
+            "Displacement1Scale": [
+                2,
+                2,
+                2
+            ],
+            "Displacement1Translation": [
+                0.01,
+                0.03
+            ],
+            "Displacement2Scale": [
+                1,
+                1,
+                1
+            ],
+            "Displacement2Translation": [
+                0.02,
+                0.05
+            ],
+            "Material": "water",
+            "MaterialTranslation": [
+                0.01,0.03
+            ],
+            "Name": "water1",
+            "Position": [
+                0,
+                2,
+                0
+            ],
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "TexScale": [
+                30.0,
+                30.0,
+                30.0
+            ]
+        }
+    ]
+}

@@ -223,7 +223,7 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
     /*load first level*/
-    std::string levelFile = "1";
+    std::string levelFile = "water";
 
     auto level = std::make_shared<Level>();
 
