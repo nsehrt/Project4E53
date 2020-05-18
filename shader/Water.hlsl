@@ -28,6 +28,7 @@ static const float gMinTessDistance = 30.0f;
 static const float gMinTessFactor = 2.0f;
 static const float gMaxTessFactor = 6.0f;
 
+
 VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
@@ -44,20 +45,18 @@ VertexOut VS(VertexIn vin)
 	vout.WaveDispTex0   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement1Transform).xy;
 	vout.WaveDispTex1   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement2Transform).xy;
 
-    float4x4 normalDispl0 = matData.Displacement1Transform;
-    normalDispl0._m00 = 22;
-    normalDispl0._m11 = 22;
-    normalDispl0._m22 = 22;
+    float4x4 mS = matData.Displacement1Transform;
+    mS._m00 = 44.0f;
+    mS._m11 = 44.0f;
+    mS._m03 = gTotalTime * 0.05f;
+    mS._m13 = gTotalTime * 0.2f;
 
+	vout.WaveNormalTex0 = mul(float4(vin.Tex, 0.0f, 1.0f), mS).xy;
 
-    float4x4 normalDispl1 = matData.Displacement2Transform;
-    normalDispl1._m00 = 16;
-    normalDispl1._m11 = 16;
-    normalDispl1._m22 = 16;
+    mS._m00 = 32.0f;
+    mS._m11 = 32.0f;
 
-
-	vout.WaveNormalTex0 = mul(float4(vin.Tex, 0.0f, 1.0f), normalDispl0).xy;
-	vout.WaveNormalTex1 = mul(float4(vin.Tex, 0.0f, 1.0f), normalDispl1).xy;
+	vout.WaveNormalTex1 = mul(float4(vin.Tex, 0.0f, 1.0f), mS).xy;
 	
 	float d = distance(vout.PosW, gEyePosW);
 
@@ -200,6 +199,8 @@ float4 PS(DomainOut pin) : SV_Target
     float3 toEyeW = normalize(gEyePosW - pin.PosW);
 
 	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Tex);
+
+    return diffuseAlbedo;
 
 	float3 normalMapSample0 = gTextureMaps[matData.Displacement1Index].Sample(gsamLinearWrap, pin.WaveNormalTex0).rgb;
 	float3 bumpedNormalW0 = NormalSampleToWorldSpace(normalMapSample0, pin.NormalW, pin.TangentW);

@@ -141,11 +141,11 @@
             "Displacement1Scale": [
                 2,
                 2,
-                2
+                1
             ],
             "Displacement1Translation": [
-                0.025,
-                0.04
+                0.01,
+                0.03
             ],
             "Displacement2Scale": [
                 1,
@@ -153,12 +153,13 @@
                 1
             ],
             "Displacement2Translation": [
-                -0.02,
-                0.06
+                0.01,
+                0.03
             ],
             "Material": "water",
             "MaterialTranslation": [
-                0.02,0.05
+                0.01,
+                0.03
             ],
             "Name": "water1",
             "Position": [
@@ -177,8 +178,8 @@
                 1
             ],
             "TexScale": [
-                10.0,
-                10.0,
+                30.0,
+                30.0,
                 1.0
             ]
         }
