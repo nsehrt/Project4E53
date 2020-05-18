@@ -159,7 +159,7 @@ private:
     PassConstants mMainPassConstants;
     PassConstants mShadowPassConstants;
 
-    const UINT MAX_GAME_OBJECTS = 16384;
+    const UINT MAX_GAME_OBJECTS = 8192;
     const UINT SHADOW_RADIUS = 20;
 
     void buildFrameResource();
