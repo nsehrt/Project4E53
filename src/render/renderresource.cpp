@@ -1154,8 +1154,8 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
             XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
             XMMATRIX disp1Transform = XMLoadFloat4x4(&mat->DisplacementTransform0);
             XMMATRIX disp2Transform = XMLoadFloat4x4(&mat->DisplacementTransform1);
-            XMMATRIX n0Transform = XMLoadFloat4x4(&mat->NormalTexTransform0);
-            XMMATRIX n1Transform = XMLoadFloat4x4(&mat->NormalTexTransform1);
+            XMMATRIX n0Transform = XMLoadFloat4x4(&mat->NormalTransform0);
+            XMMATRIX n1Transform = XMLoadFloat4x4(&mat->NormalTransform1);
 
             MaterialData matData;
             matData.DiffuseAlbedo = mat->DiffuseAlbedo;
@@ -1164,8 +1164,8 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
             XMStoreFloat4x4(&matData.MatTransform, XMMatrixTranspose(matTransform));
             XMStoreFloat4x4(&matData.DisplacementTransform0, XMMatrixTranspose(disp1Transform));
             XMStoreFloat4x4(&matData.DisplacementTransform1, XMMatrixTranspose(disp2Transform));
-            //XMStoreFloat4x4(&matData.NormalTexTransform0, XMMatrixTranspose(n0Transform));
-            //XMStoreFloat4x4(&matData.DisplacementTransform1, XMMatrixTranspose(n1Transform));
+            XMStoreFloat4x4(&matData.NormalTransform0, XMMatrixTranspose(n0Transform));
+            XMStoreFloat4x4(&matData.NormalTransform1, XMMatrixTranspose(n1Transform));
 
             matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
             matData.NormalMapIndex = mat->NormalSrvHeapIndex;

@@ -1,11 +1,8 @@
 #include "Common.hlsl"
 
-Texture2D gShadowMap : register(t0);
-Texture2D gBlendTexture1 : register(t1);
-Texture2D gBlendTexture2 : register(t2);
-Texture2D gBlendTexture3 : register(t3);
-Texture2D gBlendTexture4 : register(t4);
-
+TextureCube gCubeMap : register(t0);
+Texture2D gShadowMap : register(t1);
+Texture2D gTextureMaps[128] : register(t2);
 
 /*calculate the amount the fragment is in shadow*/
 float CalcShadowFactor(float4 shadowPosH)

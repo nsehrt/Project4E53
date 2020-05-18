@@ -1,7 +1,5 @@
 #include "TerrainCommon.hlsl"
 
-#define SHADOW_ADD_BRIGHTNESS 0.4f
-
 struct VertexIn
 {
 	float3 PosL    : POSITION;
@@ -39,7 +37,7 @@ VertexOut VS(VertexIn vin)
     vout.PosH = mul(posW, gViewProj);
 	
 	// Output vertex attributes for interpolation across triangle.
-	vout.TexC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform).xy;
+	vout.TexC = mul(float4(vin.TexC, 0.0f, 1.0f), gWorldInvTranspose).xy; /*texture transform saved in gWorldInvTranspose*/
 	
     // Generate projective tex-coords to project shadow map onto scene.
     vout.ShadowPosH = mul(posW, gShadowTransform);

@@ -13,6 +13,7 @@
 
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
+#define SHADOW_ADD_BRIGHTNESS 0.4f
 
 struct MaterialData
 {
@@ -22,29 +23,17 @@ struct MaterialData
 	float4x4 MatTransform;
     float4x4 Displacement1Transform;
     float4x4 Displacement2Transform;
+    float4x4 Normal1Transform;
+    float4x4 Normal2Transform;
 	uint     DiffuseMapIndex;
 	uint     NormalMapIndex;
 	uint     Displacement1Index;
 	uint     Displacement2Index;
     uint     MiscTexture1Index;
     uint     MiscTexture2Index;
-    uint pad1;
+    uint pad1; 
+    uint pad2;
 };
-
-TextureCube gCubeMap : register(t0);
-Texture2D gShadowMap : register(t1);
-Texture2D gTextureMaps[128] : register(t2);
-
-StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
-
-/*static sampler states*/
-SamplerState gsamPointWrap        : register(s0);
-SamplerState gsamPointClamp       : register(s1);
-SamplerState gsamLinearWrap       : register(s2);
-SamplerState gsamLinearClamp      : register(s3);
-SamplerState gsamAnisotropicWrap  : register(s4);
-SamplerState gsamAnisotropicClamp : register(s5);
-SamplerComparisonState gsamShadow : register(s6);
 
 // Constant data that varies per frame.
 cbuffer cbPerObject : register(b0)
@@ -80,6 +69,17 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
+StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
+
+/*static sampler states*/
+SamplerState gsamPointWrap        : register(s0);
+SamplerState gsamPointClamp       : register(s1);
+SamplerState gsamLinearWrap       : register(s2);
+SamplerState gsamLinearClamp      : register(s3);
+SamplerState gsamAnisotropicWrap  : register(s4);
+SamplerState gsamAnisotropicClamp : register(s5);
+SamplerComparisonState gsamShadow : register(s6);
+
 /*transform sample from normal map to world space*/
 float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW)
 {
@@ -97,37 +97,4 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 	float3 bumpedNormalW = mul(normalT, TBN);
 
 	return bumpedNormalW;
-}
-
-/*calculate the amount the fragment is in shadow*/
-float CalcShadowFactor(float4 shadowPosH)
-{
-    // Complete projection by doing division by w.
-    shadowPosH.xyz /= shadowPosH.w;
-
-    // Depth in NDC space.
-    float depth = shadowPosH.z;
-
-    uint width, height, numMips;
-    gShadowMap.GetDimensions(0, width, height, numMips);
-
-    // Texel size.
-    float dx = 1.0f / (float)width;
-
-    float percentLit = 0.0f;
-    const float2 offsets[9] =
-    {
-        float2(-dx,  -dx), float2(0.0f,  -dx), float2(dx,  -dx),
-        float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
-        float2(-dx,  +dx), float2(0.0f,  +dx), float2(dx,  +dx)
-    };
-
-    [unroll]
-    for(int i = 0; i < 9; ++i)
-    {
-        percentLit += gShadowMap.SampleCmpLevelZero(gsamShadow,
-            shadowPosH.xy + offsets[i], depth).r;
-    }
-    
-    return percentLit / 9.0f;
 }

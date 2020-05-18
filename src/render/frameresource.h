@@ -55,6 +55,8 @@ struct MaterialData
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 DisplacementTransform0 = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 DisplacementTransform1 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 NormalTransform0 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 NormalTransform1 = MathHelper::identity4x4();
 
     UINT DiffuseMapIndex = 0;
     UINT NormalMapIndex = 0;
@@ -63,6 +65,7 @@ struct MaterialData
     UINT MiscTexture1Index = 0; 
     UINT MiscTexture2Index = 0;
     UINT pad1 = 0;
+    UINT pad2 = 0;
 };
 
 struct Vertex

@@ -22,6 +22,7 @@
 #else
 #define SETTINGS_FILE "config/dbg.xml"
 #endif
+
 using namespace DirectX;
 
 class P_4E53 : public DX12App

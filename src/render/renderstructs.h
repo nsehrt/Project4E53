@@ -54,8 +54,8 @@ struct Material
     DirectX::XMFLOAT4X4 MatTransform = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 DisplacementTransform0 = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 DisplacementTransform1 = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 NormalTexTransform0 = MathHelper::identity4x4();
-    DirectX::XMFLOAT4X4 NormalTexTransform1 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 NormalTransform0 = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 NormalTransform1 = MathHelper::identity4x4();
 };
 
 struct Mesh

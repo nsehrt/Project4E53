@@ -9,7 +9,6 @@
 
 bool LogPolicy::openOutputStream(const std::wstring& name)
 {
-#ifndef _DEBUG
 
     TCHAR NPath[MAX_PATH];
     GetCurrentDirectory(MAX_PATH, NPath);
@@ -30,24 +29,21 @@ bool LogPolicy::openOutputStream(const std::wstring& name)
         return false;
 
     outputStream.precision(20);
-#endif // !_DEBUG
 
     return true;
 }
 
 void LogPolicy::closeOutputStream()
 {
-#ifndef _DEBUG
     if (outputStream.is_open())
         outputStream.close();
-#endif // !_DEBUG
 }
 
 void LogPolicy::write(const std::string& msg)
 {
-#ifdef _DEBUG
+    /*output to cmd and file*/
     OutputDebugStringA(msg.c_str());
-#else
+
     outputStream << msg << std::flush;
-#endif
+
 }

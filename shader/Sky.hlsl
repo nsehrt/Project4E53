@@ -1,4 +1,4 @@
-#include "Common.hlsl"
+#include "DefaultCommon.hlsl"
 
 struct VertexIn
 {

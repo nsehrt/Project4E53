@@ -1,6 +1,4 @@
-#include "Common.hlsl"
-
-#define SHADOW_ADD_BRIGHTNESS 0.4f
+#include "DefaultCommon.hlsl"
 
 struct VertexIn
 {
