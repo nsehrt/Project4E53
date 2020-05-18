@@ -267,7 +267,8 @@ void Level::draw()
     /*draw outlined obj if needed*/
     if (ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
         ServiceProvider::getEditSettings()->currentSelection != nullptr &&
-        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Grass)
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Grass &&
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Water)
     {
         renderResource->setPSO(RenderType::Outline);
         ServiceProvider::getEditSettings()->currentSelection->draw();

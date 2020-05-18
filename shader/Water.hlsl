@@ -200,8 +200,6 @@ float4 PS(DomainOut pin) : SV_Target
 
 	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Tex);
 
-    return diffuseAlbedo;
-
 	float3 normalMapSample0 = gTextureMaps[matData.Displacement1Index].Sample(gsamLinearWrap, pin.WaveNormalTex0).rgb;
 	float3 bumpedNormalW0 = NormalSampleToWorldSpace(normalMapSample0, pin.NormalW, pin.TangentW);
 
@@ -209,6 +207,8 @@ float4 PS(DomainOut pin) : SV_Target
 	float3 bumpedNormalW1 = NormalSampleToWorldSpace(normalMapSample1, pin.NormalW, pin.TangentW);
 	 
 	float3 bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
+
+	return diffuseAlbedo;
 
     // Light terms.
     float4 ambient = gAmbientLight*diffuseAlbedo;
