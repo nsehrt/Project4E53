@@ -166,7 +166,7 @@
                 0.04792925342917442,
                 108.44037628173828
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
                 337.4999694824219,
@@ -2149,45 +2149,6 @@
             "CollisionEnabled": false,
             "DrawEnabled": true,
             "Model": "PineTreeA02",
-            "Name": "box_(213)",
-            "Position": [
-                -123.38014221191406,
-                1.5466704368591309,
-                68.34626770019531
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                239.55242919921875,
-                0.0
-            ],
-            "Scale": [
-                0.5086042881011963,
-                0.5086042881011963,
-                0.5086042881011963
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
-            "Model": "PineTreeA02",
             "Name": "box_(125)",
             "Position": [
                 -100.01451873779297,
@@ -2237,6 +2198,45 @@
             "Rotation": [
                 0.0,
                 116.4011459350586,
+                0.0
+            ],
+            "Scale": [
+                0.5086042881011963,
+                0.5086042881011963,
+                0.5086042881011963
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "PineTreeA02",
+            "Name": "box_(213)",
+            "Position": [
+                -123.38014221191406,
+                1.5466704368591309,
+                68.34626770019531
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                239.55242919921875,
                 0.0
             ],
             "Scale": [
@@ -4573,10 +4573,10 @@
                 0.04792925342917442,
                 109.29808044433594
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                224.3645782470703,
+                224.3645477294922,
                 0.0
             ],
             "Scale": [
@@ -8785,7 +8785,7 @@
                 0.7997246980667114,
                 108.38446044921875
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
                 47.533416748046875,
@@ -8824,7 +8824,7 @@
                 0.7997246980667114,
                 109.980712890625
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
                 105.2177505493164,
@@ -8863,7 +8863,7 @@
                 0.7997246980667114,
                 111.47833251953125
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
                 158.7678680419922,
@@ -8902,10 +8902,10 @@
                 0.7997246980667114,
                 111.00592803955078
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                223.93820190429688,
+                223.93817138671875,
                 0.0
             ],
             "Scale": [
@@ -8941,7 +8941,7 @@
                 0.7997246980667114,
                 109.20100402832031
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
                 283.2225341796875,
@@ -8980,7 +8980,7 @@
                 0.7997246980667114,
                 107.88200378417969
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
                 341.48773193359375,
@@ -13156,7 +13156,7 @@
             "RenderType": "Default",
             "Rotation": [
                 270.0,
-                27.99195671081543,
+                27.991952896118164,
                 0.0
             ],
             "Scale": [
@@ -13390,7 +13390,7 @@
             "RenderType": "Default",
             "Rotation": [
                 270.0,
-                112.20864868164063,
+                112.20863342285156,
                 0.0
             ],
             "Scale": [
@@ -13935,7 +13935,7 @@
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
-                -3.193063259124756,
+                -3.1930627822875977,
                 86.23272705078125,
                 -59.33991622924805
             ],
@@ -14493,7 +14493,7 @@
         "Point": [
             {
                 "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 0.38061755895614624,
+                "FallOffStart": 3.2537500858306885,
                 "Name": "P1",
                 "Position": [
                     0.0,
@@ -14541,23 +14541,23 @@
     "Water": [
         {
             "Displacement1Transform": [
-                0.8,
+                0.800000011920929,
                 0.009999999776482582,
                 0.029999999329447746
             ],
             "Displacement2Transform": [
-                0.4,
+                0.4000000059604645,
                 -0.009999999776482582,
                 0.029999999329447746
             ],
             "HeightScale": [
                 0.4000000059604645,
-                1.2000000476837158
+                0.8000000715255737
             ],
             "Material": "water",
             "MaterialTranslation": [
-                0.15,
-                0.4
+                0.15000000596046448,
+                0.4000000059604645
             ],
             "Name": "water1",
             "Normal1Transform": [
@@ -14567,13 +14567,13 @@
             ],
             "Normal2Transform": [
                 4.0,
-                -0.02,
-                0.05
+                -0.019999999552965164,
+                0.05000000074505806
             ],
             "Position": [
-                0.0,
-                1.6841458082199097,
-                0.0
+                -110.595947265625,
+                -1.2997311353683472,
+                83.48025512695313
             ],
             "Rotation": [
                 0.0,

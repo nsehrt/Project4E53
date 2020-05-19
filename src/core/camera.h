@@ -62,8 +62,6 @@ public:
     void pitch(float angle);
     void rotateY(float angle);
 
-    void roll(float angle);
-
     DirectX::BoundingFrustum getFrustum() const
     {
         return camFrustum;
@@ -92,6 +90,8 @@ protected:
     DirectX::XMFLOAT3 mRight = { 1.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mUp = { 0.0f, 1.0f, 0.0f };
     DirectX::XMFLOAT3 mLook = { 0.0f, 0.0f, 1.0f };
+
+    const DirectX::XMFLOAT3 mUpConst = { 0.0f,1.0f,0.0f };
 
     DirectX::XMVECTOR yAxis;
     float mNearZ = 0.0f;

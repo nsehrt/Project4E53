@@ -270,7 +270,7 @@ bool P_4E53::Initialize()
         editCamera = std::make_shared<FixedCamera>();
         editCamera->initFixedDistance(2.0f, 80.0f);
         editCamera->setLens();
-        editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0f);
+        editCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f);
 
         ServiceProvider::setActiveCamera(editCamera);
 
@@ -516,6 +516,7 @@ void P_4E53::update(const GameTime& gt)
             editSettings->toolMode != EditTool::Camera)
         {
             editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
+
 
             editSettings->Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSettings->Velocity * gt.DeltaTime();
             editSettings->Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSettings->Velocity * gt.DeltaTime();
@@ -1165,8 +1166,16 @@ void P_4E53::update(const GameTime& gt)
 
         if (editSettings->toolMode != EditTool::Camera)
         {
+            float turnDelta = 0.0f;
+
+            if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::ObjectMeta &&
+                inputData.current.buttons[BTN::RIGHT_THUMB])
+            {
+                turnDelta = inputData.current.trigger[TRG::THUMB_RX] * XM_PI * gt.DeltaTime();
+            }
+
             editCamera->updateFixedCamera(newCamTarget,
-                                          zoomDelta);
+                                          zoomDelta, turnDelta);
         }
         else
         {

@@ -11,11 +11,16 @@ public:
     FixedCamera() = default;
     ~FixedCamera() = default;
 
-    void updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zoomDelta);
+    void updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zoomDelta, float turnDelta);
     void initFixedDistance(float minDistance, float maxDistance);
     float cameraPosNormalize()
     {
         return mCurrentDistance / mMaxDistance;
+    }
+
+    DirectX::XMFLOAT2 getUnit()
+    {
+        return XMFLOAT2(cos(mTurn), sin(mTurn));
     }
 
 private:
@@ -23,5 +28,5 @@ private:
     float mCurrentDistance = 15.0f;
     float mMinDistance = 15.0f;
     float mMaxDistance = 100.0f;
-    float mTurn = 0.0f;
+    float mTurn = XM_PI;
 };
