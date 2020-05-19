@@ -79,8 +79,8 @@
         "NormalMap" : "default_nmap",
         "Displacement_1": "water_h",
         "Displacement_2": "water_h2",
-        "DiffuseAlbedo" : [0.55, 0.55, 0.6, 1.0],
-        "FresnelR0" : [0.3,0.3,0.3],
+        "DiffuseAlbedo" : [0.45, 0.45, 0.55, 1.0],
+        "FresnelR0" : [0.2,0.2,0.2],
         "Roughness" : 0.01
     },
     {
