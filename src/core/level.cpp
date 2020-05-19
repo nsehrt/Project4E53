@@ -409,6 +409,7 @@ bool Level::save()
             json wElement;
 
             wElement["Name"] = e.second->name;
+
             wElement["Position"][0] = e.second->getPosition().x;
             wElement["Position"][1] = e.second->getPosition().y;
             wElement["Position"][2] = e.second->getPosition().z;

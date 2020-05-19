@@ -64,8 +64,8 @@ struct MaterialData
     UINT Displacement2Index = 0;
     UINT MiscTexture1Index = 0; 
     UINT MiscTexture2Index = 0;
-    UINT pad1 = 0;
-    UINT pad2 = 0;
+    float MiscFloat1 = 0.0f;
+    float MiscFloat2 = 0.0f;
 };
 
 struct Vertex

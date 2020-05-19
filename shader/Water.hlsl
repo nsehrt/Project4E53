@@ -10,7 +10,8 @@ struct VertexIn
 
 struct VertexOut
 {
-    float3 PosW           : POSITION;
+    float3 PosW           : POSITION0;
+	float4 ShadowPosH : POSITION1;
     float3 NormalW        : NORMAL;
 	float3 TangentW       : TANGENT;
 	float2 Tex           : TEXCOORD0;
@@ -21,8 +22,6 @@ struct VertexOut
 	float  TessFactor     : TESS;
 };
 
-static const float gHeightScale0 = 0.4f;
-static const float gHeightScale1 = 1.2f;
 static const float gMaxTessDistance = 4.0f;
 static const float gMinTessDistance = 30.0f;
 static const float gMinTessFactor = 2.0f;
@@ -45,19 +44,11 @@ VertexOut VS(VertexIn vin)
 	vout.WaveDispTex0   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement1Transform).xy;
 	vout.WaveDispTex1   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement2Transform).xy;
 
-    float4x4 mS = matData.Displacement1Transform;
-    mS._m00 = 44.0f;
-    mS._m11 = 44.0f;
-    mS._m03 = gTotalTime * 0.05f;
-    mS._m13 = gTotalTime * 0.2f;
+	vout.WaveNormalTex0 = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Normal1Transform).xy;
+	vout.WaveNormalTex1 = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Normal2Transform).xy;
 
-	vout.WaveNormalTex0 = mul(float4(vin.Tex, 0.0f, 1.0f), mS).xy;
+	vout.ShadowPosH = mul(float4(vout.PosW,1.0f), gShadowTransform);
 
-    mS._m00 = 32.0f;
-    mS._m11 = 32.0f;
-
-	vout.WaveNormalTex1 = mul(float4(vin.Tex, 0.0f, 1.0f), mS).xy;
-	
 	float d = distance(vout.PosW, gEyePosW);
 
 	float tess = saturate( (gMinTessDistance - d) / (gMinTessDistance - gMaxTessDistance));
@@ -90,7 +81,8 @@ PatchTess ConstantHS(InputPatch<VertexOut,3> patch,
 
 struct HullOut
 {
-	float3 PosW     : POSITION;
+	float3 PosW     : POSITION0;
+	float4 ShadowPosH : POSITION1;
     float3 NormalW  : NORMAL;
 	float3 TangentW : TANGENT;
 	float2 Tex            : TEXCOORD0;
@@ -114,6 +106,7 @@ HullOut HS(InputPatch<VertexOut,3> p,
 	
 	// Pass through shader.
 	hout.PosW           = p[i].PosW;
+	hout.ShadowPosH 	= p[i].ShadowPosH;
 	hout.NormalW        = p[i].NormalW;
 	hout.TangentW       = p[i].TangentW;
 	hout.Tex            = p[i].Tex;
@@ -128,7 +121,8 @@ HullOut HS(InputPatch<VertexOut,3> p,
 struct DomainOut
 {
 	float4 PosH     : SV_POSITION;
-    float3 PosW     : POSITION;
+    float3 PosW     : POSITION0;
+	float4 ShadowPosH : POSITION1;
     float3 NormalW  : NORMAL;
 	float3 TangentW : TANGENT;
 	float2 Tex            : TEXCOORD0;
@@ -136,6 +130,7 @@ struct DomainOut
 	float2 WaveDispTex1   : TEXCOORD2;
 	float2 WaveNormalTex0 : TEXCOORD3;
 	float2 WaveNormalTex1 : TEXCOORD4;
+	
 };
 
 [domain("tri")]
@@ -148,6 +143,7 @@ DomainOut DS(PatchTess patchTess,
 
 	// Interpolate patch attributes to generated vertices.
 	dout.PosW           = bary.x*tri[0].PosW           + bary.y*tri[1].PosW           + bary.z*tri[2].PosW;
+	dout.ShadowPosH     = bary.x*tri[0].ShadowPosH           + bary.y*tri[1].ShadowPosH           + bary.z*tri[2].ShadowPosH;
 	dout.NormalW        = bary.x*tri[0].NormalW        + bary.y*tri[1].NormalW        + bary.z*tri[2].NormalW;
 	dout.TangentW       = bary.x*tri[0].TangentW       + bary.y*tri[1].TangentW       + bary.z*tri[2].TangentW;
 	dout.Tex            = bary.x*tri[0].Tex            + bary.y*tri[1].Tex            + bary.z*tri[2].Tex;
@@ -172,8 +168,8 @@ DomainOut DS(PatchTess patchTess,
 	float h0 = gTextureMaps[matData.Displacement1Index].SampleLevel(gsamLinearWrap, dout.WaveDispTex0, mipLevel).a;
 	float h1 = gTextureMaps[matData.Displacement2Index].SampleLevel(gsamLinearWrap, dout.WaveDispTex1, mipLevel).a;
 
-	dout.PosW.y += gHeightScale0*h0;
-	dout.PosW.y += gHeightScale1*h1;
+	dout.PosW.y += matData.MiscFloat1*h0;
+	dout.PosW.y += matData.MiscFloat2*h1;
 
 	// Project to homogeneous clip space.
 	dout.PosH = mul(float4(dout.PosW, 1.0f), gViewProj);
@@ -208,15 +204,13 @@ float4 PS(DomainOut pin) : SV_Target
 	 
 	float3 bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
 
-	return diffuseAlbedo;
-
     // Light terms.
     float4 ambient = gAmbientLight*diffuseAlbedo;
 
     // Only the first light casts a shadow.
     float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
     
-    //shadowFactor[0] = saturate(CalcShadowFactor(pin.ShadowPosH) + SHADOW_ADD_BRIGHTNESS);
+    shadowFactor[0] = saturate(CalcShadowFactor(pin.ShadowPosH) + SHADOW_ADD_BRIGHTNESS);
 
     const float shininess = (1.0f - roughness);
     Material mat = { diffuseAlbedo, fresnelR0, shininess };

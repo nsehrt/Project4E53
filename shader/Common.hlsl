@@ -31,8 +31,8 @@ struct MaterialData
 	uint     Displacement2Index;
     uint     MiscTexture1Index;
     uint     MiscTexture2Index;
-    uint pad1; 
-    uint pad2;
+    float    MiscFloat1; 
+    float    MiscFloat2;
 };
 
 // Constant data that varies per frame.

@@ -1173,6 +1173,8 @@ void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
             matData.Displacement2Index = mat->Displacement2HeapIndex;
             matData.MiscTexture1Index = mat->MiscTexture1Index;
             matData.MiscTexture2Index = mat->MiscTexture2Index;
+            matData.MiscFloat1 = mat->MiscFloat1;
+            matData.MiscFloat2 = mat->MiscFloat2;
 
             currMaterialBuffer->copyData(mat->MatCBIndex, matData);
 

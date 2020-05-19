@@ -56,6 +56,8 @@ struct Material
     DirectX::XMFLOAT4X4 DisplacementTransform1 = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 NormalTransform0 = MathHelper::identity4x4();
     DirectX::XMFLOAT4X4 NormalTransform1 = MathHelper::identity4x4();
+    float MiscFloat1 = 0.0f;
+    float MiscFloat2 = 0.0f;
 };
 
 struct Mesh

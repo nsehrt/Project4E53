@@ -9,24 +9,37 @@ Water::Water(RenderResource* r, const json& waterJson)
     materialTranslation.x = waterJson["MaterialTranslation"][0];
     materialTranslation.y = waterJson["MaterialTranslation"][1];
 
-    displacement1Translation.x = waterJson["Displacement1Translation"][0];
-    displacement1Translation.y = waterJson["Displacement1Translation"][1];
+    displacement1Scale.x = waterJson["Displacement1Transform"][0];
+    displacement1Scale.y = waterJson["Displacement1Transform"][0];
+    displacement1Scale.z = waterJson["Displacement1Transform"][0];
+    displacement1Translation.x = waterJson["Displacement1Transform"][1];
+    displacement1Translation.y = waterJson["Displacement1Transform"][2];
 
-    displacement2Translation.x = waterJson["Displacement2Translation"][0];
-    displacement2Translation.y = waterJson["Displacement2Translation"][1];
 
+    displacement2Scale.x = waterJson["Displacement2Transform"][0];
+    displacement2Scale.y = waterJson["Displacement2Transform"][0];
+    displacement2Scale.z = waterJson["Displacement2Transform"][0];
+    displacement2Translation.x = waterJson["Displacement2Transform"][1];
+    displacement2Translation.y = waterJson["Displacement2Transform"][2];
 
-    displacement1Scale.x = waterJson["Displacement1Scale"][0];
-    displacement1Scale.y = waterJson["Displacement1Scale"][1];
-    displacement1Scale.z = waterJson["Displacement1Scale"][2];
+    normal1Scale.x = waterJson["Normal1Transform"][0];
+    normal1Scale.y = waterJson["Normal1Transform"][0];
+    normal1Scale.z = waterJson["Normal1Transform"][0];
+    normal1Translation.x = waterJson["Normal1Transform"][1];
+    normal1Translation.y = waterJson["Normal1Transform"][2];
 
-    displacement2Scale.x = waterJson["Displacement2Scale"][0];
-    displacement2Scale.y = waterJson["Displacement2Scale"][1];
-    displacement2Scale.z = waterJson["Displacement2Scale"][2];
+    normal2Scale.x = waterJson["Normal2Transform"][0];
+    normal2Scale.y = waterJson["Normal2Transform"][0];
+    normal2Scale.z = waterJson["Normal2Transform"][0];
+    normal2Translation.x = waterJson["Normal2Transform"][1];
+    normal2Translation.y = waterJson["Normal2Transform"][2];
 
     matScale.x = waterJson["TexScale"][0];
     matScale.y = waterJson["TexScale"][1];
     matScale.z = waterJson["TexScale"][2];
+
+    heightScale.x = waterJson["HeightScale"][0];
+    heightScale.y = waterJson["HeightScale"][1];
 
     /*random offset so dont all materials get updated on the same frame*/
     updateTime = getRandomFloat(0.0f, updFixedTime);
@@ -80,6 +93,33 @@ void Water::update(const GameTime& gt)
         XMStoreFloat4x4(&material->DisplacementTransform1,
                         XMMatrixScaling(displacement2Scale.x, displacement2Scale.y, displacement2Scale.z) * XMMatrixTranslation(tu, tv, 0.0f));
 
+        /*normal 1*/
+        tu = material->NormalTransform0(3, 0);
+        tv = material->NormalTransform0(3, 1);
+
+        tu += normal1Translation.x * updFixedTime;
+        tv += normal1Translation.y * updFixedTime;
+
+        border(tu); border(tv);
+
+        XMStoreFloat4x4(&material->NormalTransform0,
+                        XMMatrixScaling(normal1Scale.x, normal1Scale.y, normal1Scale.z) * XMMatrixTranslation(tu, tv, 0.0f));
+
+        /*normal 2*/
+        tu = material->NormalTransform1(3, 0);
+        tv = material->NormalTransform1(3, 1);
+
+        tu += normal2Translation.x * updFixedTime;
+        tv += normal2Translation.y * updFixedTime;
+
+        border(tu); border(tv);
+
+        XMStoreFloat4x4(&material->NormalTransform1,
+                        XMMatrixScaling(normal2Scale.x, normal2Scale.y, normal2Scale.z) * XMMatrixTranslation(tu, tv, 0.0f));
+
+
+        material->MiscFloat1 = heightScale.x;
+        material->MiscFloat2 = heightScale.y;
 
         /*finish*/
         material->NumFramesDirty = gNumFrameResources;
@@ -95,19 +135,24 @@ void Water::addPropertiesToJson(json& wJson)
     wJson["MaterialTranslation"][0] = materialTranslation.x;
     wJson["MaterialTranslation"][1] = materialTranslation.y;
 
-    wJson["Displacement1Scale"][0] = displacement1Scale.x;
-    wJson["Displacement1Scale"][1] = displacement1Scale.y;
-    wJson["Displacement1Scale"][2] = displacement1Scale.z;
+    wJson["Displacement1Transform"][0] = displacement1Scale.x;
+    wJson["Displacement1Transform"][1] = displacement1Translation.x;
+    wJson["Displacement1Transform"][2] = displacement1Translation.y;
 
-    wJson["Displacement2Scale"][0] = displacement2Scale.x;
-    wJson["Displacement2Scale"][1] = displacement2Scale.y;
-    wJson["Displacement2Scale"][2] = displacement2Scale.z;
+    wJson["Displacement2Transform"][0] = displacement2Scale.x;
+    wJson["Displacement2Transform"][1] = displacement2Translation.x;
+    wJson["Displacement2Transform"][2] = displacement2Translation.y;
 
-    wJson["Displacement1Translation"][0] = displacement1Translation.x;
-    wJson["Displacement1Translation"][1] = displacement1Translation.y;
+    wJson["Normal1Transform"][0] = normal1Scale.x;
+    wJson["Normal1Transform"][1] = normal1Translation.x;
+    wJson["Normal1Transform"][2] = normal1Translation.y;
 
-    wJson["Displacement2Translation"][0] = displacement2Translation.x;
-    wJson["Displacement2Translation"][1] = displacement2Translation.y;
+    wJson["Normal2Transform"][0] = normal2Scale.x;
+    wJson["Normal2Transform"][1] = normal2Translation.x;
+    wJson["Normal2Transform"][2] = normal2Translation.y;
+
+    wJson["HeightScale"][0] = heightScale.x;
+    wJson["HeightScale"][1] = heightScale.y;
 }
 
 void Water::border(float& x)

@@ -14540,23 +14540,19 @@
     },
     "Water": [
         {
-            "Displacement1Scale": [
+            "Displacement1Transform": [
                 2.0,
-                2.0,
-                2.0
-            ],
-            "Displacement1Translation": [
                 0.009999999776482582,
                 0.029999999329447746
             ],
-            "Displacement2Scale": [
+            "Displacement2Transform": [
                 1.0,
-                1.0,
-                1.0
-            ],
-            "Displacement2Translation": [
                 -0.009999999776482582,
                 0.029999999329447746
+            ],
+            "HeightScale": [
+                0.4000000059604645,
+                1.2000000059604645
             ],
             "Material": "water",
             "MaterialTranslation": [
@@ -14564,14 +14560,24 @@
                 0.029999999329447746
             ],
             "Name": "water1",
+            "Normal1Transform": [
+                22.0,
+                0.05000000074505806,
+                0.20000000298023224
+            ],
+            "Normal2Transform": [
+                16.0,
+                -0.03999999910593033,
+                0.07999999821186066
+            ],
             "Position": [
-                -110.60293579101563,
-                -1.50039803981781,
-                83.90909576416016
+                0.0,
+                2.0,
+                0.0
             ],
             "Rotation": [
                 0.0,
-                205.99534606933594,
+                0.0,
                 0.0
             ],
             "Scale": [
