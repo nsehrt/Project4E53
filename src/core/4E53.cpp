@@ -1192,7 +1192,8 @@ void P_4E53::update(const GameTime& gt)
                     }
                 }
 
-                if (selectedObject && selectedObject->gameObjectType != GameObjectType::Sky)
+                if (selectedObject && selectedObject->gameObjectType != GameObjectType::Sky &&
+                    selectedObject->gameObjectType != GameObjectType::Terrain)
                 {
                     LOG(Severity::Info, "Picked GameObject " << selectedObject->name << ".");
 

@@ -194,6 +194,9 @@ float4 PS(DomainOut pin) : SV_Target
     // Vector from point being lit to eye. 
     float3 toEyeW = normalize(gEyePosW - pin.PosW);
 
+	toEyeW.x *= -1.0f;
+	toEyeW.z *= -1.0f;
+
 	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Tex);
 
 	float3 normalMapSample0 = gTextureMaps[matData.Displacement1Index].Sample(gsamLinearWrap, pin.WaveNormalTex0).rgb;
@@ -224,10 +227,7 @@ float4 PS(DomainOut pin) : SV_Target
 	float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
     litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
 
-    // // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a; 
     
-
-    // //return litColor.rrra; /*grey scale image*/
     return litColor;
 }
