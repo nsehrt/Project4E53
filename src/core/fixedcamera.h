@@ -18,9 +18,14 @@ public:
         return mCurrentDistance / mMaxDistance;
     }
 
-    DirectX::XMFLOAT2 getUnit()
+    XMFLOAT2 getUnitVector2()
     {
         return XMFLOAT2(cos(mTurn), sin(mTurn));
+    }
+
+    float getTurn()
+    {
+        return -mTurn;
     }
 
 private:

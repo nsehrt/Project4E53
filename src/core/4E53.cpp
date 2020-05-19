@@ -518,8 +518,14 @@ void P_4E53::update(const GameTime& gt)
             editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
 
 
-            editSettings->Position.x += inputData.current.trigger[TRG::THUMB_LX] * editSettings->Velocity * gt.DeltaTime();
-            editSettings->Position.y += inputData.current.trigger[TRG::THUMB_LY] * editSettings->Velocity * gt.DeltaTime();
+            XMFLOAT2 in = XMFLOAT2(inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY]);
+            XMFLOAT2 v;
+
+            v.x = in.x * cos(editCamera->getTurn()) - in.y * sin(editCamera->getTurn());
+            v.y = in.x * sin(editCamera->getTurn()) + in.y * cos(editCamera->getTurn());
+
+            editSettings->Position.x -= v.x * editSettings->Velocity * gt.DeltaTime();
+            editSettings->Position.y -= v.y * editSettings->Velocity * gt.DeltaTime();
 
             float terrainHalf = activeLevel->mTerrain->terrainSize / 2.0f;
 
@@ -869,26 +875,26 @@ void P_4E53::update(const GameTime& gt)
             {
 
                 /*switch to invisible wall*/
-                if (inputData.Pressed(BTN::RIGHT_THUMB))
-                {
-                    editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
-                    editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
-                    editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
-                    editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
-                    editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
-                    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
-                    editSettings->currentSelection->isDrawEnabled = false;
-                    editSettings->currentSelection->isShadowEnabled = false;
-                    editSettings->currentSelection->isShadowForced = false;
-                    editSettings->currentSelection->isCollisionEnabled = true;
+                //if (inputData.Pressed(BTN::RIGHT_THUMB))
+                //{
+                //    editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
+                //    editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
+                //    editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
+                //    editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
+                //    editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+                //    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+                //    editSettings->currentSelection->isDrawEnabled = false;
+                //    editSettings->currentSelection->isShadowEnabled = false;
+                //    editSettings->currentSelection->isShadowForced = false;
+                //    editSettings->currentSelection->isCollisionEnabled = true;
 
-                    activeLevel->calculateRenderOrderSizes();
+                //    activeLevel->calculateRenderOrderSizes();
 
-                    setModelSelection();
-                }
+                //    setModelSelection();
+                //}
 
                 /*switch model group*/
-                else if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -1168,7 +1174,7 @@ void P_4E53::update(const GameTime& gt)
         {
             float turnDelta = 0.0f;
 
-            if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::ObjectMeta &&
+            if (editSettings->toolMode != EditTool::Camera &&
                 inputData.current.buttons[BTN::RIGHT_THUMB])
             {
                 turnDelta = inputData.current.trigger[TRG::THUMB_RX] * XM_PI * gt.DeltaTime();
