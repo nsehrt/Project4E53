@@ -162,6 +162,7 @@
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\core\grass.cpp" />
     <ClCompile Include="src\core\level.cpp" />
+    <ClCompile Include="src\core\particlesystem.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="src\core\gametime.h" />
     <ClInclude Include="src\core\grass.h" />
     <ClInclude Include="src\core\level.h" />
+    <ClInclude Include="src\core\particlesystem.h" />
     <ClInclude Include="src\core\terrain.h" />
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />

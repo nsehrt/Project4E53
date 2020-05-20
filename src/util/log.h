@@ -45,9 +45,9 @@ public:
 class LogPolicy : public LogPolicyAbstract
 {
 private:
-#ifndef _DEBUG
+
     std::ofstream outputStream;
-#endif
+
 public:
     LogPolicy() {};
     ~LogPolicy() {};

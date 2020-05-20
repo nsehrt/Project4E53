@@ -7,6 +7,7 @@
 #include "../core/terrain.h"
 #include "../core/water.h"
 #include "../core/grass.h"
+#include "../core/particlesystem.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -71,6 +72,7 @@ public:
     std::vector<std::unique_ptr<LightObject>> mLightObjects;
     std::vector<std::unique_ptr<Water>> mWater;
     std::vector<std::unique_ptr<Grass>> mGrass;
+    std::unordered_map<std::string, std::unique_ptr<ParticleSystem>> mParticleSystems;
 
     XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
 
