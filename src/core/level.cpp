@@ -265,7 +265,8 @@ void Level::draw()
     }
 
     /*draw outlined obj if needed*/
-    if (ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
+    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled &&
+        ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
         ServiceProvider::getEditSettings()->currentSelection != nullptr &&
         ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Grass &&
         ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Water)
@@ -560,8 +561,50 @@ bool Level::createNew(const std::string& levelFile)
     gameObj["Model"] = "box";
     gameObj["RenderType"] = "Default";
     gameObj["Material"] = "default";
+    gameObj["Position"] = { 0.0f, 4.0f, 0.0f };
 
     newLevel["GameObject"].push_back(gameObj);
+
+    json invWallObj;
+
+    invWallObj["Name"] = "invWall";
+    invWallObj["RenderType"] = "DefaultTransparency";
+    invWallObj["Material"] = "invWall";
+    invWallObj["Model"] = "";
+    invWallObj["DrawEnabled"] = false;
+    invWallObj["ShadowEnabled"] = false;
+    invWallObj["Position"] = { -4.0f,4.0f,0.0f };
+
+    newLevel["GameObject"].push_back(invWallObj);
+
+    json grassObj;
+
+    grassObj["Name"] = "grass";
+    grassObj["Material"] = "grass_3";
+    grassObj["Position"] = { 0.0f,0.0f,0.0f };
+    grassObj["QuadSize"] = { 1.0f,1.0f };
+    grassObj["Size"] = { 5.0f,5.0f };
+    grassObj["SizeVariation"] = 0.0f;
+    grassObj["Density"] = { 16,16 };
+
+    newLevel["Grass"].push_back(grassObj);
+
+    json waterObj;
+
+    waterObj["Name"] = "water";
+    waterObj["Material"] = "water";
+    waterObj["Displacement1Transform"] = { 0.8f,0.01f,0.03f };
+    waterObj["Displacement2Transform"] = { 0.4f,-0.01f,0.03f };
+    waterObj["Normal1Transform"] = { 5.0f,0.05f,0.2f };
+    waterObj["Normal2Transform"] = { 4.0f,-0.02f,0.05f };
+    waterObj["Position"] = { 10.0f,0.0f,0.0f };
+    waterObj["Rotation"] = { 0.0f,0.0f,0.0f };
+    waterObj["Scale"] = { 1.0f,1.0f,1.0f };
+    waterObj["TexScale"] = { 10.0f,10.0f,1.0f };
+    waterObj["HeightScale"] = { 0.4f,0.8f };
+    waterObj["MaterialTranslation"] = {0.15f,0.4f };
+
+    newLevel["Water"].push_back(waterObj);
 
     std::ofstream out (LEVEL_PATH + std::string("/") + levelFile + ".level");
 

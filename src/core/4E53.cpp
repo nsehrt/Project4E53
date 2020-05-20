@@ -224,7 +224,7 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
     /*load first level*/
-    std::string levelFile = "1";
+    std::string levelFile = "0";
 
     auto level = std::make_shared<Level>();
 
@@ -1130,6 +1130,10 @@ void P_4E53::update(const GameTime& gt)
 
                 for (const auto& e : activeLevel->mGameObjects)
                 {
+                    if (e.second->gameObjectType == GameObjectType::Sky ||
+                        e.second->gameObjectType == GameObjectType::Terrain)
+                        continue;
+
                     if (e.second->getRoughBoundingBox().Intersects(fpsCamera->getPosition(),
                         fpsCamera->getLook(),
                         dist))
@@ -1143,8 +1147,7 @@ void P_4E53::update(const GameTime& gt)
                     }
                 }
 
-                if (selectedObject && selectedObject->gameObjectType != GameObjectType::Sky &&
-                    selectedObject->gameObjectType != GameObjectType::Terrain)
+                if (selectedObject)
                 {
                     LOG(Severity::Info, "Picked GameObject " << selectedObject->name << ".");
 
