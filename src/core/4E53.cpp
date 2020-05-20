@@ -421,12 +421,17 @@ void P_4E53::update(const GameTime& gt)
 
     /***********************/
 
+
+
+    /************************/
+    /**** Edit Mode *********/
+    /************************/
     if (settingsData->miscSettings.EditModeEnabled)
     {
         auto editSettings = ServiceProvider::getEditSettings();
 
         /*save map*/
-        if (inputData.Released(BTN::BACK))
+        if (inputData.Released(BTN::START))
         {
             editSettings->saveSuccess = activeLevel->save();
             editSettings->savedAnim = 2.0f;
@@ -557,7 +562,7 @@ void P_4E53::update(const GameTime& gt)
                                                       gt.DeltaTime() * editSettings->heightIncrease * inputData.current.trigger[TRG::RIGHT_TRIGGER],
                                                       editSettings->resetHeight,
                                                       inputData.current.buttons[BTN::A],
-                                                      inputData.current.buttons[BTN::X]);
+                                                      0.0f/*inputData.current.buttons[BTN::X]*/);
             }
 
             if (inputData.current.trigger[TRG::LEFT_TRIGGER] > 0.15f)
@@ -569,7 +574,7 @@ void P_4E53::update(const GameTime& gt)
                                                       gt.DeltaTime() * -editSettings->heightIncrease * inputData.current.trigger[TRG::LEFT_TRIGGER],
                                                       editSettings->resetHeight,
                                                       inputData.current.buttons[BTN::A],
-                                                      inputData.current.buttons[BTN::X]);
+                                                      0.0f/*inputData.current.buttons[BTN::X]*/);
             }
 
             /*control increase value*/
@@ -631,64 +636,6 @@ void P_4E53::update(const GameTime& gt)
         }
         else if (editSettings->toolMode == EditTool::ObjectTransform || editSettings->toolMode == EditTool::ObjectMeta)
         {
-            /*switch to next object*/
-            if (inputData.Pressed(BTN::DPAD_RIGHT))
-            {
-                std::vector<GameObject*> validGameObjects;
-
-                for (const auto& g : activeLevel->mGameObjects)
-                {
-                    if (g.second->gameObjectType == GameObjectType::Static ||
-                        g.second->gameObjectType == GameObjectType::Wall ||
-                        g.second->gameObjectType == GameObjectType::Dynamic ||
-                        g.second->gameObjectType == GameObjectType::Water)
-                    {
-                        validGameObjects.push_back(g.second.get());
-                    }
-                }
-
-                if (editSettings->currentSelectionIndex >= validGameObjects.size() - 1)
-                {
-                    editSettings->currentSelectionIndex = 0;
-                }
-                else
-                {
-                    editSettings->currentSelectionIndex++;
-                }
-
-                editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
-
-                setModelSelection();
-            }
-
-            if (inputData.Pressed(BTN::DPAD_LEFT))
-            {
-                std::vector<GameObject*> validGameObjects;
-
-                for (const auto& g : activeLevel->mGameObjects)
-                {
-                    if (g.second->gameObjectType == GameObjectType::Static ||
-                        g.second->gameObjectType == GameObjectType::Wall ||
-                        g.second->gameObjectType == GameObjectType::Dynamic ||
-                        g.second->gameObjectType == GameObjectType::Water)
-                    {
-                        validGameObjects.push_back(g.second.get());
-                    }
-                }
-
-                if (editSettings->currentSelectionIndex == 0)
-                {
-                    editSettings->currentSelectionIndex = (int)validGameObjects.size() - 1;
-                }
-                else
-                {
-                    editSettings->currentSelectionIndex--;
-                }
-
-                editSettings->currentSelection = validGameObjects[editSettings->currentSelectionIndex];
-
-                setModelSelection();
-            }
 
             if (editSettings->toolMode == EditTool::ObjectTransform)
             {
@@ -864,23 +811,23 @@ void P_4E53::update(const GameTime& gt)
             {
 
                 /*switch to invisible wall*/
-                //if (inputData.Pressed(BTN::RIGHT_THUMB))
-                //{
-                //    editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
-                //    editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
-                //    editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
-                //    editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
-                //    editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
-                //    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
-                //    editSettings->currentSelection->isDrawEnabled = false;
-                //    editSettings->currentSelection->isShadowEnabled = false;
-                //    editSettings->currentSelection->isShadowForced = false;
-                //    editSettings->currentSelection->isCollisionEnabled = true;
+                if (inputData.Pressed(BTN::BACK))
+                {
+                    editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
+                    editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
+                    editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
+                    editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
+                    editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+                    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+                    editSettings->currentSelection->isDrawEnabled = false;
+                    editSettings->currentSelection->isShadowEnabled = false;
+                    editSettings->currentSelection->isShadowForced = false;
+                    editSettings->currentSelection->isCollisionEnabled = true;
 
-                //    activeLevel->calculateRenderOrderSizes();
+                    activeLevel->calculateRenderOrderSizes();
 
-                //    setModelSelection();
-                //}
+                    setModelSelection();
+                }
 
                 /*switch model group*/
                 if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
@@ -1004,7 +951,7 @@ void P_4E53::update(const GameTime& gt)
 
 
                 /*switch render type*/
-                else if (inputData.Pressed(BTN::START) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::RIGHT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     switch (editSettings->currentSelection->renderItem->renderType)
                     {
@@ -1161,19 +1108,19 @@ void P_4E53::update(const GameTime& gt)
 
         if (editSettings->toolMode != EditTool::Camera)
         {
-            float turnDelta = 0.0f;
+            
+            float turnInput = (int)inputData.current.buttons[BTN::DPAD_LEFT] -
+                              (int)inputData.current.buttons[BTN::DPAD_RIGHT];
 
-            if (editSettings->toolMode != EditTool::Camera &&
-                inputData.current.buttons[BTN::RIGHT_THUMB])
-            {
-                turnDelta = inputData.current.trigger[TRG::THUMB_RX] * XM_PI * gt.DeltaTime();
-            }
+            float turnDelta = turnInput * XM_PI * gt.DeltaTime();
 
             editCamera->updateFixedCamera(newCamTarget,
                                           zoomDelta, turnDelta);
         }
         else
         {
+        /*fps camera controls*/
+
             if (inputData.Pressed(BTN::A))
             {
                 float dist = 0.0f;
@@ -1233,8 +1180,28 @@ void P_4E53::update(const GameTime& gt)
                 }
 
             }
+            
+            if (inputData.Pressed(BTN::X))
+            {
+                if (editSettings->currentSelection)
+                {
+                    XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
+                    auto box = editSettings->currentSelection->getRoughBoundingBox();
 
-            fpsCamera->updateFPSCamera(inputData.current, gt);
+                    nPos.z -= MathHelper::maxH(5.0f, box.Extents.z * 4.5f);
+                    nPos.y += MathHelper::maxH(4.0f, box.Extents.y * 3.0f);
+
+
+                    fpsCamera->lookAt(nPos, editSettings->currentSelection->getPosition(), XMFLOAT3(0.0f, 1.0f, 0.0f));
+                }
+
+                
+            }
+            else
+            {
+                fpsCamera->updateFPSCamera(inputData.current, gt);
+            }
+            
         }
 
         if (editModeHUD != nullptr)
