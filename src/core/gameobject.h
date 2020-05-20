@@ -175,6 +175,10 @@ private:
 
     bool isInFrustum = false;
 
+    /*simple rotation animation*/
+    bool isSimpleAnimated = false;
+    DirectX::XMFLOAT3 SimpleRotation;
+
     /*precise hitbox needed*/
 
     UINT objectCBSize = 0;

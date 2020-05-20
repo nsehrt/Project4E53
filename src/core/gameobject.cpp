@@ -77,6 +77,20 @@ GameObject::GameObject(const json& objectJson, int index)
         TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
     }
 
+    /*simple animation*/
+    if (exists(objectJson, "SimpleRotation"))
+    {
+        isSimpleAnimated = true;
+        SimpleRotation = XMFLOAT3{ XMConvertToRadians(objectJson["SimpleRotation"][0]),
+                                   XMConvertToRadians(objectJson["SimpleRotation"][1]),
+                                   XMConvertToRadians(objectJson["SimpleRotation"][2]) };
+    }
+    else
+    {
+        isSimpleAnimated = false;
+        SimpleRotation = XMFLOAT3{ 0.0f,0.0f,0.0f };
+    }
+
     /*Flags*/
     if (exists(objectJson, "CollisionEnabled"))
     {
@@ -251,16 +265,17 @@ GameObject::GameObject(int index)
 
 void GameObject::update(const GameTime& gt)
 {
-    /*TODO*/
-    if (renderItem->renderType != RenderType::Default && renderItem->renderType != RenderType::DefaultNoNormal) return;
-    if (name != "box2" && name != "skull2")return;
-    XMFLOAT3 rot = getRotation();
-    rot.y += 0.25f * gt.DeltaTime();
-    setRotation(rot);
-    if (name != "skull2") return;
-    XMFLOAT3 pos = getPosition();
-    pos.x += 2.5f * gt.DeltaTime();
-    setPosition(pos);
+    /*simple animation*/
+    if (isSimpleAnimated)
+    {
+        XMFLOAT3 r = getRotation();
+        r.x += SimpleRotation.x * gt.DeltaTime();
+        r.y += SimpleRotation.y * gt.DeltaTime();
+        r.z += SimpleRotation.z * gt.DeltaTime();
+
+        setRotation(r);
+    }
+
 }
 
 bool GameObject::draw()
@@ -412,6 +427,13 @@ json GameObject::toJson()
     jElement["TexRotation"][0] = XMConvertToDegrees(getTextureRotation().x);
     jElement["TexRotation"][1] = XMConvertToDegrees(getTextureRotation().y);
     jElement["TexRotation"][2] = XMConvertToDegrees(getTextureRotation().z);
+
+    if (isSimpleAnimated)
+    {
+        jElement["SimpleRotation"][0] = XMConvertToDegrees(SimpleRotation.x);
+        jElement["SimpleRotation"][1] = XMConvertToDegrees(SimpleRotation.y);
+        jElement["SimpleRotation"][2] = XMConvertToDegrees(SimpleRotation.z);
+    }
 
     return jElement;
 }

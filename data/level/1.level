@@ -2149,45 +2149,6 @@
             "CollisionEnabled": false,
             "DrawEnabled": true,
             "Model": "PineTreeA02",
-            "Name": "box_(125)",
-            "Position": [
-                -100.01451873779297,
-                1.5466704368591309,
-                102.3469009399414
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                239.55242919921875,
-                0.0
-            ],
-            "Scale": [
-                0.5086042881011963,
-                0.5086042881011963,
-                0.5086042881011963
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
-            "Model": "PineTreeA02",
             "Name": "box_(13)",
             "Position": [
                 -118.78192138671875,
@@ -2232,6 +2193,45 @@
                 -123.38014221191406,
                 1.5466704368591309,
                 68.34626770019531
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                239.55242919921875,
+                0.0
+            ],
+            "Scale": [
+                0.5086042881011963,
+                0.5086042881011963,
+                0.5086042881011963
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "PineTreeA02",
+            "Name": "box_(125)",
+            "Position": [
+                -100.01451873779297,
+                1.5466704368591309,
+                102.3469009399414
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -4537,7 +4537,7 @@
             "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                224.364501953125,
+                224.36447143554688,
                 0.0
             ],
             "Scale": [
@@ -5685,9 +5685,9 @@
                 0.0
             ],
             "TexScale": [
-                1.0,
-                1.0,
-                1.0
+                0.5949064493179321,
+                3.8592090606689453,
+                23.807937622070313
             ],
             "TexTranslation": [
                 0.0,
@@ -13157,7 +13157,7 @@
             "RenderType": "Default",
             "Rotation": [
                 270.0,
-                27.991947174072266,
+                27.991943359375,
                 0.0
             ],
             "Scale": [
@@ -14366,7 +14366,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                303.2064514160156,
+                303.2063903808594,
                 0.0
             ],
             "Scale": [
@@ -14376,6 +14376,50 @@
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "starfish",
+            "Name": "box_(369)",
+            "Position": [
+                -105.3808364868164,
+                2.0124733448028564,
+                89.77132415771484
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                -1665.001220703125,
+                270.0,
+                90.0
+            ],
+            "Scale": [
+                0.22893957793712616,
+                0.22893957793712616,
+                0.22893957793712616
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "SimpleRotation": [
+                -180.0,
+                0.0,
+                0.0
+            ],
             "TexRotation": [
                 0.0,
                 0.0,
@@ -14532,13 +14576,13 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 1.9301331043243408,
-                "FallOffStart": 1.6146240234375,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "P1",
                 "Position": [
-                    1.0616531372070313,
-                    0.4794815182685852,
-                    -45.52948760986328
+                    0.0,
+                    0.8531982898712158,
+                    0.0
                 ],
                 "Strength": [
                     1.0,
