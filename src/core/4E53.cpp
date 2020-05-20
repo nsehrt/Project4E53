@@ -497,12 +497,6 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
-        /*wireframe on/off*/
-        if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->toolMode == EditTool::Camera)
-        {
-            editSettings->WireFrameOn = !editSettings->WireFrameOn;
-        }
-
         /*edit selection update*/
 
         if (editSettings->toolMode != EditTool::ObjectTransform &&
@@ -1184,6 +1178,26 @@ void P_4E53::update(const GameTime& gt)
 
             }
             
+
+            /*wireframe on/off*/
+            if (inputData.Pressed(BTN::LEFT_THUMB))
+            {
+                editSettings->WireFrameOn = !editSettings->WireFrameOn;
+            }
+
+            /*toggle object property*/
+            if (inputData.Pressed(BTN::Y) && editSettings->currentSelection)
+            {
+                switch (editSettings->gameObjectProperty)
+                {
+                    case GameObjectProperty::Collision: editSettings->currentSelection->isCollisionEnabled = !editSettings->currentSelection->isCollisionEnabled;  break;
+                    case GameObjectProperty::Draw: editSettings->currentSelection->isDrawEnabled = !editSettings->currentSelection->isDrawEnabled;  break;
+                    case GameObjectProperty::Shadow: editSettings->currentSelection->isShadowEnabled = !editSettings->currentSelection->isShadowEnabled;  break;
+                    case GameObjectProperty::ShadowForce: editSettings->currentSelection->isShadowForced = !editSettings->currentSelection->isShadowForced;  break;
+                }
+            }
+
+            /*focus on selected object*/
             if (inputData.Pressed(BTN::X))
             {
                 if (editSettings->currentSelection)
