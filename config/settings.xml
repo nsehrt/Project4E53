@@ -6,7 +6,6 @@
         <MusicVolume>0.75</MusicVolume>
     </Audio>
     <Display>
-        <BufferFrames>3</BufferFrames>
         <Monitor>0</Monitor>
         <RefreshRate>144</RefreshRate>
         <ResolutionWidth>1920</ResolutionWidth>

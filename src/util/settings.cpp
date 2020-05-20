@@ -52,9 +52,6 @@ bool SettingsLoader::loadSettings(const std::string& path)
     if (!setSetting(pDisplay, "WindowMode", &settings.displaySettings.WindowMode))
         return false;
 
-    if (!setSetting(pDisplay, "BufferFrames", &settings.displaySettings.BufferFrames))
-        return false;
-
     if (!setSetting(pDisplay, "RefreshRate", &settings.displaySettings.RefreshRate))
         return false;
 

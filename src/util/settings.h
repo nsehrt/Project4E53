@@ -19,7 +19,6 @@ struct DisplaySettings
     int FOV = 90;
     int VSync = 0;
     int WindowMode = 0;
-    int BufferFrames = 3;
 };
 
 struct InputSettings
