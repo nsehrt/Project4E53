@@ -63,8 +63,6 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\slider_blue.png",
         L"data\\texture\\hud\\gui\\edit\\slider_green.png",
         L"data\\texture\\hud\\gui\\edit\\slider_red.png",
-        L"data\\texture\\hud\\gui\\edit\\legend.png",
-        L"data\\texture\\hud\\gui\\edit\\legend_full.png",
         L"data\\texture\\hud\\gui\\edit\\tex_win.png",
         L"data\\texture\\hud\\gui\\edit\\object.png",
         L"data\\texture\\hud\\gui\\edit\\tool_axis_select.png",
@@ -156,8 +154,8 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.046f, 0.9425f }, 0.85f));
 
     /*legend window 13 - 14*/
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::LEGEND_WIN, { 0.08f, 0.4f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::LEGEND_FULL_WIN, { -0.08f, 0.4f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { 0.08f, 0.4f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::FAILED, { -0.08f, 0.4f }));
 
     /*texture win 15 - 17*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::TEXTURE_WIN, { 0.93f, 0.38f }));

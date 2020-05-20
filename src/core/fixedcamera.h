@@ -13,19 +13,14 @@ public:
 
     void updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zoomDelta, float turnDelta);
     void initFixedDistance(float minDistance, float maxDistance);
-    float cameraPosNormalize()
+    float getDistanceNormalized()
     {
         return mCurrentDistance / mMaxDistance;
     }
 
-    XMFLOAT2 getUnitVector2()
-    {
-        return XMFLOAT2(cos(mTurn), sin(mTurn));
-    }
-
     float getTurn()
     {
-        return -mTurn;
+        return mTurn;
     }
 
 private:

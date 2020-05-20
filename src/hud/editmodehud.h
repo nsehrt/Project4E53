@@ -66,8 +66,6 @@ private:
         SLIDER_BLUE,
         SLIDER_GREEN,
         SLIDER_RED,
-        LEGEND_WIN,
-        LEGEND_FULL_WIN,
         TEXTURE_WIN,
         OBJECT,
         TOOL_AXIS_WIN,

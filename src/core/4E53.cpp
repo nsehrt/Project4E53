@@ -498,31 +498,20 @@ void P_4E53::update(const GameTime& gt)
             editSettings->WireFrameOn = !editSettings->WireFrameOn;
         }
 
-        /*legend on/off*/
-        //if (inputData.Pressed(BTN::DPAD_UP))
-        //{
-        //    editSettings->legendAnim = editSettings->legenAnimDur;
-        //    editSettings->legendStatus = !editSettings->legendStatus;
-        //}
-
-        //editSettings->legendAnim -= gt.DeltaTime();
-
-        //if (editSettings->legendAnim < 0.0f) editSettings->legendAnim = 0.0f;
-
         /*edit selection update*/
 
         if (editSettings->toolMode != EditTool::ObjectTransform &&
             editSettings->toolMode != EditTool::ObjectMeta &&
             editSettings->toolMode != EditTool::Camera)
         {
-            editSettings->Velocity = editSettings->BaseVelocity * editCamera->cameraPosNormalize();
+            editSettings->Velocity = editSettings->BaseVelocity * editCamera->getDistanceNormalized();
 
 
             XMFLOAT2 in = XMFLOAT2(inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY]);
             XMFLOAT2 v;
 
-            v.x = in.x * cos(editCamera->getTurn()) - in.y * sin(editCamera->getTurn());
-            v.y = in.x * sin(editCamera->getTurn()) + in.y * cos(editCamera->getTurn());
+            v.x = in.x * cos(-editCamera->getTurn()) - in.y * sin(-editCamera->getTurn());
+            v.y = in.x * sin(-editCamera->getTurn()) + in.y * cos(-editCamera->getTurn());
 
             editSettings->Position.x -= v.x * editSettings->Velocity * gt.DeltaTime();
             editSettings->Position.y -= v.y * editSettings->Velocity * gt.DeltaTime();
@@ -543,7 +532,7 @@ void P_4E53::update(const GameTime& gt)
         editSettings->FallOffRatio = MathHelper::clampH(editSettings->FallOffRatio, editSettings->fallOffRatioMin,
                                                         editSettings->fallOffRatioMax);
 
-        editSettings->BaseRadius = editCamera->cameraPosNormalize() * editSettings->BaseSelectSize;
+        editSettings->BaseRadius = editCamera->getDistanceNormalized() * editSettings->BaseSelectSize;
         if (editSettings->BaseRadius < 1.0f) editSettings->BaseRadius = 1.0f;
         editSettings->FallOffRadius = editSettings->BaseRadius * editSettings->FallOffRatio;
 
@@ -804,7 +793,7 @@ void P_4E53::update(const GameTime& gt)
                 /*translation tool*/
                 XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
 
-                float camDistance = editCamera->cameraPosNormalize();
+                float camDistance = editCamera->getDistanceNormalized();
 
                 float thumbX = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
                 float thumbY = editSettings->translationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
