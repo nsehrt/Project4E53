@@ -170,6 +170,8 @@ enum class RenderType
     DefaultAlpha,
     Sky, /*everything before transparent objects*/
     DefaultTransparency,
+    Particle_Fire,
+    Particle_Smoke,
     Debug,
     Outline,
     Hitbox,

@@ -95,6 +95,7 @@ struct ParticleVertex
 {
     DirectX::XMFLOAT3 Pos;
     DirectX::XMFLOAT2 Size;
+    float Age;
     UINT Visible;
 };
 

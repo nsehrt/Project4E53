@@ -16,7 +16,8 @@ enum class GameObjectType
     Debug,
     Terrain,
     Water,
-    Grass
+    Grass,
+    Particle
 };
 
 class GameObject

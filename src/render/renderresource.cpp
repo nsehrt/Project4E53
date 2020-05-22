@@ -537,6 +537,12 @@ void RenderResource::buildShaders()
     mShaders["grassGS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "GS", "gs_5_1");
     mShaders["grassPS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "PS", "ps_5_1");
 
+    /*particle system shaders*/
+    mShaders["particleVS"] = d3dUtil::CompileShader(L"shader\\ParticleCommon.hlsl", nullptr, "VS", "vs_5_1");
+
+    mShaders["particle_FireGS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "GS", "gs_5_1");
+    mShaders["particle_FirePS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "PS", "ps_5_1");
+
 
     mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
     mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
@@ -594,6 +600,14 @@ void RenderResource::buildInputLayouts()
     mInputLayouts.push_back({
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         {"SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
+                            });
+
+    /*particle*/
+    mInputLayouts.push_back({
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    {"SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"VISIBLE", 0, DXGI_FORMAT_R32_UINT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
                             });
 }
 
@@ -715,7 +729,6 @@ void RenderResource::buildPSOs()
     /*water PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC waterPSODesc = defaultPSODesc;
 
-    //waterPSODesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
     waterPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 
     waterPSODesc.VS = {
@@ -767,6 +780,33 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&grassPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Grass])));
+
+    /*particle systems pso*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC firePSODesc = defaultPSODesc;
+
+    firePSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+    firePSODesc.InputLayout = { mInputLayouts[3].data(), (UINT)mInputLayouts[3].size() };
+    firePSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+    firePSODesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["particleVS"]->GetBufferPointer()),
+        mShaders["particleVS"]->GetBufferSize()
+    };
+
+    firePSODesc.GS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["particle_FireGS"]->GetBufferPointer()),
+        mShaders["particle_FireGS"]->GetBufferSize()
+    };
+
+    firePSODesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["particle_FirePS"]->GetBufferPointer()),
+        mShaders["particle_FirePS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&firePSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Particle_Fire])));
 
     /*outline PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC outlinePSO = defaultPSODesc;

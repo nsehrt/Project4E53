@@ -454,6 +454,12 @@ bool Level::save()
     }
 
 
+    /*particle system*/
+    for (const auto& e : mParticleSystems)
+    {
+        saveFile["ParticleSystem"].push_back(e.second->toJson());
+    }
+
     std::ofstream file(loadedLevel);
 
     if (!file.is_open())
@@ -933,7 +939,6 @@ bool Level::parseTerrain(const json& terrainJson)
 
 bool Level::parseGrass(const json& grassJson)
 {
-    int counter = 0;
 
     std::vector<std::string> checklist{ "Name", "Size", "Position", "Material",
                                     "Density", "QuadSize", "SizeVariation" };
@@ -976,7 +981,6 @@ bool Level::parseGrass(const json& grassJson)
 
         mGameObjects[mGrass.back()->getName()] = std::move(grassObject);
 
-        counter++;
     }
 
     return true;
@@ -1067,7 +1071,7 @@ bool Level::parseWater(const json& waterJson)
 bool Level::parseParticleSystems(const json& particleJson)
 {
     std::vector<std::string> checklist{ "Name", "Material", "Position", "Size",
-                                    "Type", "Texture" };
+                                    "Type" };
 
     for (const auto& entry : particleJson)
     {
@@ -1088,8 +1092,29 @@ bool Level::parseParticleSystems(const json& particleJson)
         mParticleSystems[entry["Name"]]->init(entry);
 
         /*create game object*/
+        auto particleObject = std::make_unique<GameObject>(amountObjectCBs++);
 
+        particleObject->name = entry["Name"];
+        particleObject->isFrustumCulled = true;
+        particleObject->isShadowEnabled = false;
+        particleObject->isDrawEnabled = true;
+        particleObject->isCollisionEnabled = true;
+        particleObject->gameObjectType = GameObjectType::Particle;
 
+        switch (mParticleSystems[entry["Name"]]->getType())
+        {
+            case ParticleSystemType::Fire: particleObject->renderItem->renderType = RenderType::Particle_Fire; break;
+            case ParticleSystemType::Smoke: particleObject->renderItem->renderType = RenderType::Particle_Smoke; break;
+            default: particleObject->renderItem->renderType = RenderType::Particle_Fire; break;
+        }
+
+        particleObject->renderItem->Model = mParticleSystems[entry["Name"]]->getModel();
+        particleObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+        particleObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mParticleSystems[entry["Name"]]->getMaterialName()].get();
+        particleObject->setFrustumHitBoxExtents(XMFLOAT3(2.0f, 4.0f, 2.0f));
+        particleObject->setPosition(mParticleSystems[entry["Name"]]->getPosition());
+
+        mGameObjects[entry["Name"]] = std::move(particleObject);
     }
 
 

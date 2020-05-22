@@ -1125,7 +1125,8 @@ void P_4E53::update(const GameTime& gt)
                 for (const auto& e : activeLevel->mGameObjects)
                 {
                     if (e.second->gameObjectType == GameObjectType::Sky ||
-                        e.second->gameObjectType == GameObjectType::Terrain)
+                        e.second->gameObjectType == GameObjectType::Terrain ||
+                        e.second->gameObjectType == GameObjectType::Debug)
                         continue;
 
                     if (e.second->getRoughBoundingBox().Intersects(fpsCamera->getPosition(),

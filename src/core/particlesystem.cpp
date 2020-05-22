@@ -25,8 +25,7 @@ void ParticleSystem::init(const json& particleJson)
         particleSystemType = ParticleSystemType::Fire;
     }
 
-    textureName = particleJson["Texture"];
-    textureName = particleJson["Material"];
+    materialName = particleJson["Material"];
 
     /*create mesh*/
     GeometryGenerator geoGen;
@@ -36,14 +35,11 @@ void ParticleSystem::init(const json& particleJson)
 
     for (size_t i = 0; i < particleCount; i++)
     {
-        mParticleVertices[i].Pos.x = position.x;
-        mParticleVertices[i].Pos.y = position.y;
-        mParticleVertices[i].Pos.z = position.z;
+        mParticleVertices[i].Pos = { 0.0f,0.0f,0.0f };
+        mParticleVertices[i].Size = particleSize;
 
-        mParticleVertices[i].Size.x = particleSize.x;
-        mParticleVertices[i].Size.y = particleSize.y;
-
-        mParticleVertices[i].Visible = 0;
+        mParticleVertices[i].Visible = 1;
+        mParticleVertices[i].Age = 0.0f;
     }
 
     for (int i = 0; i < indices.size(); i++)
@@ -80,4 +76,30 @@ void ParticleSystem::init(const json& particleJson)
 
 void ParticleSystem::update(const GameTime& gt)
 {
+}
+
+json ParticleSystem::toJson()
+{
+    json jElement;
+
+    jElement["Name"] = name;
+
+    jElement["Position"][0] = getPosition().x;
+    jElement["Position"][1] = getPosition().y;
+    jElement["Position"][2] = getPosition().z;
+
+    jElement["Size"][0] = particleSize.x;
+    jElement["Size"][1] = particleSize.y;
+
+    jElement["ParticleCount"] = particleCount;
+
+    jElement["Material"] = getMaterialName();
+
+    switch (particleSystemType)
+    {
+        case ParticleSystemType::Fire: jElement["Type"] = "Fire"; break;
+        case ParticleSystemType::Smoke: jElement["Type"] = "Smoke"; break;
+    }
+
+    return jElement;
 }

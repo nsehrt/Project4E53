@@ -1,5 +1,11 @@
 #include "../render/renderresource.h"
 
+enum class ParticleSystemType : int
+{
+    Fire,
+    Smoke
+};
+
 class ParticleSystem
 {
 public:
@@ -11,16 +17,27 @@ public:
     void init(const json& particleJson);
     void update(const GameTime& gt);
 
+    json toJson();
+
     Model* getModel() const
     {
         return particleSystemModel.get();
     }
 
-    enum class ParticleSystemType : int
+    std::string getMaterialName() const
     {
-        Fire,
-        Smoke
-    };
+        return materialName;
+    }
+
+    DirectX::XMFLOAT3 getPosition() const
+    {
+        return position;
+    }
+
+    ParticleSystemType getType() const
+    {
+        return particleSystemType;
+    }
 
     static const UINT MAX_PARTICLE = 1000;
 
@@ -35,7 +52,6 @@ private:
     UINT particleCount = 100;
     DirectX::XMFLOAT3 position = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT2 particleSize = { 1.0f,1.0f };
-    std::string textureName = "default";
     std::string materialName = "default";
 
     float updateTime = 0.0f;
