@@ -62,6 +62,13 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    /*parse particle systems*/
+    if (!parseParticleSystems(levelJson["ParticleSystem"]))
+    {
+        LOG(Severity::Critical, "Failed to load particle systems!");
+        return false;
+    }
+
     /*parse lights*/
     if (!parseLights(levelJson["Light"]))
     {
@@ -78,12 +85,6 @@ bool Level::load(const std::string& levelFile)
     mCameras.push_back(std::move(defaultCamera));
 
     ServiceProvider::getActiveCamera()->updateViewMatrix();
-
-    if (!parseCameras(levelJson["Camera"]))
-    {
-        LOG(Severity::Critical, "Failed to load cameras!");
-        return false;
-    }
 
     /*parse game objects*/
     if (!parseGameObjects(levelJson["GameObject"]))
@@ -149,6 +150,12 @@ void Level::update(const GameTime& gt)
     for (auto& w : mWater)
     {
         w->update(gt);
+    }
+
+    /*particle systems*/
+    for (auto& p : mParticleSystems)
+    {
+        p.second->update(gt);
     }
 
     /*TEST Collision test*/
@@ -711,6 +718,20 @@ void Level::calculateShadowRenderOrder()
     }
 }
 
+bool Level::existsList(const nlohmann::json& j, const std::vector<std::string>& key)
+{
+    for (const auto& k : key)
+    {
+        if (!exists(j, k))
+        {
+            LOG(Severity::Error, "Missing property " << k << "!");
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool Level::parseSky(const json& skyJson)
 {
     if (!exists(skyJson, "Material") || !exists(skyJson, "DefaultCubeMap"))
@@ -836,11 +857,6 @@ bool Level::parseLights(const json& lightJson)
     return true;
 }
 
-bool Level::parseCameras(const json& cameraJson) /*TODO*/
-{
-    return true;
-}
-
 bool Level::parseGameObjects(const json& gameObjectJson)
 {
     for (const auto& entryJson : gameObjectJson)
@@ -919,49 +935,21 @@ bool Level::parseGrass(const json& grassJson)
 {
     int counter = 0;
 
+    std::vector<std::string> checklist{ "Name", "Size", "Position", "Material",
+                                    "Density", "QuadSize", "SizeVariation" };
+
     for (const auto& entry : grassJson)
     {
         /*check validity*/
-        if (!exists(entry, "Name"))
+        if (!existsList(entry, checklist))
         {
-            LOG(Severity::Error, "Grass is missing name!");
-            return false;
+            continue;
         }
 
-        if (!exists(entry, "Size"))
+        if (mGameObjects.find(entry["Name"]) != mGameObjects.end())
         {
-            LOG(Severity::Error, "Grass is missing size!");
-            return false;
-        }
-
-        if (!exists(entry, "Position"))
-        {
-            LOG(Severity::Error, "Grass is missing position!");
-            return false;
-        }
-
-        if (!exists(entry, "Material"))
-        {
-            LOG(Severity::Error, "Grass is missing material!");
-            return false;
-        }
-
-        if (!exists(entry, "Density"))
-        {
-            LOG(Severity::Error, "Grass is missing density!");
-            return false;
-        }
-
-        if (!exists(entry, "QuadSize"))
-        {
-            LOG(Severity::Error, "Grass is missing quad size!");
-            return false;
-        }
-
-        if (!exists(entry, "SizeVariation"))
-        {
-            LOG(Severity::Error, "Grass is missing size variation!");
-            return false;
+            LOG(Severity::Warning, "GameObject " << entry["Name"] << " already exists!");
+            continue;
         }
 
         auto grass = std::make_unique<Grass>(ServiceProvider::getRenderResource());
@@ -996,40 +984,20 @@ bool Level::parseGrass(const json& grassJson)
 
 bool Level::parseWater(const json& waterJson)
 {
+    std::vector<std::string> checklist{ "Name", "Material", "Position", "Scale",
+                                        "Rotation", "TexScale" };
+
     for (const auto& entry : waterJson)
     {
         /*check validity*/
-        if (!exists(entry, "Name"))
+        if (!existsList(entry, checklist))
         {
-            LOG(Severity::Error, "Water is missing name!");
-            return false;
-        }
-        if (!exists(entry, "Material"))
-        {
-            LOG(Severity::Error, "Water is missing material!");
-            return false;
-        }
-        if (!exists(entry, "Position"))
-        {
-            LOG(Severity::Error, "Water is missing position!");
-        }
-        if (!exists(entry, "Scale"))
-        {
-            LOG(Severity::Error, "Water is missing scale!");
-        }
-        if (!exists(entry, "Rotation"))
-        {
-            LOG(Severity::Error, "Water is missing rotation!");
-        }
-
-        if (!exists(entry, "TexScale"))
-        {
-            LOG(Severity::Error, "Water is missing texture scale!");
+            continue;
         }
 
         if (mGameObjects.find(entry["Name"]) != mGameObjects.end())
         {
-            LOG(Severity::Warning, "Water " << entry["Name"] << " already exists!");
+            LOG(Severity::Warning, "GameObject " << entry["Name"] << " already exists!");
             continue;
         }
 
@@ -1089,6 +1057,38 @@ bool Level::parseWater(const json& waterJson)
         {
             mWater.push_back(std::make_unique<Water>(ServiceProvider::getRenderResource(), entry));
         }
+
+    }
+
+
+    return true;
+}
+
+bool Level::parseParticleSystems(const json& particleJson)
+{
+    std::vector<std::string> checklist{ "Name", "Material", "Position", "Size",
+                                    "Type", "Texture" };
+
+    for (const auto& entry : particleJson)
+    {
+
+        if (!existsList(entry, checklist))
+        {
+            continue;
+        }
+
+        if (mGameObjects.find(entry["Name"]) != mGameObjects.end())
+        {
+            LOG(Severity::Warning, "GameObject " << entry["Name"] << " already exists!");
+            continue;
+        }
+
+        /*init particle system*/
+        mParticleSystems[entry["Name"]] = std::make_unique<ParticleSystem>(ServiceProvider::getRenderResource());
+        mParticleSystems[entry["Name"]]->init(entry);
+
+        /*create game object*/
+
 
     }
 

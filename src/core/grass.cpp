@@ -25,16 +25,16 @@ void Grass::create(const json& grassJson, Terrain* terrain)
     /*create mesh from parameters*/
 
     GeometryGenerator geoGen;
-    GeometryGenerator::MeshData grassTest = geoGen.CreateGrid(size.x, size.y, density.y, density.x);
+    GeometryGenerator::MeshData grassMesh = geoGen.CreateGrid(size.x, size.y, density.y, density.x);
 
-    std::vector<BillBoardVertex> vertices(grassTest.Vertices.size());
-    std::vector<std::uint16_t> indices(grassTest.Vertices.size());
+    std::vector<BillBoardVertex> vertices(grassMesh.Vertices.size());
+    std::vector<std::uint16_t> indices(grassMesh.Vertices.size());
 
     highestPoint = -MathHelper::Infinity;
 
-    for (size_t i = 0; i < grassTest.Vertices.size(); i++)
+    for (size_t i = 0; i < grassMesh.Vertices.size(); i++)
     {
-        vertices[i].Pos = grassTest.Vertices[i].Position;
+        vertices[i].Pos = grassMesh.Vertices[i].Position;
 
         XMFLOAT3 worldPos = vertices[i].Pos;
 
@@ -62,12 +62,6 @@ void Grass::create(const json& grassJson, Terrain* terrain)
     UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geo = std::make_unique<Mesh>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(renderResource->device,
                                                         renderResource->cmdList, vertices.data(), vbByteSize, geo->VertexBufferUploader);

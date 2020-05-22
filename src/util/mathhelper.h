@@ -95,6 +95,14 @@ public:
     static DirectX::XMVECTOR randUnitVec3();
     static DirectX::XMVECTOR randHemisphereUnitVec3(DirectX::XMVECTOR n);
 
+    static float getRandomFloat(float min, float max)
+    {
+        float random = ((float)rand()) / (float)RAND_MAX;
+
+        float range = max - min;
+        return (random * range) + min;
+    }
+
     static const float Infinity;
     static const float Pi;
 };

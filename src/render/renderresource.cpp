@@ -1274,7 +1274,8 @@ void RenderResource::buildFrameResource()
                                   MAX_GAME_OBJECTS,
                                   0,
                                   (UINT)mMaterials.size(),
-                                  250000 /*terrain vertices*/));
+                                  250000, /*terrain vertices*/
+                                  MAX_PARTICLE_SYSTEMS));
     }
 }
 

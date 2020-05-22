@@ -42,13 +42,4 @@ private:
 
     const float updFixedTime = 1.0f / 60.0f;
 
-
-    float getRandomFloat(float min, float max)
-    {
-        float random = ((float)rand()) / (float)RAND_MAX;
-
-        float range = max - min;
-        return (random * range) + min;
-    }
-
 };

@@ -91,6 +91,13 @@ struct BillBoardVertex
     DirectX::XMFLOAT2 Size;
 };
 
+struct ParticleVertex
+{
+    DirectX::XMFLOAT3 Pos;
+    DirectX::XMFLOAT2 Size;
+    UINT Visible;
+};
+
 struct SkinnedVertex
 {
     DirectX::XMFLOAT3 Pos;
@@ -105,7 +112,7 @@ class FrameResource
 {
 public:
 
-    FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT materialCount, UINT terrainVertexCount);
+    FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT materialCount, UINT terrainVertexCount, UINT particleSystemCount);
     FrameResource(const FrameResource& rhs) = delete;
     FrameResource& operator=(const FrameResource& rhs) = delete;
     ~FrameResource();

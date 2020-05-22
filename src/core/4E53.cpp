@@ -959,7 +959,7 @@ void P_4E53::update(const GameTime& gt)
                             editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
                             break;
                         case RenderType::DefaultNoNormal:	editSettings->currentSelection->renderItem->renderType = RenderType::NoCullNoNormal;
-                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
+                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
                             break;
                         case RenderType::NoCullNoNormal: editSettings->currentSelection->renderItem->renderType = RenderType::Default;
                             editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;

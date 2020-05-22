@@ -236,6 +236,7 @@ GameObject::GameObject()
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+    SimpleRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 }

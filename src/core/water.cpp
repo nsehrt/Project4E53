@@ -42,7 +42,7 @@ Water::Water(RenderResource* r, const json& waterJson)
     heightScale.y = waterJson["HeightScale"][1];
 
     /*random offset so dont all materials get updated on the same frame*/
-    updateTime = getRandomFloat(0.0f, updFixedTime);
+    updateTime = MathHelper::getRandomFloat(0.0f, updFixedTime);
 
 }
 

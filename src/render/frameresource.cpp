@@ -5,7 +5,8 @@ FrameResource::FrameResource(ID3D12Device* device,
                              UINT objectCount,
                              UINT skinnedObjectCount,
                              UINT materialCount,
-                             UINT terrainVertexCount)
+                             UINT terrainVertexCount,
+                             UINT particleSystemCount)
 {
     ThrowIfFailed(device->CreateCommandAllocator(
         D3D12_COMMAND_LIST_TYPE_DIRECT,

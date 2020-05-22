@@ -54,9 +54,6 @@ public:
     /*need to call this if new object is added or render type is changed*/
     void calculateRenderOrderSizes();
 
-    void calculateRenderOrder();
-    void calculateShadowRenderOrder();
-
     void addGameObject(json goJson)
     {
         mGameObjects[goJson["Name"]] = std::make_unique<GameObject>(goJson, amountObjectCBs);
@@ -85,20 +82,21 @@ public:
 
 private:
 
-    float waterUpdate = 0.0f;
-
     /* total amount of object cbs used in the level*/
     int amountObjectCBs = 0;
 
     bool parseSky(const json& skyJson);
     bool parseLights(const json& lightJson);
-    bool parseCameras(const json& cameraJson);
     bool parseGameObjects(const json& gameObjectJson);
     bool parseTerrain(const json& terrainJson);
     bool parseGrass(const json& grassJson);
     bool parseWater(const json& waterJson);
+    bool parseParticleSystems(const json& particleJson);
 
     /*render order*/
+    void calculateRenderOrder();
+    void calculateShadowRenderOrder();
+
     std::vector<std::vector<GameObject*>> renderOrder;
     std::vector<std::vector<GameObject*>> shadowRenderOrder;
 
@@ -106,4 +104,7 @@ private:
     {
         return j.find(key) != j.end();
     }
+
+    bool existsList(const nlohmann::json& j, const std::vector<std::string>& key);
+
 };
