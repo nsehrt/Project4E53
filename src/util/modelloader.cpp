@@ -171,12 +171,6 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     hitbox->IndexBufferByteSize = ibByteSize;
     hitbox->IndexCount = (UINT)indices.size();
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitbox->VertexBufferCPU));
-    CopyMemory(hitbox->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitbox->IndexBufferCPU));
-    CopyMemory(hitbox->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
     hitbox->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                            cmdList, vertices.data(), vbByteSize, hitbox->VertexBufferUploader);
 

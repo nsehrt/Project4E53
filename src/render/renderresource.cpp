@@ -1337,12 +1337,6 @@ void RenderResource::generateDefaultShapes()
 
     auto geo = std::make_unique<Mesh>();
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
     geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                         cmdList, vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
@@ -1377,12 +1371,6 @@ void RenderResource::generateDefaultShapes()
     hitboxBox->IndexBufferByteSize = ibByteSize;
     hitboxBox->IndexCount = (UINT)indices.size();
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxBox->VertexBufferCPU));
-    CopyMemory(hitboxBox->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxBox->IndexBufferCPU));
-    CopyMemory(hitboxBox->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
     hitboxBox->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                               cmdList, vertices.data(), vbByteSize, hitboxBox->VertexBufferUploader);
 
@@ -1412,12 +1400,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoQuad = std::make_unique<Mesh>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoQuad->VertexBufferCPU));
-    CopyMemory(geoQuad->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoQuad->IndexBufferCPU));
-    CopyMemory(geoQuad->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     geoQuad->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                             cmdList, vertices.data(), vbByteSize, geoQuad->VertexBufferUploader);
@@ -1466,12 +1448,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoGrid = std::make_unique<Mesh>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoGrid->VertexBufferCPU));
-    CopyMemory(geoGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoGrid->IndexBufferCPU));
-    CopyMemory(geoGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     geoGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                             cmdList, vertices.data(), vbByteSize, geoGrid->VertexBufferUploader);
@@ -1539,12 +1515,6 @@ void RenderResource::generateDefaultShapes()
     hitboxGrid->IndexBufferByteSize = ibByteSize;
     hitboxGrid->IndexCount = (UINT)indices.size();
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxGrid->VertexBufferCPU));
-    CopyMemory(hitboxGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxGrid->IndexBufferCPU));
-    CopyMemory(hitboxGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
     hitboxGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                                cmdList, vertices.data(), vbByteSize, hitboxGrid->VertexBufferUploader);
 
@@ -1582,12 +1552,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoWaterGrid = std::make_unique<Mesh>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoWaterGrid->VertexBufferCPU));
-    CopyMemory(geoWaterGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoWaterGrid->IndexBufferCPU));
-    CopyMemory(geoWaterGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     geoWaterGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                             cmdList, vertices.data(), vbByteSize, geoWaterGrid->VertexBufferUploader);
@@ -1656,12 +1620,6 @@ void RenderResource::generateDefaultShapes()
     hitboxWGrid->IndexBufferByteSize = ibByteSize;
     hitboxWGrid->IndexCount = (UINT)indices.size();
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxWGrid->VertexBufferCPU));
-    CopyMemory(hitboxWGrid->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxWGrid->IndexBufferCPU));
-    CopyMemory(hitboxWGrid->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
     hitboxWGrid->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                                cmdList, vertices.data(), vbByteSize, hitboxWGrid->VertexBufferUploader);
 
@@ -1700,12 +1658,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoSphere = std::make_unique<Mesh>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoSphere->VertexBufferCPU));
-    CopyMemory(geoSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoSphere->IndexBufferCPU));
-    CopyMemory(geoSphere->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     geoSphere->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                               cmdList, vertices.data(), vbByteSize, geoSphere->VertexBufferUploader);
@@ -1764,12 +1716,6 @@ void RenderResource::generateDefaultShapes()
     hitboxSphere->IndexBufferByteSize = ibByteSize;
     hitboxSphere->IndexCount = (UINT)indices.size();
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxSphere->VertexBufferCPU));
-    CopyMemory(hitboxSphere->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxSphere->IndexBufferCPU));
-    CopyMemory(hitboxSphere->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
     hitboxSphere->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                                  cmdList, vertices.data(), vbByteSize, hitboxSphere->VertexBufferUploader);
 
@@ -1807,12 +1753,6 @@ void RenderResource::generateDefaultShapes()
     ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
     auto geoCyl = std::make_unique<Mesh>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geoCyl->VertexBufferCPU));
-    CopyMemory(geoCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geoCyl->IndexBufferCPU));
-    CopyMemory(geoCyl->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     geoCyl->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                            cmdList, vertices.data(), vbByteSize, geoCyl->VertexBufferUploader);
@@ -1870,12 +1810,6 @@ void RenderResource::generateDefaultShapes()
     hitboxCyl->VertexBufferByteSize = vbByteSize;
     hitboxCyl->IndexBufferByteSize = ibByteSize;
     hitboxCyl->IndexCount = (UINT)indices.size();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &hitboxCyl->VertexBufferCPU));
-    CopyMemory(hitboxCyl->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &hitboxCyl->IndexBufferCPU));
-    CopyMemory(hitboxCyl->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
     hitboxCyl->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                               cmdList, vertices.data(), vbByteSize, hitboxCyl->VertexBufferUploader);
