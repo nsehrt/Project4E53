@@ -1,12 +1,10 @@
 #include "ParticleCommon.hlsl"
 
-static const float3 gAccelW = {0.0f, 1.0f, 0.0f};
-
 VertexOut VS(VertexIn vin, uint vertID: SV_VERTEXID){
     VertexOut vout;
 
     vout.CenterW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
-    vout.CenterW += 0.5f * vin.Age * vin.Age * gAccelW + vin.Age * vin.Velocity;
+    vout.CenterW += 0.5f * vin.Age * vin.Age * gMaterialData[gMaterialIndex].FresnelR0 + vin.Age * vin.Velocity; /*Acceleration stored in Fresnel of Material*/
 
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, vin.Age/1.0f);
 	vout.Color = float4(1.0f, 1.0f, 1.0f, opacity);

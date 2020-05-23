@@ -88,15 +88,15 @@
         "Texture" : "ptc_fire",
         "NormalMap" : "default_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.1,0.1,0.1],
+        "FresnelR0" : [0.0,1.0,0.0],
         "Roughness" : 0.9
     },
     {
         "Name" : "smoke1",
         "Texture" : "ptc_smoke",
         "NormalMap" : "default_nmap",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,0.5],
-        "FresnelR0" : [0.1,0.1,0.1],
+        "DiffuseAlbedo" : [1.0,1.0,1.0,0.8],
+        "FresnelR0" : [0.0,0.8,0.0],
         "Roughness" : 0.9
     },
     {
