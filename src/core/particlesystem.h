@@ -61,10 +61,12 @@ private:
     DirectX::XMFLOAT2 particleSize = { 1.0f,1.0f };
     DirectX::XMFLOAT3 directionMultiplier = { 1.0f,1.0f,1.0f };
     std::string materialName = "default";
+
     float spawnNewParticleTime = 0.005f;
     float maxAge = 1.0f;
-
     float updateTime = 0.0f;
+    float particleSpawnTimeSafe = 0.0f;
     const float updFixedTime = 1.0f / 60.0f;
+
     UINT vbIndex = 0;
 };

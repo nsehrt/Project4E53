@@ -2071,6 +2071,45 @@
             "CollisionEnabled": false,
             "DrawEnabled": true,
             "Model": "PineTreeA02",
+            "Name": "box_(12)",
+            "Position": [
+                -120.994873046875,
+                1.5466704368591309,
+                123.20410919189453
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                116.4011459350586,
+                0.0
+            ],
+            "Scale": [
+                0.5086042881011963,
+                0.5086042881011963,
+                0.5086042881011963
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "PineTreeA02",
             "Name": "box_(212)",
             "Position": [
                 -123.38014221191406,
@@ -2120,45 +2159,6 @@
             "Rotation": [
                 0.0,
                 239.55242919921875,
-                0.0
-            ],
-            "Scale": [
-                0.5086042881011963,
-                0.5086042881011963,
-                0.5086042881011963
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
-            "Model": "PineTreeA02",
-            "Name": "box_(12)",
-            "Position": [
-                -120.994873046875,
-                1.5466704368591309,
-                123.20410919189453
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                116.4011459350586,
                 0.0
             ],
             "Scale": [
@@ -4615,7 +4615,7 @@
             "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                224.3643035888672,
+                224.36424255371094,
                 0.0
             ],
             "Scale": [
@@ -13196,7 +13196,7 @@
             "RenderType": "Default",
             "Rotation": [
                 270.0,
-                27.99192237854004,
+                27.991914749145508,
                 0.0
             ],
             "Scale": [
@@ -14404,7 +14404,7 @@
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
-                -100245.0234375,
+                -131743.53125,
                 270.0,
                 90.0
             ],
@@ -14448,9 +14448,9 @@
             ],
             "RenderType": "DefaultNoNormal",
             "Rotation": [
-                -58.75493621826172,
-                196.76068115234375,
-                -78.5418701171875
+                -58.75492477416992,
+                196.7606201171875,
+                -78.5418472290039
             ],
             "Scale": [
                 0.17979314923286438,
@@ -14488,13 +14488,52 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 7.798964977264404,
-                74.07795715332031,
+                74.07794952392578,
                 0.022282863035798073
             ],
             "Scale": [
                 0.23302602767944336,
                 0.23302602767944336,
                 0.23302602767944336
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "wood_timber2",
+            "Name": "box_(372)",
+            "Position": [
+                -105.01029968261719,
+                0.1678209900856018,
+                110.81195831298828
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                1.6917089223861694,
+                308.6238708496094,
+                88.09818267822266
+            ],
+            "Scale": [
+                0.35456445813179016,
+                0.35456445813179016,
+                0.35456445813179016
             ],
             "ShadowEnabled": true,
             "ShadowForced": false,
@@ -14655,7 +14694,7 @@
         "Point": [
             {
                 "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.9477237462997437,
+                "FallOffStart": 2.1001429557800293,
                 "Name": "P1",
                 "Position": [
                     0.0,
@@ -14698,7 +14737,7 @@
             "ParticleCount": 250,
             "Position": [
                 -105.38126373291016,
-                0.5096920728683472,
+                0.3592979609966278,
                 110.23048400878906
             ],
             "Size": [
@@ -14710,24 +14749,24 @@
         },
         {
             "DirectionMultiplier": [
-                0.3499999940395355,
-                0.6000000238418579,
-                0.3499999940395355
+                0.15000000596046448,
+                0.44999998807907104,
+                0.15000000596046448
             ],
             "Material": "smoke1",
-            "MaxAge": 1.0,
+            "MaxAge": 2.5,
             "Name": "smoke1",
-            "ParticleCount": 250,
+            "ParticleCount": 500,
             "Position": [
-                -105.38126373291016,
-                1.338995337486267,
-                110.23048400878906
+                -105.38147735595703,
+                0.8600303530693054,
+                110.22380828857422
             ],
             "Size": [
                 0.4000000059604645,
                 0.4000000059604645
             ],
-            "SpawnTime": 0.004999999888241291,
+            "SpawnTime": 0.009999999776482582,
             "Type": "Smoke"
         }
     ],

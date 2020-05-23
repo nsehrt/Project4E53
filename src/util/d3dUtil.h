@@ -53,6 +53,13 @@
 #define ASSERT(expr) //nothing
 #endif
 
+#define DBOUT( s )           \
+{                            \
+   std::wostringstream os_;    \
+   os_ << s;                   \
+   OutputDebugString( os_.str().c_str() );  \
+}
+
 extern int gNumFrameResources;
 
 inline std::wstring AnsiToWString(const std::string& cstr)

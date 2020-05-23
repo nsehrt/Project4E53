@@ -6,7 +6,7 @@ VertexOut VS(VertexIn vin, uint vertID: SV_VERTEXID){
     vout.CenterW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
     vout.CenterW += 0.5f * vin.Age * vin.Age * gMaterialData[gMaterialIndex].FresnelR0 + vin.Age * vin.Velocity; /*Acceleration stored in Fresnel of Material*/
 
-	float opacity = 1.0f - smoothstep(0.0f, 1.0f, vin.Age/1.0f);
+	float opacity = 1.0f - smoothstep(0.0f, 1.0f, vin.Age/gMaterialData[gMaterialIndex].Roughness);
 	vout.Color = float4(1.0f, 1.0f, 1.0f, opacity);
 
     vout.SizeW = vin.SizeW;
@@ -63,9 +63,9 @@ float4 PS(GeoOut pin) : SV_Target
 	uint diffuseMapIndex = matData.DiffuseMapIndex;
 	uint normalMapIndex = matData.NormalMapIndex;
 
-    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamLinearWrap, pin.TexC) * pin.Color;
+    float4 color = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamLinearWrap, pin.TexC) * diffuseAlbedo * pin.Color;
 
-    clip(diffuseAlbedo.a - 0.1f);
+    clip(color.a - 0.1f);
 
-    return diffuseAlbedo;
+    return color;
 }

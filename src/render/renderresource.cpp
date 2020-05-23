@@ -789,8 +789,18 @@ void RenderResource::buildPSOs()
 
     D3D12_RENDER_TARGET_BLEND_DESC particleBlendDesc{};
     
-    particleBlendDesc.BlendEnable = false;
+    particleBlendDesc.BlendEnable = true;
+    particleBlendDesc.LogicOpEnable = false;
+    particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+    particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
+    particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
+    firePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
+    firePSODesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
     firePSODesc.VS =
     {
@@ -821,14 +831,13 @@ void RenderResource::buildPSOs()
     particleBlendDesc.LogicOpEnable = false;
     particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
     particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
-    particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
     particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
     particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_REV_SUBTRACT;
     particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     smokePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
-    smokePSODesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&smokePSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Particle_Smoke])));
 

@@ -85,7 +85,9 @@ void ParticleSystem::update(const GameTime& gt)
 
     if (updateTime >= updFixedTime)
     {
-        UINT newParticles = (UINT)(updateTime / spawnNewParticleTime);
+        particleSpawnTimeSafe += updFixedTime;
+        UINT newParticles = (UINT)(particleSpawnTimeSafe / spawnNewParticleTime);
+        particleSpawnTimeSafe -= newParticles * spawnNewParticleTime;
 
         for (UINT i = 0; i < mParticleVertices.size(); i++)
         {
@@ -121,6 +123,8 @@ void ParticleSystem::update(const GameTime& gt)
 
 
         }
+
+        ASSERT(newParticles == 0);
 
         /*copy to gpu*/
         auto pVB = renderResource->getCurrentFrameResource()->ParticleVB[vbIndex].get();
