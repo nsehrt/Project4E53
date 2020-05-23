@@ -386,7 +386,8 @@ bool Level::save()
     }
 
     /*grass*/
-    int c = 0;
+    UINT c = 0;
+
     for (const auto& e : mGrass)
     {
         saveFile["Grass"].push_back(e->toJson());
@@ -456,9 +457,18 @@ bool Level::save()
 
 
     /*particle system*/
+    c = 0;
+
     for (const auto& e : mParticleSystems)
     {
         saveFile["ParticleSystem"].push_back(e.second->toJson());
+        saveFile["ParticleSystem"][c]["Position"] = {
+            mGameObjects[saveFile["ParticleSystem"][c]["Name"]]->getPosition().x,
+            mGameObjects[saveFile["ParticleSystem"][c]["Name"]]->getPosition().y,
+            mGameObjects[saveFile["ParticleSystem"][c]["Name"]]->getPosition().z
+        };
+
+        c++;
     }
 
     std::ofstream file(loadedLevel);
@@ -620,6 +630,21 @@ bool Level::createNew(const std::string& levelFile)
 
     newLevel["Water"].push_back(waterObj);
 
+    json particleObj;
+
+    particleObj["Name"] = "particle_fire";
+    particleObj["Material"] = "fire1";
+    particleObj["MaxAge"] = 1.0f;
+    particleObj["ParticleCount"] = 250;
+    particleObj["Size"] = { 1.0f,1.0f };
+    particleObj["SpawnTime"] = 0.005;
+    particleObj["Type"] = "Fire";
+    particleObj["DirectionMultiplier"] = { 0.7f, 1.3f, 0.7f };
+    particleObj["Position"] = { 0.0, 3.0f, 5.0f };
+
+    newLevel["ParticleSystem"].push_back(particleObj);
+
+    /*write to file*/
     std::ofstream out (LEVEL_PATH + std::string("/") + levelFile + ".level");
 
     if (!out.is_open())
@@ -1072,7 +1097,7 @@ bool Level::parseWater(const json& waterJson)
 bool Level::parseParticleSystems(const json& particleJson)
 {
     std::vector<std::string> checklist{ "Name", "Material", "Position", "Size",
-                                    "Type" };
+                                    "Type", "MaxAge", "SpawnTime", "DirectionMultiplier" };
 
     UINT indexCounter = 0;
 
@@ -1114,7 +1139,7 @@ bool Level::parseParticleSystems(const json& particleJson)
         particleObject->renderItem->Model = mParticleSystems[entry["Name"]]->getModel();
         particleObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         particleObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mParticleSystems[entry["Name"]]->getMaterialName()].get();
-        particleObject->setFrustumHitBoxExtents(XMFLOAT3(2.0f, 4.0f, 2.0f));
+        particleObject->setFrustumHitBoxExtents(mParticleSystems[entry["Name"]]->getRoughDimensions());
         particleObject->setPosition(mParticleSystems[entry["Name"]]->getPosition());
 
         mGameObjects[entry["Name"]] = std::move(particleObject);

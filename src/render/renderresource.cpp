@@ -172,7 +172,7 @@ bool RenderResource::buildRootSignature()
 
     /*x textures in register 1*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
-    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, 0);
+    textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1024, 2, 0);
 
     /*constant buffer views in register b0 and b1*/
     rootParameter[0].InitAsConstantBufferView(0);
@@ -759,7 +759,7 @@ void RenderResource::buildPSOs()
 
     grassPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
     grassPSODesc.InputLayout = { mInputLayouts[2].data(), (UINT)mInputLayouts[2].size() };
-    grassPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+    //grassPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
     grassPSODesc.VS = 
     {
@@ -786,21 +786,11 @@ void RenderResource::buildPSOs()
 
     firePSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
     firePSODesc.InputLayout = { mInputLayouts[3].data(), (UINT)mInputLayouts[3].size() };
-    firePSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
     D3D12_RENDER_TARGET_BLEND_DESC particleBlendDesc{};
-    particleBlendDesc.BlendEnable = true;
-    particleBlendDesc.LogicOpEnable = false;
-    particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-    particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
-    particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
-    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
-    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-    particleBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
-    particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+    
+    particleBlendDesc.BlendEnable = false;
 
-    firePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
 
     firePSODesc.VS =
     {
@@ -821,6 +811,27 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&firePSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Particle_Fire])));
+
+
+
+    /*particle smoke*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC smokePSODesc = firePSODesc;
+
+    particleBlendDesc.BlendEnable = true;
+    particleBlendDesc.LogicOpEnable = false;
+    particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+    particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
+    particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+    smokePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
+    smokePSODesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smokePSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Particle_Smoke])));
+
 
     /*outline PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC outlinePSO = defaultPSODesc;

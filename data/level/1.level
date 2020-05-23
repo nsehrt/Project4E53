@@ -783,6 +783,45 @@
         {
             "CollisionEnabled": false,
             "DrawEnabled": true,
+            "Model": "FlowerA02",
+            "Name": "box_(357)",
+            "Position": [
+                -111.4709701538086,
+                0.4721786677837372,
+                88.7618408203125
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.318349152803421,
+                0.318349152803421,
+                0.318349152803421
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
             "Model": "PineTreeA02",
             "Name": "box_(224)",
             "Position": [
@@ -4576,7 +4615,7 @@
             "RenderType": "DefaultNoNormal",
             "Rotation": [
                 0.0,
-                224.36439514160156,
+                224.3643035888672,
                 0.0
             ],
             "Scale": [
@@ -13157,7 +13196,7 @@
             "RenderType": "Default",
             "Rotation": [
                 270.0,
-                27.991933822631836,
+                27.99192237854004,
                 0.0
             ],
             "Scale": [
@@ -13967,45 +14006,6 @@
             "CollisionEnabled": false,
             "DrawEnabled": true,
             "Model": "FlowerA02",
-            "Name": "box_(357)",
-            "Position": [
-                -111.4709701538086,
-                0.4721786677837372,
-                88.7618408203125
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                0.318349152803421,
-                0.318349152803421,
-                0.318349152803421
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
-            "Model": "FlowerA02",
             "Name": "box_(358)",
             "Position": [
                 -110.5888900756836,
@@ -14404,7 +14404,7 @@
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
-                -25736.611328125,
+                -100245.0234375,
                 270.0,
                 90.0
             ],
@@ -14420,6 +14420,84 @@
                 0.0,
                 0.0
             ],
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "campfire",
+            "Name": "box_(370)",
+            "Position": [
+                -105.37464904785156,
+                0.18785421550273895,
+                110.24148559570313
+            ],
+            "RenderType": "DefaultNoNormal",
+            "Rotation": [
+                -58.75493621826172,
+                196.76068115234375,
+                -78.5418701171875
+            ],
+            "Scale": [
+                0.17979314923286438,
+                0.17979314923286438,
+                0.17979314923286438
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "SimpleRock01",
+            "Name": "box_(371)",
+            "Position": [
+                -105.41040802001953,
+                0.10192500054836273,
+                110.25023651123047
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                7.798964977264404,
+                74.07795715332031,
+                0.022282863035798073
+            ],
+            "Scale": [
+                0.23302602767944336,
+                0.23302602767944336,
+                0.23302602767944336
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
             "TexRotation": [
                 0.0,
                 0.0,
@@ -14577,7 +14655,7 @@
         "Point": [
             {
                 "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.7125000953674316,
+                "FallOffStart": 1.9477237462997437,
                 "Name": "P1",
                 "Position": [
                     0.0,
@@ -14609,19 +14687,48 @@
     },
     "ParticleSystem": [
         {
+            "DirectionMultiplier": [
+                0.3499999940395355,
+                0.6000000238418579,
+                0.3499999940395355
+            ],
             "Material": "fire1",
+            "MaxAge": 1.0,
             "Name": "fire1",
-            "ParticleCount": 200,
+            "ParticleCount": 250,
             "Position": [
-                -5.0,
-                2.0,
-                0.0
+                -105.38126373291016,
+                0.5096920728683472,
+                110.23048400878906
             ],
             "Size": [
-                1.0,
-                1.0
+                0.4000000059604645,
+                0.4000000059604645
             ],
+            "SpawnTime": 0.004999999888241291,
             "Type": "Fire"
+        },
+        {
+            "DirectionMultiplier": [
+                0.3499999940395355,
+                0.6000000238418579,
+                0.3499999940395355
+            ],
+            "Material": "smoke1",
+            "MaxAge": 1.0,
+            "Name": "smoke1",
+            "ParticleCount": 250,
+            "Position": [
+                -105.38126373291016,
+                1.338995337486267,
+                110.23048400878906
+            ],
+            "Size": [
+                0.4000000059604645,
+                0.4000000059604645
+            ],
+            "SpawnTime": 0.004999999888241291,
+            "Type": "Smoke"
         }
     ],
     "Sky": {

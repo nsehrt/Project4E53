@@ -314,18 +314,6 @@ bool P_4E53::Initialize()
 
         setModelSelection();
 
-        /*print all groups and their models*/
-        //for (const auto& e : ServiceProvider::getEditSettings()->orderedModels)
-        //{
-        //    LOG(Severity::Debug, e.first);
-
-        //    for (const auto& f : e.second)
-        //    {
-        //        LOG(Severity::Debug, "\t" << f->name);
-        //    }
-
-        //}
-
     }
 
     // Execute the initialization commands.

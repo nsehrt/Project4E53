@@ -1,6 +1,6 @@
 #include "ParticleCommon.hlsl"
 
-static const float3 gAccelW = {0.0f, 7.8f, 0.0f};
+static const float3 gAccelW = {0.0f, 1.0f, 0.0f};
 
 VertexOut VS(VertexIn vin, uint vertID: SV_VERTEXID){
     VertexOut vout;
@@ -62,35 +62,12 @@ float4 PS(GeoOut pin) : SV_Target
 {
 	MaterialData matData = gMaterialData[gMaterialIndex];
 	float4 diffuseAlbedo = matData.DiffuseAlbedo;
-	float3 fresnelR0 = matData.FresnelR0;
-	float  roughness = matData.Roughness;
 	uint diffuseMapIndex = matData.DiffuseMapIndex;
 	uint normalMapIndex = matData.NormalMapIndex;
 
-    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamAnisotropicClamp, pin.TexC) * float4(diffuseAlbedo.xyz, 1.0f);
+    diffuseAlbedo = gTextureMaps[matData.DiffuseMapIndex].Sample(gsamLinearWrap, pin.TexC) * pin.Color;
 
     clip(diffuseAlbedo.a - 0.1f);
 
-    return diffuseAlbedo * pin.Color;
-
-    /*lighting*/
-    float3 bumpedNormalW = pin.NormalW;
-
-   // Vector from point being lit to eye. 
-    float3 toEyeW = normalize(gEyePosW - pin.PosW);
-
-    // Only the first light casts a shadow.
-    float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
-
-    const float shininess = (1.0f - roughness);
-    Material mat = { diffuseAlbedo, fresnelR0, shininess };
-    float4 directLight = ComputeLightingNoDirectional(gLights, mat, pin.PosW,
-        bumpedNormalW, toEyeW, shadowFactor);
-
-    float4 litColor = diffuseAlbedo + directLight;
-	
-    // Common convention to take alpha from diffuse albedo.
-    litColor.a = diffuseAlbedo.a; 
-
-    return litColor;
+    return diffuseAlbedo;
 }

@@ -2,7 +2,7 @@
 
 TextureCube gCubeMap : register(t0);
 Texture2D gShadowMap : register(t1);
-Texture2D gTextureMaps[128] : register(t2);
+Texture2D gTextureMaps[1024] : register(t2);
 
 struct VertexIn
 {

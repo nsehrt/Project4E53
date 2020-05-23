@@ -26,10 +26,14 @@ void ParticleSystem::init(const json& particleJson)
     }
 
     materialName = particleJson["Material"];
+    spawnNewParticleTime = particleJson["SpawnTime"];
+    maxAge = particleJson["MaxAge"];
+    directionMultiplier = { particleJson["DirectionMultiplier"][0],
+                            particleJson["DirectionMultiplier"][1] ,
+                            particleJson["DirectionMultiplier"][2]
+                          };
 
     /*create mesh*/
-    GeometryGenerator geoGen;
-
     std::vector<std::uint16_t> indices(particleCount);
     mParticleVertices.resize(particleCount);
 
@@ -39,7 +43,7 @@ void ParticleSystem::init(const json& particleJson)
         mParticleVertices[i].Velocity = { 0.0f,0.0f,0.0f };
         mParticleVertices[i].Size = particleSize;
 
-        mParticleVertices[i].Visible = 1;
+        mParticleVertices[i].Visible = 0;
         mParticleVertices[i].Age = 0.0f;
     }
 
@@ -81,7 +85,7 @@ void ParticleSystem::update(const GameTime& gt)
 
     if (updateTime >= updFixedTime)
     {
-        UINT newParticles = updateTime / spawnNewParticleTime;
+        UINT newParticles = (UINT)(updateTime / spawnNewParticleTime);
 
         for (UINT i = 0; i < mParticleVertices.size(); i++)
         {
@@ -108,7 +112,7 @@ void ParticleSystem::update(const GameTime& gt)
 
                     mParticleVertices[i].Visible = 1;
                     mParticleVertices[i].Age = newParticles * spawnNewParticleTime;
-                    XMStoreFloat3(&mParticleVertices[i].Velocity, XMVectorMultiply(MathHelper::randUnitVec3(), XMVectorSet(2.0f, 4.0f,2.0f,0.0f)));
+                    XMStoreFloat3(&mParticleVertices[i].Velocity, XMVectorMultiply(MathHelper::randUnitVec3(), XMLoadFloat3(&directionMultiplier)));
 
                     newParticles--;
                 }
@@ -121,6 +125,7 @@ void ParticleSystem::update(const GameTime& gt)
         /*copy to gpu*/
         auto pVB = renderResource->getCurrentFrameResource()->ParticleVB[vbIndex].get();
         pVB->copyAll(mParticleVertices[0]);
+        holder = particleSystemModel->meshes[0]->VertexBufferGPU;
         particleSystemModel->meshes[0]->VertexBufferGPU = pVB->getResource();
 
         updateTime -= updFixedTime;
@@ -150,6 +155,12 @@ json ParticleSystem::toJson()
         case ParticleSystemType::Fire: jElement["Type"] = "Fire"; break;
         case ParticleSystemType::Smoke: jElement["Type"] = "Smoke"; break;
     }
+
+    jElement["MaxAge"] = maxAge;
+    jElement["SpawnTime"] = spawnNewParticleTime;
+    jElement["DirectionMultiplier"] = {
+        directionMultiplier.x, directionMultiplier.y, directionMultiplier.z
+    };
 
     return jElement;
 }

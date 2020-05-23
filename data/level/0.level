@@ -1,8 +1,6 @@
 {
     "GameObject": [
         {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Material": "default",
             "Model": "box",
             "Name": "box",
@@ -11,37 +9,9 @@
                 4.0,
                 0.0
             ],
-            "RenderType": "Default",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
+            "RenderType": "Default"
         },
         {
-            "CollisionEnabled": true,
             "DrawEnabled": false,
             "Material": "invWall",
             "Model": "",
@@ -52,33 +22,7 @@
                 0.0
             ],
             "RenderType": "DefaultTransparency",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": false,
-            "ShadowForced": false,
-            "TexRotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
+            "ShadowEnabled": false
         }
     ],
     "Grass": [
@@ -154,12 +98,12 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.7125000953674316,
+                "FallOffEnd": 5.0,
+                "FallOffStart": 4.0,
                 "Name": "P1",
                 "Position": [
                     0.0,
-                    0.8531982898712158,
+                    2.0,
                     0.0
                 ],
                 "Strength": [
@@ -185,6 +129,30 @@
             }
         ]
     },
+    "ParticleSystem": [
+        {
+            "DirectionMultiplier": [
+                0.699999988079071,
+                1.2999999523162842,
+                0.699999988079071
+            ],
+            "Material": "fire1",
+            "MaxAge": 1.0,
+            "Name": "particle_fire",
+            "ParticleCount": 250,
+            "Position": [
+                0.0,
+                3.0,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.005,
+            "Type": "Fire"
+        }
+    ],
     "Sky": {
         "DefaultCubeMap": "grasscube1024.dds",
         "Material": "sky"
