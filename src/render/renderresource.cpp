@@ -538,8 +538,7 @@ void RenderResource::buildShaders()
     mShaders["grassPS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "PS", "ps_5_1");
 
     /*particle system shaders*/
-    mShaders["particleVS"] = d3dUtil::CompileShader(L"shader\\ParticleCommon.hlsl", nullptr, "VS", "vs_5_1");
-
+    mShaders["particle_FireVS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["particle_FireGS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "GS", "gs_5_1");
     mShaders["particle_FirePS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "PS", "ps_5_1");
 
@@ -605,9 +604,10 @@ void RenderResource::buildInputLayouts()
     /*particle*/
     mInputLayouts.push_back({
     { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    {"SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-    {"AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-    {"VISIBLE", 0, DXGI_FORMAT_R32_UINT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
+    {"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},
+    {"SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"VISIBLE", 0, DXGI_FORMAT_R32_UINT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
                             });
 }
 
@@ -788,10 +788,24 @@ void RenderResource::buildPSOs()
     firePSODesc.InputLayout = { mInputLayouts[3].data(), (UINT)mInputLayouts[3].size() };
     firePSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
+    D3D12_RENDER_TARGET_BLEND_DESC particleBlendDesc{};
+    particleBlendDesc.BlendEnable = true;
+    particleBlendDesc.LogicOpEnable = false;
+    particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+    particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
+    particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+    particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+    firePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
+
     firePSODesc.VS =
     {
-        reinterpret_cast<BYTE*>(mShaders["particleVS"]->GetBufferPointer()),
-        mShaders["particleVS"]->GetBufferSize()
+        reinterpret_cast<BYTE*>(mShaders["particle_FireVS"]->GetBufferPointer()),
+        mShaders["particle_FireVS"]->GetBufferSize()
     };
 
     firePSODesc.GS =

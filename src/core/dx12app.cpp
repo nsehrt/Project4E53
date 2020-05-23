@@ -177,6 +177,8 @@ bool DX12App::Initialize()
     mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode == 1 ? 1 : 0;
     setFullscreen(mFullscreenState);
 
+    ShowCursor(false);
+
     return true;
 }
 

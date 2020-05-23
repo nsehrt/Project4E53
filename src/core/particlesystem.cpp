@@ -36,6 +36,7 @@ void ParticleSystem::init(const json& particleJson)
     for (size_t i = 0; i < particleCount; i++)
     {
         mParticleVertices[i].Pos = { 0.0f,0.0f,0.0f };
+        mParticleVertices[i].Velocity = { 0.0f,0.0f,0.0f };
         mParticleVertices[i].Size = particleSize;
 
         mParticleVertices[i].Visible = 1;
@@ -76,6 +77,54 @@ void ParticleSystem::init(const json& particleJson)
 
 void ParticleSystem::update(const GameTime& gt)
 {
+    updateTime += gt.DeltaTime();
+
+    if (updateTime >= updFixedTime)
+    {
+        UINT newParticles = updateTime / spawnNewParticleTime;
+
+        for (UINT i = 0; i < mParticleVertices.size(); i++)
+        {
+
+            if (mParticleVertices[i].Visible)
+            {
+
+                /*update/kill existing particle*/
+                mParticleVertices[i].Age += updFixedTime;
+
+                if (mParticleVertices[i].Age > maxAge)
+                {
+                    mParticleVertices[i].Age = 0.0f;
+                    mParticleVertices[i].Visible = 0;
+                }
+
+
+            }
+            else
+            {
+                /*create new particle*/
+                if (newParticles > 0)
+                {
+
+                    mParticleVertices[i].Visible = 1;
+                    mParticleVertices[i].Age = newParticles * spawnNewParticleTime;
+                    XMStoreFloat3(&mParticleVertices[i].Velocity, XMVectorMultiply(MathHelper::randUnitVec3(), XMVectorSet(2.0f, 4.0f,2.0f,0.0f)));
+
+                    newParticles--;
+                }
+
+            }
+
+
+        }
+
+        /*copy to gpu*/
+
+
+
+        updateTime -= updFixedTime;
+    }
+
 }
 
 json ParticleSystem::toJson()

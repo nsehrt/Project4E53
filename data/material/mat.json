@@ -84,6 +84,14 @@
         "Roughness" : 0.1
     },
     {
+        "Name" : "fire1",
+        "Texture" : "ptc_fire",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.9
+    },
+    {
         "Name" : "lava",
         "Texture" : "LavaGround",
         "NormalMap" : "LavaGround_n",

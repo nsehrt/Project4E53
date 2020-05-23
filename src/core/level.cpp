@@ -378,7 +378,8 @@ bool Level::save()
             e.second->renderItem->renderType == RenderType::ShadowAlpha ||
             e.second->renderItem->renderType == RenderType::ShadowDefault ||
             e.second->gameObjectType == GameObjectType::Water ||
-            e.second->gameObjectType == GameObjectType::Grass)
+            e.second->gameObjectType == GameObjectType::Grass ||
+            e.second->gameObjectType == GameObjectType::Particle)
             continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());

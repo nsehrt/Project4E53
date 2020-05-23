@@ -7,6 +7,7 @@ Texture2D gTextureMaps[128] : register(t2);
 struct VertexIn
 {
 	float3 PosL    : POSITION;
+    float3 Velocity : VELOCITY;
     float2 SizeW : SIZE;
 	float Age : AGE;
     uint Visible : VISIBLE;
@@ -15,31 +16,28 @@ struct VertexIn
 struct VertexOut{
 	float3 CenterW : POSITION;
 	float2 SizeW   : SIZE;
-    float Age : AGE;
-    uint Visible : VISIBLE;
+    float4 Color   : COLOR;
+    float Age      : AGE;
+    uint Visible   : VISIBLE;
 };
 
 struct GeoOut
 {
 	float4 PosH    : SV_POSITION;
+    float4 Color   : COLOR;
     float3 PosW    : POSITION0;
     float3 NormalW : NORMAL;
     float2 TexC    : TEXCOORD;
-    float Age      : AGE;
     uint   PrimID  : SV_PrimitiveID;
 };
 
-
-VertexOut VS(VertexIn vin, uint vertID: SV_VERTEXID){
-    VertexOut vout;
-
-    vout.CenterW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
-    vout.SizeW = vin.SizeW;
-    vout.Age = vin.Age;
-    vout.Visible = vin.Visible;
-
-    return vout;
-}
+static const float2 texCoord[4] = 
+{
+    float2(0.0f,1.0f),
+    float2(0.0f,0.0f),
+    float2(1.0f,1.0f),
+    float2(1.0f,0.0f)
+};
 
 /*calculate the amount the fragment is in shadow*/
 float CalcShadowFactor(float4 shadowPosH)

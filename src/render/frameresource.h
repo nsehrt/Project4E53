@@ -94,6 +94,7 @@ struct BillBoardVertex
 struct ParticleVertex
 {
     DirectX::XMFLOAT3 Pos;
+    DirectX::XMFLOAT3 Velocity;
     DirectX::XMFLOAT2 Size;
     float Age;
     UINT Visible;
