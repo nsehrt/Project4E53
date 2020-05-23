@@ -1074,6 +1074,8 @@ bool Level::parseParticleSystems(const json& particleJson)
     std::vector<std::string> checklist{ "Name", "Material", "Position", "Size",
                                     "Type" };
 
+    UINT indexCounter = 0;
+
     for (const auto& entry : particleJson)
     {
 
@@ -1089,7 +1091,7 @@ bool Level::parseParticleSystems(const json& particleJson)
         }
 
         /*init particle system*/
-        mParticleSystems[entry["Name"]] = std::make_unique<ParticleSystem>(ServiceProvider::getRenderResource());
+        mParticleSystems[entry["Name"]] = std::make_unique<ParticleSystem>(ServiceProvider::getRenderResource(), indexCounter++);
         mParticleSystems[entry["Name"]]->init(entry);
 
         /*create game object*/

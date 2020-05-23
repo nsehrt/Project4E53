@@ -9,9 +9,10 @@ enum class ParticleSystemType : int
 class ParticleSystem
 {
 public:
-    explicit ParticleSystem(RenderResource* r)
+    explicit ParticleSystem(RenderResource* r, UINT index)
     {
         renderResource = r;
+        vbIndex = index;
     }
 
     void init(const json& particleJson);
@@ -58,4 +59,5 @@ private:
 
     float updateTime = 0.0f;
     const float updFixedTime = 1.0f / 60.0f;
+    UINT vbIndex = 0;
 };

@@ -126,6 +126,8 @@ public:
     std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
     std::unique_ptr<UploadBuffer<TerrainVertex>> TerrainVB = nullptr;
 
+    std::vector<std::unique_ptr<UploadBuffer<ParticleVertex>>> ParticleVB;
+
     //std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
 //std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
 

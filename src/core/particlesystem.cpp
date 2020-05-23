@@ -119,8 +119,9 @@ void ParticleSystem::update(const GameTime& gt)
         }
 
         /*copy to gpu*/
-
-
+        auto pVB = renderResource->getCurrentFrameResource()->ParticleVB[vbIndex].get();
+        pVB->copyAll(mParticleVertices[0]);
+        particleSystemModel->meshes[0]->VertexBufferGPU = pVB->getResource();
 
         updateTime -= updFixedTime;
     }
