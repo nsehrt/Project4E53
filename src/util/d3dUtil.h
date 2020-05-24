@@ -39,7 +39,7 @@
 #define ReleaseCom(x) { if(x){ x->Release(); x = 0; } }
 #endif
 
-#ifndef Assert
+#ifdef _DEBUG
 #define ASSERT(expr) \
     if(expr) { }\
     else\
@@ -50,7 +50,7 @@
         DebugBreak();\
     }
 #else
-#define ASSERT(expr) //nothing
+#define ASSERT(expr)
 #endif
 
 #define DBOUT( s )           \

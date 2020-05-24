@@ -497,6 +497,11 @@ void GameObject::updateTransforms()
     renderItem->Model->boundingBox.Transform(roughBoundingBox, XMLoadFloat4x4(&renderItem->World));
     renderItem->Model->frustumBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&renderItem->World));
 
+    if (useCustomFrustumBoundingBoxExtents)
+    {
+        frustumCheckBoundingBox.Extents = customFrustumBoundingBoxExtents;
+    }
+
     /*update for precise hitbox needed*/
 
     renderItem->NumFramesDirty = gNumFrameResources;

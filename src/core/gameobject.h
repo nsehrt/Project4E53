@@ -122,14 +122,12 @@ public:
         return roughBoundingBox.Extents.y;
     }
 
-    void setRoughHitBoxExtents(DirectX::XMFLOAT3 e)
-    {
-        roughBoundingBox.Extents = e;
-    }
-
     void setFrustumHitBoxExtents(DirectX::XMFLOAT3 e)
     {
-        frustumCheckBoundingBox.Extents = e;
+        useCustomFrustumBoundingBoxExtents = true;
+        customFrustumBoundingBoxExtents = e;
+
+        updateTransforms();
     }
 
     DirectX::BoundingOrientedBox& getRoughBoundingBox()
@@ -173,6 +171,8 @@ private:
     /*rough hitbox*/
     DirectX::BoundingOrientedBox roughBoundingBox;
     DirectX::BoundingBox frustumCheckBoundingBox;
+    DirectX::XMFLOAT3 customFrustumBoundingBoxExtents;
+    bool useCustomFrustumBoundingBoxExtents = false;
 
     bool isInFrustum = false;
 

@@ -722,6 +722,7 @@ void RenderResource::buildPSOs()
     transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
     transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
+    transparencyPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
     transparencyPSODesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&transparencyPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::DefaultTransparency])));
@@ -759,7 +760,6 @@ void RenderResource::buildPSOs()
 
     grassPSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
     grassPSODesc.InputLayout = { mInputLayouts[2].data(), (UINT)mInputLayouts[2].size() };
-    //grassPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
     grassPSODesc.VS = 
     {
@@ -797,6 +797,7 @@ void RenderResource::buildPSOs()
     particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
     particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
     particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+
     particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     firePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
@@ -827,15 +828,12 @@ void RenderResource::buildPSOs()
     /*particle smoke*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smokePSODesc = firePSODesc;
 
-    particleBlendDesc.BlendEnable = true;
-    particleBlendDesc.LogicOpEnable = false;
     particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-    particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
-    particleBlendDesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
-    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
-    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_REV_SUBTRACT;
-    particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+    particleBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+    particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ONE;
+    particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 
     smokePSODesc.BlendState.RenderTarget[0] = particleBlendDesc;
 
