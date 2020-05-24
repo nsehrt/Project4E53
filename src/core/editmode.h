@@ -43,6 +43,32 @@ enum class RotationAxis : int
     Z
 };
 
+enum class LightColorAxis : int
+{
+    R,
+    G,
+    B
+};
+
+enum class LightDirectionAxis : int
+{
+    X,
+    Y,
+    Z
+};
+
+enum class LightTranslationAxis : int
+{
+    XZ,
+    XY
+};
+
+enum class LightTypeChoice : int
+{
+    Directional,
+    Point
+};
+
 enum class GameObjectProperty : int
 {
     Collision,
@@ -87,6 +113,14 @@ struct EditSettings
     const float fallOffRatioMax = 0.95f;
 
     const int textureMax = 4;
+
+    /*light*/
+    LightTypeChoice lightTypeChoice = LightTypeChoice::Point;
+    LightColorAxis lightColorAxis = LightColorAxis::R;
+    LightTranslationAxis lightTranslationAxis = LightTranslationAxis::XZ;
+    LightDirectionAxis lightDirectionAxis = LightDirectionAxis::X;
+
+    LightObject* currentLightSelection = nullptr;
 
     /*model switch*/
     std::map<std::string, std::vector<Model*>> orderedModels;
