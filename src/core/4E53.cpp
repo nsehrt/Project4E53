@@ -446,6 +446,10 @@ void P_4E53::update(const GameTime& gt)
             }
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
+                editSettings->toolMode = EditTool::Light;
+            }
+            else if (editSettings->toolMode == EditTool::Light)
+            {
                 editSettings->toolMode = EditTool::Height;
             }
         }
@@ -454,7 +458,7 @@ void P_4E53::update(const GameTime& gt)
         {
             if (editSettings->toolMode == EditTool::Height)
             {
-                editSettings->toolMode = EditTool::ObjectMeta;
+                editSettings->toolMode = EditTool::Light;
             }
             else if (editSettings->toolMode == EditTool::Paint)
             {
@@ -467,6 +471,10 @@ void P_4E53::update(const GameTime& gt)
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
                 editSettings->toolMode = EditTool::ObjectTransform;
+            }
+            else if (editSettings->toolMode == EditTool::Light)
+            {
+                editSettings->toolMode = EditTool::ObjectMeta;
             }
         }
 

@@ -8,6 +8,7 @@ enum class EditTool
     Paint,
     ObjectTransform,
     ObjectMeta,
+    Light,
     Camera
 };
 

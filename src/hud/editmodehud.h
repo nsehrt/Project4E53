@@ -95,7 +95,8 @@ private:
         OBJECT,
         OBJECT_META,
         BOTH_OBJECT,
-        FPS_CAMERA
+        FPS_CAMERA,
+        LIGHT
     };
 
     struct HUDElement

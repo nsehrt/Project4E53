@@ -247,7 +247,8 @@ void EditModeHUD::update()
         TextureDescriptors::HEIGHT : editSetting->toolMode == EditTool::Paint ?
         TextureDescriptors::PAINT : editSetting->toolMode == EditTool::ObjectTransform ?
         TextureDescriptors::OBJECT : editSetting->toolMode == EditTool::ObjectMeta ?
-        TextureDescriptors::OBJECT_META : TextureDescriptors::CAMERA;
+        TextureDescriptors::OBJECT_META : editSetting->toolMode == EditTool::Light ?
+        TextureDescriptors::LIGHT : TextureDescriptors::CAMERA;
 
     /*save window*/
     mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? TextureDescriptors::SAVED : TextureDescriptors::FAILED;
@@ -449,13 +450,14 @@ void EditModeHUD::draw()
     {
         if (!e->Visible) continue;
 
-        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (toolMode == EditTool::ObjectTransform || toolMode == EditTool::Camera || toolMode == EditTool::ObjectMeta)) continue;
+        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (toolMode == EditTool::ObjectTransform || toolMode == EditTool::Camera || toolMode == EditTool::ObjectMeta || toolMode == EditTool::Light)) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && toolMode != EditTool::Paint)continue;
         if (e->hudVisibility == HUDVisibility::OBJECT && toolMode != EditTool::ObjectTransform)continue;
         if (e->hudVisibility == HUDVisibility::BOTH_OBJECT && (toolMode != EditTool::ObjectTransform && toolMode != EditTool::ObjectMeta && toolMode != EditTool::Camera)) continue;
         if (e->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
         if (e->hudVisibility == HUDVisibility::FPS_CAMERA && toolMode != EditTool::Camera) continue;
+        if (e->hudVisibility == HUDVisibility::LIGHT && toolMode != EditTool::Light) continue;
 
         mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(e->TexDescriptor),
                            e->TextureSize,
