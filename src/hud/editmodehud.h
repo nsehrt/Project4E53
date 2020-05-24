@@ -76,6 +76,7 @@ private:
         MODEL_PROP,
         SUCCESS,
         CROSSHAIR,
+        LIGHT,
         TCount
     };
 

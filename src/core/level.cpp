@@ -126,7 +126,7 @@ void Level::update(const GameTime& gt)
 
     auto cameraPos = aCamera->getPosition();
 
-    /*order transparent objects by distance from camera*/
+    /*order point lights by distance from camera*/
     std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
               mLightObjects.end() - AMOUNT_SPOT,
               [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b) -> bool
@@ -174,6 +174,8 @@ void Level::update(const GameTime& gt)
             //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
         }
     }
+
+
 
     //if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
     //{
@@ -344,26 +346,7 @@ bool Level::save()
 
             saveFile["Light"]["Point"].push_back(jElement);
         }
-        else
-        {
-            json jElement;
 
-            jElement["Name"] = e->name;
-            jElement["Strength"][0] = e->getStrength().x;
-            jElement["Strength"][1] = e->getStrength().y;
-            jElement["Strength"][2] = e->getStrength().z;
-            jElement["Position"][0] = e->getPosition().x;
-            jElement["Position"][1] = e->getPosition().y;
-            jElement["Position"][2] = e->getPosition().z;
-            jElement["Direction"][0] = e->getDirection().x;
-            jElement["Direction"][1] = e->getDirection().y;
-            jElement["Direction"][2] = e->getDirection().z;
-            jElement["FallOffStart"] = e->getFallOffStart();
-            jElement["FallOffEnd"] = e->getFallOffEnd();
-            jElement["SpotPower"] = e->getSpotPower();
-
-            saveFile["Light"]["Spot"].push_back(jElement);
-        }
     }
 
     /*gameobject*/
@@ -855,7 +838,6 @@ bool Level::parseLights(const json& lightJson)
     }
 
     /*point light*/
-    lightCounter = 0;
 
     if (exists(lightJson, "Point"))
     {
@@ -874,24 +856,19 @@ bool Level::parseLights(const json& lightJson)
     }
 
     /*spot light*/
-    lightCounter = 0;
+    json spotJson;
 
-    if (exists(lightJson, "Spot"))
-    {
-        for (auto const& entryJson : lightJson["Spot"])
-        {
-            if (!exists(entryJson, "Name"))
-            {
-                LOG(Severity::Warning, "LightObject is missing the name property!");
-                continue;
-            }
+    spotJson["Name"] = "spotlight";
+    spotJson["Position"] = { 0.0f,-2.0f,0.0f };
+    spotJson["Direction"] = { 0.0f, -1.0f, 0.0f };
+    spotJson["Strength"] = { 1.0f,1.0f,1.0f };
+    spotJson["SpotPower"] = 32.0f;
+    spotJson["FallOffStart"] = 5.0f;
+    spotJson["FallOffEnd"] = 12.0f;
 
-            auto lightObj = std::make_unique<LightObject>(LightType::Spot, entryJson);
-            mLightObjects.push_back(std::move(lightObj));
+    auto lightObj = std::make_unique<LightObject>(LightType::Spot, spotJson);
+    mLightObjects.push_back(std::move(lightObj));
 
-            break;
-        }
-    }
 
     /*set immutable lights*/
 
@@ -930,7 +907,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
         }
 
         auto gameObject = std::make_unique<GameObject>(entryJson, amountObjectCBs);
-        amountObjectCBs += 4;// (int)gameObject->renderItem->Model->meshes.size();
+        amountObjectCBs += 4;
 
         mGameObjects[gameObject->name] = std::move(gameObject);
     }

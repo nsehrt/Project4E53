@@ -72,7 +72,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\meta.png",
         L"data\\texture\\hud\\gui\\edit\\model_prop.png",
         L"data\\texture\\hud\\gui\\edit\\success.png",
-        L"data\\texture\\hud\\gui\\edit\\crosshair.png"
+        L"data\\texture\\hud\\gui\\edit\\crosshair.png",
+        L"data\\texture\\hud\\gui\\edit\\light.png"
     };
 
     std::vector<std::wstring> fontPaths = {
