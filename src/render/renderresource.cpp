@@ -794,8 +794,8 @@ void RenderResource::buildPSOs()
     particleBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
     particleBlendDesc.DestBlend = D3D12_BLEND_ONE;
     particleBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
-    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
-    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+    particleBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+    particleBlendDesc.DestBlendAlpha = D3D12_BLEND_ONE;
     particleBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 
     particleBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;

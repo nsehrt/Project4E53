@@ -644,6 +644,20 @@ bool Level::createNew(const std::string& levelFile)
 
     newLevel["ParticleSystem"].push_back(particleObj);
 
+    json particleObj2;
+
+    particleObj2["Name"] = "particle_smoke";
+    particleObj2["Material"] = "smoke1";
+    particleObj2["MaxAge"] = 6.0f;
+    particleObj2["ParticleCount"] = 250;
+    particleObj2["Size"] = { 1.0f,1.0f };
+    particleObj2["SpawnTime"] = 0.05;
+    particleObj2["Type"] = "Smoke";
+    particleObj2["DirectionMultiplier"] = { 0.1f, 0.4f, 0.1f };
+    particleObj2["Position"] = { 2.0, 3.0f, 5.0f };
+
+    newLevel["ParticleSystem"].push_back(particleObj2);
+
     /*write to file*/
     std::ofstream out (LEVEL_PATH + std::string("/") + levelFile + ".level");
 

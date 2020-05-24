@@ -14756,7 +14756,7 @@
             "Material": "smoke1",
             "MaxAge": 6.0,
             "Name": "smoke1",
-            "ParticleCount": 500,
+            "ParticleCount": 250,
             "Position": [
                 -105.38147735595703,
                 -0.8735737800598145,
