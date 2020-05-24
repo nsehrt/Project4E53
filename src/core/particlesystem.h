@@ -45,7 +45,7 @@ public:
         return { particleSize.x * 8.0f, particleSize.y * 16.0f * maxAge, particleSize.x * 8.0f };
     }
 
-    static const UINT MAX_PARTICLE = 1000;
+    static const UINT MAX_PARTICLE = 5000;
 
 private:
     RenderResource* renderResource;

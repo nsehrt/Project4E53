@@ -81,6 +81,7 @@ void ParticleSystem::init(const json& particleJson)
 
 void ParticleSystem::update(const GameTime& gt)
 {
+
     updateTime += gt.DeltaTime();
 
     if (updateTime >= updFixedTime)

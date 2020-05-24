@@ -155,7 +155,10 @@ void Level::update(const GameTime& gt)
     /*particle systems*/
     for (auto& p : mParticleSystems)
     {
-        p.second->update(gt);
+        if (mGameObjects[p.first]->getIsInFrustum())
+        {
+            p.second->update(gt);
+        }
     }
 
     /*TEST Collision test*/
@@ -398,7 +401,7 @@ bool Level::save()
         saveFile["Grass"][c]["Size"][0] = mGameObjects[e->getName()]->getScale().x * e->getSize().x;
         saveFile["Grass"][c]["Size"][1] = mGameObjects[e->getName()]->getScale().z * e->getSize().y;
 
-        saveFile["Grass"][c]["Density"][0] = (int)(mGameObjects[e->getName()]->getScale().x * e->getSize().x * 1.5f);
+        saveFile["Grass"][c]["Density"][0] = (int)(mGameObjects[e->getName()]->getScale().x * e->getSize().x * 2.5f);
         saveFile["Grass"][c]["Density"][1] = (int)(mGameObjects[e->getName()]->getScale().z * e->getSize().y * 3.5f);
 
         c++;
