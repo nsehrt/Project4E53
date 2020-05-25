@@ -127,19 +127,53 @@ void Level::update(const GameTime& gt)
     const auto cameraPos = aCamera->getTarget();
 
     /*order point lights by shortest distance from camera*/
-    std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
-              mLightObjects.end() - AMOUNT_SPOT,
-              [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b)
-              {
-                  XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
-                  XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        auto lPtr = mLightObjects[ServiceProvider::getEditSettings()->currentLightSelectionIndex].get();
 
-                  XMFLOAT3 t, s;
-                  XMStoreFloat3(&t, lengthA);
-                  XMStoreFloat3(&s, lengthB);
+        std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
+                  mLightObjects.end() - AMOUNT_SPOT,
+                  [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b)
+                  {
+                      XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
+                      XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
-                  return t.x < s.x;
-              });
+                      XMFLOAT3 t, s;
+                      XMStoreFloat3(&t, lengthA);
+                      XMStoreFloat3(&s, lengthB);
+
+                      return t.x < s.x;
+                  });
+
+        for (UINT i = 3; i < mLightObjects.size() - 1; i++)
+        {
+            if (mLightObjects[i].get() == lPtr)
+            {
+                ServiceProvider::getEditSettings()->currentLightSelectionIndex = i;
+                ServiceProvider::getEditSettings()->currentLightSelectionPointIndex = i;
+                break;
+            }
+        }
+
+    }
+    else
+    {
+        std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
+                  mLightObjects.end() - AMOUNT_SPOT,
+                  [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b)
+                  {
+                      XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
+                      XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+
+                      XMFLOAT3 t, s;
+                      XMStoreFloat3(&t, lengthA);
+                      XMStoreFloat3(&s, lengthB);
+
+                      return t.x < s.x;
+                  });
+    }
+
+
 
     for (UINT i = 3; i < (MAX_LIGHTS - 1); i++)
     {
