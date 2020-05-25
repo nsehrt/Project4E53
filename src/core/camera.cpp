@@ -28,6 +28,7 @@ XMFLOAT3 Camera::getPosition3f()const
 void Camera::setPosition(float x, float y, float z)
 {
     mPosition = XMFLOAT3(x, y, z);
+    mTarget = mPosition;
     updateHitbox();
     mViewDirty = true;
 }

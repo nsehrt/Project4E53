@@ -15,6 +15,7 @@ void FixedCamera::updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zo
     newPos.x += sin(mTurn) * mCurrentDistance;
     newPos.z += cos(mTurn) * mCurrentDistance;
 
+    mTarget = targetPos;
     lookAt(newPos, targetPos, mUpConst);
 }
 

@@ -1088,48 +1088,8 @@ ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
 
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
-    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-    {
-        if (ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectTransform && ServiceProvider::getEditSettings()->toolMode != EditTool::ObjectMeta)
-        {
-            if (ServiceProvider::getEditSettings()->toolMode != EditTool::Camera)
-            {
-                XMFLOAT3 center = { ServiceProvider::getEditSettings()->Position.x,
-                ServiceProvider::getActiveLevel()->mTerrain->getHeight(ServiceProvider::getEditSettings()->Position.x,ServiceProvider::getEditSettings()->Position.y),
-                ServiceProvider::getEditSettings()->Position.y };
 
-                mShadowMap->setBoundsCenter(center);
-            }
-            else
-            {
-                XMFLOAT3 camPos = ServiceProvider::getActiveCamera()->getPosition3f();
-
-                XMFLOAT3 center = { camPos.x,
-                ServiceProvider::getActiveLevel()->mTerrain->getHeight(
-                    camPos.x,
-                    camPos.z),
-                camPos.z };
-
-                mShadowMap->setBoundsCenter(center);
-            }
-        }
-        else
-        {
-            mShadowMap->setBoundsCenter(ServiceProvider::getEditSettings()->currentSelection->getPosition());
-        }
-    }
-    else
-    {
-        XMFLOAT3 camPos = ServiceProvider::getActiveCamera()->getPosition3f();
-
-        XMFLOAT3 center = { camPos.x,
-        ServiceProvider::getActiveLevel()->mTerrain->getHeight(
-            camPos.x,
-            camPos.z),
-        camPos.z };
-
-        mShadowMap->setBoundsCenter(center);
-    }
+    mShadowMap->setBoundsCenter(ServiceProvider::getActiveCamera()->getTarget3f());
 
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());

@@ -14,4 +14,6 @@ void FPSCamera::updateFPSCamera(InputData& inputData, const GameTime& gt)
 
     walk(ly * gt.DeltaTime());
     strafe(lx * gt.DeltaTime());
+
+    mTarget = getPosition3f();
 }

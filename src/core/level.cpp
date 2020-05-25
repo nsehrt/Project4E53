@@ -124,7 +124,7 @@ void Level::update(const GameTime& gt)
 
     /*update order of light objects*/
 
-    const auto cameraPos = aCamera->getPosition();
+    const auto cameraPos = aCamera->getTarget();
 
     /*order point lights by shortest distance from camera*/
     std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,

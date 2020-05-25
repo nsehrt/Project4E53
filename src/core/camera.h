@@ -67,6 +67,16 @@ public:
         return camFrustum;
     }
 
+    DirectX::XMVECTOR getTarget()
+    {
+        return XMLoadFloat3(&mTarget);
+    }
+
+    DirectX::XMFLOAT3 getTarget3f()
+    {
+        return mTarget;
+    }
+
     // After modifying camera position/orientation, call to rebuild the view matrix.
     void updateViewMatrix();
 
@@ -84,6 +94,8 @@ protected:
     DirectX::XMFLOAT3 mPosition = { 0.0f, 0.0f, 0.0f };
     DirectX::XMFLOAT3 mHitboxRotation = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 mHitboxScale = { 1.0f,1.0f,1.0f };
+    
+    DirectX::XMFLOAT3 mTarget;
 
     DirectX::XMFLOAT4X4 mWorld;
 
