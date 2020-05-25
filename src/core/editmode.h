@@ -120,7 +120,9 @@ struct EditSettings
     LightTranslationAxis lightTranslationAxis = LightTranslationAxis::XZ;
     LightDirectionAxis lightDirectionAxis = LightDirectionAxis::X;
 
-    LightObject* currentLightSelection = nullptr;
+    UINT currentLightSelectionIndex = 3;
+    UINT currentLightSelectionDirectionIndex = 0;
+    UINT currentLightSelectionPointIndex = 3;
 
     /*model switch*/
     std::map<std::string, std::vector<Model*>> orderedModels;

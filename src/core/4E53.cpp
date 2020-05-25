@@ -51,6 +51,7 @@ private:
     bool fpsCameraMode = false;
 
     std::shared_ptr<FixedCamera> editCamera;
+    std::shared_ptr<FixedCamera> editLightCamera;
     LightObject* editLight = nullptr;
 
     std::vector<std::shared_ptr<Level>> mLevel;
@@ -274,6 +275,12 @@ bool P_4E53::Initialize()
 
         ServiceProvider::setActiveCamera(editCamera);
 
+        editLightCamera = std::make_shared<FixedCamera>();
+        editLightCamera->initFixedDistance(2.0f, 80.0f);
+        editLightCamera->setLens();
+        editLightCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 15.0f, 0.0f);
+
+
         editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
         editLight->setStrength(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
@@ -295,7 +302,6 @@ bool P_4E53::Initialize()
             ServiceProvider::getEditSettings()->currentSelection = validGameObjects[ServiceProvider::getEditSettings()->currentSelectionIndex];
 
         }
-
 
         /*init ordered Models*/
         for (const auto& e : renderResource->mModels)
@@ -447,10 +453,12 @@ void P_4E53::update(const GameTime& gt)
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
                 editSettings->toolMode = EditTool::Light;
+                ServiceProvider::setActiveCamera(editLightCamera);
             }
             else if (editSettings->toolMode == EditTool::Light)
             {
                 editSettings->toolMode = EditTool::Height;
+                ServiceProvider::setActiveCamera(editCamera);
             }
         }
 
@@ -459,6 +467,7 @@ void P_4E53::update(const GameTime& gt)
             if (editSettings->toolMode == EditTool::Height)
             {
                 editSettings->toolMode = EditTool::Light;
+                ServiceProvider::setActiveCamera(editLightCamera);
             }
             else if (editSettings->toolMode == EditTool::Paint)
             {
@@ -475,6 +484,7 @@ void P_4E53::update(const GameTime& gt)
             else if (editSettings->toolMode == EditTool::Light)
             {
                 editSettings->toolMode = EditTool::ObjectMeta;
+                ServiceProvider::setActiveCamera(editCamera);
             }
         }
 
@@ -483,7 +493,15 @@ void P_4E53::update(const GameTime& gt)
             if (editSettings->toolMode == EditTool::Camera)
             {
                 editSettings->toolMode = editSettings->prevTool;
-                ServiceProvider::setActiveCamera(editCamera);
+                if (editSettings->toolMode == EditTool::Light)
+                {
+                    ServiceProvider::setActiveCamera(editLightCamera);
+                }
+                else
+                {
+                    ServiceProvider::setActiveCamera(editCamera);
+                }
+                
             }
             else
             {
@@ -495,9 +513,8 @@ void P_4E53::update(const GameTime& gt)
 
         /*edit selection update*/
 
-        if (editSettings->toolMode != EditTool::ObjectTransform &&
-            editSettings->toolMode != EditTool::ObjectMeta &&
-            editSettings->toolMode != EditTool::Camera)
+        if (editSettings->toolMode == EditTool::Height ||
+            editSettings->toolMode == EditTool::Paint)
         {
             editSettings->Velocity = editSettings->BaseVelocity * editCamera->getDistanceNormalized();
 
@@ -520,16 +537,17 @@ void P_4E53::update(const GameTime& gt)
             editSettings->Position.y = MathHelper::clampH(editSettings->Position.y,
                                                           -terrainHalf + 5.0f,
                                                           terrainHalf - 5.0f);
+
+            /*falloff radius control*/
+            editSettings->FallOffRatio += inputData.current.trigger[TRG::THUMB_RX] * gt.DeltaTime() * (editSettings->fallOffRatioMax);
+            editSettings->FallOffRatio = MathHelper::clampH(editSettings->FallOffRatio, editSettings->fallOffRatioMin,
+                                                            editSettings->fallOffRatioMax);
+
+            editSettings->BaseRadius = editCamera->getDistanceNormalized() * editSettings->BaseSelectSize;
+            if (editSettings->BaseRadius < 1.0f) editSettings->BaseRadius = 1.0f;
+            editSettings->FallOffRadius = editSettings->BaseRadius * editSettings->FallOffRatio;
+
         }
-
-        /*falloff radius control*/
-        editSettings->FallOffRatio += inputData.current.trigger[TRG::THUMB_RX] * gt.DeltaTime() * (editSettings->fallOffRatioMax);
-        editSettings->FallOffRatio = MathHelper::clampH(editSettings->FallOffRatio, editSettings->fallOffRatioMin,
-                                                        editSettings->fallOffRatioMax);
-
-        editSettings->BaseRadius = editCamera->getDistanceNormalized() * editSettings->BaseSelectSize;
-        if (editSettings->BaseRadius < 1.0f) editSettings->BaseRadius = 1.0f;
-        editSettings->FallOffRadius = editSettings->BaseRadius * editSettings->FallOffRatio;
 
         /*control for height tool*/
         if (editSettings->toolMode == EditTool::Height)
@@ -624,6 +642,8 @@ void P_4E53::update(const GameTime& gt)
                                                                  editSettings->paintIncreaseMax);
             }
         }
+
+        /*object tools*/
         else if (editSettings->toolMode == EditTool::ObjectTransform || editSettings->toolMode == EditTool::ObjectMeta)
         {
 
@@ -1061,6 +1081,155 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
+        /*light*/
+        else if (editSettings->toolMode == EditTool::Light)
+        {
+            /*switch between light type*/
+            if (inputData.Pressed(BTN::BACK))
+            {
+                editSettings->lightTypeChoice = editSettings->lightTypeChoice == LightTypeChoice::Directional ? LightTypeChoice::Point : LightTypeChoice::Directional;
+                editSettings->currentLightSelectionIndex = editSettings->lightTypeChoice == LightTypeChoice::Directional ? editSettings->currentLightSelectionDirectionIndex : editSettings->currentLightSelectionPointIndex;
+            }
+
+            /*cycle lights*/
+            int selectionDir = inputData.Pressed(BTN::DPAD_LEFT) ? -1 : inputData.Pressed(BTN::DPAD_RIGHT) ? 1 : 0;
+
+            if (selectionDir != 0)
+            {
+                int index = 0;
+
+                if (editSettings->lightTypeChoice == LightTypeChoice::Directional)
+                {
+                    index = editSettings->currentLightSelectionDirectionIndex + selectionDir;
+                    if (index < 0)
+                    {
+                        index = 2;
+                    }
+                    else if (index > 2)
+                    {
+                        index = 0;
+                    }
+
+                    editSettings->currentLightSelectionDirectionIndex = index;
+                    editSettings->currentLightSelectionIndex = index;
+                }
+                else
+                {
+                    index = editSettings->currentLightSelectionPointIndex + selectionDir;
+                    if (index < 3)
+                    {
+                        index = activeLevel->mLightObjects.size() -2;
+                    }
+                    else if (index > activeLevel->mLightObjects.size() - 2)
+                    {
+                        index = 3;
+                    }
+
+                    editSettings->currentLightSelectionPointIndex = index;
+                    editSettings->currentLightSelectionIndex = index;
+                }
+            }
+
+            /*cycle r g b strength*/
+            if (inputData.Pressed(BTN::A))
+            {
+                switch (editSettings->lightColorAxis)
+                {
+                    case LightColorAxis::R: editSettings->lightColorAxis = LightColorAxis::G; break;
+                    case LightColorAxis::G: editSettings->lightColorAxis = LightColorAxis::B; break;
+                    case LightColorAxis::B: editSettings->lightColorAxis = LightColorAxis::R; break;
+                }
+            }
+
+            /*increase light strength*/
+            float rgbIncrease = -inputData.current.trigger[TRG::LEFT_TRIGGER] + inputData.current.trigger[TRG::RIGHT_TRIGGER];
+
+            if (rgbIncrease != 0.f)
+            {
+                XMFLOAT3 strength = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getStrength();
+
+                rgbIncrease = rgbIncrease * gt.DeltaTime();
+
+                switch (editSettings->lightColorAxis)
+                {
+                    case LightColorAxis::R: strength.x = MathHelper::clampH(strength.x + rgbIncrease, 0.0f, 1.0f); break;
+                    case LightColorAxis::G: strength.y = MathHelper::clampH(strength.y + rgbIncrease, 0.0f, 1.0f); break;
+                    case LightColorAxis::B: strength.z = MathHelper::clampH(strength.z + rgbIncrease, 0.0f, 1.0f); break;
+                }
+
+                activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->setStrength(strength);
+
+            }
+
+            /*directional light control*/
+            if (editSettings->lightTypeChoice == LightTypeChoice::Directional)
+            {
+                /*cycle direction x y z*/
+                if (inputData.Pressed(BTN::B))
+                {
+                    switch (editSettings->lightDirectionAxis)
+                    {
+                        case LightDirectionAxis::X: editSettings->lightDirectionAxis = LightDirectionAxis::Y; break;
+                        case LightDirectionAxis::Y: editSettings->lightDirectionAxis = LightDirectionAxis::Z; break;
+                        case LightDirectionAxis::Z: editSettings->lightDirectionAxis = LightDirectionAxis::X; break;
+                    }
+                }
+
+                /*inc / decrease direction*/
+
+
+            }
+            /*point light control*/
+            else
+            {
+                /*cycle translation xy xz*/
+                if (inputData.Pressed(BTN::B))
+                {
+                    editSettings->lightTranslationAxis = editSettings->lightTranslationAxis == LightTranslationAxis::XY ? LightTranslationAxis::XZ : LightTranslationAxis::XY;
+                }
+
+                /*move light*/
+                XMFLOAT3 lPosition = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getPosition();
+
+                float thumbX = inputData.current.trigger[TRG::THUMB_LX] * 10.0f*  gt.DeltaTime();
+                float thumbY = inputData.current.trigger[TRG::THUMB_LY] * 10.0f * gt.DeltaTime();
+
+                switch (editSettings->lightTranslationAxis)
+                {
+                    case LightTranslationAxis::XY: lPosition.x += thumbX; lPosition.y += thumbY; break;
+                    case LightTranslationAxis::XZ: lPosition.x += thumbX; lPosition.z += thumbY; break;
+                }
+
+                activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->setPosition(lPosition);
+
+
+                /*control falloff end / start*/
+                float lFoStart = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getFallOffStart();
+                float lFoEnd = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getFallOffEnd();
+
+                thumbX = inputData.current.trigger[TRG::THUMB_RX] * 3.0f * gt.DeltaTime();
+                thumbY = inputData.current.trigger[TRG::THUMB_RY] * 3.0f * gt.DeltaTime();
+
+                lFoStart += thumbX;
+                lFoEnd += thumbY;
+
+                if (lFoStart < activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getFallOffEnd())
+                {
+                    activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->setFallOffStart(lFoStart);
+                }
+
+                if (lFoEnd > activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getFallOffStart())
+                {
+                    activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->setFallOffEnd(lFoEnd);
+                }
+
+            }
+
+        }
+
+
+
+
         XMFLOAT3 newCamTarget;
         float zoomDelta = 0.0f;
 
@@ -1068,7 +1237,8 @@ void P_4E53::update(const GameTime& gt)
 
         if (editSettings->toolMode != EditTool::ObjectTransform &&
             editSettings->toolMode != EditTool::ObjectMeta &&
-            editSettings->toolMode != EditTool::Camera)
+            editSettings->toolMode != EditTool::Camera &&
+            editSettings->toolMode != EditTool::Light)
         {
             zoomDelta = inputData.current.trigger[TRG::THUMB_RY] * -50.0f * gt.DeltaTime();
 
@@ -1096,7 +1266,7 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
-        if (editSettings->toolMode != EditTool::Camera)
+        if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::Light)
         {
             
             float turnInput = (int)inputData.current.buttons[BTN::DPAD_LEFT] -
@@ -1107,7 +1277,7 @@ void P_4E53::update(const GameTime& gt)
             editCamera->updateFixedCamera(newCamTarget,
                                           zoomDelta, turnDelta);
         }
-        else
+        else if(editSettings->toolMode == EditTool::Camera)
         {
         /*fps camera controls*/
 
@@ -1217,10 +1387,23 @@ void P_4E53::update(const GameTime& gt)
             }
             
         }
+        else if (editSettings->toolMode == EditTool::Light)
+        {
+            XMFLOAT3 lPos = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getPosition();
 
-        if (editModeHUD != nullptr)
-            editModeHUD->update();
+            editLightCamera->updateFixedCamera(lPos, 0.0f, 0.0f);
+            
+
+        }
+
+        editModeHUD->update();
+
     }
+
+
+    /*************/
+    /*Game Update*/
+    /*************/
     else
     {
         if (inputData.Pressed(BTN::A))
@@ -1254,16 +1437,6 @@ void P_4E53::update(const GameTime& gt)
     {
         renderResource->toggleRoughHitBoxDraw();
     }
-
-    //if (inputData.Released(BTN::DPAD_UP) && settingsData->miscSettings.DebugEnabled)
-    //{
-    //	ServiceProvider::getSettings()->graphicSettings.SobelFilter = !ServiceProvider::getSettings()->graphicSettings.SobelFilter;
-    //}
-
-    //if (inputData.Released(BTN::DPAD_LEFT) && settingsData->miscSettings.DebugEnabled)
-    //{
-    //	ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled = !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled;
-    //}
 
 
     /*first update camera, then the level*/
