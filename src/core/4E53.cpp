@@ -278,7 +278,7 @@ bool P_4E53::Initialize()
         editLightCamera = std::make_shared<FixedCamera>();
         editLightCamera->initFixedDistance(2.0f, 80.0f);
         editLightCamera->setLens();
-        editLightCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 15.0f, 0.0f);
+        editLightCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 5.0f, 0.0f);
 
 
         editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();

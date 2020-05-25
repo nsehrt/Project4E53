@@ -77,6 +77,7 @@ private:
         SUCCESS,
         CROSSHAIR,
         LIGHT,
+        LIGHT_INFO_WIN,
         TCount
     };
 

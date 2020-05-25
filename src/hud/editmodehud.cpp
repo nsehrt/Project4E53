@@ -73,7 +73,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\model_prop.png",
         L"data\\texture\\hud\\gui\\edit\\success.png",
         L"data\\texture\\hud\\gui\\edit\\crosshair.png",
-        L"data\\texture\\hud\\gui\\edit\\light.png"
+        L"data\\texture\\hud\\gui\\edit\\light.png",
+        L"data\\texture\\hud\\gui\\edit\\light_info.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -184,6 +185,9 @@ void EditModeHUD::init()
     /*camera crosshair 30*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::CROSSHAIR, { 0.5f, 0.5f }, 1.0f));
 
+    /*light window 31*/
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_INFO_WIN, { 0.89f, 0.5f }, 1.0f));
+
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.56f }, 0.2f));
@@ -199,10 +203,26 @@ void EditModeHUD::init()
 
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.795f,0.46f }, 0.3f));
 
-    /*object meta font 10-11*/
+    /*object meta font 10-12*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.735f }, 0.25f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.93f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.83f,0.71f }, 0.25f));
+
+    /*light info font 13 - 25*/
+
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.375f }, 0.25f));
+
+
+    for (UINT i = 0; i < 3; i++)
+    {
+        for (UINT j = 0; j < 3; j++)
+        {
+            mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.843f + 0.048f * j,0.44f + i * 0.03f }, 0.2f));
+        }
+    }
+
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.555f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.58f }, 0.2f));
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
@@ -225,7 +245,7 @@ void EditModeHUD::init()
         mHUDElements[i]->hudVisibility = HUDVisibility::OBJECT_META;
     }
     mHUDElements[30]->hudVisibility = HUDVisibility::FPS_CAMERA;
-
+    mHUDElements[31]->hudVisibility = HUDVisibility::LIGHT;
 
     for (int i = 0; i < mFontElements.size(); i++)
     {
@@ -235,6 +255,11 @@ void EditModeHUD::init()
     mFontElements[11]->hudVisibility = HUDVisibility::OBJECT_META;
     mFontElements[12]->hudVisibility = HUDVisibility::OBJECT_META;
     
+    for (UINT i = 13; i < mFontElements.size(); i++)
+    {
+        mFontElements[i]->hudVisibility = HUDVisibility::LIGHT;
+    }
+
 }
 
 void EditModeHUD::update()
@@ -270,7 +295,7 @@ void EditModeHUD::update()
         mHUDElements[5]->NormalizedPosition.y = -saveWindowIconPos.y;
     }
 
-    if (editSetting->toolMode != EditTool::ObjectTransform && editSetting->toolMode != EditTool::ObjectMeta && editSetting->toolMode != EditTool::Camera)
+    if (editSetting->toolMode != EditTool::ObjectTransform && editSetting->toolMode != EditTool::ObjectMeta && editSetting->toolMode != EditTool::Camera && editSetting->toolMode != EditTool::Light)
     {
         /*legend window*/
         if (editSetting->legendAnim > 0.0f)
@@ -343,7 +368,7 @@ void EditModeHUD::update()
     }
 
     /*update for object mode*/
-    else
+    else if(editSetting->toolMode == EditTool::ObjectMeta || editSetting->toolMode == EditTool::ObjectTransform || editSetting->toolMode == EditTool::Camera)
     {
         if (editSetting->toolMode == EditTool::ObjectTransform)
         {
@@ -418,6 +443,58 @@ void EditModeHUD::update()
         mFontElements[8]->text = ss.str();
 
     }
+    else if (editSetting->toolMode == EditTool::Light)
+    {
+        mFontElements[13]->text = d3dUtil::convertStringToWstring(ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->name);
+        
+        std::wstringstream ss;
+        ss << std::setprecision(5) << ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getFallOffStart();
+        mFontElements[23]->text = ss.str();
+
+        ss.str(L"");
+        ss << ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getFallOffEnd();
+        mFontElements[24]->text = ss.str();
+
+        XMFLOAT3 p = ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getPosition();
+        XMFLOAT3 s = ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getStrength();
+        XMFLOAT3 d = ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getDirection();
+
+        ss.str(L"");
+        ss << p.x;
+        mFontElements[14]->text = ss.str();
+
+        ss.str(L"");
+        ss << p.y;
+        mFontElements[15]->text = ss.str();
+
+        ss.str(L"");
+        ss << p.z;
+        mFontElements[16]->text = ss.str();
+
+        ss.str(L"");
+        ss << s.x;
+        mFontElements[17]->text = ss.str();
+
+        ss.str(L"");
+        ss << s.y;
+        mFontElements[18]->text = ss.str();
+
+        ss.str(L"");
+        ss << s.z;
+        mFontElements[19]->text = ss.str();
+
+        ss.str(L"");
+        ss << d.x;
+        mFontElements[20]->text = ss.str();
+
+        ss.str(L"");
+        ss << d.y;
+        mFontElements[21]->text = ss.str();
+
+        ss.str(L"");
+        ss << d.z;
+        mFontElements[22]->text = ss.str();
+    }
 
     /*recalculate actual screen position*/
     for (auto& e : mHUDElements)
@@ -479,6 +556,7 @@ void EditModeHUD::draw()
         if (f->hudVisibility == HUDVisibility::OBJECT && toolMode != EditTool::ObjectTransform)continue;
         if (f->hudVisibility == HUDVisibility::BOTH_OBJECT && (toolMode != EditTool::ObjectTransform && toolMode != EditTool::ObjectMeta && toolMode != EditTool::Camera)) continue;
         if (f->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
+        if (f->hudVisibility == HUDVisibility::LIGHT && toolMode != EditTool::Light)continue;
 
         mFonts[f->font]->DrawString(mSpriteBatch.get(),
                                     f->text.c_str(),
