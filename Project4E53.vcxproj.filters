@@ -115,9 +115,6 @@
     <ClInclude Include="src\render\sobel.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\lightobject.h">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\terrain.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
@@ -140,6 +137,9 @@
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\particlesystem.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lightobject.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
   </ItemGroup>
@@ -216,9 +216,6 @@
     <ClCompile Include="src\render\sobel.cpp">
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\lightobject.cpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\terrain.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
@@ -235,6 +232,9 @@
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\core\particlesystem.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\lightobject.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>

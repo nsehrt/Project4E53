@@ -1128,6 +1128,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentLightSelectionPointIndex = index;
                     editSettings->currentLightSelectionIndex = index;
                 }
+
+                LOG(Severity::Debug, "Light name: " << activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->name);
             }
 
             /*cycle r g b strength*/
@@ -1186,6 +1188,14 @@ void P_4E53::update(const GameTime& gt)
                 if (inputData.Pressed(BTN::B))
                 {
                     editSettings->lightTranslationAxis = editSettings->lightTranslationAxis == LightTranslationAxis::XY ? LightTranslationAxis::XZ : LightTranslationAxis::XY;
+                }
+
+                /*copy to new*/
+                if (inputData.Pressed(BTN::Y))
+                {
+                    json e = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->toJson();
+                    e["Name"] = e["Name"].get<std::string>() + "1";
+                    activeLevel->mLightObjects.insert(activeLevel->mLightObjects.begin() + editSettings->currentLightSelectionIndex, std::make_unique<LightObject>(LightType::Point, e));
                 }
 
                 /*move light*/

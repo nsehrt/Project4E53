@@ -124,20 +124,21 @@ void Level::update(const GameTime& gt)
 
     /*update order of light objects*/
 
-    auto cameraPos = aCamera->getPosition();
+    const auto cameraPos = aCamera->getPosition();
 
-    /*order point lights by distance from camera*/
+    /*order point lights by shortest distance from camera*/
     std::sort(mLightObjects.begin() + AMOUNT_DIRECTIONAL,
               mLightObjects.end() - AMOUNT_SPOT,
-              [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b) -> bool
+              [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b)
               {
                   XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                   XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
-                  XMFLOAT3 result;
-                  XMStoreFloat3(&result, XMVectorLess(lengthA, lengthB));
+                  XMFLOAT3 t, s;
+                  XMStoreFloat3(&t, lengthA);
+                  XMStoreFloat3(&s, lengthB);
 
-                  return result.x;
+                  return t.x < s.x;
               });
 
     for (UINT i = 3; i < (MAX_LIGHTS - 1); i++)
@@ -220,20 +221,21 @@ void Level::draw()
     auto renderResource = ServiceProvider::getRenderResource();
 
     /*sort the transparent objects by distance from camera*/
-    auto aCamera = ServiceProvider::getActiveCamera();
-    XMVECTOR cameraPos = aCamera->getPosition();
+    const auto aCamera = ServiceProvider::getActiveCamera();
+    const auto cameraPos = aCamera->getPosition();
 
-    std::sort(renderOrder[(int)RenderType::DefaultTransparency].begin(),
-              renderOrder[(int)RenderType::DefaultTransparency].end(),
-              [&](const GameObject* a, const GameObject* b) -> bool
+    std::sort(std::begin(renderOrder[(int)RenderType::DefaultTransparency]),
+              std::end(renderOrder[(int)RenderType::DefaultTransparency]),
+              [&](const GameObject* a, const GameObject* b)
               {
                   XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                   XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
-                  XMFLOAT3 result;
-                  XMStoreFloat3(&result, XMVectorGreater(lengthA, lengthB));
+                  XMFLOAT3 t, s;
+                  XMStoreFloat3(&t, lengthA);
+                  XMStoreFloat3(&s, lengthB);
 
-                  return result.x;
+                  return t.x > s.x;
               });
 
     // draw the gameobjects
