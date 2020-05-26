@@ -1129,7 +1129,6 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentLightSelectionIndex = index;
                 }
 
-                LOG(Severity::Debug, "Light name: " << activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->name);
             }
 
             /*cycle r g b strength*/

@@ -78,6 +78,7 @@ private:
         CROSSHAIR,
         LIGHT,
         LIGHT_INFO_WIN,
+        LIGHT_CURSOR,
         TCount
     };
 

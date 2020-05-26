@@ -74,7 +74,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\success.png",
         L"data\\texture\\hud\\gui\\edit\\crosshair.png",
         L"data\\texture\\hud\\gui\\edit\\light.png",
-        L"data\\texture\\hud\\gui\\edit\\light_info.png"
+        L"data\\texture\\hud\\gui\\edit\\light_info.png",
+        L"data\\texture\\hud\\gui\\edit\\light_cursor.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -185,8 +186,10 @@ void EditModeHUD::init()
     /*camera crosshair 30*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::CROSSHAIR, { 0.5f, 0.5f }, 1.0f));
 
-    /*light window 31*/
+    /*light window 31-33*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_INFO_WIN, { 0.89f, 0.85f }, 1.0f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_CURSOR, { 0.93f, 0.835f }, 1.0f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_CURSOR, { 0.93f, 0.8f }, 1.0f));
 
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
@@ -249,6 +252,8 @@ void EditModeHUD::init()
     }
     mHUDElements[30]->hudVisibility = HUDVisibility::FPS_CAMERA;
     mHUDElements[31]->hudVisibility = HUDVisibility::LIGHT;
+    mHUDElements[32]->hudVisibility = HUDVisibility::LIGHT;
+    mHUDElements[33]->hudVisibility = HUDVisibility::LIGHT;
 
     for (int i = 0; i < mFontElements.size(); i++)
     {
@@ -451,7 +456,7 @@ void EditModeHUD::update()
         mFontElements[13]->text = d3dUtil::convertStringToWstring(ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->name);
         
         std::wstringstream ss;
-        ss << std::setprecision(5) << ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getFallOffStart();
+        ss << std::setprecision(4) << ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getFallOffStart();
         mFontElements[23]->text = ss.str();
 
         ss.str(L"");
@@ -497,6 +502,21 @@ void EditModeHUD::update()
         ss.str(L"");
         ss << d.z;
         mFontElements[22]->text = ss.str();
+
+        mHUDElements[32]->NormalizedPosition.x = 0.865f + (int)editSetting->lightColorAxis * 0.047f;
+
+        if (editSetting->lightTypeChoice == LightTypeChoice::Directional)
+        {
+            mHUDElements[33]->NormalizedPosition.y = 0.868f;
+            mHUDElements[33]->NormalizedPosition.x = 0.865f + (int)editSetting->lightDirectionAxis * 0.047f;
+        }
+        else
+        {
+            mHUDElements[33]->NormalizedPosition.y = 0.8f;
+            mHUDElements[33]->NormalizedPosition.x = 0.865f + 0.047f + (1-(int)editSetting->lightTranslationAxis) * 0.047f;
+
+        }
+
     }
 
     /*recalculate actual screen position*/
