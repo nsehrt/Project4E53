@@ -147,10 +147,10 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SAVED, saveWindowIconPos, 0.8f));
 
     /*select window 6 - 12*/
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SELECT_WIN, { 0.125f, 0.85f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_BLUE, { 0.125f, 0.805f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_GREEN, { 0.125f, 0.875f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_RED, { 0.125f, 0.9425f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SELECT_WIN, { 0.88f, 0.85f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_BLUE, { 0.88f, 0.805f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_GREEN, { 0.88f, 0.875f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_FG_RED, { 0.88f, 0.9425f }));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.046f, 0.805f }, 0.85f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.046f, 0.875f }, 0.85f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_RED, { 0.046f, 0.9425f }, 0.85f));
@@ -186,7 +186,7 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::CROSSHAIR, { 0.5f, 0.5f }, 1.0f));
 
     /*light window 31*/
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_INFO_WIN, { 0.89f, 0.5f }, 1.0f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_INFO_WIN, { 0.89f, 0.85f }, 1.0f));
 
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
@@ -210,22 +210,25 @@ void EditModeHUD::init()
 
     /*light info font 13 - 25*/
 
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.375f }, 0.25f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.725f }, 0.25f));
 
 
     for (UINT i = 0; i < 3; i++)
     {
         for (UINT j = 0; j < 3; j++)
         {
-            mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.843f + 0.048f * j,0.44f + i * 0.03f }, 0.2f));
+            mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.843f + 0.048f * j,0.79f + i * 0.03f }, 0.2f));
         }
     }
 
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.555f }, 0.2f));
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.58f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.905 }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.93f }, 0.2f));
 
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
+    mHUDElements[10]->Visible = false;
+    mHUDElements[11]->Visible = false;
+    mHUDElements[12]->Visible = false;
     mHUDElements[15]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[16]->hudVisibility = HUDVisibility::PAINT;
     mHUDElements[17]->hudVisibility = HUDVisibility::PAINT;
