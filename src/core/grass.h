@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../render/renderresource.h"
 #include "../core/terrain.h"
 

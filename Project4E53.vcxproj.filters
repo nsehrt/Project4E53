@@ -142,6 +142,9 @@
     <ClInclude Include="src\core\lightobject.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\blur.h">
+      <Filter>Source Files\src\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -236,6 +239,9 @@
     </ClCompile>
     <ClCompile Include="src\core\lightobject.cpp">
       <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\blur.cpp">
+      <Filter>Source Files\src\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

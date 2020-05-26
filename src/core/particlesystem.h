@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../render/renderresource.h"
 
 enum class ParticleSystemType : int

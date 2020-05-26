@@ -8,6 +8,7 @@
 #include "../render/shadowmap.h"
 #include "../render/rendertarget.h"
 #include "../render/sobel.h"
+#include "../render/blur.h"
 #include <filesystem>
 
 #define MODEL_PATH "data/model"
