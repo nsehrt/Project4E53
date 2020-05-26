@@ -229,7 +229,7 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
     /*load first level*/
-    std::string levelFile = "0";
+    std::string levelFile = "1";
 
     auto level = std::make_shared<Level>();
 
@@ -1193,7 +1193,19 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*inc / decrease direction*/
+                float thumbY = inputData.current.trigger[TRG::THUMB_LY] * 1.0f * gt.DeltaTime();
+                XMFLOAT3 dir = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->getDirection();
 
+                switch (editSettings->lightDirectionAxis)
+                {
+                    case LightDirectionAxis::X: dir.x += thumbY; break;
+                    case LightDirectionAxis::Y: dir.y += thumbY; break;
+                    case LightDirectionAxis::Z: dir.z += thumbY; break;
+                }
+
+                XMVECTOR nDir = XMVector3Normalize(XMLoadFloat3(&dir));
+                XMStoreFloat3(&dir, nDir);
+                activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->setDirection(dir);
 
             }
             /*point light control*/
