@@ -725,6 +725,17 @@ void Level::drawShadow()
     ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
 }
 
+bool Level::existsLightByName(const std::string& name)
+{
+    for (const auto& l : mLightObjects)
+    {
+        if (l->name == name)
+            return true;
+    }
+
+    return false;
+}
+
 void Level::calculateRenderOrderSizes()
 {
     /*determine size of render orders*/

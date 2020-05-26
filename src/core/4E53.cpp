@@ -40,6 +40,8 @@ private:
     virtual void update(const GameTime& gt)override;
     virtual void draw(const GameTime& gt)override;
 
+    UINT getPointLightIndex(const std::string& name, UINT direction)const;
+
     int vsyncIntervall = 0;
 
     std::unique_ptr<std::thread> inputThread;
@@ -55,6 +57,8 @@ private:
     LightObject* editLight = nullptr;
 
     std::vector<std::shared_ptr<Level>> mLevel;
+
+    std::vector<std::string> mPointLightNames;
 
     void drawToShadowMap();
     void setModelSelection();
@@ -283,6 +287,28 @@ bool P_4E53::Initialize()
 
         editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
         editLight->setStrength(XMFLOAT3(1.0f, 1.0f, 1.0f));
+
+
+        /*fill point light names*/
+        UINT counter = 0;
+        bool firstFound = false;
+        for (const auto& l : ServiceProvider::getActiveLevel()->mLightObjects)
+        {
+            if (l->getLightType() == LightType::Point)
+            {
+                if(l->name != "EditLight")
+                    mPointLightNames.push_back(l->name);
+
+                if (l->name != "EditLight" && !firstFound)
+                {
+                    firstFound = true;
+                    ServiceProvider::getEditSettings()->currentLightSelectionPointIndex = counter;
+                    ServiceProvider::getEditSettings()->currentLightSelectionIndex = counter;
+                }
+            }
+
+            counter++;
+        }
 
         if (ServiceProvider::getActiveLevel()->mGameObjects.size() > 0)
         {
@@ -1115,18 +1141,8 @@ void P_4E53::update(const GameTime& gt)
                 }
                 else
                 {
-                    index = editSettings->currentLightSelectionPointIndex + selectionDir;
-                    if (index < 3)
-                    {
-                        index = activeLevel->mLightObjects.size() -2;
-                    }
-                    else if (index > activeLevel->mLightObjects.size() - 2)
-                    {
-                        index = 3;
-                    }
-
-                    editSettings->currentLightSelectionPointIndex = index;
-                    editSettings->currentLightSelectionIndex = index;
+                    editSettings->currentLightSelectionPointIndex = getPointLightIndex(activeLevel->mLightObjects[editSettings->currentLightSelectionPointIndex]->name, selectionDir);
+                    editSettings->currentLightSelectionIndex = editSettings->currentLightSelectionPointIndex;
                 }
 
             }
@@ -1193,8 +1209,23 @@ void P_4E53::update(const GameTime& gt)
                 if (inputData.Pressed(BTN::Y))
                 {
                     json e = activeLevel->mLightObjects[editSettings->currentLightSelectionIndex]->toJson();
-                    e["Name"] = e["Name"].get<std::string>() + "1";
+
+                    std::string baseName = e["Name"];
+                    baseName = baseName.substr(0, baseName.find_last_of("_"));
+
+                    UINT counter = 1;
+
+                    while (activeLevel->existsLightByName(e["Name"]))
+                    {
+                        e["Name"] = baseName + "_(" + std::to_string(counter) + ")";
+                        counter++;
+                    }
+
                     activeLevel->mLightObjects.insert(activeLevel->mLightObjects.begin() + editSettings->currentLightSelectionIndex, std::make_unique<LightObject>(LightType::Point, e));
+                    mPointLightNames.push_back(e["Name"]);
+
+                    editSettings->currentLightSelectionIndex = getPointLightIndex(e["Name"], 0);
+                    editSettings->currentLightSelectionPointIndex = editSettings->currentLightSelectionIndex;
                 }
 
                 /*move light*/
@@ -1609,6 +1640,42 @@ void P_4E53::draw(const GameTime& gt)
 
     if (editModeHUD != nullptr)
         editModeHUD->commit();
+}
+
+UINT P_4E53::getPointLightIndex(const std::string& name, UINT direction) const
+{
+    UINT counter = 0;
+    int ret = 0;
+
+    for (const auto& l : mPointLightNames)
+    {
+        if (l == name)
+        {
+            ret = counter;
+            break;
+        }
+
+        counter++;
+    }
+
+    ret += direction;
+
+
+
+    if (ret < 0) ret = mPointLightNames.size()-1;
+    if (ret > mPointLightNames.size()-1) ret = 0;
+
+    counter = 0;
+    for (const auto& l : ServiceProvider::getActiveLevel()->mLightObjects)
+    {
+        if (l->name == mPointLightNames[ret])
+        {
+            return counter;
+        }
+        counter++;
+    }
+
+    return 0;
 }
 
 void P_4E53::drawToShadowMap()

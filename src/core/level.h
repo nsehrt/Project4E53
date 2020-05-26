@@ -51,6 +51,9 @@ public:
     /*shadow equivalent of draw()*/
     void drawShadow();
 
+    /*exists light name*/
+    bool existsLightByName(const std::string& name);
+
     /*need to call this if new object is added or render type is changed*/
     void calculateRenderOrderSizes();
 
