@@ -573,21 +573,21 @@ bool Level::createNew(const std::string& levelFile)
 
     json light4;
 
-    light4["Name"] = "P1";
+    light4["Name"] = "EditLight";
     light4["Position"][0] = 0.0f;
-    light4["Position"][1] = 2.0f;
+    light4["Position"][1] = -20.0f;
     light4["Position"][2] = 0.0f;
     light4["Strength"][0] = 1.0f;
     light4["Strength"][1] = 1.0f;
     light4["Strength"][2] = 1.0f;
-    light4["FallOffStart"] = 4.0f;
-    light4["FallOffEnd"] = 5.0f;
+    light4["FallOffStart"] = 1.0f;
+    light4["FallOffEnd"] = 1.1f;
 
     newLevel["Light"]["Point"].push_back(light4);
 
     json light5;
 
-    light5["Name"] = "P2";
+    light5["Name"] = "P_(1)";
     light5["Position"][0] = -3.0f;
     light5["Position"][1] = 3.0f;
     light5["Position"][2] = 0.0f;
