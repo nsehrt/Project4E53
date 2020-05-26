@@ -566,6 +566,9 @@ void RenderResource::buildShaders()
 
     mShaders["sobelCS"] = d3dUtil::CompileShader(L"shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
 
+    mShaders["blurHorzCS"] = d3dUtil::CompileShader(L"shader\\Blur.hlsl", nullptr, "HorizontalBlurCS", "cs_5_1");
+    mShaders["blurVertCS"] = d3dUtil::CompileShader(L"shader\\Blur.hlsl", nullptr, "VerticalBlurCS", "cs_5_1");
+
     mShaders["debugVS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["debugPS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
 
