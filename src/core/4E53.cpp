@@ -406,6 +406,12 @@ void P_4E53::onResize()
         renderResource->getShadowMap()->OnResize(ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
                                                  ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
     }
+
+    if (renderResource->getBlurFilter() != nullptr)
+    {
+        renderResource->getBlurFilter()->onResize(ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
+                                                  ServiceProvider::getSettings()->displaySettings.ResolutionHeight);
+    }
 }
 
 /*=====================*/
@@ -1609,17 +1615,17 @@ void P_4E53::draw(const GameTime& gt)
 
     mCommandList->SetGraphicsRootSignature(renderResource->mPostProcessRootSignature.Get());
     mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
-    mCommandList->SetGraphicsRootDescriptorTable(0, offscreenRT->getSrv());
+    mCommandList->SetGraphicsRootDescriptorTable(1, offscreenRT->getSrv());
 
     if (ServiceProvider::getSettings()->graphicSettings.SobelFilter)
     {
-        mCommandList->SetGraphicsRootDescriptorTable(1, renderResource->getSobelFilter()->getOutputSrv());
+        mCommandList->SetGraphicsRootDescriptorTable(2, renderResource->getSobelFilter()->getOutputSrv());
     }
     else
     {
         CD3DX12_GPU_DESCRIPTOR_HANDLE whiteDescriptor(ServiceProvider::getRenderResource()->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
         whiteDescriptor.Offset(ServiceProvider::getRenderResource()->mTextures["white.dds"]->index, ServiceProvider::getRenderResource()->mCbvSrvUavDescriptorSize);
-        mCommandList->SetGraphicsRootDescriptorTable(1, whiteDescriptor);
+        mCommandList->SetGraphicsRootDescriptorTable(2, whiteDescriptor);
     }
 
     mCommandList->IASetVertexBuffers(0, 1, nullptr);
@@ -1627,6 +1633,23 @@ void P_4E53::draw(const GameTime& gt)
     mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     mCommandList->DrawInstanced(6, 1, 0, 0);
+
+    auto blurFilter = renderResource->getBlurFilter();
+
+    if (blurFilter->getSigma() > 0.0f)
+    {
+        blurFilter->execute(mCommandList.Get(), renderResource->mPostProcessRootSignature.Get(),
+                            renderResource->getPSO(RenderType::BlurHorz), renderResource->getPSO(RenderType::BlurVert),
+                            getCurrentBackBuffer(), 1);
+
+        mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,
+                                      D3D12_RESOURCE_STATE_COPY_DEST));
+
+        mCommandList->CopyResource(getCurrentBackBuffer(), blurFilter->getOutput());
+
+        mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                      D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET));
+    }
 
     if (editModeHUD != nullptr)
         editModeHUD->draw();

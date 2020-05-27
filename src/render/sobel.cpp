@@ -4,8 +4,8 @@ void Sobel::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* roo
 {
     cmdList->SetComputeRootSignature(rootSignature);
     cmdList->SetPipelineState(pso);
-    cmdList->SetComputeRootDescriptorTable(0, input);
-    cmdList->SetComputeRootDescriptorTable(2, mGpuUavHandle);
+    cmdList->SetComputeRootDescriptorTable(1, input);
+    cmdList->SetComputeRootDescriptorTable(3, mGpuUavHandle);
     cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mOutput.Get(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
 
     UINT threadGroupsX = (UINT)ceilf(mWidth / 16.0f);

@@ -50,7 +50,7 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
         cmdList->SetPipelineState(horzBlurPSO);
 
         cmdList->SetComputeRootDescriptorTable(1, mBlur0GpuSrv);
-        cmdList->SetComputeRootDescriptorTable(2, mBlur1GpuUav);
+        cmdList->SetComputeRootDescriptorTable(3, mBlur1GpuUav);
 
         // How many groups do we need to dispatch to cover a row of pixels, where each
         // group covers 256 pixels (the 256 is defined in the ComputeShader).
@@ -70,7 +70,7 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
         cmdList->SetPipelineState(vertBlurPSO);
 
         cmdList->SetComputeRootDescriptorTable(1, mBlur1GpuSrv);
-        cmdList->SetComputeRootDescriptorTable(2, mBlur0GpuUav);
+        cmdList->SetComputeRootDescriptorTable(3, mBlur0GpuUav);
 
         // How many groups do we need to dispatch to cover a column of pixels, where each
         // group covers 256 pixels  (the 256 is defined in the ComputeShader).

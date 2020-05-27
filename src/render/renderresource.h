@@ -98,6 +98,11 @@ public:
         return mSobelFilter.get();
     }
 
+    Blur* getBlurFilter()
+    {
+        return mBlurFilter.get();
+    }
+
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
 private:
@@ -109,6 +114,7 @@ private:
     /*post process*/
     std::unique_ptr<RenderTarget> mRenderTarget = nullptr;
     std::unique_ptr<Sobel> mSobelFilter = nullptr;
+    std::unique_ptr<Blur> mBlurFilter = nullptr;
 
     /*shadow map*/
 

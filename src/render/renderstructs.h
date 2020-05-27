@@ -177,6 +177,8 @@ enum class RenderType
     Hitbox,
     Composite,
     Sobel,
+    BlurHorz,
+    BlurVert,
     TerrainNoShadow,
     TerrainWireFrame,
     ShadowDefault,

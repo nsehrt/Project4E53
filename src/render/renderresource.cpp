@@ -31,6 +31,12 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
         DXGI_FORMAT_R8G8B8A8_UNORM);
 
+    mBlurFilter = std::make_unique<Blur>(
+        device,
+        ServiceProvider::getSettings()->displaySettings.ResolutionWidth,
+        ServiceProvider::getSettings()->displaySettings.ResolutionHeight,
+        DXGI_FORMAT_R8G8B8A8_UNORM);
+
     buildShaders();
     buildRootSignature();
     buildPostProcessSignature();
@@ -233,15 +239,16 @@ bool RenderResource::buildPostProcessSignature()
     srv1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
     uav0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
 
-    CD3DX12_ROOT_PARAMETER slotRootParameter[3]{};
+    CD3DX12_ROOT_PARAMETER slotRootParameter[4]{};
 
-    slotRootParameter[0].InitAsDescriptorTable(1, &srv0);
-    slotRootParameter[1].InitAsDescriptorTable(1, &srv1);
-    slotRootParameter[2].InitAsDescriptorTable(1, &uav0);
+    slotRootParameter[0].InitAsConstants(12, 0);
+    slotRootParameter[1].InitAsDescriptorTable(1, &srv0);
+    slotRootParameter[2].InitAsDescriptorTable(1, &srv1);
+    slotRootParameter[3].InitAsDescriptorTable(1, &uav0);
 
     auto staticSamplers = GetStaticSamplers();
 
-    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter,
+    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter,
                                             (UINT)staticSamplers.size(),
                                             staticSamplers.data(),
                                             D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
@@ -255,7 +262,7 @@ bool RenderResource::buildPostProcessSignature()
 
     if (errorBlob != nullptr)
     {
-        LOG(Severity::Error, "Error serializing sobel root signature: " << (char*)errorBlob->GetBufferPointer());
+        LOG(Severity::Error, "Error serializing post process root signature: " << (char*)errorBlob->GetBufferPointer());
         ThrowIfFailed(hr);
         return false;
     }
@@ -349,7 +356,8 @@ bool RenderResource::buildDescriptorHeap()
     srvHeapDesc.NumDescriptors = (UINT)mTextures.size()
         + 3 /*shadow map resources*/
         + mSobelFilter->getDescriptorCount() /*sobel filter resource*/
-        + 1; /*offscreen rtv*/
+        + 1/*offscreen rtv*/
+        + 4; /*blur resource*/
 
     srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -440,6 +448,15 @@ bool RenderResource::buildDescriptorHeap()
         CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, offscreenOffset, mCbvSrvUavDescriptorSize),
         CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvCpuStart, rtvOffset, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV))
     );
+
+    UINT blurOffset = texIndex;
+
+    mBlurFilter->buildDescriptors(
+        CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, blurOffset, mCbvSrvUavDescriptorSize),
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, blurOffset, mCbvSrvUavDescriptorSize),
+        mCbvSrvUavDescriptorSize);
+
+    texIndex += 4;
 
     return true;
 }
@@ -980,6 +997,31 @@ void RenderResource::buildPSOs()
     sobelPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
     ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPSOs[RenderType::Sobel])));
+
+
+    /*blur PSOs*/
+    D3D12_COMPUTE_PIPELINE_STATE_DESC vertBlurPSO = {};
+
+    vertBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
+    vertBlurPSO.CS = {
+        reinterpret_cast<BYTE*>(mShaders["blurVertCS"]->GetBufferPointer()),
+        mShaders["blurVertCS"]->GetBufferSize()
+    };
+    vertBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+
+    ThrowIfFailed(device->CreateComputePipelineState(&vertBlurPSO, IID_PPV_ARGS(&mPSOs[RenderType::BlurVert])));
+
+    D3D12_COMPUTE_PIPELINE_STATE_DESC horzBlurPSO = {};
+
+    horzBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
+    horzBlurPSO.CS = {
+        reinterpret_cast<BYTE*>(mShaders["blurHorzCS"]->GetBufferPointer()),
+        mShaders["blurHorzCS"]->GetBufferSize()
+    };
+    horzBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+
+    ThrowIfFailed(device->CreateComputePipelineState(&horzBlurPSO, IID_PPV_ARGS(&mPSOs[RenderType::BlurHorz])));
+
 }
 
 #pragma endregion PSO
