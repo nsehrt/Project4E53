@@ -3,8 +3,25 @@
 #define INC_BRIGHTNESS
 #define DIGITAL_VIBRANCE
 
+cbuffer cbColor : register(b0)
+{
+    float cbR;
+	float cbG;
+	float cbB;
+	float cbA;
+	float pad1;
+	float pad2;
+	float pad3;
+	float pad4;
+	float pad5;
+	float pad6;
+	float pad7;
+	float pad8;
+};
+
 Texture2D gBaseMap : register(t0);
 Texture2D gEdgeMap : register(t1);
+
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);
@@ -24,10 +41,10 @@ static const float2 gTexCoords[6] =
 	float2(1.0f, 1.0f)
 };
 
-static float4 coefLuma = {0.212656f, 0.714158f, 0.072186f, 1.0f};
-static float4 greyScale = {0.299f, 0.57f, 0.114f,1.0f};
-static float4 rgbBalance = {1.0f,1.0f,1.0f, 1.0f};
-static float vibrance = 0.13f;
+static const float4 coefLuma = {0.212656f, 0.714158f, 0.072186f, 1.0f};
+static const float4 greyScale = {0.299f, 0.57f, 0.114f,1.0f};
+static const float4 rgbBalance = {1.0f,1.0f,1.0f, 1.0f};
+static const float vibrance = 0.13f;
 
 struct VertexOut
 {
@@ -49,7 +66,9 @@ float4 PS(VertexOut pin) : SV_Target
 {
     float4 c = gBaseMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
 	float4 e = gEdgeMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
-	
+	float4 compositeColor = {cbR, cbG, cbB, 0.0f};
+
+
 	float4 outColor = c*e;
 
 	/*apply digital vibrance*/
@@ -68,10 +87,10 @@ float4 PS(VertexOut pin) : SV_Target
 
 	/*increase brightness*/
 	#ifdef INC_BRIGHTNESS
-	outColor = saturate(outColor*1.25f);
+		outColor = saturate(outColor*1.25f);
 	#endif
 
-	return outColor;
+	return saturate(outColor-compositeColor);
 }
 
 

@@ -83,6 +83,7 @@ public:
     ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
     ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
 
+
     ShadowMap* getShadowMap()
     {
         return mShadowMap.get();
@@ -103,6 +104,21 @@ public:
         return mBlurFilter.get();
     }
 
+    std::vector<float>& getCompositeColor()
+    {
+        return mCompositeColor;
+    }
+
+    void addToCompositeColor(float f)
+    {
+        
+        for (int i = 0; i < 3; i++)
+        {
+            mCompositeColor[i] = MathHelper::clampH(mCompositeColor[i] + f, 0.0f, 1.0f);
+        }
+
+    }
+
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
 private:
@@ -115,6 +131,7 @@ private:
     std::unique_ptr<RenderTarget> mRenderTarget = nullptr;
     std::unique_ptr<Sobel> mSobelFilter = nullptr;
     std::unique_ptr<Blur> mBlurFilter = nullptr;
+    std::vector<float> mCompositeColor = { 0.0f,0.0f,0.0f,0.0f };
 
     /*shadow map*/
 

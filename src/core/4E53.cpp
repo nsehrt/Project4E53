@@ -1484,6 +1484,17 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
+        /**BLUR TEST**/
+        float blurriness = renderResource->getBlurFilter()->getSigma();
+
+        blurriness += 1.25f * (inputData.current.buttons[BTN::DPAD_UP] ? 1.0f : inputData.current.buttons[BTN::DPAD_DOWN] ? -1.0f : 0.0f) * gt.DeltaTime();
+        blurriness = MathHelper::clampH(blurriness, 0.0f, 2.5f);
+
+        renderResource->getBlurFilter()->setSigma(blurriness);
+
+        /**COMPOSITE COLOR TEST**/
+        renderResource->addToCompositeColor(inputData.current.buttons[BTN::A] ? gt.DeltaTime() : inputData.current.buttons[BTN::B] ? -gt.DeltaTime() : 0.0f);
+
         if (fpsCameraMode)
         {
             fpsCamera->updateFPSCamera(inputData.current, gt);
@@ -1615,6 +1626,7 @@ void P_4E53::draw(const GameTime& gt)
 
     mCommandList->SetGraphicsRootSignature(renderResource->mPostProcessRootSignature.Get());
     mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
+    mCommandList->SetGraphicsRoot32BitConstants(0, 4, renderResource->getCompositeColor().data(), 0);
     mCommandList->SetGraphicsRootDescriptorTable(1, offscreenRT->getSrv());
 
     if (ServiceProvider::getSettings()->graphicSettings.SobelFilter)
