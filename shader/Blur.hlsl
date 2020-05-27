@@ -1,6 +1,6 @@
 cbuffer cbBlurKernel : register(b0)
 {
-    int gRadius;
+    int gBlurRadius;
 
     float w0;
     float w1;
@@ -15,79 +15,85 @@ cbuffer cbBlurKernel : register(b0)
     float w10;
 };
 
-static const int gMaxRadius = 5;
+static const int gMaxBlurRadius = 5;
 
 Texture2D gInput : register(t0);
 RWTexture2D<float4> gOutput : register(u0);
 
 #define N 256
-#define CACHE_SIZE (N + 2*gMaxRadius)
-groupshared float4 gCache[CACHE_SIZE];
+#define CacheSize (N + 2*gMaxBlurRadius)
+groupshared float4 gCache[CacheSize];
 
 [numthreads(N,1,1)]
 void HorizontalBlurCS(int3 groupThreadID : SV_GroupThreadID,
                       int3 dispatchThreadID : SV_DispatchThreadID)
 {
-    float weights[11] = {w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,w10};
+	float weights[11] = { w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10 };
 
-    if(groupThreadID.x < gRadius)
-    {
-        /*clamp min*/
-        int x = max(dispatchThreadID.x - gRadius, 0);
-        gCache[groupThreadID.x] = gInput[int2(x, dispatchThreadID.y)];
-    }
+	if(groupThreadID.x < gBlurRadius)
+	{
+		// Clamp out of bound samples that occur at image borders.
+		int x = max(dispatchThreadID.x - gBlurRadius, 0);
+		gCache[groupThreadID.x] = gInput[int2(x, dispatchThreadID.y)];
+	}
+	if(groupThreadID.x >= N-gBlurRadius)
+	{
+		// Clamp out of bound samples that occur at image borders.
+		int x = min(dispatchThreadID.x + gBlurRadius, gInput.Length.x-1);
+		gCache[groupThreadID.x+2*gBlurRadius] = gInput[int2(x, dispatchThreadID.y)];
+	}
 
-    if(groupThreadID.x >= N-gRadius)
-    {
-        /*clamp max*/
-        int x = min(dispatchThreadID.x + gRadius, gInput.Length.x-1);
-        gCache[groupThreadID.x+2*gRadius] = gInput[int2(x, dispatchThreadID.y)];
-    }
+	// Clamp out of bound samples that occur at image borders.
+	gCache[groupThreadID.x+gBlurRadius] = gInput[min(dispatchThreadID.xy, gInput.Length.xy-1)];
 
-    gCache[groupThreadID.x+gRadius] = gInput[min(dispatchThreadID.xy, gInput.Length.xy-1)];
-
-    GroupMemoryBarrierWithGroupSync();
-
-    float4 blur = float4(0,0,0,0);
-
-    for(int i = -gRadius; i <= gRadius; i++){
-        int k = groupThreadID.x + gRadius + i;
-        blur += weights[i+gRadius]*gCache[k];
-    }
-
-    gOutput[dispatchThreadID.xy] = blur;
+	GroupMemoryBarrierWithGroupSync();
+	
+	float4 blurColor = float4(0, 0, 0, 0);
+	
+	for(int i = -gBlurRadius; i <= gBlurRadius; ++i)
+	{
+		int k = groupThreadID.x + gBlurRadius + i;
+		
+		blurColor += weights[i+gBlurRadius]*gCache[k];
+	}
+	
+	gOutput[dispatchThreadID.xy] = blurColor;
 }
 
 [numthreads(1,N,1)]
 void VerticalBlurCS(int3 groupThreadID : SV_GroupThreadID,
                     int3 dispatchThreadID : SV_DispatchThreadID)
 {
-    float weights[11] = {w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,w10};
+	float weights[11] = { w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10 };
 
-    if(groupThreadID.y < gRadius)
-    {
-        /*clamp min*/
-        int y = max(dispatchThreadID.y - gRadius, 0);
-        gCache[groupThreadID.y] = gInput[int2(dispatchThreadID.x, y)];
-    }
+	if(groupThreadID.y < gBlurRadius)
+	{
+		// Clamp out of bound samples that occur at image borders.
+		int y = max(dispatchThreadID.y - gBlurRadius, 0);
+		gCache[groupThreadID.y] = gInput[int2(dispatchThreadID.x, y)];
+	}
+	if(groupThreadID.y >= N-gBlurRadius)
+	{
+		// Clamp out of bound samples that occur at image borders.
+		int y = min(dispatchThreadID.y + gBlurRadius, gInput.Length.y-1);
+		gCache[groupThreadID.y+2*gBlurRadius] = gInput[int2(dispatchThreadID.x, y)];
+	}
+	
+	// Clamp out of bound samples that occur at image borders.
+	gCache[groupThreadID.y+gBlurRadius] = gInput[min(dispatchThreadID.xy, gInput.Length.xy-1)];
 
-    if(groupThreadID.y >= N-gRadius)
-    {
-        /*clamp max*/
-        int y = min(dispatchThreadID.y + gRadius, gInput.Length.y-1);
-        gCache[groupThreadID.y+2*gRadius] = gInput[int2(dispatchThreadID.x, y)];
-    }
 
-    gCache[groupThreadID.y+gRadius] = gInput[min(dispatchThreadID.xy, gInput.Length.xy-1)];
+	// Wait for all threads to finish.
+	GroupMemoryBarrierWithGroupSync();
 
-    GroupMemoryBarrierWithGroupSync();
-
-    float4 blur = float4(0,0,0,0);
-
-    for(int i = -gRadius; i <= gRadius; i++){
-        int k = groupThreadID.y + gRadius + i;
-        blur += weights[i+gRadius]*gCache[k];
-    }
-
-    gOutput[dispatchThreadID.xy] = blur;
+	float4 blurColor = float4(0, 0, 0, 0);
+	
+	for(int i = -gBlurRadius; i <= gBlurRadius; ++i)
+	{
+		int k = groupThreadID.y + gBlurRadius + i;
+		
+		blurColor += weights[i+gBlurRadius]*gCache[k];
+	}
+	
+	gOutput[dispatchThreadID.xy] = blurColor;
 }

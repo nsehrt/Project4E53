@@ -1640,7 +1640,7 @@ void P_4E53::draw(const GameTime& gt)
     {
         blurFilter->execute(mCommandList.Get(), renderResource->mPostProcessRootSignature.Get(),
                             renderResource->getPSO(RenderType::BlurHorz), renderResource->getPSO(RenderType::BlurVert),
-                            getCurrentBackBuffer(), 1);
+                            getCurrentBackBuffer());
 
         mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,
                                       D3D12_RESOURCE_STATE_COPY_DEST));

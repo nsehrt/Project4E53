@@ -44,17 +44,27 @@ public:
                  ID3D12RootSignature* rootSig,
                  ID3D12PipelineState* horzBlurPSO,
                  ID3D12PipelineState* vertBlurPSO,
-                 ID3D12Resource* input,
-                 int blurCount);
+                 ID3D12Resource* input
+                 );
 
     void setSigma(float s)
     {
         mSigma = s;
     }
 
-    float getSigma()
+    float getSigma() const
     {
         return mSigma;
+    }
+
+    void setIterations(UINT i)
+    {
+        blurIterations = i;
+    }
+
+    UINT getIterations() const
+    {
+        return blurIterations;
     }
 
 private:
@@ -71,7 +81,8 @@ private:
 
     UINT width = 0;
     UINT height = 0;
-    float mSigma = 2.5f;
+    float mSigma = 0.0f; // 2.5f
+    UINT blurIterations = 1;
     DXGI_FORMAT mFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 

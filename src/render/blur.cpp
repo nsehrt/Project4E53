@@ -15,7 +15,7 @@ void Blur::buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE hCpuDescriptor, CD3DX1
     buildDescriptors();
 }
 
-void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* rootSig, ID3D12PipelineState* horzBlurPSO, ID3D12PipelineState* vertBlurPSO, ID3D12Resource* input, int blurCount)
+void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* rootSig, ID3D12PipelineState* horzBlurPSO, ID3D12PipelineState* vertBlurPSO, ID3D12Resource* input)
 {
 
     auto weights = calculateWeights(mSigma);
@@ -41,7 +41,7 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
     cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mBlurMap1.Get(),
                              D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
 
-    for (int i = 0; i < blurCount; ++i)
+    for (int i = 0; i < blurIterations; ++i)
     {
         //
         // Horizontal Blur pass.
@@ -75,7 +75,7 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
         // How many groups do we need to dispatch to cover a column of pixels, where each
         // group covers 256 pixels  (the 256 is defined in the ComputeShader).
         UINT numGroupsY = (UINT)ceilf(height / 256.0f);
-        cmdList->Dispatch(height, numGroupsY, 1);
+        cmdList->Dispatch(width, numGroupsY, 1);
 
         cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mBlurMap0.Get(),
                                  D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ));
