@@ -137,9 +137,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
     }
     catch (DxException& e)
     {
-        ServiceProvider::getLogger()->print<Severity::Critical>("Exception thrown!");
-
+        LOG(Severity::Error, "Exception thrown: " << e.toString().c_str());
         MessageBox(nullptr, e.toString().c_str(), L"HR Failed", MB_OK);
+
         status = -1;
 
         return status;

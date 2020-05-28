@@ -16,7 +16,7 @@ std::wstring DxException::toString()const
     // Get the string description of the error code.
     _com_error err(ErrorCode);
     std::wstring msg = err.ErrorMessage();
-
+    
     return FunctionName + L" failed in " + FileName + L"; line " + std::to_wstring(LineNumber) + L"; error: " + msg;
 }
 
