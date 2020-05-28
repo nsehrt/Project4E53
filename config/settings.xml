@@ -12,7 +12,7 @@
         <ResolutionHeight>1080</ResolutionHeight>
         <FOV>70</FOV>
         <VSync>0</VSync>
-        <WindowMode>0</WindowMode>
+        <WindowMode>2</WindowMode>
     </Display>
 
     <Gameplay>
@@ -37,5 +37,6 @@
         <DebugEnabled>1</DebugEnabled>
         <DebugQuadEnabled>0</DebugQuadEnabled>
         <EditModeEnabled>1</EditModeEnabled>
+        <DrawFPSEnabled>1</DrawFPSEnabled>
     </Misc>
 </root>

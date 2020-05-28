@@ -163,6 +163,14 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.miscSettings.EditModeEnabled = 1;
     }
 
+    if (!setSetting(pMisc, "DrawFPSEnabled", &settings.miscSettings.DrawFPSEnabled))
+        return false;
+
+    if (settings.miscSettings.DrawFPSEnabled != 0)
+    {
+        settings.miscSettings.DrawFPSEnabled = 1;
+    }
+
     return true;
 }
 

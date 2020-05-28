@@ -56,6 +56,7 @@ struct Misc
     int DebugEnabled = false;
     int DebugQuadEnabled = true;
     int EditModeEnabled = false;
+    int DrawFPSEnabled = false;
 };
 
 struct Settings

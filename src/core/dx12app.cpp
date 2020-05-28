@@ -558,6 +558,9 @@ void DX12App::calculateFrameStats()
         float fps = (float)frameCount * 4;
         float mspf = 1000.0f / fps;
 
+        ServiceProvider::getDebugInfo()->CurrentFPS = fps;
+        ServiceProvider::getDebugInfo()->Mspf = mspf;
+
         wstring fpsStr = to_wstring(fps);
         wstring mspfStr = to_wstring(mspf);
         wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);

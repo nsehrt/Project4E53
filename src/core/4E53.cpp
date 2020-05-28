@@ -1709,7 +1709,7 @@ UINT P_4E53::getPointLightIndex(const std::string& name, UINT direction) const
 
 
 
-    if (ret < 0) ret = mPointLightNames.size()-1;
+    if (ret < 0) ret = (int)(mPointLightNames.size()) - 1;
     if (ret > mPointLightNames.size()-1) ret = 0;
 
     counter = 0;

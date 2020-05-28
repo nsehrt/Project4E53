@@ -224,7 +224,7 @@ void EditModeHUD::init()
         }
     }
 
-    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.905 }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.905f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.93f }, 0.2f));
 
     /*set visibility*/
