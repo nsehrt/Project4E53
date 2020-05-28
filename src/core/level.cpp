@@ -317,7 +317,8 @@ void Level::draw()
         ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
         ServiceProvider::getEditSettings()->currentSelection != nullptr &&
         ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Grass &&
-        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Water)
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Water &&
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Particle)
     {
         renderResource->setPSO(RenderType::Outline);
         ServiceProvider::getEditSettings()->currentSelection->draw();
@@ -532,7 +533,7 @@ bool Level::createNew(const std::string& levelFile)
     newLevel["Terrain"]["HeightScale"] = 200.0f;
     newLevel["Terrain"]["BlendTextures"][0] = "ForestFloorGreen.dds";
     newLevel["Terrain"]["BlendTextures"][1] = "DirtGround.dds";
-    newLevel["Terrain"]["BlendTextures"][2] = "FlowerField.dds";
+    newLevel["Terrain"]["BlendTextures"][2] = "PavementGray.dds";
     newLevel["Terrain"]["BlendTextures"][3] = "SimpleSand.dds";
 
     json light1;
@@ -996,8 +997,8 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->gameObjectType = GameObjectType::Terrain;
     terrainObject->renderItem->Model = mTerrain->terrainModel.get();
     terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["terrain"].get();
-    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 2,
-                    (float)mTerrain->terrainSlices / 2, (float)mTerrain->terrainSlices / 2));
+    XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 4.0f,
+                    (float)mTerrain->terrainSlices / 4.0f, (float)mTerrain->terrainSlices / 4.0f));
 
     mGameObjects["TERRAIN"] = std::move(terrainObject);
 

@@ -21,11 +21,10 @@ FrameResource::FrameResource(ID3D12Device* device,
 
     for (UINT i = 0; i < ParticleVB.size(); i++)
     {
-        ParticleVB[i] = std::make_unique<UploadBuffer<ParticleVertex>>(device, 4096, false);
+        ParticleVB[i] = std::make_unique<UploadBuffer<ParticleVertex>>(device, 5000, false);
     }
 
     //SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
-    //SsaoCB = std::make_unique<UploadBuffer<SsaoConstants>>(device, 1, true);
 }
 
 FrameResource::~FrameResource()

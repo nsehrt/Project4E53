@@ -184,7 +184,7 @@
         "BlendTextures": [
             "ForestFloorGreen.dds",
             "DirtGround.dds",
-            "FlowerField.dds",
+            "PavementGray.dds",
             "SimpleSand.dds"
         ],
         "HeightMap": "0.raw",

@@ -232,6 +232,7 @@ GameObject::GameObject()
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
     Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+    customFrustumBoundingBoxExtents = { 0.0f,0.0f,0.0f };
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);

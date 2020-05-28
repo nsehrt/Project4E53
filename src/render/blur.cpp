@@ -41,7 +41,7 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
     cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mBlurMap1.Get(),
                              D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
 
-    for (int i = 0; i < blurIterations; ++i)
+    for (UINT i = 0; i < blurIterations; ++i)
     {
         //
         // Horizontal Blur pass.

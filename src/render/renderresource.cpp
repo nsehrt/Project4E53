@@ -969,6 +969,8 @@ void RenderResource::buildPSOs()
     /*composite PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC compositePSO = defaultPSODesc;
     compositePSO.pRootSignature = mPostProcessRootSignature.Get();
+    compositePSO.InputLayout = {};
+    compositePSO.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
     compositePSO.DepthStencilState.DepthEnable = false;
     compositePSO.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
