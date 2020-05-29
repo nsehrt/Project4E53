@@ -476,7 +476,13 @@ void P_4E53::update(const GameTime& gt)
             }
             else if (editSettings->toolMode == EditTool::Paint)
             {
+                editSettings->toolMode = EditTool::Light;
+                ServiceProvider::setActiveCamera(editLightCamera);
+            }
+            else if (editSettings->toolMode == EditTool::Light)
+            {
                 editSettings->toolMode = EditTool::ObjectTransform;
+                ServiceProvider::setActiveCamera(editCamera);
             }
             else if (editSettings->toolMode == EditTool::ObjectTransform)
             {
@@ -484,40 +490,37 @@ void P_4E53::update(const GameTime& gt)
             }
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
-                editSettings->toolMode = EditTool::Light;
-                ServiceProvider::setActiveCamera(editLightCamera);
-            }
-            else if (editSettings->toolMode == EditTool::Light)
-            {
                 editSettings->toolMode = EditTool::Height;
-                ServiceProvider::setActiveCamera(editCamera);
+                
             }
+
         }
 
         else if (inputData.Pressed(BTN::LEFT_SHOULDER))
         {
             if (editSettings->toolMode == EditTool::Height)
             {
-                editSettings->toolMode = EditTool::Light;
-                ServiceProvider::setActiveCamera(editLightCamera);
+                editSettings->toolMode = EditTool::ObjectMeta;
             }
             else if (editSettings->toolMode == EditTool::Paint)
             {
                 editSettings->toolMode = EditTool::Height;
             }
-            else if (editSettings->toolMode == EditTool::ObjectTransform)
+            else if (editSettings->toolMode == EditTool::Light)
             {
                 editSettings->toolMode = EditTool::Paint;
+                ServiceProvider::setActiveCamera(editCamera);
+            }
+            else if (editSettings->toolMode == EditTool::ObjectTransform)
+            {
+                editSettings->toolMode = EditTool::Light;
+                ServiceProvider::setActiveCamera(editLightCamera);
             }
             else if (editSettings->toolMode == EditTool::ObjectMeta)
             {
                 editSettings->toolMode = EditTool::ObjectTransform;
             }
-            else if (editSettings->toolMode == EditTool::Light)
-            {
-                editSettings->toolMode = EditTool::ObjectMeta;
-                ServiceProvider::setActiveCamera(editCamera);
-            }
+
         }
 
         else if (inputData.Pressed(BTN::DPAD_UP))

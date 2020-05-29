@@ -169,8 +169,8 @@ enum class RenderType
     NoCullNoNormal,
     DefaultAlpha,
     Sky, /*everything before transparent objects*/
-    Particle_Fire,
     Particle_Smoke,
+    Particle_Fire,
     DefaultTransparency,
     Debug,
     Outline,

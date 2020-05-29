@@ -76,7 +76,7 @@ void ParticleSystem::init(const json& particleJson)
     particleSystemModel->meshes.push_back(std::move(geo));
 
 
-    updateTime = MathHelper::getRandomFloat(0.0f, updFixedTime);
+    updateTime = vbIndex * (updFixedTime / 32.0f);
 }
 
 void ParticleSystem::update(const GameTime& gt)
