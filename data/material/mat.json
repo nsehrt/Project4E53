@@ -100,16 +100,6 @@
         "Roughness" : 6.0
     },
     {
-        "Name" : "lava",
-        "Texture" : "LavaGround",
-        "NormalMap" : "LavaGround_n",
-        "Displacement_1": "water_h",
-        "Displacement_2": "water_h2",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.9,0.9,0.9],
-        "Roughness" : 0.9
-    },
-    {
         "Name" : "brick0",
         "Texture" : "Bricks",
         "NormalMap" : "Bricks_n",
@@ -244,17 +234,73 @@
         "Roughness" : 0.7
     },
     {
-        "Name": "starfish",
-        "Texture": "sfish",
-        "NormalMap": "sfish_n",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.4
-    }, 
-    {
         "Name": "w_fence",
         "Texture": "wooden_fence",
         "NormalMap": "wooden_fence_n",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl1",
+        "Texture": "T_SMP_Cluster01_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster01_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl2",
+        "Texture": "T_SMP_Cluster02_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster02_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl3",
+        "Texture": "T_SMP_Cluster03_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster03_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl4",
+        "Texture": "T_SMP_Cluster04_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster04_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl5",
+        "Texture": "T_SMP_Cluster05_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster05_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl6",
+        "Texture": "T_SMP_Cluster06_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster06_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl7",
+        "Texture": "T_SMP_Cluster07_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster07_Normal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "props_cl8",
+        "Texture": "T_SMP_Cluster08_AlbedoTransparency",
+        "NormalMap": "T_SMP_Cluster08_Normal",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.9

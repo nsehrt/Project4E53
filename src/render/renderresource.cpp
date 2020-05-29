@@ -1111,6 +1111,8 @@ bool RenderResource::buildMaterials()
         matCounter++;
     }
 
+    LOG(Severity::Info, "Loaded " << matCounter << " materials.");
+
     return true;
 }
 

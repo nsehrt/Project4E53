@@ -142,7 +142,7 @@ struct EditSettings
     RotationAxis rotationAxis = RotationAxis::X;
 
     const float translationIncreaseBase = 60.0f;
-    const float scaleIncreaseBase = 2.0f;
+    const float scaleIncreaseBase = 0.5f;
     const float rotationIncreaseBase = XM_PIDIV2;
 
     /*game object meta tool*/

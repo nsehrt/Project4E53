@@ -856,7 +856,7 @@ void P_4E53::update(const GameTime& gt)
             {
 
                 /*switch to invisible wall*/
-                if (inputData.Pressed(BTN::BACK))
+                if (inputData.Pressed(BTN::LEFT_THUMB))
                 {
                     editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
                     editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
@@ -875,7 +875,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*switch model group*/
-                if (inputData.Pressed(BTN::LEFT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -893,7 +893,46 @@ void P_4E53::update(const GameTime& gt)
                             {
                                 editSettings->selectedGroup = (++it)->first;
                             }
+                            break;
+                        }
+                    }
 
+                    editSettings->currentSelection->renderItem->Model = editSettings->orderedModels[editSettings->selectedGroup][0];
+
+                    if (editSettings->selectedGroup == "default")
+                    {
+                        editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
+                    }
+                    else
+                    {
+                        editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
+                    }
+
+                    editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+                    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+                    setModelSelection();
+                }
+
+                if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                {
+
+                    for (auto it = editSettings->orderedModels.begin();
+                         it != editSettings->orderedModels.end();
+                         it++)
+                    {
+                        if ((*it).first == editSettings->selectedGroup)
+                        {
+
+                            if (it == editSettings->orderedModels.begin())
+                            {
+                                editSettings->selectedGroup = (--editSettings->orderedModels.end())->first;
+                            }
+                            else
+                            {
+                                editSettings->selectedGroup = (--it)->first;
+                            }
+                            break;
                         }
                     }
 
@@ -1327,7 +1366,7 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
-        if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::Light)
+        if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::Light && editSettings->toolMode != EditTool::ObjectMeta)
         {
             
             float turnInput = (int)inputData.current.buttons[BTN::DPAD_LEFT] -

@@ -1,17 +1,7 @@
 {
     "GameObject": [
         {
-            "Material": "default",
-            "Model": "box",
-            "Name": "box",
-            "Position": [
-                0.0,
-                4.0,
-                0.0
-            ],
-            "RenderType": "Default"
-        },
-        {
+            "CollisionEnabled": true,
             "DrawEnabled": false,
             "Material": "invWall",
             "Model": "",
@@ -22,14 +12,80 @@
                 0.0
             ],
             "RenderType": "DefaultTransparency",
-            "ShadowEnabled": false
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": false,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box",
+            "Position": [
+                0.0,
+                4.0,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
         }
     ],
     "Grass": [
         {
             "Density": [
-                16,
-                16
+                12,
+                17
             ],
             "Material": "grass_3",
             "Name": "grass",
@@ -98,12 +154,12 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 1.100000023841858,
-                "FallOffStart": 1.0,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
                 "Position": [
                     0.0,
-                    -20.0,
+                    0.8531982898712158,
                     0.0
                 ],
                 "Strength": [
@@ -149,7 +205,7 @@
                 1.0,
                 1.0
             ],
-            "SpawnTime": 0.005,
+            "SpawnTime": 0.004999999888241291,
             "Type": "Fire"
         },
         {
@@ -171,7 +227,7 @@
                 1.0,
                 1.0
             ],
-            "SpawnTime": 0.05,
+            "SpawnTime": 0.05000000074505806,
             "Type": "Smoke"
         }
     ],
