@@ -304,6 +304,22 @@
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.9
+    },
+    {
+        "Name": "snb_tree",
+        "Texture": "SNB_Tree",
+        "NormalMap": "SNB_Tree_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
+    },
+    {
+        "Name": "snb_veg",
+        "Texture": "SNB_Vegetation",
+        "NormalMap": "SNB_Vegetation_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
     }
 
     ]

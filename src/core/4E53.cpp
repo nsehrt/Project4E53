@@ -1366,13 +1366,15 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
-        if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::Light && editSettings->toolMode != EditTool::ObjectMeta)
+        if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::Light)
         {
             
             float turnInput = (int)inputData.current.buttons[BTN::DPAD_LEFT] -
                               (int)inputData.current.buttons[BTN::DPAD_RIGHT];
 
             float turnDelta = turnInput * XM_PI * gt.DeltaTime();
+
+            if (editSettings->toolMode == EditTool::ObjectMeta) turnDelta = 0.0f;
 
             editCamera->updateFixedCamera(newCamTarget,
                                           zoomDelta, turnDelta);
