@@ -1080,6 +1080,8 @@ void P_4E53::update(const GameTime& gt)
 
                     activeLevel->addGameObject(newGO);
 
+                    LOG(Severity::Info, "Create new game object " << newGO["Name"] << ".");
+
                     for (const auto& e : activeLevel->mGameObjects)
                     {
                         if (e.second->name == newGO["Name"])
@@ -1283,6 +1285,8 @@ void P_4E53::update(const GameTime& gt)
 
                     activeLevel->mLightObjects.insert(activeLevel->mLightObjects.begin() + editSettings->currentLightSelectionIndex, std::make_unique<LightObject>(LightType::Point, e));
                     mPointLightNames.push_back(e["Name"]);
+
+                    LOG(Severity::Info, "Create new point light " << e["Name"] << ".");
 
                     editSettings->currentLightSelectionIndex = getPointLightIndex(e["Name"], 0);
                     editSettings->currentLightSelectionPointIndex = editSettings->currentLightSelectionIndex;
