@@ -319,7 +319,15 @@
         "NormalMap": "SNB_Vegetation_nmap",
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
-        "Roughness" : 0.9
+        "Roughness" : 0.95
+    },
+    {
+        "Name": "snb_rock",
+        "Texture": "SNB_Rock",
+        "NormalMap": "SNB_Rock_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
     }
 
     ]
