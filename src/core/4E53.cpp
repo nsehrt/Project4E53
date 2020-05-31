@@ -875,7 +875,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*switch model group*/
-                if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -914,7 +914,7 @@ void P_4E53::update(const GameTime& gt)
                     setModelSelection();
                 }
 
-                if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -955,7 +955,7 @@ void P_4E53::update(const GameTime& gt)
 
 
                 /*switch model*/
-                else if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
                          it != editSettings->orderedModels[editSettings->selectedGroup].end();
@@ -994,7 +994,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
 
-                else if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
                 {
                     for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
                          it != editSettings->orderedModels[editSettings->selectedGroup].end();
