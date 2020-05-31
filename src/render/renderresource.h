@@ -109,7 +109,7 @@ public:
         return mCompositeColor;
     }
 
-    bool useMultColor = true;
+    bool useMultColor = false;
 
     std::vector<float>& getMultColor()
     {

@@ -328,6 +328,14 @@
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.95
+    },
+    {
+        "Name": "snb_grass",
+        "Texture": "T_SNB_GrassFlower",
+        "NormalMap": "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
     }
 
     ]
