@@ -176,6 +176,7 @@ enum class RenderType
     Outline,
     Hitbox,
     Composite,
+    CompositeMult,
     Sobel,
     BlurHorz,
     BlurVert,

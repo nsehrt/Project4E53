@@ -1673,8 +1673,18 @@ void P_4E53::draw(const GameTime& gt)
     mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
 
     mCommandList->SetGraphicsRootSignature(renderResource->mPostProcessRootSignature.Get());
-    mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
+
+    if (renderResource->useMultColor)
+    {
+        mCommandList->SetPipelineState(renderResource->getPSO(RenderType::CompositeMult));
+    }
+    else
+    {
+        mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
+    }
+    
     mCommandList->SetGraphicsRoot32BitConstants(0, 4, renderResource->getCompositeColor().data(), 0);
+    mCommandList->SetGraphicsRoot32BitConstants(0, 3, renderResource->getMultColor().data(), 4);
     mCommandList->SetGraphicsRootDescriptorTable(1, offscreenRT->getSrv());
 
     if (ServiceProvider::getSettings()->graphicSettings.SobelFilter)

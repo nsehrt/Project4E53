@@ -542,6 +542,11 @@ void RenderResource::buildShaders()
         NULL, NULL
     };
 
+    const D3D_SHADER_MACRO multColorDefines[] = {
+    "MULT_COLOR", "1",
+    NULL, NULL
+    };
+
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
@@ -580,6 +585,8 @@ void RenderResource::buildShaders()
 
     mShaders["compositeVS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["compositePS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
+
+    mShaders["compositeMultPS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", multColorDefines, "PS", "ps_5_1");
 
     mShaders["sobelCS"] = d3dUtil::CompileShader(L"shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
 
@@ -987,6 +994,15 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPSOs[RenderType::Composite])));
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC compositeMultPSO = compositePSO;
+
+    compositeMultPSO.PS = {
+    reinterpret_cast<BYTE*>(mShaders["compositeMultPS"]->GetBufferPointer()),
+    mShaders["compositeMultPS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&compositeMultPSO, IID_PPV_ARGS(&mPSOs[RenderType::CompositeMult])));
 
     /*sobel PSO*/
     D3D12_COMPUTE_PIPELINE_STATE_DESC sobelPSO = {};

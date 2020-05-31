@@ -109,6 +109,13 @@ public:
         return mCompositeColor;
     }
 
+    bool useMultColor = true;
+
+    std::vector<float>& getMultColor()
+    {
+        return mMultColor;
+    }
+
     void addToCompositeColor(float f)
     {
         
@@ -132,6 +139,7 @@ private:
     std::unique_ptr<Sobel> mSobelFilter = nullptr;
     std::unique_ptr<Blur> mBlurFilter = nullptr;
     std::vector<float> mCompositeColor = { 0.0f,0.0f,0.0f,0.0f };
+    std::vector<float> mMultColor = { 0.3f, 0.59f, 0.11f };
 
     /*shadow map*/
 
@@ -143,14 +151,6 @@ private:
     XMFLOAT4X4 mLightView = MathHelper::identity4x4();
     XMFLOAT4X4 mLightProj = MathHelper::identity4x4();
     XMFLOAT4X4 mShadowTransform = MathHelper::identity4x4();
-
-    float mLightRotationAngle = 0.0f;
-    XMFLOAT3 mBaseLightDirections[3] = {
-        XMFLOAT3(0.57735f, -0.57735f, 0.57735f),
-        XMFLOAT3(-0.57735f, -0.57735f, 0.57735f),
-        XMFLOAT3(0.0f, -0.707f, -0.707f)
-    };
-    XMFLOAT3 mRotatedLightDirections[3];
 
     UINT mNullCubeSrvIndex = 0;
     UINT mNullTexSrvIndex = 0;

@@ -9,9 +9,9 @@ cbuffer cbColor : register(b0)
 	float cbG;
 	float cbB;
 	float cbA;
-	float pad1;
-	float pad2;
-	float pad3;
+	float mbR;
+	float mbG;
+	float mbB;
 	float pad4;
 	float pad5;
 	float pad6;
@@ -42,7 +42,6 @@ static const float2 gTexCoords[6] =
 };
 
 static const float4 coefLuma = {0.212656f, 0.714158f, 0.072186f, 1.0f};
-static const float4 greyScale = {0.299f, 0.57f, 0.114f,1.0f};
 static const float4 rgbBalance = {1.0f,1.0f,1.0f, 1.0f};
 static const float vibrance = 0.13f;
 
@@ -68,8 +67,12 @@ float4 PS(VertexOut pin) : SV_Target
 	float4 e = gEdgeMap.SampleLevel(gsamPointClamp, pin.TexC, 1.0f);
 	float4 compositeColor = {cbR, cbG, cbB, 0.0f};
 
-
 	float4 outColor = c*e;
+
+#ifdef MULT_COLOR
+	float4 multColor = {mbR, mbG, mbB, 0.0f};
+	outColor = dot(outColor, multColor);
+#endif
 
 	/*apply digital vibrance*/
 	#ifdef DIGITAL_VIBRANCE
