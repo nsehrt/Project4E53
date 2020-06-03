@@ -49,6 +49,11 @@ public:
         return highestPoint;
     }
 
+    float getQuadSize()
+    {
+        return quadSize.x;
+    }
+
 private:
     RenderResource* renderResource;
     std::unique_ptr<Model> grassPatchModel = nullptr;

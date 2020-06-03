@@ -344,6 +344,38 @@
         "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.95
+    },
+    {
+        "Name": "bs_plant1",
+        "Texture": "BS_Plant1",
+        "NormalMap": "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
+    },
+    {
+        "Name": "bs_plant2",
+        "Texture": "BS_Plant2",
+        "NormalMap": "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
+    },
+    {
+        "Name": "bs_plant3",
+        "Texture": "BS_Plant3",
+        "NormalMap": "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
+    },
+    {
+        "Name": "bs_plant4",
+        "Texture": "BS_Plant4",
+        "NormalMap": "defaultNormal",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.95
     }
 
     ]

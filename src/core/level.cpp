@@ -421,8 +421,8 @@ bool Level::save()
         saveFile["Grass"][c]["Size"][0] = mGameObjects[e->getName()]->getScale().x * e->getSize().x;
         saveFile["Grass"][c]["Size"][1] = mGameObjects[e->getName()]->getScale().z * e->getSize().y;
 
-        saveFile["Grass"][c]["Density"][0] = (int)(mGameObjects[e->getName()]->getScale().x * e->getSize().x * 2.5f);
-        saveFile["Grass"][c]["Density"][1] = (int)(mGameObjects[e->getName()]->getScale().z * e->getSize().y * 3.5f);
+        saveFile["Grass"][c]["Density"][0] = (int)(mGameObjects[e->getName()]->getScale().x * (e->getSize().x / e->getQuadSize()) * 2.5f);
+        saveFile["Grass"][c]["Density"][1] = (int)(mGameObjects[e->getName()]->getScale().z * (e->getSize().y / e->getQuadSize()) * 3.5f);
 
         c++;
     }

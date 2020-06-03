@@ -2,6 +2,357 @@
     "GameObject": [
         {
             "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Cliff_01",
+            "Name": "box_(51)",
+            "Position": [
+                -53.93400955200195,
+                1.7054452896118164,
+                53.34309768676758
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                0.0,
+                -81.71818542480469,
+                0.0
+            ],
+            "Scale": [
+                0.610827624797821,
+                0.610827624797821,
+                0.610827624797821
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(15)",
+            "Position": [
+                -72.48747253417969,
+                3.0511016845703125,
+                63.63652038574219
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(17)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                55.832275390625
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(16)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                59.73302459716797
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(13)",
+            "Position": [
+                -16.975446701049805,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(23)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                29.75072479248047
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(3)",
+            "Position": [
+                -63.01020431518555,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(22)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                34.19913864135742
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(2)",
+            "Position": [
+                -67.69473266601563,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
             "DrawEnabled": false,
             "Material": "invWall",
             "Model": "",
@@ -43,13 +394,2547 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "default",
-            "Model": "box",
+            "Model": "PineTree_02",
+            "Name": "box_(28)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                7.0453925132751465
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(8)",
+            "Position": [
+                -40.25406265258789,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
             "Name": "box",
             "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
                 0.0,
-                4.0,
+                -255.15774536132813,
                 0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(10)",
+            "Position": [
+                -31.0060977935791,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(21)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                38.16565704345703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "House_01",
+            "Name": "box_(1)",
+            "Position": [
+                -59.94404220581055,
+                3.4997472763061523,
+                66.30941772460938
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.1333987712860107,
+                1.1333987712860107,
+                1.1333987712860107
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(24)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                24.966297149658203
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(4)",
+            "Position": [
+                -58.751068115234375,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(25)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                20.598970413208008
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(5)",
+            "Position": [
+                -54.2675666809082,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(26)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                16.14826011657715
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(6)",
+            "Position": [
+                -49.58409118652344,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(27)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                11.554421424865723
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(7)",
+            "Position": [
+                -44.952999114990234,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(29)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                2.1952412128448486
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(9)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(11)",
+            "Position": [
+                -26.1732234954834,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(12)",
+            "Position": [
+                -21.544973373413086,
+                3.0511016845703125,
+                71.60372161865234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(14)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                67.54692077636719
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(18)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                51.58648681640625
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(19)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                47.14006042480469
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(20)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                42.60793685913086
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(41)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -58.324554443359375
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(30)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -2.5132203102111816
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(40)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -52.92464828491211
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(31)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -7.2381591796875
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(43)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -68.06280517578125
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(32)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -11.97927474975586
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(42)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -63.392208099365234
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(33)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -17.029190063476563
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(34)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -21.877212524414063
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_03",
+            "Name": "box_(45)",
+            "Position": [
+                -69.98677062988281,
+                0.5477787256240845,
+                62.561954498291016
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.36879822611808777,
+                0.36879822611808777,
+                0.36879822611808777
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(44)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -72.79583740234375
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(35)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -26.87409210205078
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(36)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -32.18870162963867
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_03",
+            "Name": "box_(47)",
+            "Position": [
+                -64.57243347167969,
+                0.5244159698486328,
+                62.56130599975586
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.37380507588386536,
+                0.37380507588386536,
+                0.37380507588386536
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(37)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -37.270694732666016
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_03",
+            "Name": "box_(46)",
+            "Position": [
+                -67.27888488769531,
+                0.555194079875946,
+                62.56806564331055
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.3737630546092987,
+                0.3737630546092987,
+                0.3737630546092987
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(38)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -42.694496154785156
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Cliff_01",
+            "Name": "box_(49)",
+            "Position": [
+                -61.1599235534668,
+                1.7054452896118164,
+                52.82297134399414
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                0.0,
+                70.60468292236328,
+                0.0
+            ],
+            "Scale": [
+                0.610827624797821,
+                0.610827624797821,
+                0.610827624797821
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(39)",
+            "Position": [
+                -72.43836212158203,
+                3.0511016845703125,
+                -48.128387451171875
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_03",
+            "Name": "box_(48)",
+            "Position": [
+                -62.07695388793945,
+                0.5244159698486328,
+                63.348388671875
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                -34.05022430419922,
+                0.0
+            ],
+            "Scale": [
+                0.37380507588386536,
+                0.37380507588386536,
+                0.37380507588386536
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Cliff_01",
+            "Name": "box_(50)",
+            "Position": [
+                -57.94559860229492,
+                1.7054452896118164,
+                50.5368766784668
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                0.0,
+                -2.075498104095459,
+                0.0
+            ],
+            "Scale": [
+                0.610827624797821,
+                0.610827624797821,
+                0.610827624797821
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Cliff_01",
+            "Name": "box_(52)",
+            "Position": [
+                -56.141265869140625,
+                1.7054452896118164,
+                57.93097686767578
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                0.0,
+                -158.13893127441406,
+                0.0
+            ],
+            "Scale": [
+                0.610827624797821,
+                0.610827624797821,
+                0.610827624797821
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Cliff_01",
+            "Name": "box_(53)",
+            "Position": [
+                -60.34732437133789,
+                1.7054452896118164,
+                57.102970123291016
+            ],
+            "RenderType": "NoCullNoNormal",
+            "Rotation": [
+                0.0,
+                -230.9346466064453,
+                0.0
+            ],
+            "Scale": [
+                0.610827624797821,
+                0.610827624797821,
+                0.610827624797821
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "box_(54)",
+            "Position": [
+                -57.47895812988281,
+                6.317173480987549,
+                55.21561813354492
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -316.8028564453125,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Woodcrate_01",
+            "Name": "box_(55)",
+            "Position": [
+                -56.13639831542969,
+                3.786808490753174,
+                53.88141632080078
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                -316.8028564453125,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Woodcrate_01",
+            "Name": "box_(56)",
+            "Position": [
+                -55.775997161865234,
+                3.786808490753174,
+                52.763980865478516
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                -316.8028564453125,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Woodcrate_01",
+            "Name": "box_(57)",
+            "Position": [
+                -56.030914306640625,
+                4.597002983093262,
+                53.411373138427734
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                -316.8028564453125,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "FlowerSplatting_01",
+            "Name": "box_(58)",
+            "Position": [
+                -59.25035095214844,
+                3.386951446533203,
+                54.863250732421875
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -298.4650573730469,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": false,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "FlowerSplatting_01",
+            "Name": "box_(59)",
+            "Position": [
+                -59.25035095214844,
+                3.386951446533203,
+                54.863250732421875
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -298.4650573730469,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": false,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Plant_02",
+            "Name": "box_(60)",
+            "Position": [
+                -58.98930740356445,
+                3.7994425296783447,
+                52.0765380859375
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -298.4650573730469,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Plant_02",
+            "Name": "box_(61)",
+            "Position": [
+                -57.72556686401367,
+                3.7994425296783447,
+                53.29375457763672
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -298.4650573730469,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": false,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Wheelbarrow",
+            "Name": "box_(62)",
+            "Position": [
+                -69.27578735351563,
+                0.43386197090148926,
+                63.791786193847656
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_05",
+            "Name": "box_(63)",
+            "Position": [
+                -69.13448333740234,
+                0.2594582736492157,
+                68.38719177246094
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_05",
+            "Name": "box_(64)",
+            "Position": [
+                -67.20381927490234,
+                0.2594582736492157,
+                68.37664031982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_05",
+            "Name": "box_(65)",
+            "Position": [
+                -65.13675689697266,
+                0.2594582736492157,
+                68.37664031982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_05",
+            "Name": "box_(66)",
+            "Position": [
+                -63.31612777709961,
+                0.2594582736492157,
+                68.37664031982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_03",
+            "Name": "box_(67)",
+            "Position": [
+                -69.15162658691406,
+                0.2594582736492157,
+                66.17611694335938
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_03",
+            "Name": "box_(68)",
+            "Position": [
+                -67.18387603759766,
+                0.2594582736492157,
+                66.04904174804688
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Plant_03",
+            "Name": "box_(69)",
+            "Position": [
+                -65.21723937988281,
+                0.2594582736492157,
+                66.04904174804688
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                50.0075569152832,
+                0.0
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Marrow",
+            "Name": "box_(70)",
+            "Position": [
+                -69.01363372802734,
+                0.5016284584999084,
+                64.12174224853516
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                -82.06466674804688
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "wood_timber2",
+            "Name": "box_(102)",
+            "Position": [
+                -50.42451477050781,
+                0.18067780137062073,
+                50.09147644042969
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                -162.34629821777344,
+                96.34062957763672
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Marrow",
+            "Name": "box_(71)",
+            "Position": [
+                -69.01363372802734,
+                0.5016284584999084,
+                63.75768280029297
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                -82.06466674804688
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Log_01",
+            "Name": "box_(103)",
+            "Position": [
+                -46.762001037597656,
+                0.06717574596405029,
+                48.14680480957031
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                -131.0184783935547
+            ],
+            "Scale": [
+                1.0485364198684692,
+                1.0485364198684692,
+                1.0485364198684692
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "FireCamp_02",
+            "Name": "box_(100)",
+            "Position": [
+                -48.14954376220703,
+                0.13391271233558655,
+                49.609901428222656
             ],
             "RenderType": "Default",
             "Rotation": [
@@ -79,28 +2964,1471 @@
                 0.0,
                 0.0
             ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Marrow",
+            "Name": "box_(72)",
+            "Position": [
+                -69.01363372802734,
+                0.736385703086853,
+                63.904151916503906
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                -3.948150157928467,
+                87.96973419189453,
+                -101.68350982666016
+            ],
+            "Scale": [
+                1.113044023513794,
+                1.113044023513794,
+                1.113044023513794
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Pumpkin",
+            "Name": "box_(73)",
+            "Position": [
+                -67.48892211914063,
+                0.19545656442642212,
+                64.47499084472656
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.311301827430725,
+                1.311301827430725,
+                1.311301827430725
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "wood_timber2",
+            "Name": "box_(101)",
+            "Position": [
+                -46.47533416748047,
+                0.18067780137062073,
+                51.287391662597656
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                -53.04251480102539,
+                96.34063720703125
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(74)",
+            "Position": [
+                -60.489402770996094,
+                3.0511016845703125,
+                38.16565704345703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Brush_11",
+            "Name": "box_(106)",
+            "Position": [
+                -56.078922271728516,
+                0.13841216266155243,
+                48.06965637207031
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(75)",
+            "Position": [
+                -55.8729248046875,
+                3.0511016845703125,
+                38.16565704345703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Brush_11",
+            "Name": "box_(107)",
+            "Position": [
+                -57.01815414428711,
+                0.13841216266155243,
+                45.70363998413086
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(76)",
+            "Position": [
+                -51.563087463378906,
+                3.0511016845703125,
+                38.16565704345703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Log_01",
+            "Name": "box_(104)",
+            "Position": [
+                -46.39291000366211,
+                0.06803477555513382,
+                48.14680480957031
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                -131.0184783935547
+            ],
+            "Scale": [
+                1.0485364198684692,
+                1.0485364198684692,
+                1.0485364198684692
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(77)",
+            "Position": [
+                -47.40640640258789,
+                3.0511016845703125,
+                38.16565704345703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Log_01",
+            "Name": "box_(105)",
+            "Position": [
+                -46.57282257080078,
+                0.2598653733730316,
+                48.14680480957031
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                -131.0184783935547
+            ],
+            "Scale": [
+                1.0485364198684692,
+                1.0485364198684692,
+                1.0485364198684692
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(78)",
+            "Position": [
+                -43.17090606689453,
+                3.0511016845703125,
+                38.16565704345703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(79)",
+            "Position": [
+                -42.947975158691406,
+                3.0511016845703125,
+                34.38975143432617
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(80)",
+            "Position": [
+                -42.947975158691406,
+                3.0511016845703125,
+                30.184309005737305
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(81)",
+            "Position": [
+                -42.947975158691406,
+                3.0511016845703125,
+                26.32964515686035
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(82)",
+            "Position": [
+                -46.98720169067383,
+                3.0511016845703125,
+                26.017742156982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(83)",
+            "Position": [
+                -50.917724609375,
+                3.0511016845703125,
+                26.017742156982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(84)",
+            "Position": [
+                -55.45445251464844,
+                3.0511016845703125,
+                26.017742156982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(85)",
+            "Position": [
+                -59.89897537231445,
+                3.0511016845703125,
+                26.017742156982422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(86)",
+            "Position": [
+                -53.98509216308594,
+                0.765841007232666,
+                48.374698638916016
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(87)",
+            "Position": [
+                -52.31740188598633,
+                0.765841007232666,
+                45.01241683959961
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                40.36048889160156,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(88)",
+            "Position": [
+                -48.68104553222656,
+                0.765841007232666,
+                43.819889068603516
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(89)",
+            "Position": [
+                -44.606510162353516,
+                0.765841007232666,
+                43.81044387817383
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(90)",
+            "Position": [
+                -40.457603454589844,
+                0.765841007232666,
+                43.81044387817383
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(91)",
+            "Position": [
+                -36.29328918457031,
+                0.765841007232666,
+                43.81044387817383
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "WoodenFence_06",
+            "Name": "box_(92)",
+            "Position": [
+                -32.24055099487305,
+                0.765841007232666,
+                43.81044387817383
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(93)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                67.1743392944336
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(94)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                63.05921173095703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(95)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                59.00450134277344
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(96)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                54.90692138671875
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(97)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                50.442893981933594
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -255.15774536132813,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_02",
+            "Name": "box_(98)",
+            "Position": [
+                -35.762969970703125,
+                3.0511016845703125,
+                46.30964279174805
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -210.13882446289063,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Well_02",
+            "Name": "box_(99)",
+            "Position": [
+                -40.47919845581055,
+                1.449202299118042,
+                48.9832763671875
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                88.2575912475586,
+                0.0
+            ],
+            "Scale": [
+                1.0614718198776245,
+                1.0614718198776245,
+                1.0614718198776245
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Brush_11",
+            "Name": "box_(108)",
+            "Position": [
+                -58.635257720947266,
+                0.13841216266155243,
+                47.60359191894531
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "PineTree_01",
+            "Name": "box_(109)",
+            "Position": [
+                -61.85145950317383,
+                2.1473934650421143,
+                47.492759704589844
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                50.8660774230957,
+                0.0
+            ],
+            "Scale": [
+                0.7041051983833313,
+                0.7041051983833313,
+                0.7041051983833313
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "SNB_Flower_12",
+            "Name": "box_(110)",
+            "Position": [
+                -55.25096130371094,
+                0.46510371565818787,
+                46.03795623779297
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                91.90835571289063,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "SNB_Flower_12",
+            "Name": "box_(111)",
+            "Position": [
+                -59.1899299621582,
+                0.46510371565818787,
+                45.786190032958984
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                91.90835571289063,
+                0.0
+            ],
+            "Scale": [
+                0.5548612475395203,
+                0.5548612475395203,
+                0.5548612475395203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false,
+            "TexRotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "TexScale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexTranslation": [
+                0.0,
+                0.0,
+                0.0
+            ]
         }
     ],
     "Grass": [
         {
             "Density": [
-                12,
-                17
+                21,
+                13
             ],
             "Material": "grass_3",
             "Name": "grass",
             "Position": [
+                -46.701168060302734,
                 0.0,
-                0.0,
-                0.0
+                63.863250732421875
             ],
             "QuadSize": [
-                1.0,
-                1.0
+                2.0,
+                2.0
             ],
             "Size": [
-                5.0,
-                5.0
+                17.139509201049805,
+                7.5488128662109375
             ],
             "SizeVariation": 0.0
         }
@@ -156,7 +4484,7 @@
             {
                 "FallOffEnd": 3.4250001907348633,
                 "FallOffStart": 1.7125000953674316,
-                "Name": "EditLight",
+                "Name": "P_(1)",
                 "Position": [
                     0.0,
                     0.8531982898712158,
@@ -169,18 +4497,18 @@
                 ]
             },
             {
-                "FallOffEnd": 12.0,
-                "FallOffStart": 10.0,
-                "Name": "P_(1)",
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
+                "Name": "EditLight",
                 "Position": [
-                    -3.0,
-                    3.0,
+                    0.0,
+                    0.8531982898712158,
                     0.0
                 ],
                 "Strength": [
                     1.0,
-                    0.0,
-                    0.25
+                    1.0,
+                    1.0
                 ]
             }
         ]
@@ -197,9 +4525,9 @@
             "Name": "particle_fire",
             "ParticleCount": 250,
             "Position": [
-                0.0,
-                3.0,
-                5.0
+                -48.160011291503906,
+                0.0031065214425325394,
+                49.5711555480957
             ],
             "Size": [
                 1.0,
@@ -219,9 +4547,9 @@
             "Name": "particle_smoke",
             "ParticleCount": 250,
             "Position": [
-                2.0,
-                3.0,
-                5.0
+                -48.24209976196289,
+                -1.9005438089370728,
+                49.668113708496094
             ],
             "Size": [
                 1.0,
@@ -279,9 +4607,9 @@
                 0.05000000074505806
             ],
             "Position": [
-                10.0,
+                -53.49156951904297,
                 0.0,
-                0.0
+                12.542264938354492
             ],
             "Rotation": [
                 0.0,
