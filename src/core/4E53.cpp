@@ -285,7 +285,24 @@ bool P_4E53::Initialize()
         editLightCamera->updateFixedCamera(XMFLOAT3(0.0f, 0.0f, 0.0f), 5.0f, 0.0f);
 
 
-        editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
+        for (int i = 0; i < ServiceProvider::getActiveLevel()->mLightObjects.size(); i++)
+        {
+            if (ServiceProvider::getActiveLevel()->mLightObjects[i]->name == "EditLight")
+            {
+                editLight = ServiceProvider::getActiveLevel()->mLightObjects[i].get();
+                break;
+            }
+
+            
+        }
+
+        if (!editLight)
+        {
+            LOG(Severity::Warning, "Could not find Edit Light in level!");
+            editLight = ServiceProvider::getActiveLevel()->mLightObjects[3].get();
+        }
+
+        
         editLight->setStrength(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 
