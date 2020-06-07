@@ -390,20 +390,6 @@ bool Level::save()
 
     for (const auto& e : mGameObjects)
     {
-        //if (e.second->renderItem->renderType == RenderType::Composite ||
-        //    e.second->renderItem->renderType == RenderType::Terrain ||
-        //    e.second->renderItem->renderType == RenderType::TerrainNoShadow ||
-        //    e.second->renderItem->renderType == RenderType::TerrainWireFrame ||
-        //    e.second->renderItem->renderType == RenderType::Sobel ||
-        //    e.second->renderItem->renderType == RenderType::Sky ||
-        //    e.second->renderItem->renderType == RenderType::Debug ||
-        //    e.second->renderItem->renderType == RenderType::Hitbox ||
-        //    e.second->renderItem->renderType == RenderType::ShadowAlpha ||
-        //    e.second->renderItem->renderType == RenderType::ShadowDefault ||
-        //    e.second->gameObjectType == GameObjectType::Water ||
-        //    e.second->gameObjectType == GameObjectType::Grass ||
-        //    e.second->gameObjectType == GameObjectType::Particle)
-        //    continue;
         if (e.second->gameObjectType != GameObjectType::Static) continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());

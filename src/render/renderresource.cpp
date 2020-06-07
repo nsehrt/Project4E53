@@ -112,7 +112,17 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
             /*set per sub mesh material*/
             for (auto& e : mModels[entry.path().stem().string()]->meshes)
             {
-                e->material = mMaterials[e->materialName].get();
+                if (mMaterials.find(e->materialName) != mMaterials.end())
+                {
+                    e->material = mMaterials[e->materialName].get();
+                }
+                else
+                {
+                    LOG(Severity::Warning, "Model " << entry.path().stem().string() << " uses non existing material " << e->materialName << "!");
+                    e->material = mMaterials["default"].get();
+                    e->materialName = "default";
+                }
+
             }
         }
         else
