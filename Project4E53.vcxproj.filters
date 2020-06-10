@@ -40,9 +40,6 @@
     <ClInclude Include="src\util\log.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\expected.h">
-      <Filter>Source Files\src\util</Filter>
-    </ClInclude>
     <ClInclude Include="src\extern\tinyxml2.h">
       <Filter>Source Files\src\extern</Filter>
     </ClInclude>
@@ -145,6 +142,9 @@
     <ClInclude Include="src\render\blur.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\skinnedmodelloader.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -242,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="src\render\blur.cpp">
       <Filter>Source Files\src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\skinnedmodelloader.cpp">
+      <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

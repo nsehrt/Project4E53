@@ -188,6 +188,7 @@
     <ClCompile Include="src\util\modelloader.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
     <ClCompile Include="src\util\settings.cpp" />
+    <ClCompile Include="src\util\skinnedmodelloader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debuginfo.h" />
@@ -221,13 +222,13 @@
     <ClInclude Include="src\render\sobel.h" />
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
-    <ClInclude Include="src\util\expected.h" />
     <ClInclude Include="src\util\geogen.h" />
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\mathhelper.h" />
     <ClInclude Include="src\util\modelloader.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
     <ClInclude Include="src\util\settings.h" />
+    <ClInclude Include="src\util\skinnedmodelloader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

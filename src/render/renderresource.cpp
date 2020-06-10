@@ -103,11 +103,11 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     {
         if (entry.is_directory())continue;
         
-        ModelReturn mRet = mLoader.loadB3D(entry);
-        if (mRet.errorCode == 0)
+        std::unique_ptr<Model> tModel = mLoader.loadB3D(entry);
+        if (tModel)
         {
             modelCounter++;
-            mModels[entry.path().stem().string()] = std::move(mRet.model);
+            mModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
             for (auto& e : mModels[entry.path().stem().string()]->meshes)

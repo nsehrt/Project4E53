@@ -6,17 +6,17 @@
 #include "serviceprovider.h"
 #include <filesystem>
 
-class ModelLoader
+class SkinnedModelLoader
 {
 public:
-    explicit ModelLoader(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
+    explicit SkinnedModelLoader(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList)
     {
         device = _device;
         cmdList = _cmdList;
     }
-    ~ModelLoader() = default;
+    ~SkinnedModelLoader() = default;
 
-    std::unique_ptr<Model> loadB3D(const std::filesystem::directory_entry& file);
+    /*SkinnedModel* */void loadS3D(const std::filesystem::directory_entry& file);
 
 private:
     ID3D12Device* device;

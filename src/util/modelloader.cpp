@@ -3,9 +3,8 @@
 
 using namespace DirectX;
 
-ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileName)
+std::unique_ptr<Model> ModelLoader::loadB3D(const std::filesystem::directory_entry& fileName)
 {
-    ModelReturn mRet;
 
     /*open file*/
     std::streampos fileSize;
@@ -35,15 +34,14 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     if (header == false)
     {
         /*header incorrect*/
-        mRet.errorCode = 1;
-        return mRet;
+        return nullptr;
     }
 
     /*number of meshes*/
     char numMeshes = 0;
     file.read(&numMeshes, sizeof(numMeshes));
 
-    mRet.model = std::make_unique<Model>();
+    std::unique_ptr<Model> mRet = std::make_unique<Model>();
 
     XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
     XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -128,22 +126,22 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
         m->IndexBufferByteSize = ibByteSize;
         m->IndexCount = (UINT)indices.size();
 
-        mRet.model->group = fileName.path().parent_path().filename().string();
-        mRet.model->meshes.push_back(std::move(m));
+        mRet->group = fileName.path().parent_path().filename().string();
+        mRet->meshes.push_back(std::move(m));
         indices.clear();
     }
 
     /*create AABB*/
-    XMStoreFloat3(&mRet.model->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mRet.model->boundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mRet->boundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mRet->boundingBox.Extents, 0.5f * (vMax - vMin));
 
-    XMStoreFloat3(&mRet.model->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mRet.model->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mRet->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mRet->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
 
     GeometryGenerator geoGen;
-    GeometryGenerator::MeshData boxMesh = geoGen.CreateBox(mRet.model->boundingBox.Extents.x * 2.f,
-                                                           mRet.model->boundingBox.Extents.y * 2.f,
-                                                           mRet.model->boundingBox.Extents.z * 2.f,
+    GeometryGenerator::MeshData boxMesh = geoGen.CreateBox(mRet->boundingBox.Extents.x * 2.f,
+                                                           mRet->boundingBox.Extents.y * 2.f,
+                                                           mRet->boundingBox.Extents.z * 2.f,
                                                            0);
 
     std::vector<Vertex> vertices(boxMesh.Vertices.size());
@@ -151,7 +149,7 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
 
     for (size_t i = 0; i < boxMesh.Vertices.size(); i++)
     {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMesh.Vertices[i].Position), XMLoadFloat3(&mRet.model->boundingBox.Center)));
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMesh.Vertices[i].Position), XMLoadFloat3(&mRet->boundingBox.Center)));
         vertices[i].Normal = boxMesh.Vertices[i].Normal;
         vertices[i].TexC = boxMesh.Vertices[i].TexC;
         vertices[i].TangentU = boxMesh.Vertices[i].TangentU;
@@ -176,8 +174,8 @@ ModelReturn ModelLoader::loadB3D(const std::filesystem::directory_entry& fileNam
     hitbox->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                           cmdList, indices.data(), ibByteSize, hitbox->IndexBufferUploader);
 
-    mRet.model->boundingBoxMesh = std::move(hitbox);
-    mRet.model->name = fileName.path().stem().string();
+    mRet->boundingBoxMesh = std::move(hitbox);
+    mRet->name = fileName.path().stem().string();
 
     return mRet;
 }
