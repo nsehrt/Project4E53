@@ -58,7 +58,7 @@ std::unique_ptr<Model> ModelLoader::loadB3D(const std::filesystem::directory_ent
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
 
-        char* matStr = new char[slen + 1];
+        char* matStr = new char[(INT_PTR)slen + 1];
         file.read(matStr, slen);
         matStr[slen] = '\0';
 

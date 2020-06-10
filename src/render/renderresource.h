@@ -13,6 +13,8 @@
 
 #define MODEL_PATH "data/model"
 #define TEXTURE_PATH "data/texture"
+#define SKINNED_PATH "data/skinned"
+#define ANIM_PATH "data/animation"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -32,7 +34,7 @@ public:
     RenderResource& operator=(const RenderResource& rhs) = delete;
 
     /*set up render resource*/
-    bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath);
+    bool init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath, const std::filesystem::path& _skinnedPath, const std::filesystem::path& _animPath);
 
     void onResize();
 

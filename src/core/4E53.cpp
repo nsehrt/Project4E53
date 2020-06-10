@@ -65,7 +65,7 @@ private:
 
 };
 
-int gNumFrameResources = 3;
+int gNumFrameResources = 1;
 
 /*******/
 /*main entry point*/
@@ -203,6 +203,8 @@ bool P_4E53::Initialize()
     /*build dx12 resources*/
     std::filesystem::path texturePath(TEXTURE_PATH);
     std::filesystem::path modelPath(MODEL_PATH);
+    std::filesystem::path skinnedPath(SKINNED_PATH);
+    std::filesystem::path animPath(ANIM_PATH);
 
     if (!std::filesystem::exists(texturePath))
     {
@@ -219,7 +221,7 @@ bool P_4E53::Initialize()
     /*initialize and register render resource*/
     std::shared_ptr<RenderResource> renderResource(new RenderResource(mRtvHeap, mDsvHeap));
 
-    if (!renderResource->init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath))
+    if (!renderResource->init(mDevice.Get(), mCommandList.Get(), texturePath, modelPath, skinnedPath, animPath))
     {
         ServiceProvider::getLogger()->print<Severity::Error>("Initialising render resouce failed!");
         return false;

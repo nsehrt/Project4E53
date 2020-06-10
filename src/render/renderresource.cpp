@@ -1,14 +1,16 @@
 #include "renderresource.h"
 #include "../util/modelloader.h"
+#include "../util/skinnedmodelloader.h"
 #include "../util/serviceprovider.h"
 
-bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath)
+bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath, const std::filesystem::path& _skinnedPath, const std::filesystem::path& _animPath)
 {
     device = _device;
     cmdList = _cmdList;
 
     int textureCounter = 0;
     int modelCounter = 0;
+    int skinnedCounter = 0;
 
     mCbvSrvUavDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -96,7 +98,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         return false;
     }
 
-    /*load all models*/
+    /*load all static models*/
     ModelLoader mLoader(device, cmdList);
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(_modelPath))
@@ -132,6 +134,48 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     }
 
     LOG(Severity::Info, "Successfully loaded " << modelCounter << " models.");
+
+
+    /*load all skinned models*/
+
+    SkinnedModelLoader sLoader(device, cmdList);
+
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(_skinnedPath))
+    {
+        if (entry.is_directory())continue;
+
+        std::unique_ptr<Model> tModel = sLoader.loadS3D(entry);
+
+        if (tModel)
+        {
+            skinnedCounter++;
+            mModels[entry.path().stem().string()] = std::move(tModel);
+
+            /*set per sub mesh material*/
+            for (auto& e : mModels[entry.path().stem().string()]->meshes)
+            {
+                if (mMaterials.find(e->materialName) != mMaterials.end())
+                {
+                    e->material = mMaterials[e->materialName].get();
+                }
+                else
+                {
+                    LOG(Severity::Warning, "Model " << entry.path().stem().string() << " uses non existing material " << e->materialName << "!");
+                    e->material = mMaterials["default"].get();
+                    e->materialName = "default";
+                }
+
+            }
+        }
+        else
+        {
+            LOG(Severity::Warning, "Failed to load model " << entry.path().u8string() << "!");
+        }
+    }
+
+    LOG(Severity::Info, "Successfully loaded " << skinnedCounter << " skinned models.");
+
 
     /*also generate some default shapes*/
 
