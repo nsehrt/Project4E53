@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-std::unique_ptr<Model> SkinnedModelLoader::loadS3D(const std::filesystem::directory_entry& fileName)
+std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem::directory_entry& fileName)
 {
     /*open file*/
     std::streampos fileSize;
@@ -100,7 +100,11 @@ std::unique_ptr<Model> SkinnedModelLoader::loadS3D(const std::filesystem::direct
     char numMeshes = 0;
     file.read(&numMeshes, sizeof(numMeshes));
 
-    std::unique_ptr<Model> mRet = std::make_unique<Model>();
+    std::unique_ptr<SkinnedModel> mRet = std::make_unique<SkinnedModel>();
+
+    mRet->boneCount = numBones;
+    mRet->boneHierarchy = boneHierarchy;
+    mRet->boneOffsets = boneOffset;
 
     XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
     XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -129,9 +133,10 @@ std::unique_ptr<Model> SkinnedModelLoader::loadS3D(const std::filesystem::direct
         int vertCount = 0;
         file.read((char*)(&vertCount), sizeof(vertCount));
 
-        std::vector<Vertex> vertices(vertCount);
+        std::vector<SkinnedVertex> vertices(vertCount);
 
-        UINT temporary;
+        int tempInt;
+        float tempFloat;
 
         /*vertex properties*/
         for (int j = 0; j < vertCount; j++)
@@ -152,18 +157,28 @@ std::unique_ptr<Model> SkinnedModelLoader::loadS3D(const std::filesystem::direct
             file.read((char*)(&vertices[j].TangentU.z), sizeof(float));
 
             /*bone indices & weights*/
-            file.read((char*)&temporary, sizeof(UINT));
-            file.read((char*)&temporary, sizeof(float));
+            file.read((char*)&tempInt, sizeof(UINT));
+            file.read((char*)&tempFloat, sizeof(float));
 
-            file.read((char*)&temporary, sizeof(UINT));
-            file.read((char*)&temporary, sizeof(float));
+            vertices[j].BoneIndices[0] = (BYTE)tempInt;
+            vertices[j].BoneWeights.x = tempFloat;
 
-            file.read((char*)&temporary, sizeof(UINT));
-            file.read((char*)&temporary, sizeof(float));
+            file.read((char*)&tempInt, sizeof(UINT));
+            file.read((char*)&tempFloat, sizeof(float));
 
-            file.read((char*)&temporary, sizeof(UINT));
-            file.read((char*)&temporary, sizeof(float));
+            vertices[j].BoneIndices[1] = (BYTE)tempInt;
+            vertices[j].BoneWeights.y = tempFloat;
 
+            file.read((char*)&tempInt, sizeof(UINT));
+            file.read((char*)&tempFloat, sizeof(float));
+
+            vertices[j].BoneIndices[2] = (BYTE)tempInt;
+            vertices[j].BoneWeights.z = tempFloat;
+
+            file.read((char*)&tempInt, sizeof(UINT));
+            file.read((char*)&tempFloat, sizeof(float));
+
+            vertices[j].BoneIndices[3] = (BYTE)tempInt;
 
             /*collision box related*/
             XMVECTOR P = XMLoadFloat3(&vertices[j].Pos);
@@ -186,7 +201,7 @@ std::unique_ptr<Model> SkinnedModelLoader::loadS3D(const std::filesystem::direct
             indices.push_back((unsigned short)temp);
         }
 
-        const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+        const UINT vbByteSize = (UINT)vertices.size() * sizeof(SkinnedVertex);
         const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned short);
 
         m->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
@@ -195,7 +210,7 @@ std::unique_ptr<Model> SkinnedModelLoader::loadS3D(const std::filesystem::direct
         m->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(device,
                                                          cmdList, indices.data(), ibByteSize, m->IndexBufferUploader);
 
-        m->VertexByteStride = sizeof(Vertex);
+        m->VertexByteStride = sizeof(SkinnedVertex);
         m->VertexBufferByteSize = vbByteSize;
         m->IndexFormat = DXGI_FORMAT_R16_UINT;
         m->IndexBufferByteSize = ibByteSize;

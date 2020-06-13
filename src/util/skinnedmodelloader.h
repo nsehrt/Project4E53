@@ -16,7 +16,7 @@ public:
     }
     ~SkinnedModelLoader() = default;
 
-    std::unique_ptr<Model> loadS3D(const std::filesystem::directory_entry& fileName);
+    std::unique_ptr<SkinnedModel> loadS3D(const std::filesystem::directory_entry& fileName);
 
 private:
     ID3D12Device* device;

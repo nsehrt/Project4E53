@@ -102,6 +102,7 @@ struct Mesh
     }
 };
 
+/*static model*/
 struct Model
 {
     std::string name;
@@ -123,7 +124,9 @@ struct KeyFrame
     explicit KeyFrame() : timeStamp(0.0f),
         translation(0.0f, 0.0f, 0.0f),
         scale(1.0f, 1.0f, 1.0f),
-        rotationQuat(0.0f, 0.0f, 0.0f, 1.0f){ }
+        rotationQuat(0.0f, 0.0f, 0.0f, 1.0f)
+    {
+    }
     ~KeyFrame() = default;
 
     float timeStamp;
@@ -204,6 +207,27 @@ public:
 
     //void Interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms)const;
 };
+
+/*skinned model*/
+struct SkinnedModel : Model
+{
+    AnimationClip* currentClip;
+    float timePos = 0.0f;
+
+    void calculateFinalTransforms()
+    {
+
+    }
+
+    /*gets copied to gpu*/
+    std::vector<DirectX::XMFLOAT4X4> finalTransforms;
+
+    /*bone information*/
+    UINT boneCount;
+    std::vector<int> boneHierarchy;
+    std::vector<DirectX::XMFLOAT4X4> boneOffsets;
+};
+
 
 
 struct Light

@@ -147,15 +147,15 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     {
         if (entry.is_directory())continue;
 
-        std::unique_ptr<Model> tModel = sLoader.loadS3D(entry);
+        std::unique_ptr<SkinnedModel> tModel = sLoader.loadS3D(entry);
 
         if (tModel)
         {
             skinnedCounter++;
-            mModels[entry.path().stem().string()] = std::move(tModel);
+            mSkinnedModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
-            for (auto& e : mModels[entry.path().stem().string()]->meshes)
+            for (auto& e : mSkinnedModels[entry.path().stem().string()]->meshes)
             {
                 if (mMaterials.find(e->materialName) != mMaterials.end())
                 {
@@ -716,6 +716,17 @@ void RenderResource::buildInputLayouts()
     {"AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
     {"VISIBLE", 0, DXGI_FORMAT_R32_UINT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
                             });
+
+    /*skinned*/
+    mInputLayouts.push_back({
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+    {"WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
+                            });
+
 }
 
 #pragma region PSO

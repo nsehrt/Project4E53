@@ -67,6 +67,7 @@ public:
     /*resources*/
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
     std::unordered_map<std::string, std::unique_ptr<Model>> mModels;
+    std::unordered_map<std::string, std::unique_ptr<SkinnedModel>> mSkinnedModels;
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
     std::unordered_map < std::string, std::unique_ptr<AnimationClip>> mAnimations;
 
