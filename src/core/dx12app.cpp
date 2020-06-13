@@ -588,8 +588,7 @@ void DX12App::logAdapters()
 
         if (ServiceProvider::getSettings()->miscSettings.AdapterName == "")
         {
-            std::wstring t = desc.Description;
-            std::string s(t.begin(), t.end());
+            std::string s = d3dUtil::ws2s(desc.Description);
             ServiceProvider::getSettings()->miscSettings.AdapterName = s;
         }
 

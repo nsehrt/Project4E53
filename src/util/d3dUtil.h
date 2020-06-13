@@ -111,6 +111,16 @@ public:
         CType.widen(str.data(), str.data() + str.length(), &wideStringBuffer[0]);
         return std::wstring(&wideStringBuffer[0], wideStringBuffer.size());
     }
+
+    static std::string ws2s(const std::wstring& s)
+    {
+        int len;
+        int slength = (int)s.length() + 1;
+        len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0);
+        std::string r(len, '\0');
+        WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0);
+        return r;
+    }
 };
 
 class DxException
