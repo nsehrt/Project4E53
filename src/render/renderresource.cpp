@@ -1,6 +1,7 @@
 #include "renderresource.h"
 #include "../util/modelloader.h"
 #include "../util/skinnedmodelloader.h"
+#include "../util/cliploader.h"
 #include "../util/serviceprovider.h"
 
 bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath, const std::filesystem::path& _skinnedPath, const std::filesystem::path& _animPath)
@@ -11,6 +12,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     int textureCounter = 0;
     int modelCounter = 0;
     int skinnedCounter = 0;
+    int animCounter = 0;
 
     mCbvSrvUavDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -175,6 +177,30 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     }
 
     LOG(Severity::Info, "Successfully loaded " << skinnedCounter << " skinned models.");
+
+    /*load all animations*/
+
+    ClipLoader cLoader(device, cmdList);
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(_animPath))
+    {
+        if (entry.is_directory()) continue;
+
+        std::unique_ptr<AnimationClip> tClip = cLoader.loadCLP(entry);
+
+        if (tClip)
+        {
+            animCounter++;
+            mAnimations[entry.path().stem().string()] = std::move(tClip);
+        }
+        else
+        {
+            LOG(Severity::Warning, "Failed to load animation clip " << entry.path().u8string() << "!");
+        }
+
+    }
+
+    LOG(Severity::Info, "Successfully loaded " << animCounter << " animation clips.");
 
 
     /*also generate some default shapes*/
@@ -1140,7 +1166,6 @@ bool RenderResource::buildMaterials()
 
         if (mTextures.find(norName) == mTextures.end())
         {
-            material->usesNormalMapping = false;
             norName = "default_nmap.dds";
         }
 

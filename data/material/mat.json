@@ -137,8 +137,8 @@
         "Texture" : "tile",
         "NormalMap" : "tile_nmap",
         "DiffuseAlbedo" : [0.9,0.9,0.9,1.0],
-        "FresnelR0" : [0.2,0.2,0.2],
-        "Roughness" : 0.1
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.9
     },
 
     {

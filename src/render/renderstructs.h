@@ -24,8 +24,6 @@ struct Material
     // Unique material name for lookup.
     std::string Name;
 
-    bool usesNormalMapping = true;
-
     // Index into constant buffer corresponding to this material.
     int MatCBIndex = -1;
 
@@ -41,10 +39,6 @@ struct Material
     int MiscTexture1Index = -1;
     int MiscTexture2Index = -1;
 
-    // Dirty flag indicating the material has changed and we need to update the constant buffer.
-    // Because we have a material constant buffer for each FrameResource, we have to apply the
-    // update to each FrameResource.  Thus, when we modify a material we should set
-    // NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
     int NumFramesDirty = gNumFrameResources;
 
     // Material constant buffer data used for shading.
@@ -121,6 +115,72 @@ struct Model
 
     std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };
+
+
+/*animation clips*/
+struct KeyFrame
+{
+    explicit KeyFrame() : timeStamp(0.0f),
+        translation(0.0f, 0.0f, 0.0f),
+        scale(1.0f, 1.0f, 1.0f),
+        rotationQuat(0.0f, 0.0f, 0.0f, 1.0f){ }
+    ~KeyFrame() = default;
+
+    float timeStamp;
+    DirectX::XMFLOAT3 translation;
+    DirectX::XMFLOAT3 scale;
+    DirectX::XMFLOAT4 rotationQuat;
+};
+
+struct BoneAnimation
+{
+    std::vector<KeyFrame> keyFrames;
+
+    float getStartTime() const
+    {
+        return keyFrames.front().timeStamp;
+    }
+
+    float getEndTime() const
+    {
+        return keyFrames.back().timeStamp;
+    }
+
+    //void interpolate(float time, DirectX::XMFLOAT4X4& matrix) const;
+};
+
+
+struct AnimationClip
+{
+    std::vector<BoneAnimation> boneAnimations;
+
+    float getStartTime() const
+    {
+        float result = MathHelper::Infinity;
+
+        for (const auto& i : boneAnimations)
+        {
+            result = MathHelper::minH(result, i.getStartTime());
+        }
+
+        return result;
+    }
+
+    float getEndTime() const
+    {
+        float result = 0.0f;
+
+        for (const auto& i : boneAnimations)
+        {
+            result = MathHelper::maxH(result, i.getEndTime());
+        }
+
+        return result;
+    }
+
+    //void Interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms)const;
+};
+
 
 struct Light
 {

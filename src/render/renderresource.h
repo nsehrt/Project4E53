@@ -14,7 +14,7 @@
 #define MODEL_PATH "data/model"
 #define TEXTURE_PATH "data/texture"
 #define SKINNED_PATH "data/skinned"
-#define ANIM_PATH "data/animation"
+#define ANIM_PATH "data/anim"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -68,6 +68,7 @@ public:
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
     std::unordered_map<std::string, std::unique_ptr<Model>> mModels;
     std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
+    std::unordered_map < std::string, std::unique_ptr<AnimationClip>> mAnimations;
 
     UINT mRtvDescriptorSize = 0;
     UINT mDsvDescriptorSize = 0;

@@ -145,6 +145,9 @@
     <ClInclude Include="src\util\skinnedmodelloader.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\cliploader.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -244,6 +247,9 @@
       <Filter>Source Files\src\render</Filter>
     </ClCompile>
     <ClCompile Include="src\util\skinnedmodelloader.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\cliploader.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>
