@@ -191,7 +191,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         if (tClip)
         {
             animCounter++;
-            mAnimations[entry.path().stem().string()] = std::move(tClip);
+            mAnimations[tClip->name] = std::move(tClip);
         }
         else
         {

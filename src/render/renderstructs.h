@@ -147,15 +147,28 @@ struct BoneAnimation
     }
 
     //void interpolate(float time, DirectX::XMFLOAT4X4& matrix) const;
+
 };
 
 
 struct AnimationClip
 {
     std::vector<BoneAnimation> boneAnimations;
+    std::string name;
 
-    float getStartTime() const
+private:
+    float startTime = -1.0f;
+    float endTime = -1.0f;
+
+public:
+
+    float getStartTime()
     {
+        if (startTime != -1.0f)
+        {
+            return startTime;
+        }
+
         float result = MathHelper::Infinity;
 
         for (const auto& i : boneAnimations)
@@ -163,11 +176,18 @@ struct AnimationClip
             result = MathHelper::minH(result, i.getStartTime());
         }
 
+        startTime = result;
+
         return result;
     }
 
-    float getEndTime() const
+    float getEndTime()
     {
+        if (endTime != -1.0f)
+        {
+            return endTime;
+        }
+
         float result = 0.0f;
 
         for (const auto& i : boneAnimations)
@@ -175,8 +195,12 @@ struct AnimationClip
             result = MathHelper::maxH(result, i.getEndTime());
         }
 
+        endTime = result;
+
         return result;
     }
+
+
 
     //void Interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms)const;
 };
