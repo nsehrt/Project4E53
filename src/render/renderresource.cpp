@@ -224,7 +224,7 @@ bool RenderResource::loadTexture(const std::filesystem::directory_entry& file, T
 {
     auto texMap = std::make_unique<Texture>();
     texMap->Name = file.path().filename().u8string();
-    texMap->Filename = AnsiToWString(file.path().u8string());
+    texMap->Filename = d3dUtil::s2ws(file.path().u8string());
     texMap->Type = type;
 
     HRESULT hr = DirectX::CreateDDSTextureFromFile12(device, cmdList, texMap->Filename.c_str(), texMap->Resource, texMap->UploadHeap);

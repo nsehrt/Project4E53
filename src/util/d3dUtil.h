@@ -30,7 +30,7 @@
 #define ThrowIfFailed(x)                                              \
 {                                                                     \
     HRESULT hr__ = (x);                                               \
-    std::wstring wfn = AnsiToWString(__FILE__);                       \
+    std::wstring wfn = d3dUtil::s2ws(__FILE__);                       \
     if(FAILED(hr__)) { throw DxException(hr__, L#x, wfn, __LINE__); } \
 }
 #endif
@@ -61,13 +61,6 @@
 }
 
 extern int gNumFrameResources;
-
-inline std::wstring AnsiToWString(const std::string& cstr)
-{
-    WCHAR buffer[512];
-    MultiByteToWideChar(CP_ACP, 0, cstr.c_str(), -1, buffer, 512);
-    return std::wstring(buffer);
-}
 
 class d3dUtil
 {
@@ -104,7 +97,7 @@ public:
         const std::string& target
     );
 
-    static std::wstring convertStringToWstring(const std::string& str)
+    static inline std::wstring s2ws(const std::string& str)
     {
         const std::ctype<wchar_t>& CType = std::use_facet<std::ctype<wchar_t> >(std::locale());
         std::vector<wchar_t> wideStringBuffer(str.length());
@@ -112,7 +105,7 @@ public:
         return std::wstring(&wideStringBuffer[0], wideStringBuffer.size());
     }
 
-    static std::string ws2s(const std::wstring& s)
+    static inline std::string ws2s(const std::wstring& s)
     {
         int len;
         int slength = (int)s.length() + 1;

@@ -389,8 +389,8 @@ void EditModeHUD::update()
         }
         else if (editSetting->toolMode == EditTool::ObjectMeta)
         {
-            mFontElements[10]->text = d3dUtil::convertStringToWstring(editSetting->currentSelection->renderItem->Model->name);
-            mFontElements[12]->text = L"Group: " + d3dUtil::convertStringToWstring(editSetting->selectedGroup);
+            mFontElements[10]->text = d3dUtil::s2ws(editSetting->currentSelection->renderItem->Model->name);
+            mFontElements[12]->text = L"Group: " + d3dUtil::s2ws(editSetting->selectedGroup);
             mFontElements[11]->text = editSetting->currentSelection->renderItem->renderType == RenderType::Default ?
                 L"Mode: Default" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultAlpha ?
                 L"Mode: DefaultAlpha" : editSetting->currentSelection->renderItem->renderType == RenderType::DefaultTransparency ?
@@ -408,7 +408,7 @@ void EditModeHUD::update()
 
 
         /*object info window*/
-        mFontElements[9]->text = d3dUtil::convertStringToWstring(editSetting->currentSelection->name);
+        mFontElements[9]->text = d3dUtil::s2ws(editSetting->currentSelection->name);
 
         XMFLOAT3 p = editSetting->currentSelection->getPosition();
         XMFLOAT3 s = editSetting->currentSelection->getScale();
@@ -453,7 +453,7 @@ void EditModeHUD::update()
     }
     else if (editSetting->toolMode == EditTool::Light)
     {
-        mFontElements[13]->text = d3dUtil::convertStringToWstring(ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->name);
+        mFontElements[13]->text = d3dUtil::s2ws(ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->name);
         
         std::wstringstream ss;
         ss << std::setprecision(4) << ServiceProvider::getActiveLevel()->mLightObjects[editSetting->currentLightSelectionIndex]->getFallOffStart();
