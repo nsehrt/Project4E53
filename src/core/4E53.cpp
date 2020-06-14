@@ -1606,8 +1606,10 @@ void P_4E53::draw(const GameTime& gt)
     ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
     mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
+    /*set main root signature*/
     mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
 
+    /*set material buffer and texture array*/
     auto matBuffer = mCurrentFrameResource->MaterialBuffer->getResource();
     mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
     mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
@@ -1641,10 +1643,10 @@ void P_4E53::draw(const GameTime& gt)
     /*set render target*/
     mCommandList->OMSetRenderTargets(1, &offscreenRT->getRtv(), true, &getDepthStencilView());
 
+    /*set per pass data*/
     auto pass2CB = mCurrentFrameResource->PassCB->getResource();
     mCommandList->SetGraphicsRootConstantBufferView(1, pass2CB->GetGPUVirtualAddress());
 
-    /*bind shadow map to slot 3 and cubemap to 4*/
     if (ServiceProvider::getSettings()->graphicSettings.ShadowEnabled)
     {
         mCommandList->SetGraphicsRootDescriptorTable(3, renderResource->getShadowMap()->Srv());
@@ -1656,10 +1658,11 @@ void P_4E53::draw(const GameTime& gt)
         mCommandList->SetGraphicsRootDescriptorTable(3, whiteDescriptor);
     }
 
-    /*draw terrain*/
+    /*switch to terrain signature*/
     mCommandList->SetGraphicsRootSignature(renderResource->mTerrainRootSignature.Get());
     renderResource->setPSO(ServiceProvider::getEditSettings()->WireFrameOn ? RenderType::TerrainWireFrame : RenderType::Terrain);
 
+    /*bind textures directly*/
     mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[0]);
     mCommandList->SetGraphicsRootDescriptorTable(5, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[1]);
     mCommandList->SetGraphicsRootDescriptorTable(6, ServiceProvider::getActiveLevel()->mTerrain->blendTexturesHandle[2]);
@@ -1667,9 +1670,10 @@ void P_4E53::draw(const GameTime& gt)
 
     ServiceProvider::getActiveLevel()->drawTerrain();
 
-    /*draw everything*/
-
+    /*back to main root signature*/
     mCommandList->SetGraphicsRootSignature(renderResource->mMainRootSignature.Get());
+
+    /*bind cube map and texture array*/
     mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->defaultCubeMapHandle);
     mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
@@ -1691,6 +1695,9 @@ void P_4E53::draw(const GameTime& gt)
     // Specify the buffers we are going to render to.
     mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
 
+
+
+    ///*switch to post process root signature*/
     mCommandList->SetGraphicsRootSignature(renderResource->mPostProcessRootSignature.Get());
 
     if (renderResource->useMultColor)
@@ -1723,6 +1730,8 @@ void P_4E53::draw(const GameTime& gt)
 
     mCommandList->DrawInstanced(6, 1, 0, 0);
 
+
+    /*apply blur filter*/
     auto blurFilter = renderResource->getBlurFilter();
 
     if (blurFilter->getSigma() > 0.0f)
@@ -1740,10 +1749,10 @@ void P_4E53::draw(const GameTime& gt)
                                       D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET));
     }
 
+    /*draw hud for the edit mode*/
     if (editModeHUD != nullptr)
         editModeHUD->draw();
 
-    // Indicate a state transition on the resource usage.
     mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
                                   D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
@@ -1758,12 +1767,12 @@ void P_4E53::draw(const GameTime& gt)
     ThrowIfFailed(mSwapChain->Present(vsyncIntervall, 0));
     mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
+    if (editModeHUD != nullptr)
+        editModeHUD->commit();
+
     /*advance fence on gpu to signal that this frame is finished*/
     renderResource->getCurrentFrameResource()->Fence = ++mCurrentFence;
     mCommandQueue->Signal(mFence.Get(), mCurrentFence);
-
-    if (editModeHUD != nullptr)
-        editModeHUD->commit();
 }
 
 UINT P_4E53::getPointLightIndex(const std::string& name, UINT direction) const
