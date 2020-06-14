@@ -10,9 +10,9 @@ using json = nlohmann::json;
 enum class GameObjectType
 {
     Static,
+    Dynamic,
     Wall,
     Sky,
-    Dynamic,
     Debug,
     Terrain,
     Water,
@@ -78,6 +78,16 @@ public:
     DirectX::XMFLOAT3 getRotation() const
     {
         return Rotation;
+    }
+
+    float getTimePos() const
+    {
+        return timePos;
+    }
+
+    void setTimePos(float _t)
+    {
+        timePos = _t;
     }
 
     /*Texture transform getter/setter*/
@@ -179,6 +189,8 @@ private:
     /*simple rotation animation*/
     bool isSimpleAnimated = false;
     DirectX::XMFLOAT3 SimpleRotation;
+
+    float timePos = 0.0f;
 
     /*precise hitbox needed*/
 

@@ -272,6 +272,7 @@ bool RenderResource::buildRootSignature()
     rootParameter[4].InitAsDescriptorTable(1, &textureTableReg0, D3D12_SHADER_VISIBILITY_PIXEL);
     rootParameter[5].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_ALL);
 
+    /*skinned data*/
     rootParameter[6].InitAsConstantBufferView(2);
 
     /*get the static samplers and bind them to root signature description*/
@@ -1477,7 +1478,7 @@ void RenderResource::buildFrameResource()
         mFrameResources.push_back(std::make_unique<FrameResource>(device,
                                   2, /*main pass and shadow pass cbs*/
                                   MAX_GAME_OBJECTS,
-                                  0,
+                                  MAX_SKINNED_OBJECTS,
                                   (UINT)mMaterials.size(),
                                   250000, /*terrain vertices*/
                                   MAX_PARTICLE_SYSTEMS));

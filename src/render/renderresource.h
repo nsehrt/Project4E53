@@ -188,6 +188,7 @@ private:
     PassConstants mShadowPassConstants;
 
     const UINT MAX_GAME_OBJECTS = 8192;
+    const UINT MAX_SKINNED_OBJECTS = 256;
     const UINT MAX_PARTICLE_SYSTEMS = 64;
     const UINT SHADOW_RADIUS = 40;
 

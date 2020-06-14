@@ -16,6 +16,7 @@ FrameResource::FrameResource(ID3D12Device* device,
     MaterialBuffer = std::make_unique<UploadBuffer<MaterialData>>(device, materialCount, false);
     ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
     TerrainVB = std::make_unique<UploadBuffer<TerrainVertex>>(device, terrainVertexCount, false);
+    SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
 
     ParticleVB.resize(particleSystemCount);
 
@@ -24,7 +25,6 @@ FrameResource::FrameResource(ID3D12Device* device,
         ParticleVB[i] = std::make_unique<UploadBuffer<ParticleVertex>>(device, 5000, false);
     }
 
-    //SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
 }
 
 FrameResource::~FrameResource()

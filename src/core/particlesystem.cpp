@@ -35,7 +35,7 @@ void ParticleSystem::init(const json& particleJson)
 
     /*create mesh*/
     std::vector<std::uint16_t> indices(particleCount);
-    mParticleVertices.resize(particleCount);
+    mParticleVertices.resize(MAX_PARTICLE);
 
     for (size_t i = 0; i < particleCount; i++)
     {

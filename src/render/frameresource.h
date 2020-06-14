@@ -128,8 +128,7 @@ public:
 
     std::vector<std::unique_ptr<UploadBuffer<ParticleVertex>>> ParticleVB;
 
-    //std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
-//std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
+    std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
 
     // Fence value to mark commands up to this fence point.  This lets us
     // check if these frame resources are still in use by the GPU.
