@@ -265,7 +265,7 @@ public:
 /*skinned model*/
 struct SkinnedModel : Model
 {
-    AnimationClip* currentClip;
+    AnimationClip* currentClip = nullptr;
 
     void calculateFinalTransforms(float timePos, std::vector<DirectX::XMFLOAT4X4>& finalTransforms) const
     {
@@ -306,7 +306,7 @@ struct SkinnedModel : Model
     std::vector<DirectX::XMFLOAT4X4> finalTransforms;
 
     /*bone information*/
-    UINT boneCount;
+    UINT boneCount = 0;
     std::vector<int> boneHierarchy;
     std::vector<DirectX::XMFLOAT4X4> boneOffsets;
 };

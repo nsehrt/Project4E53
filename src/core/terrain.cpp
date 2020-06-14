@@ -26,8 +26,8 @@ Terrain::Terrain(const json& terrainInfo)
     heightScale = terrainInfo["HeightScale"];
 
     /*load height map*/
-    mHeightMap.resize(terrainSlices * terrainSlices, 0);
-    std::vector<unsigned short> input(terrainSlices * terrainSlices, 32767);
+    mHeightMap.resize((INT_PTR)terrainSlices * terrainSlices, 0);
+    std::vector<unsigned short> input((INT_PTR)terrainSlices * terrainSlices, 32767);
 
     std::stringstream lFile;
     lFile << terrainPath << terrainInfo["HeightMap"].get<std::string>();
@@ -51,7 +51,7 @@ Terrain::Terrain(const json& terrainInfo)
     terrainHeightMapFileStem = terrainInfo["HeightMap"].get<std::string>();
 
     /*load blend map*/
-    mBlendMap.resize(terrainSlices * terrainSlices, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
+    mBlendMap.resize((INT_PTR)terrainSlices * terrainSlices, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
 
     lFile.str("");
     lFile << terrainPath << terrainInfo["BlendMap"].get<std::string>();
@@ -146,10 +146,10 @@ float Terrain::getHeight(float x, float z)
     //  | /|
     //  |/ |
     // C*--*D
-    float A = mHeightMap[row * terrainSlices + col];
-    float B = mHeightMap[row * terrainSlices + col + 1];
-    float C = mHeightMap[(row + 1) * terrainSlices + col];
-    float D = mHeightMap[(row + 1) * terrainSlices + col + 1];
+    float A = mHeightMap[(INT_PTR)row * terrainSlices + col];
+    float B = mHeightMap[(INT_PTR)row * terrainSlices + col + 1];
+    float C = mHeightMap[((INT_PTR)row + 1) * terrainSlices + col];
+    float D = mHeightMap[((INT_PTR)row + 1) * terrainSlices + col + 1];
 
     // Where we are relative to the cell.
     float s = c - (float)col;

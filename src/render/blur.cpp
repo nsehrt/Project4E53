@@ -94,15 +94,15 @@ std::vector<float> Blur::calculateWeights(float sigma)
     ASSERT(radius <= MaxRadius);
 
     std::vector<float> weights;
-    weights.resize(2 * radius + 1);
+    weights.resize((INT_PTR)2 * radius + 1);
 
     float weightSum = 0.0f;
 
     for (int i = -radius; i <= radius; i++)
     {
         float x = (float)i;
-        weights[i + radius] = expf(-x * x / twoSigma);
-        weightSum += weights[i + radius];
+        weights[(INT_PTR)i + radius] = expf(-x * x / twoSigma);
+        weightSum += weights[(INT_PTR)i + radius];
     }
 
     /*normalize weights*/

@@ -99,8 +99,8 @@ void EditModeHUD::init()
     for (int i = 0; i < mFonts.size(); i++)
     {
         mFonts[i] = std::make_unique<SpriteFont>(renderResource->device, resourceUpload, fontPaths[i].c_str(),
-                                                 m_resourceDescriptors->GetCpuHandle(i + TextureDescriptors::TCount),
-                                                 m_resourceDescriptors->GetGpuHandle(i + TextureDescriptors::TCount));
+                                                 m_resourceDescriptors->GetCpuHandle((INT_PTR)i + TextureDescriptors::TCount),
+                                                 m_resourceDescriptors->GetGpuHandle((INT_PTR)i + TextureDescriptors::TCount));
     }
 
     RenderTargetState rtState(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_D32_FLOAT);
