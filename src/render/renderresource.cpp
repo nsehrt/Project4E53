@@ -246,8 +246,8 @@ bool RenderResource::buildRootSignature()
 
     /*main root signature*/
 
-    /*6 root parameter*/
-    CD3DX12_ROOT_PARAMETER rootParameter[6] = {};
+    /*7 root parameter*/
+    CD3DX12_ROOT_PARAMETER rootParameter[7] = {};
 
     /*1 texture in register 0*/
     CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
@@ -272,9 +272,11 @@ bool RenderResource::buildRootSignature()
     rootParameter[4].InitAsDescriptorTable(1, &textureTableReg0, D3D12_SHADER_VISIBILITY_PIXEL);
     rootParameter[5].InitAsDescriptorTable(1, &textureTableReg1, D3D12_SHADER_VISIBILITY_ALL);
 
+    rootParameter[6].InitAsConstantBufferView(2);
+
     /*get the static samplers and bind them to root signature description*/
 
-    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDescription(6, rootParameter, (UINT)staticSamplers.size(),
+    CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDescription(7, rootParameter, (UINT)staticSamplers.size(),
                                                          staticSamplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
     /*create root signature using the description*/
@@ -630,6 +632,8 @@ void RenderResource::buildShaders()
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
+    mShaders["skinnedVS"] = d3dUtil::CompileShader(L"shader\\Skinned.hlsl", nullptr, "VS", "vs_5_1");
+
     mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["waterDS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "DS", "ds_5_1");
     mShaders["waterHS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "HS", "hs_5_1");
@@ -760,6 +764,20 @@ void RenderResource::buildPSOs()
     defaultPSODesc.SampleDesc.Quality = 0;
     defaultPSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     ThrowIfFailed(device->CreateGraphicsPipelineState(&defaultPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Default])));
+
+
+    /*skinned*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC skinnedPSODesc = defaultPSODesc;
+
+    skinnedPSODesc.InputLayout = { mInputLayouts[4].data(), (UINT)mInputLayouts[4].size() };
+    skinnedPSODesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["skinnedVS"]->GetBufferPointer()),
+        mShaders["skinnedVS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&skinnedPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::SkinnedDefault])));
+
 
     /* default alpha PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultAlphaDesc = defaultPSODesc;

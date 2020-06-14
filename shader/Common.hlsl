@@ -35,7 +35,7 @@ struct MaterialData
     float    MiscFloat2;
 };
 
-// Constant data that varies per frame.
+// per Object data
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
@@ -46,7 +46,7 @@ cbuffer cbPerObject : register(b0)
 	uint gObjPad2;
 };
 
-// Constant data that varies per material.
+// per frame data
 cbuffer cbPass : register(b1)
 {
     float4x4 gView;
@@ -67,6 +67,12 @@ cbuffer cbPass : register(b1)
     float4 gAmbientLight;
 
     Light gLights[MaxLights];
+};
+
+//per skinned object
+cbuffer cbSkinned : register(b2)
+{
+    float4x4 gBoneTransforms[96];
 };
 
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);

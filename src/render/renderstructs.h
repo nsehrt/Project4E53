@@ -276,6 +276,7 @@ enum class RenderType
     DefaultNoNormal,
     NoCullNoNormal,
     DefaultAlpha,
+    SkinnedDefault,
     Sky, /*everything before transparent objects*/
     Particle_Smoke,
     Particle_Fire,
