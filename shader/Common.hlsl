@@ -69,12 +69,6 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
-//per skinned object
-cbuffer cbSkinned : register(b2)
-{
-    float4x4 gBoneTransforms[96];
-};
-
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
 /*static sampler states*/

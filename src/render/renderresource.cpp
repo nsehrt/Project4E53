@@ -725,12 +725,12 @@ void RenderResource::buildInputLayouts()
 
     /*skinned*/
     mInputLayouts.push_back({
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-    {"WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-    {"BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "BONEINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
                             });
 
 }
@@ -771,11 +771,13 @@ void RenderResource::buildPSOs()
     /*skinned*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skinnedPSODesc = defaultPSODesc;
 
+    skinnedPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
     skinnedPSODesc.InputLayout = { mInputLayouts[4].data(), (UINT)mInputLayouts[4].size() };
     skinnedPSODesc.VS =
     {
-        reinterpret_cast<BYTE*>(mShaders["skinnedBindVS"]->GetBufferPointer()),
-        mShaders["skinnedBindVS"]->GetBufferSize()
+        reinterpret_cast<BYTE*>(mShaders["skinnedVS"]->GetBufferPointer()),
+        mShaders["skinnedVS"]->GetBufferSize()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&skinnedPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::SkinnedDefault])));
@@ -1266,6 +1268,7 @@ void RenderResource::updateBuffers(const GameTime& gt)
 
 void RenderResource::setPSO(RenderType renderType)
 {
+    currentPSO = renderType;
     cmdList->SetPipelineState(mPSOs[renderType].Get());
 }
 

@@ -62,6 +62,10 @@ public:
     void updateBuffers(const GameTime& gt);
 
     void setPSO(RenderType renderType);
+    RenderType getPSO()
+    {
+        return currentPSO;
+    }
     ID3D12PipelineState* getPSO(RenderType renderType);
 
     /*resources*/
@@ -133,6 +137,8 @@ public:
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
 private:
+
+    RenderType currentPSO;
 
     std::unordered_map <RenderType, ComPtr<ID3D12PipelineState>> mPSOs;
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;

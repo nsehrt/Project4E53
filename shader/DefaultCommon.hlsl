@@ -4,6 +4,12 @@ TextureCube gCubeMap : register(t0);
 Texture2D gShadowMap : register(t1);
 Texture2D gTextureMaps[1024] : register(t2);
 
+//per skinned object
+cbuffer cbSkinned : register(b2)
+{
+    float4x4 gBoneTransforms[96];
+};
+
 /*calculate the amount the fragment is in shadow*/
 float CalcShadowFactor(float4 shadowPosH)
 {

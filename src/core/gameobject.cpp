@@ -256,7 +256,9 @@ GameObject::GameObject(int index)
 
     auto tItem = std::make_unique<RenderItem>();
     tItem->ObjCBIndex.push_back(index);
-    tItem->ObjCBIndex.push_back(index); tItem->ObjCBIndex.push_back(index); tItem->ObjCBIndex.push_back(index);
+    tItem->ObjCBIndex.push_back(index); 
+    tItem->ObjCBIndex.push_back(index); 
+    tItem->ObjCBIndex.push_back(index);
     tItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
     tItem->Model = renderResource->mModels["box"].get();
 
@@ -267,6 +269,19 @@ GameObject::GameObject(int index)
 
 void GameObject::update(const GameTime& gt)
 {
+    if (gameObjectType == GameObjectType::Dynamic)
+    {
+        timePos += gt.DeltaTime();
+
+        if (timePos >= renderItem->skinnedModel->currentClip->getEndTime())
+        {
+            timePos = 0.0f;
+        }
+
+        renderItem->skinnedModel->calculateFinalTransforms(timePos);
+    }
+
+
     /*simple animation*/
     if (isSimpleAnimated)
     {
@@ -278,18 +293,13 @@ void GameObject::update(const GameTime& gt)
         setRotation(r);
     }
 
-    if (gameObjectType == GameObjectType::Dynamic)
-    {
-        timePos += gt.DeltaTime();
-        renderItem->skinnedModel->calculateFinalTransforms(timePos);
-    }
-
 }
 
 bool GameObject::draw()
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
+
 
     if (!isDrawEnabled &&
         !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
@@ -345,10 +355,8 @@ bool GameObject::draw()
                 cachedObjCBAddress = objCBAddress;
             }
 
-            if (gameObjectType == GameObjectType::Dynamic)
-            {
-                renderResource->cmdList->SetGraphicsRootConstantBufferView(6, renderItem->SkinnedCBIndex);
-            }
+            D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress();
+            renderResource->cmdList->SetGraphicsRootConstantBufferView(6, skinnedCBAddress);
 
             renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
 

@@ -95,45 +95,29 @@ bool Level::load(const std::string& levelFile)
 
     /*add test dynamic object*/
 
-    //auto testObject = std::make_unique<GameObject>(amountObjectCBs++);
-    //XMFLOAT3 pos, scale, rot;
+    auto testObject = std::make_unique<GameObject>(amountObjectCBs++);
 
-    //testObject->name = "Soldier";
+    testObject->name = "soldier";
+    testObject->setPosition({ 0.0f,0.0f,0.0f });
+    testObject->setScale({ 1.0f,1.0f,1.0f });
 
-    //pos.x = 0.0f;
-    //pos.y = 2.0f;
-    //pos.z = 0.0f;
-    //testObject->setPosition(pos);
+    testObject->isShadowEnabled = false;
+    testObject->isCollisionEnabled = false;
+    testObject->isShadowForced = false;
+    testObject->isFrustumCulled = false;
+    testObject->gameObjectType = GameObjectType::Dynamic;
 
-    //scale.x = 1.0f;
-    //scale.y = 1.0f;
-    //scale.z = 1.0f;
-    //testObject->setScale(scale);
+    testObject->renderItem->SkinnedCBIndex = 0;
+    testObject->renderItem->skinnedModel = ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get();
+    testObject->renderItem->skinnedModel->currentClip = ServiceProvider::getRenderResource()->mAnimations["take1"].get();
+    testObject->renderItem->skinnedModel->finalTransforms.resize(58);
+    testObject->renderItem->renderType = RenderType::SkinnedDefault;
+    testObject->setTextureScale({ 1.0f,1.0f,1.0f });
 
-    //rot.x = 0.0f;
-    //rot.y = 0.0f;
-    //rot.z = 0.0f;
-    //testObject->setRotation(rot);
+    testObject->updateTransforms();
 
-    //testObject->isShadowEnabled = false;
-    //testObject->isCollisionEnabled = false;
-    //testObject->isShadowForced = false;
-    //testObject->isFrustumCulled = true;
-    //testObject->gameObjectType = GameObjectType::Dynamic;
-
-    //testObject->renderItem->SkinnedCBIndex = 0;
-    //testObject->renderItem->skinnedModel = ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get();
-    //testObject->renderItem->skinnedModel->currentClip = ServiceProvider::getRenderResource()->mAnimations["take1"].get();
-    //testObject->renderItem->skinnedModel->finalTransforms.resize(58);
-    //testObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["default"].get();
-    //testObject->renderItem->renderType = RenderType::SkinnedDefault;
-    //testObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    //testObject->setTextureScale({ 1.0f,1.0f,1.0f });
-
-    //testObject->updateTransforms();
-
-    //testObject->renderItem->NumFramesDirty = gNumFrameResources;
-    //mGameObjects[testObject->name] = std::move(testObject);
+    testObject->renderItem->NumFramesDirty = gNumFrameResources;
+    mGameObjects[testObject->name] = std::move(testObject);
 
 
 
@@ -162,6 +146,11 @@ void Level::update(const GameTime& gt)
     /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
+        if (gameObj.second->gameObjectType == GameObjectType::Dynamic)
+        {
+            int i = 1;
+        }
+
         gameObj.second->checkInViewFrustum(localSpaceFrustum);
         gameObj.second->update(gt);
     }
