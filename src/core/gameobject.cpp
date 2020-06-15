@@ -278,6 +278,12 @@ void GameObject::update(const GameTime& gt)
         setRotation(r);
     }
 
+    if (gameObjectType == GameObjectType::Dynamic)
+    {
+        timePos += gt.DeltaTime();
+        renderItem->skinnedModel->calculateFinalTransforms(timePos);
+    }
+
 }
 
 bool GameObject::draw()
@@ -299,25 +305,62 @@ bool GameObject::draw()
 
     UINT meshCounter = 0;
 
-    for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+    if (gameObjectType != GameObjectType::Dynamic)
     {
-        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
-        renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
-
-        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
-
-        /*only if changed*/
-        if (cachedObjCBAddress != objCBAddress)
+        for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
         {
-            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-            cachedObjCBAddress = objCBAddress;
+            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
+            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
+
+            /*only if changed*/
+            if (cachedObjCBAddress != objCBAddress)
+            {
+                renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+                cachedObjCBAddress = objCBAddress;
+            }
+
+            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
+
+            meshCounter++;
+        }
+    }
+    else
+    {
+
+        for (const auto& gObjMeshes : gObjRenderItem->skinnedModel->meshes)
+        {
+            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
+            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
+
+            /*only if changed*/
+            if (cachedObjCBAddress != objCBAddress)
+            {
+                renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+                cachedObjCBAddress = objCBAddress;
+            }
+
+            if (gameObjectType == GameObjectType::Dynamic)
+            {
+                renderResource->cmdList->SetGraphicsRootConstantBufferView(6, renderItem->SkinnedCBIndex);
+            }
+
+            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
+
+            meshCounter++;
         }
 
-        renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
-
-        meshCounter++;
     }
+
+
+
+
+
 
     return true;
 }

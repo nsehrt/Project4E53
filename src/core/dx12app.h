@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef _DEBUG 
+#define _CRTDBG_MAP_ALLOC
+#endif
+
 #include "../util/d3dUtil.h"
 #include "gametime.h"
 

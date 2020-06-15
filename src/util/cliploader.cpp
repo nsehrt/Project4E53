@@ -44,6 +44,8 @@ std::unique_ptr<AnimationClip> ClipLoader::loadCLP(const std::filesystem::direct
 
     anim->name = animName;
 
+    delete animName;
+
     UINT numBones = 0;
     file.read((char*)(&numBones), sizeof(int));
 

@@ -634,6 +634,7 @@ void RenderResource::buildShaders()
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
     mShaders["skinnedVS"] = d3dUtil::CompileShader(L"shader\\Skinned.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["skinnedBindVS"] = d3dUtil::CompileShader(L"shader\\Skinned.hlsl", nullptr, "BindVS", "vs_5_1");
 
     mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["waterDS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "DS", "ds_5_1");
@@ -773,11 +774,23 @@ void RenderResource::buildPSOs()
     skinnedPSODesc.InputLayout = { mInputLayouts[4].data(), (UINT)mInputLayouts[4].size() };
     skinnedPSODesc.VS =
     {
-        reinterpret_cast<BYTE*>(mShaders["skinnedVS"]->GetBufferPointer()),
-        mShaders["skinnedVS"]->GetBufferSize()
+        reinterpret_cast<BYTE*>(mShaders["skinnedBindVS"]->GetBufferPointer()),
+        mShaders["skinnedBindVS"]->GetBufferSize()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&skinnedPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::SkinnedDefault])));
+
+
+    /*skinned bind position*/
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC skinnedBindPSODesc = skinnedPSODesc;
+
+    skinnedBindPSODesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["skinnedBindVS"]->GetBufferPointer()),
+        mShaders["skinnedBindVS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&skinnedBindPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::SkinnedBind])));
 
 
     /* default alpha PSO*/

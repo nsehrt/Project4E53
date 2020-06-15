@@ -93,6 +93,50 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    /*add test dynamic object*/
+
+    //auto testObject = std::make_unique<GameObject>(amountObjectCBs++);
+    //XMFLOAT3 pos, scale, rot;
+
+    //testObject->name = "Soldier";
+
+    //pos.x = 0.0f;
+    //pos.y = 2.0f;
+    //pos.z = 0.0f;
+    //testObject->setPosition(pos);
+
+    //scale.x = 1.0f;
+    //scale.y = 1.0f;
+    //scale.z = 1.0f;
+    //testObject->setScale(scale);
+
+    //rot.x = 0.0f;
+    //rot.y = 0.0f;
+    //rot.z = 0.0f;
+    //testObject->setRotation(rot);
+
+    //testObject->isShadowEnabled = false;
+    //testObject->isCollisionEnabled = false;
+    //testObject->isShadowForced = false;
+    //testObject->isFrustumCulled = true;
+    //testObject->gameObjectType = GameObjectType::Dynamic;
+
+    //testObject->renderItem->SkinnedCBIndex = 0;
+    //testObject->renderItem->skinnedModel = ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get();
+    //testObject->renderItem->skinnedModel->currentClip = ServiceProvider::getRenderResource()->mAnimations["take1"].get();
+    //testObject->renderItem->skinnedModel->finalTransforms.resize(58);
+    //testObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["default"].get();
+    //testObject->renderItem->renderType = RenderType::SkinnedDefault;
+    //testObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    //testObject->setTextureScale({ 1.0f,1.0f,1.0f });
+
+    //testObject->updateTransforms();
+
+    //testObject->renderItem->NumFramesDirty = gNumFrameResources;
+    //mGameObjects[testObject->name] = std::move(testObject);
+
+
+
     calculateRenderOrderSizes();
 
     auto endTime = std::chrono::system_clock::now();
@@ -188,52 +232,52 @@ void Level::update(const GameTime& gt)
     }
 
     /*particle systems*/
-    for (auto& p : mParticleSystems)
+for (auto& p : mParticleSystems)
+{
+    if (mGameObjects[p.first]->getIsInFrustum())
     {
-        if (mGameObjects[p.first]->getIsInFrustum())
-        {
-            p.second->update(gt);
-        }
+        p.second->update(gt);
     }
+}
 
-    /*TEST Collision test*/
-    if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-    for (const auto& gameObj : mGameObjects)
+/*TEST Collision test*/
+if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+for (const auto& gameObj : mGameObjects)
+{
+    if (gameObj.second->gameObjectType != GameObjectType::Static &&
+        gameObj.second->gameObjectType != GameObjectType::Wall) continue;
+
+    if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
     {
-        if (gameObj.second->gameObjectType != GameObjectType::Static &&
-            gameObj.second->gameObjectType != GameObjectType::Wall) continue;
-
-        if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
-        {
-            LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
-            //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
-        }
+        LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
+        //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
     }
+}
 
 
 
-    //if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
-    //{
-        //LOG(Severity::Info, "Box collision");
-    //}
+//if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
+//{
+    //LOG(Severity::Info, "Box collision");
+//}
 
-    //for (auto& gameObj : mGameObjects)
-    //{
-    //    if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
+//for (auto& gameObj : mGameObjects)
+//{
+//    if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
 
-    //    auto h = gameObj.second->hitBox;
+//    auto h = gameObj.second->hitBox;
 
-    //    for (auto& gameObj2 : mGameObjects)
-    //    {
-    //        if (gameObj == gameObj2) continue;
-    //        if (gameObj2.second->gameObjectType != GameObjectType::Static) continue;
+//    for (auto& gameObj2 : mGameObjects)
+//    {
+//        if (gameObj == gameObj2) continue;
+//        if (gameObj2.second->gameObjectType != GameObjectType::Static) continue;
 
-    //        if (h.Intersects(gameObj2.second->hitBox))
-    //        {
-    //            LOG(Severity::Info, "Collision between " << gameObj.second->name << " and " << gameObj2.second->name);
-    //        }
-    //    }
-    //}
+//        if (h.Intersects(gameObj2.second->hitBox))
+//        {
+//            LOG(Severity::Info, "Collision between " << gameObj.second->name << " and " << gameObj2.second->name);
+//        }
+//    }
+//}
 }
 
 void Level::drawTerrain()
@@ -292,6 +336,7 @@ void Level::draw()
         {
             objectsDrawn += gameObject->draw();
         }
+
     }
 
     ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;

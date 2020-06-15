@@ -267,9 +267,18 @@ struct SkinnedModel : Model
 {
     AnimationClip* currentClip = nullptr;
 
-    void calculateFinalTransforms(float timePos, std::vector<DirectX::XMFLOAT4X4>& finalTransforms) const
+    /*gets copied to gpu*/
+    std::vector<DirectX::XMFLOAT4X4> finalTransforms;
+
+    /*bone information*/
+    UINT boneCount = 0;
+    std::vector<int> boneHierarchy;
+    std::vector<DirectX::XMFLOAT4X4> boneOffsets;
+
+
+    void calculateFinalTransforms(float timePos)
     {
-        UINT numBones = boneOffsets.size();
+        UINT numBones = (UINT) boneOffsets.size();
 
         std::vector<DirectX::XMFLOAT4X4> toParentTransforms(numBones);
 
@@ -302,13 +311,7 @@ struct SkinnedModel : Model
         }
     }
 
-    /*gets copied to gpu*/
-    std::vector<DirectX::XMFLOAT4X4> finalTransforms;
 
-    /*bone information*/
-    UINT boneCount = 0;
-    std::vector<int> boneHierarchy;
-    std::vector<DirectX::XMFLOAT4X4> boneOffsets;
 };
 
 
@@ -360,6 +363,7 @@ enum class RenderType
     NoCullNoNormal,
     DefaultAlpha,
     SkinnedDefault,
+    SkinnedBind,
     Sky, /*everything before transparent objects*/
     Particle_Smoke,
     Particle_Fire,
