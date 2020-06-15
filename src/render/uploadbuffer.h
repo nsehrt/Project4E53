@@ -48,13 +48,11 @@ public:
 
     void copyData(int _elementIndex, const T& data)
     {
-        if (mMappedData)
             memcpy(&mMappedData[_elementIndex * mElementByteSize], &data, sizeof(T));
     }
 
     void copyAll(const T& data)
     {
-        if(mMappedData)
             memcpy(&mMappedData[0], &data, mElementCount * sizeof(T));
     }
 

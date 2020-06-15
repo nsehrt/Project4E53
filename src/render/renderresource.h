@@ -200,7 +200,7 @@ private:
     void updateMainPassConstantBuffers(const GameTime& gt);
     void updateMaterialConstantBuffers(const GameTime& gt);
     void updateShadowPassConstantBuffers(const GameTime& gt);
-
+    void updateSkinnedDataBuffers(const GameTime& gt);
 
 
     bool exists(const nlohmann::json& j, const std::string& key)

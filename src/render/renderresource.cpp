@@ -1244,6 +1244,7 @@ bool RenderResource::buildMaterials()
 void RenderResource::updateBuffers(const GameTime& gt)
 {
     updateGameObjectConstantBuffers(gt);
+    updateSkinnedDataBuffers(gt);
     updateMaterialConstantBuffers(gt);
     updateShadowTransform(gt);
     updateMainPassConstantBuffers(gt);
@@ -1416,6 +1417,29 @@ void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 
     auto currPassCB = mCurrentFrameResource->PassCB.get();
     currPassCB->copyData(1, mShadowPassConstants);
+}
+
+void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
+{
+
+    auto currSkinnedCB = mCurrentFrameResource->SkinnedCB.get();
+
+    for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)
+    {
+        if (go.second->gameObjectType != GameObjectType::Dynamic) continue;
+
+        auto e = go.second->renderItem.get();
+
+        SkinnedConstants skinnedConstants;
+
+        std::copy(
+            std::begin(e->skinnedModel->finalTransforms),
+            std::end(e->skinnedModel->finalTransforms),
+            &skinnedConstants.BoneTransforms[0]);
+
+        currSkinnedCB->copyData(e->SkinnedCBIndex, skinnedConstants);
+    }
+
 }
 
 void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
