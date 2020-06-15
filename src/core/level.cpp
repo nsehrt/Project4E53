@@ -99,7 +99,7 @@ bool Level::load(const std::string& levelFile)
 
     testObject->name = "soldier";
     testObject->setPosition({ 0.0f,0.0f,0.0f });
-    testObject->setScale({ 1.0f,1.0f,1.0f });
+    testObject->setScale({ 0.1f,0.1f,0.1f });
 
     testObject->isShadowEnabled = false;
     testObject->isCollisionEnabled = false;

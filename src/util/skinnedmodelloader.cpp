@@ -193,12 +193,16 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
 
         std::vector<std::uint16_t> indices(vInd);
 
-        int temp = 0;
+        int tri1, tri2, tri3;
 
-        for (int j = 0; j < vInd; j++)
+        for (int j = 0; j < vInd / 3; j++)
         {
-            file.read((char*)(&temp), sizeof(int));
-            indices[j] = (unsigned short)temp;
+            file.read((char*)(&tri1), sizeof(int));
+            file.read((char*)(&tri2), sizeof(int));
+            file.read((char*)(&tri3), sizeof(int));
+            indices[(INT_PTR)j * 3] = (unsigned short)tri1;
+            indices[(INT_PTR)j * 3 + 1] = (unsigned short)tri2;
+            indices[(INT_PTR)j * 3 + 2] = (unsigned short)tri3;
         }
 
         const UINT vbByteSize = (UINT)vertices.size() * sizeof(SkinnedVertex);

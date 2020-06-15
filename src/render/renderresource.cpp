@@ -771,8 +771,6 @@ void RenderResource::buildPSOs()
     /*skinned*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skinnedPSODesc = defaultPSODesc;
 
-    skinnedPSODesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
     skinnedPSODesc.InputLayout = { mInputLayouts[4].data(), (UINT)mInputLayouts[4].size() };
     skinnedPSODesc.VS =
     {

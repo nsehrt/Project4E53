@@ -255,7 +255,7 @@ public:
 
     void interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms)const
     {
-        for (UINT i = 0; i < boneAnimations.size(); ++i)
+        for (UINT i = 0; i < boneTransforms.size(); ++i)
         {
             boneAnimations[i].interpolate(t, boneTransforms[i]);
         }
