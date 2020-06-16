@@ -354,6 +354,7 @@ struct Texture
 enum class RenderType
 {
     Terrain,
+    TerrainWireFrame,
     Water,
     Grass,
     Default,
@@ -366,18 +367,6 @@ enum class RenderType
     Particle_Smoke,
     Particle_Fire,
     DefaultTransparency,
-    Debug, /*post process*/
-    Outline,
-    Hitbox,
-    Composite,
-    CompositeMult,
-    Sobel,
-    BlurHorz,
-    BlurVert,
-    TerrainNoShadow,
-    TerrainWireFrame,
-    ShadowDefault,
-    ShadowAlpha,
     COUNT
 };
 
@@ -444,5 +433,5 @@ struct RenderItem
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     RenderType renderType = RenderType::Default;
-    RenderType shadowType = RenderType::ShadowDefault;
+    ShadowRenderType shadowType = ShadowRenderType::ShadowDefault;
 };

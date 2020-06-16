@@ -881,7 +881,7 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
                     editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
                     editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
-                    editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+                    editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                     editSettings->currentSelection->isDrawEnabled = false;
                     editSettings->currentSelection->isShadowEnabled = false;
@@ -1059,19 +1059,19 @@ void P_4E53::update(const GameTime& gt)
                     switch (editSettings->currentSelection->renderItem->renderType)
                     {
                         case RenderType::Default:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultAlpha;
-                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+                            editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
                             break;
                         case RenderType::DefaultAlpha:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
-                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+                            editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
                             break;
                         case RenderType::DefaultTransparency:	editSettings->currentSelection->renderItem->renderType = RenderType::DefaultNoNormal;
-                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
+                            editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowDefault;
                             break;
                         case RenderType::DefaultNoNormal:	editSettings->currentSelection->renderItem->renderType = RenderType::NoCullNoNormal;
-                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowAlpha;
+                            editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
                             break;
                         case RenderType::NoCullNoNormal: editSettings->currentSelection->renderItem->renderType = RenderType::Default;
-                            editSettings->currentSelection->renderItem->shadowType = RenderType::ShadowDefault;
+                            editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowDefault;
                             break;
                     }
                     activeLevel->calculateRenderOrderSizes();
@@ -1600,7 +1600,7 @@ void P_4E53::draw(const GameTime& gt)
 
     mCommandList->Reset(
         cmdListAlloc.Get(),
-        renderResource->getPSO(RenderType::ShadowDefault)
+        renderResource->getPSO(ShadowRenderType::ShadowDefault)
     );
 
     ID3D12DescriptorHeap* descriptorHeaps[] = { renderResource->mSrvDescriptorHeap.Get() };
@@ -1685,7 +1685,7 @@ void P_4E53::draw(const GameTime& gt)
 
     renderResource->getSobelFilter()->execute(mCommandList.Get(),
                                               renderResource->mPostProcessRootSignature.Get(),
-                                              renderResource->getPSO(RenderType::Sobel),
+                                              renderResource->getPSO(PostProcessRenderType::Sobel),
                                               offscreenRT->getSrv());
 
     // Indicate a state transition on the resource usage.
@@ -1702,11 +1702,11 @@ void P_4E53::draw(const GameTime& gt)
 
     if (renderResource->useMultColor)
     {
-        mCommandList->SetPipelineState(renderResource->getPSO(RenderType::CompositeMult));
+        mCommandList->SetPipelineState(renderResource->getPSO(PostProcessRenderType::CompositeMult));
     }
     else
     {
-        mCommandList->SetPipelineState(renderResource->getPSO(RenderType::Composite));
+        mCommandList->SetPipelineState(renderResource->getPSO(PostProcessRenderType::Composite));
     }
     
     mCommandList->SetGraphicsRoot32BitConstants(0, 4, renderResource->getCompositeColor().data(), 0);
@@ -1737,7 +1737,7 @@ void P_4E53::draw(const GameTime& gt)
     if (blurFilter->getSigma() > 0.0f)
     {
         blurFilter->execute(mCommandList.Get(), renderResource->mPostProcessRootSignature.Get(),
-                            renderResource->getPSO(RenderType::BlurHorz), renderResource->getPSO(RenderType::BlurVert),
+                            renderResource->getPSO(PostProcessRenderType::BlurHorz), renderResource->getPSO(PostProcessRenderType::BlurVert),
                             getCurrentBackBuffer());
 
         mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,

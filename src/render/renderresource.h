@@ -62,11 +62,23 @@ public:
     void updateBuffers(const GameTime& gt);
 
     void setPSO(RenderType renderType);
-    RenderType getPSO()
+    void setPSO(ShadowRenderType renderType);
+    void setPSO(PostProcessRenderType renderType);
+
+    ID3D12PipelineState* getPSO(ShadowRenderType renderType)
     {
-        return currentPSO;
+        return mShadowPSOs[renderType].Get();
     }
-    ID3D12PipelineState* getPSO(RenderType renderType);
+
+    ID3D12PipelineState* getPSO(PostProcessRenderType renderType)
+    {
+        return mPostProcessPSOs[renderType].Get();
+    }
+
+    ID3D12PipelineState* getPSO(RenderType renderType)
+    {
+        return mPSOs[renderType].Get();
+    }
 
     /*resources*/
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
@@ -138,9 +150,10 @@ public:
 
 private:
 
-    RenderType currentPSO;
-
     std::unordered_map <RenderType, ComPtr<ID3D12PipelineState>> mPSOs;
+    std::unordered_map <ShadowRenderType, ComPtr<ID3D12PipelineState>> mShadowPSOs;
+    std::unordered_map <PostProcessRenderType, ComPtr<ID3D12PipelineState>> mPostProcessPSOs;
+
     std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
     std::vector<std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
 

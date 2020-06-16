@@ -1008,7 +1008,7 @@ void RenderResource::buildPSOs()
     outlinePSO.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
     outlinePSO.DepthStencilState.DepthEnable = false;
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPSOs[RenderType::Outline])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Outline])));
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
@@ -1029,7 +1029,7 @@ void RenderResource::buildPSOs()
 
     smapPsoDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
     smapPsoDesc.NumRenderTargets = 0;
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::ShadowDefault])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapPsoDesc, IID_PPV_ARGS(&mShadowPSOs[ShadowRenderType::ShadowDefault])));
 
     /*shadow alpha PSO*/
 
@@ -1043,7 +1043,7 @@ void RenderResource::buildPSOs()
         mShaders["shadowAlphaPS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapAlphaPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::ShadowAlpha])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapAlphaPsoDesc, IID_PPV_ARGS(&mShadowPSOs[ShadowRenderType::ShadowAlpha])));
 
     /*debug PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC debugPsoDesc = defaultPSODesc;
@@ -1058,7 +1058,7 @@ void RenderResource::buildPSOs()
         reinterpret_cast<BYTE*>(mShaders["debugPS"]->GetBufferPointer()),
         mShaders["debugPS"]->GetBufferSize()
     };
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&debugPsoDesc, IID_PPV_ARGS(&mPSOs[RenderType::Debug])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&debugPsoDesc, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Debug])));
 
     /*sky sphere PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPSODesc = defaultPSODesc;
@@ -1094,7 +1094,7 @@ void RenderResource::buildPSOs()
         reinterpret_cast<BYTE*>(mShaders["hitboxPS"]->GetBufferPointer()),
         mShaders["hitboxPS"]->GetBufferSize()
     };
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::Hitbox])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&hitboxPSODesc, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Hitbox])));
 
     /*composite PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC compositePSO = defaultPSODesc;
@@ -1116,7 +1116,7 @@ void RenderResource::buildPSOs()
         mShaders["compositePS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPSOs[RenderType::Composite])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&compositePSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Composite])));
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC compositeMultPSO = compositePSO;
 
@@ -1125,7 +1125,7 @@ void RenderResource::buildPSOs()
     mShaders["compositeMultPS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&compositeMultPSO, IID_PPV_ARGS(&mPSOs[RenderType::CompositeMult])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&compositeMultPSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::CompositeMult])));
 
     /*sobel PSO*/
     D3D12_COMPUTE_PIPELINE_STATE_DESC sobelPSO = {};
@@ -1137,7 +1137,7 @@ void RenderResource::buildPSOs()
     };
     sobelPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
-    ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPSOs[RenderType::Sobel])));
+    ThrowIfFailed(device->CreateComputePipelineState(&sobelPSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Sobel])));
 
 
     /*blur PSOs*/
@@ -1150,7 +1150,7 @@ void RenderResource::buildPSOs()
     };
     vertBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
-    ThrowIfFailed(device->CreateComputePipelineState(&vertBlurPSO, IID_PPV_ARGS(&mPSOs[RenderType::BlurVert])));
+    ThrowIfFailed(device->CreateComputePipelineState(&vertBlurPSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::BlurVert])));
 
     D3D12_COMPUTE_PIPELINE_STATE_DESC horzBlurPSO = {};
 
@@ -1161,7 +1161,7 @@ void RenderResource::buildPSOs()
     };
     horzBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
-    ThrowIfFailed(device->CreateComputePipelineState(&horzBlurPSO, IID_PPV_ARGS(&mPSOs[RenderType::BlurHorz])));
+    ThrowIfFailed(device->CreateComputePipelineState(&horzBlurPSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::BlurHorz])));
 
 }
 
@@ -1266,13 +1266,17 @@ void RenderResource::updateBuffers(const GameTime& gt)
 
 void RenderResource::setPSO(RenderType renderType)
 {
-    currentPSO = renderType;
     cmdList->SetPipelineState(mPSOs[renderType].Get());
 }
 
-ID3D12PipelineState* RenderResource::getPSO(RenderType renderType)
+void RenderResource::setPSO(ShadowRenderType renderType)
 {
-    return mPSOs[renderType].Get();
+    cmdList->SetPipelineState(mShadowPSOs[renderType].Get());
+}
+
+void RenderResource::setPSO(PostProcessRenderType renderType)
+{
+    cmdList->SetPipelineState(mPostProcessPSOs[renderType].Get());
 }
 
 void RenderResource::updateShadowTransform(const GameTime& gt)

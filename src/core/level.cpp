@@ -295,10 +295,7 @@ void Level::draw()
     for (UINT i = 0; i < renderOrder.size(); i++)
     {
         if (renderOrder[i].empty())continue;
-        if ((i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugEnabled)
-            || (i == (UINT)RenderType::Debug && !ServiceProvider::getSettings()->miscSettings.DebugQuadEnabled)
-            || i == (UINT)RenderType::Terrain
-            ) continue;
+        if (i == (UINT)RenderType::Terrain) continue;
 
         /*set PSO*/
 
@@ -316,7 +313,7 @@ void Level::draw()
     /* Draw the hitboxes of the GameObjects if enabled */
     if (renderResource->isHitBoxDrawEnabled())
     {
-        renderResource->setPSO(RenderType::Hitbox);
+        renderResource->setPSO(PostProcessRenderType::Hitbox);
 
         for (const auto& gameObject : mGameObjects)
         {
@@ -337,7 +334,7 @@ void Level::draw()
         ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Water &&
         ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Particle)
     {
-        renderResource->setPSO(RenderType::Outline);
+        renderResource->setPSO(PostProcessRenderType::Outline);
         ServiceProvider::getEditSettings()->currentSelection->draw();
     }
 
@@ -716,7 +713,7 @@ void Level::drawShadow()
     /*draw shadows*/
     for (UINT i = 0; i < shadowRenderOrder.size(); i++)
     {
-        renderResource->setPSO(RenderType((int)RenderType::ShadowDefault + i));
+        renderResource->setPSO(ShadowRenderType((int)ShadowRenderType::ShadowDefault + i));
 
         for (const auto& gameObject : shadowRenderOrder[i])
         {
@@ -745,25 +742,25 @@ void Level::calculateRenderOrderSizes()
 {
     /*determine size of render orders*/
     std::vector<int> renderOrderSize((int)RenderType::COUNT);
+    std::vector<int> shadowRenderOrderSize((int)ShadowRenderType::COUNT);
+
     renderOrder.clear();
     shadowRenderOrder.clear();
 
     for (const auto& gameOject : mGameObjects)
     {
         renderOrderSize[(int)gameOject.second->renderItem->renderType]++;
-        renderOrderSize[(int)gameOject.second->renderItem->shadowType]++;
+        shadowRenderOrderSize[(int)gameOject.second->renderItem->shadowType]++;
     }
 
     for (int i = 0; i < renderOrderSize.size(); i++)
     {
-        if (i < (int)RenderType::COUNT - 2)
-        {
-            renderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
-        }
-        else
-        {
-            shadowRenderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
-        }
+        renderOrder.push_back(std::vector<GameObject*>(renderOrderSize[i]));
+    }
+
+    for (int i = 0; i < shadowRenderOrderSize.size(); i++)
+    {
+        shadowRenderOrder.push_back(std::vector<GameObject*>(shadowRenderOrderSize[i]));
     }
 
     calculateRenderOrder();
@@ -795,10 +792,10 @@ void Level::calculateShadowRenderOrder()
     for (const auto& gameObject : mGameObjects)
     {
         if (gameObject.second->renderItem->renderType == RenderType::Sky ||
-            gameObject.second->renderItem->renderType == RenderType::Debug ||
+            gameObject.second->gameObjectType == GameObjectType::Debug ||
             gameObject.second->renderItem->renderType == RenderType::Terrain) continue;
 
-        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType - ((int)RenderType::COUNT - 2)].push_back(&(*gameObject.second));
+        shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType].push_back(&(*gameObject.second));
     }
 }
 
@@ -968,7 +965,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
     debugObject->isFrustumCulled = false;
     debugObject->isShadowEnabled = false;
-    debugObject->renderItem->renderType = RenderType::Debug;
+    debugObject->renderItem->renderType = RenderType::Default;
     debugObject->gameObjectType = GameObjectType::Debug;
     debugObject->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["quad"].get();
 

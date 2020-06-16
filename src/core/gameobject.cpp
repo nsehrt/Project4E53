@@ -194,7 +194,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
         if (objectJson["RenderType"] == "DefaultAlpha")
         {
             rItem->renderType = RenderType::DefaultAlpha;
-            rItem->shadowType = RenderType::ShadowAlpha;
+            rItem->shadowType = ShadowRenderType::ShadowAlpha;
         }
         else if (objectJson["RenderType"] == "DefaultNoNormal")
         {
@@ -202,17 +202,17 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
         }
         else if (objectJson["RenderType"] == "Debug")
         {
-            rItem->renderType = RenderType::Debug;
+            rItem->renderType = RenderType::Default;
         }
         else if (objectJson["RenderType"] == "DefaultTransparency")
         {
             rItem->renderType = RenderType::DefaultTransparency;
-            rItem->shadowType = RenderType::ShadowAlpha;
+            rItem->shadowType = ShadowRenderType::ShadowAlpha;
         }
         else if (objectJson["RenderType"] == "NoCullNoNormal")
         {
             rItem->renderType = RenderType::NoCullNoNormal;
-            rItem->shadowType = RenderType::ShadowAlpha;
+            rItem->shadowType = ShadowRenderType::ShadowAlpha;
         }
         else
         {
