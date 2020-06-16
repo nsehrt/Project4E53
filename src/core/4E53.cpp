@@ -877,20 +877,24 @@ void P_4E53::update(const GameTime& gt)
                 /*switch to invisible wall*/
                 if (inputData.Pressed(BTN::LEFT_THUMB))
                 {
-                    editSettings->currentSelection->renderItem->staticModel = renderResource->mModels["box"].get();
-                    editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
-                    editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
-                    editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
-                    editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
-                    editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
-                    editSettings->currentSelection->isDrawEnabled = false;
-                    editSettings->currentSelection->isShadowEnabled = false;
-                    editSettings->currentSelection->isShadowForced = false;
-                    editSettings->currentSelection->isCollisionEnabled = true;
+                    if (editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                    {
+                        editSettings->currentSelection->renderItem->staticModel = renderResource->mModels["box"].get();
+                        editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
+                        editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
+                        editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
+                        editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
+                        editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+                        editSettings->currentSelection->isDrawEnabled = false;
+                        editSettings->currentSelection->isShadowEnabled = false;
+                        editSettings->currentSelection->isShadowForced = false;
+                        editSettings->currentSelection->isCollisionEnabled = true;
 
-                    activeLevel->calculateRenderOrderSizes();
+                        activeLevel->calculateRenderOrderSizes();
 
-                    setModelSelection();
+                        setModelSelection();
+                    }
+
                 }
 
                 /*switch model group*/

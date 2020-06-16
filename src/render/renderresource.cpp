@@ -630,6 +630,11 @@ void RenderResource::buildShaders()
     NULL, NULL
     };
 
+    const D3D_SHADER_MACRO skinnedDefines[] = {
+"SKINNED", "1",
+NULL, NULL
+    };
+
     mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
@@ -668,6 +673,7 @@ void RenderResource::buildShaders()
 
     mShaders["shadowVS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["shadowSkinnedVS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", skinnedDefines, "VS", "vs_5_1");
 
     mShaders["compositeVS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["compositePS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
@@ -1044,6 +1050,20 @@ void RenderResource::buildPSOs()
     };
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&smapAlphaPsoDesc, IID_PPV_ARGS(&mShadowPSOs[ShadowRenderType::ShadowAlpha])));
+
+    /*shadow skinned PSO*/
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC smapSkinnedPsoDesc = smapPsoDesc;
+
+    smapSkinnedPsoDesc.InputLayout = { mInputLayouts[4].data(), (UINT)mInputLayouts[4].size() };
+
+    smapSkinnedPsoDesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["shadowSkinnedVS"]->GetBufferPointer()),
+        mShaders["shadowSkinnedVS"]->GetBufferSize()
+    };
+
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&smapSkinnedPsoDesc, IID_PPV_ARGS(&mShadowPSOs[ShadowRenderType::ShadowSkinned])));
 
     /*debug PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC debugPsoDesc = defaultPSODesc;

@@ -374,6 +374,8 @@ enum class ShadowRenderType
 {
     ShadowDefault,
     ShadowAlpha,
+    ShadowSkinned,
+    ShadowSkinnedAlpha,
     COUNT
 };
 

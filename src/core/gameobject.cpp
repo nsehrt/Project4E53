@@ -271,6 +271,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
     {
         gameObjectType = GameObjectType::Dynamic;
         tItem->renderType = RenderType::SkinnedDefault;
+        tItem->shadowType = ShadowRenderType::ShadowSkinned;
         tItem->SkinnedCBIndex = skinnedIndex;
     }
     
@@ -332,59 +333,31 @@ bool GameObject::draw()
 
     UINT meshCounter = 0;
 
-    if (gameObjectType != GameObjectType::Dynamic)
+    for (const auto& gObjMeshes : gObjRenderItem->getModel()->meshes)
     {
-        for (const auto& gObjMeshes : gObjRenderItem->staticModel->meshes)
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
+        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+        renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
+
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
+
+        /*only if changed*/
+        if (cachedObjCBAddress != objCBAddress)
         {
-            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
-            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
-
-            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
-
-            /*only if changed*/
-            if (cachedObjCBAddress != objCBAddress)
-            {
-                renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-                cachedObjCBAddress = objCBAddress;
-            }
-
-            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
-
-            meshCounter++;
+            renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+            cachedObjCBAddress = objCBAddress;
         }
-    }
-    else
-    {
 
-        for (const auto& gObjMeshes : gObjRenderItem->skinnedModel->meshes)
+        if (gObjRenderItem->isSkinned())
         {
-            renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-            renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
-            renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
-
-            D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
-
-            /*only if changed*/
-            if (cachedObjCBAddress != objCBAddress)
-            {
-                renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-                cachedObjCBAddress = objCBAddress;
-            }
-
             D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress();
             renderResource->cmdList->SetGraphicsRootConstantBufferView(6, skinnedCBAddress);
-
-            renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
-
-            meshCounter++;
         }
 
+        renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
+
+        meshCounter++;
     }
-
-
-
-
 
 
     return true;
@@ -418,6 +391,12 @@ bool GameObject::drawShadow()
             cachedObjCBAddress = objCBAddress;
         }
 
+        if (gObjRenderItem->isSkinned())
+        {
+            D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress();
+            renderResource->cmdList->SetGraphicsRootConstantBufferView(6, skinnedCBAddress);
+        }
+
         renderResource->cmdList->DrawIndexedInstanced(gObjMeshes->IndexCount, 1, 0, 0, 0);
 
         meshCounter++;
@@ -431,7 +410,7 @@ void GameObject::drawRoughHitbox()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-    const auto boxMesh = renderItem->isSkinned() ? gObjRenderItem->skinnedModel->boundingBoxMesh.get() : gObjRenderItem->staticModel->boundingBoxMesh.get();
+    const auto boxMesh = renderItem->getModel()->boundingBoxMesh.get();
 
     if (boxMesh == nullptr) return;
     if (!isCollisionEnabled) return;

@@ -330,9 +330,7 @@ void Level::draw()
     if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled &&
         ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
         ServiceProvider::getEditSettings()->currentSelection != nullptr &&
-        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Grass &&
-        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Water &&
-        ServiceProvider::getEditSettings()->currentSelection->gameObjectType != GameObjectType::Particle)
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType == GameObjectType::Static)
     {
         renderResource->setPSO(PostProcessRenderType::Outline);
         ServiceProvider::getEditSettings()->currentSelection->draw();
@@ -713,6 +711,8 @@ void Level::drawShadow()
     /*draw shadows*/
     for (UINT i = 0; i < shadowRenderOrder.size(); i++)
     {
+        if (shadowRenderOrder[i].empty()) continue;
+
         renderResource->setPSO(ShadowRenderType((int)ShadowRenderType::ShadowDefault + i));
 
         for (const auto& gameObject : shadowRenderOrder[i])
