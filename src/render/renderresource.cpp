@@ -1329,7 +1329,7 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
         // Only update the cbuffer data if the constants have changed.
         if (e->NumFramesDirty > 0)
         {
-            for (int i = 0; i < e->Model->meshes.size(); i++)
+            for (int i = 0; i < e->getModel()->meshes.size(); i++)
             {
                 XMMATRIX world = XMLoadFloat4x4(&e->World);
 
@@ -1352,7 +1352,7 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
                 }
                 else
                 {
-                    objConstants.MaterialIndex = e->Model->meshes[i]->material->MatCBIndex;
+                    objConstants.MaterialIndex = e->getModel()->meshes[i]->material->MatCBIndex;
                 }
 
                 currObjectCB->copyData(e->ObjCBIndex[i], objConstants);

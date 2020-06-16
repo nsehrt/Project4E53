@@ -95,21 +95,21 @@ bool Level::load(const std::string& levelFile)
 
     /*add test dynamic object*/
 
-    auto testObject = std::make_unique<GameObject>(amountObjectCBs++);
+    auto testObject = std::make_unique<GameObject>(amountObjectCBs++, 0);
 
     testObject->name = "soldier";
     testObject->setPosition({ 0.0f,0.0f,0.0f });
     testObject->setScale({ 0.1f,0.1f,0.1f });
 
     testObject->isShadowEnabled = false;
-    testObject->isCollisionEnabled = false;
+    testObject->isCollisionEnabled = true;
     testObject->isShadowForced = false;
     testObject->isFrustumCulled = false;
     testObject->gameObjectType = GameObjectType::Dynamic;
 
     testObject->renderItem->SkinnedCBIndex = 0;
     testObject->renderItem->skinnedModel = ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get();
-    testObject->renderItem->skinnedModel->currentClip = ServiceProvider::getRenderResource()->mAnimations["take1"].get();
+    testObject->renderItem->currentClip = ServiceProvider::getRenderResource()->mAnimations["take1"].get();
     testObject->renderItem->skinnedModel->finalTransforms.resize(58);
     testObject->renderItem->renderType = RenderType::SkinnedDefault;
     testObject->setTextureScale({ 1.0f,1.0f,1.0f });
@@ -850,7 +850,7 @@ bool Level::parseSky(const json& skyJson)
     rItem->TexTransform = MathHelper::identity4x4();
     rItem->ObjCBIndex.push_back(amountObjectCBs++);
     rItem->MaterialOverwrite = renderResource->mMaterials[skyJson["Material"]].get();
-    rItem->Model = renderResource->mModels["sphere"].get();
+    rItem->staticModel = renderResource->mModels["sphere"].get();
     rItem->renderType = RenderType::Sky;
 
     gameObject->name = "SKY_SPHERE";
@@ -988,7 +988,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
     debugObject->isShadowEnabled = false;
     debugObject->renderItem->renderType = RenderType::Debug;
     debugObject->gameObjectType = GameObjectType::Debug;
-    debugObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["quad"].get();
+    debugObject->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["quad"].get();
 
     mGameObjects["debugQuad"] = std::move(debugObject);
 
@@ -1016,7 +1016,7 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->isCollisionEnabled = false;
     terrainObject->renderItem->renderType = RenderType::Terrain;
     terrainObject->gameObjectType = GameObjectType::Terrain;
-    terrainObject->renderItem->Model = mTerrain->terrainModel.get();
+    terrainObject->renderItem->staticModel = mTerrain->terrainModel.get();
     terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["terrain"].get();
     XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 4.0f,
                     (float)mTerrain->terrainSlices / 4.0f, (float)mTerrain->terrainSlices / 4.0f));
@@ -1061,7 +1061,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->isCollisionEnabled = false;
         grassObject->gameObjectType = GameObjectType::Grass;
         grassObject->renderItem->renderType = RenderType::Grass;
-        grassObject->renderItem->Model = mGrass.back()->getPatchModel();
+        grassObject->renderItem->staticModel = mGrass.back()->getPatchModel();
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
@@ -1120,7 +1120,7 @@ bool Level::parseWater(const json& waterJson)
         waterObject->isFrustumCulled = true;
         waterObject->gameObjectType = GameObjectType::Water;
 
-        waterObject->renderItem->Model = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
+        waterObject->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
         waterObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[entry["Material"]].get();
         waterObject->renderItem->renderType = RenderType::Water;
         waterObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
@@ -1199,7 +1199,7 @@ bool Level::parseParticleSystems(const json& particleJson)
             default: particleObject->renderItem->renderType = RenderType::Particle_Fire; break;
         }
 
-        particleObject->renderItem->Model = mParticleSystems[entry["Name"]]->getModel();
+        particleObject->renderItem->staticModel = mParticleSystems[entry["Name"]]->getModel();
         particleObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         particleObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mParticleSystems[entry["Name"]]->getMaterialName()].get();
         particleObject->setFrustumHitBoxExtents(mParticleSystems[entry["Name"]]->getRoughDimensions());

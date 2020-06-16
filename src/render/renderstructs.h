@@ -265,8 +265,6 @@ public:
 /*skinned model*/
 struct SkinnedModel : Model
 {
-    AnimationClip* currentClip = nullptr;
-
     /*gets copied to gpu*/
     std::vector<DirectX::XMFLOAT4X4> finalTransforms;
 
@@ -276,7 +274,7 @@ struct SkinnedModel : Model
     std::vector<DirectX::XMFLOAT4X4> boneOffsets;
 
 
-    void calculateFinalTransforms(float timePos)
+    void calculateFinalTransforms(AnimationClip* currentClip, float timePos)
     {
         UINT numBones = (UINT) boneOffsets.size();
 
@@ -368,7 +366,7 @@ enum class RenderType
     Particle_Smoke,
     Particle_Fire,
     DefaultTransparency,
-    Debug,
+    Debug, /*post process*/
     Outline,
     Hitbox,
     Composite,
@@ -383,6 +381,26 @@ enum class RenderType
     COUNT
 };
 
+enum class ShadowRenderType
+{
+    ShadowDefault,
+    ShadowAlpha,
+    COUNT
+};
+
+enum class PostProcessRenderType
+{
+    Debug,
+    Outline,
+    Hitbox,
+    Composite,
+    CompositeMult,
+    Sobel,
+    BlurHorz,
+    BlurVert,
+    COUNT
+};
+
 struct RenderItem
 {
     RenderItem() = default;
@@ -393,14 +411,34 @@ struct RenderItem
 
     int NumFramesDirty = gNumFrameResources;
 
-    // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
+    // index into constant buffer for object data and skinned data
     std::vector<UINT>ObjCBIndex;
     UINT SkinnedCBIndex = 0;
 
-    Model* Model = nullptr;
+    Model* staticModel = nullptr;
     SkinnedModel* skinnedModel = nullptr;
 
+    AnimationClip* currentClip = nullptr;
     Material* MaterialOverwrite = nullptr;
+
+    float animationTimer = 0.0f;
+
+    bool isSkinned()
+    {
+        if (!skinnedModel)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    Model* getModel()
+    {
+        return (isSkinned() ? skinnedModel : staticModel);
+    }
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;

@@ -2,7 +2,7 @@
 
 using namespace DirectX;
 
-GameObject::GameObject(const json& objectJson, int index)
+GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 {
     /*Name*/
     name = objectJson["Name"];
@@ -133,7 +133,7 @@ GameObject::GameObject(const json& objectJson, int index)
             isDrawEnabled = false;
             isShadowEnabled = false;
             isShadowForced = false;
-            rItem->Model = renderResource->mModels["box"].get();
+            rItem->staticModel = renderResource->mModels["box"].get();
             TextureScale = Scale;
             gameObjectType = GameObjectType::Wall;
         }
@@ -141,12 +141,12 @@ GameObject::GameObject(const json& objectJson, int index)
         {
             LOG(Severity::Warning, "GameObject " << name << " specified not loaded model " << objectJson["Model"] << "!");
 
-            rItem->Model = renderResource->mModels["box"].get();
+            rItem->staticModel = renderResource->mModels["box"].get();
         }
     }
     else
     {
-        rItem->Model = renderResource->mModels[objectJson["Model"]].get();
+        rItem->staticModel = renderResource->mModels[objectJson["Model"]].get();
     }
 
     /*check material exists*/
@@ -170,7 +170,7 @@ GameObject::GameObject(const json& objectJson, int index)
         }
     }
 
-    ASSERT(rItem->Model->meshes.size() < 5);
+    ASSERT(rItem->staticModel->meshes.size() < 5);
 
     for (int i = 0; i < 4; i++)//rItem->Model->meshes.size(); i++)
     {
@@ -242,7 +242,7 @@ GameObject::GameObject()
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 }
 
-GameObject::GameObject(int index)
+GameObject::GameObject(int index, int skinnedIndex)
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
@@ -260,7 +260,16 @@ GameObject::GameObject(int index)
     tItem->ObjCBIndex.push_back(index); 
     tItem->ObjCBIndex.push_back(index);
     tItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
-    tItem->Model = renderResource->mModels["box"].get();
+
+    if (skinnedIndex == -1)
+    {
+        tItem->staticModel = renderResource->mModels["box"].get();
+    }
+    else
+    {
+        tItem->SkinnedCBIndex = skinnedIndex;
+    }
+    
 
     renderItem = std::move(tItem);
 
@@ -271,14 +280,14 @@ void GameObject::update(const GameTime& gt)
 {
     if (gameObjectType == GameObjectType::Dynamic)
     {
-        timePos += gt.DeltaTime();
+        renderItem->animationTimer += gt.DeltaTime() * animationTimeScale;
 
-        if (timePos >= renderItem->skinnedModel->currentClip->getEndTime())
+        if (renderItem->animationTimer >= renderItem->currentClip->getEndTime())
         {
-            timePos = 0.0f;
+            renderItem->animationTimer = 0.0f;
         }
 
-        renderItem->skinnedModel->calculateFinalTransforms(timePos);
+        renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->animationTimer);
     }
 
 
@@ -317,7 +326,7 @@ bool GameObject::draw()
 
     if (gameObjectType != GameObjectType::Dynamic)
     {
-        for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+        for (const auto& gObjMeshes : gObjRenderItem->staticModel->meshes)
         {
             renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
             renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
@@ -386,7 +395,7 @@ bool GameObject::drawShadow()
 
     UINT meshCounter = 0;
 
-    for (const auto& gObjMeshes : gObjRenderItem->Model->meshes)
+    for (const auto& gObjMeshes : gObjRenderItem->getModel()->meshes)
     {
         renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
         renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
@@ -414,20 +423,22 @@ void GameObject::drawRoughHitbox()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-    if (gObjRenderItem->Model->boundingBoxMesh.get() == nullptr) return;
+    const auto boxMesh = renderItem->isSkinned() ? gObjRenderItem->skinnedModel->boundingBoxMesh.get() : gObjRenderItem->staticModel->boundingBoxMesh.get();
+
+    if (boxMesh == nullptr) return;
     if (!isCollisionEnabled) return;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
-    renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjRenderItem->Model->boundingBoxMesh.get()->VertexBufferView());
-    renderResource->cmdList->IASetIndexBuffer(&gObjRenderItem->Model->boundingBoxMesh.get()->IndexBufferView());
+    renderResource->cmdList->IASetVertexBuffers(0, 1, &boxMesh->VertexBufferView());
+    renderResource->cmdList->IASetIndexBuffer(&boxMesh->IndexBufferView());
     renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
     D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[0] * objectCBSize;
 
     renderResource->cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
-    renderResource->cmdList->DrawIndexedInstanced(gObjRenderItem->Model->boundingBoxMesh.get()->IndexCount, 1, 0, 0, 0);
+    renderResource->cmdList->DrawIndexedInstanced(boxMesh->IndexCount, 1, 0, 0, 0);
 }
 
 json GameObject::toJson()
@@ -435,7 +446,7 @@ json GameObject::toJson()
     json jElement;
 
     jElement["Name"] = name;
-    jElement["Model"] = gameObjectType != GameObjectType::Wall ? renderItem->Model->name : "";
+    jElement["Model"] = gameObjectType != GameObjectType::Wall ? renderItem->staticModel->name : "";
 
     if (renderItem->MaterialOverwrite != nullptr)
     {
@@ -546,8 +557,14 @@ void GameObject::updateTransforms()
                     XMMatrixTranslationFromVector(XMLoadFloat3(&TextureTranslation)));
 
     /*update rough hitbox*/
-    renderItem->Model->boundingBox.Transform(roughBoundingBox, XMLoadFloat4x4(&renderItem->World));
-    renderItem->Model->frustumBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&renderItem->World));
+    auto model = renderItem->getModel();
+
+    if (model)
+    {
+        model->boundingBox.Transform(roughBoundingBox, XMLoadFloat4x4(&renderItem->World));
+        model->frustumBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&renderItem->World));
+    }
+
 
     if (useCustomFrustumBoundingBoxExtents)
     {

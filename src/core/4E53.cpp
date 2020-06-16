@@ -877,7 +877,7 @@ void P_4E53::update(const GameTime& gt)
                 /*switch to invisible wall*/
                 if (inputData.Pressed(BTN::LEFT_THUMB))
                 {
-                    editSettings->currentSelection->renderItem->Model = renderResource->mModels["box"].get();
+                    editSettings->currentSelection->renderItem->staticModel = renderResource->mModels["box"].get();
                     editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
                     editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
                     editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
@@ -916,7 +916,7 @@ void P_4E53::update(const GameTime& gt)
                         }
                     }
 
-                    editSettings->currentSelection->renderItem->Model = editSettings->orderedModels[editSettings->selectedGroup][0];
+                    editSettings->currentSelection->renderItem->staticModel = editSettings->orderedModels[editSettings->selectedGroup][0];
 
                     if (editSettings->selectedGroup == "default")
                     {
@@ -955,7 +955,7 @@ void P_4E53::update(const GameTime& gt)
                         }
                     }
 
-                    editSettings->currentSelection->renderItem->Model = editSettings->orderedModels[editSettings->selectedGroup][0];
+                    editSettings->currentSelection->renderItem->staticModel = editSettings->orderedModels[editSettings->selectedGroup][0];
 
                     if (editSettings->selectedGroup == "default")
                     {
@@ -996,7 +996,7 @@ void P_4E53::update(const GameTime& gt)
                         }
                     }
 
-                    editSettings->currentSelection->renderItem->Model = *(editSettings->selectedModel);
+                    editSettings->currentSelection->renderItem->staticModel = *(editSettings->selectedModel);
 
 
                     if (editSettings->selectedGroup == "default")
@@ -1035,7 +1035,7 @@ void P_4E53::update(const GameTime& gt)
                         }
                     }
 
-                    editSettings->currentSelection->renderItem->Model = *(editSettings->selectedModel);
+                    editSettings->currentSelection->renderItem->staticModel = *(editSettings->selectedModel);
 
 
                     if (editSettings->selectedGroup == "default")
@@ -1850,13 +1850,13 @@ void P_4E53::setModelSelection()
 
     auto editSettings = ServiceProvider::getEditSettings();
 
-    editSettings->selectedGroup = editSettings->currentSelection->renderItem->Model->group;
+    editSettings->selectedGroup = editSettings->currentSelection->renderItem->getModel()->group;
 
     for (editSettings->selectedModel = editSettings->orderedModels[editSettings->selectedGroup].begin(); 
          editSettings->selectedModel != editSettings->orderedModels[editSettings->selectedGroup].end();
          editSettings->selectedModel++)
     {
-        if (*editSettings->selectedModel == editSettings->currentSelection->renderItem->Model)
+        if (*editSettings->selectedModel == editSettings->currentSelection->renderItem->getModel())
         {
             break;
         }

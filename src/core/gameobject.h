@@ -20,17 +20,25 @@ enum class GameObjectType
     Particle
 };
 
+
+
 class GameObject
 {
+
 public:
 
-    explicit GameObject(const json& objectJson, int index);
+    /*load a game object from a json*/
+    explicit GameObject(const json& objectJson, int index, int skinnedIndex = -1);
 
+    /*empty game object without object cb, needed e.g. sky sphere*/
     explicit GameObject();
 
-    explicit GameObject(int index);
+    /*create empty game object with object cb and skinned cb index*/
+    explicit GameObject(int index, int skinnedIndex = -1);
 
     ~GameObject() = default;
+
+
 
     void update(const GameTime& gt);
     bool draw();
@@ -39,9 +47,12 @@ public:
 
     json toJson();
 
+
+
+    GameObjectType gameObjectType = GameObjectType::Static;
     std::string name;
     std::unique_ptr<RenderItem> renderItem;
-    GameObjectType gameObjectType = GameObjectType::Static;
+    float animationTimeScale = 1.0f;
 
     /*Transform getter/setter*/
     void setPosition(XMFLOAT3 _pos)
@@ -78,16 +89,6 @@ public:
     DirectX::XMFLOAT3 getRotation() const
     {
         return Rotation;
-    }
-
-    float getTimePos() const
-    {
-        return timePos;
-    }
-
-    void setTimePos(float _t)
-    {
-        timePos = _t;
     }
 
     /*Texture transform getter/setter*/
@@ -189,8 +190,6 @@ private:
     /*simple rotation animation*/
     bool isSimpleAnimated = false;
     DirectX::XMFLOAT3 SimpleRotation;
-
-    float timePos = 0.0f;
 
     /*precise hitbox needed*/
 
