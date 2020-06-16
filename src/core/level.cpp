@@ -95,29 +95,12 @@ bool Level::load(const std::string& levelFile)
 
     /*add test dynamic object*/
 
-    auto testObject = std::make_unique<GameObject>(amountObjectCBs++, 0);
+    auto testObject = std::make_unique<GameObject>(std::string("soldier"), amountObjectCBs++, 0);
 
-    testObject->name = "soldier";
-    testObject->setPosition({ 0.0f,0.0f,0.0f });
+    testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get(), ServiceProvider::getRenderResource()->mAnimations["take1"].get());
     testObject->setScale({ 0.1f,0.1f,0.1f });
 
-    testObject->isShadowEnabled = false;
-    testObject->isCollisionEnabled = true;
-    testObject->isShadowForced = false;
-    testObject->isFrustumCulled = false;
-    testObject->gameObjectType = GameObjectType::Dynamic;
-
-    testObject->renderItem->SkinnedCBIndex = 0;
-    testObject->renderItem->skinnedModel = ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get();
-    testObject->renderItem->currentClip = ServiceProvider::getRenderResource()->mAnimations["take1"].get();
-    testObject->renderItem->skinnedModel->finalTransforms.resize(58);
-    testObject->renderItem->renderType = RenderType::SkinnedDefault;
-    testObject->setTextureScale({ 1.0f,1.0f,1.0f });
-
-    testObject->updateTransforms();
-
-    testObject->renderItem->NumFramesDirty = gNumFrameResources;
-    mGameObjects[testObject->name] = std::move(testObject);
+    mGameObjects[testObject->Name] = std::move(testObject);
 
 
 
@@ -238,7 +221,7 @@ for (const auto& gameObj : mGameObjects)
 
     if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
     {
-        LOG(Severity::Info, "Camera collided with " << gameObj.second->name);
+        LOG(Severity::Info, "Camera collided with " << gameObj.second->Name);
         //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
     }
 }
@@ -462,7 +445,7 @@ bool Level::save()
         {
             json wElement;
 
-            wElement["Name"] = e.second->name;
+            wElement["Name"] = e.second->Name;
 
             wElement["Position"][0] = e.second->getPosition().x;
             wElement["Position"][1] = e.second->getPosition().y;
@@ -853,12 +836,12 @@ bool Level::parseSky(const json& skyJson)
     rItem->staticModel = renderResource->mModels["sphere"].get();
     rItem->renderType = RenderType::Sky;
 
-    gameObject->name = "SKY_SPHERE";
+    gameObject->Name = "SKY_SPHERE";
     gameObject->renderItem = std::move(rItem);
     gameObject->gameObjectType = GameObjectType::Sky;
     gameObject->isFrustumCulled = false;
 
-    mGameObjects[gameObject->name] = std::move(gameObject);
+    mGameObjects[gameObject->Name] = std::move(gameObject);
 
     /*default cube map*/
     CD3DX12_GPU_DESCRIPTOR_HANDLE tempHandle(renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
@@ -978,12 +961,11 @@ bool Level::parseGameObjects(const json& gameObjectJson)
         auto gameObject = std::make_unique<GameObject>(entryJson, amountObjectCBs);
         amountObjectCBs += 4;
 
-        mGameObjects[gameObject->name] = std::move(gameObject);
+        mGameObjects[gameObject->Name] = std::move(gameObject);
     }
 
-    auto debugObject = std::make_unique<GameObject>(amountObjectCBs);
+    auto debugObject = std::make_unique<GameObject>(std::string("DEBUG"), amountObjectCBs++);
 
-    debugObject->name = "debug";
     debugObject->isFrustumCulled = false;
     debugObject->isShadowEnabled = false;
     debugObject->renderItem->renderType = RenderType::Debug;
@@ -1007,9 +989,8 @@ bool Level::parseTerrain(const json& terrainJson)
     mTerrain = std::make_unique<Terrain>(terrainJson);
 
     /*create terrain gameobject*/
-    auto terrainObject = std::make_unique<GameObject>(amountObjectCBs++);
+    auto terrainObject = std::make_unique<GameObject>(std::string("TERRAIN"), amountObjectCBs++);
 
-    terrainObject->name = "TERRAIN";
     terrainObject->isFrustumCulled = false;
     terrainObject->isShadowEnabled = false;
     terrainObject->isDrawEnabled = true;
@@ -1052,9 +1033,8 @@ bool Level::parseGrass(const json& grassJson)
 
         mGrass.push_back(std::move(grass));
 
-        auto grassObject = std::make_unique<GameObject>(amountObjectCBs++);
+        auto grassObject = std::make_unique<GameObject>(mGrass.back()->getName(), amountObjectCBs++);
 
-        grassObject->name = mGrass.back()->getName();
         grassObject->isFrustumCulled = true;
         grassObject->isShadowEnabled = false;
         grassObject->isDrawEnabled = true;
@@ -1094,10 +1074,8 @@ bool Level::parseWater(const json& waterJson)
             continue;
         }
 
-        auto waterObject = std::make_unique<GameObject>(amountObjectCBs++);
+        auto waterObject = std::make_unique<GameObject>(std::string(entry["Name"]), amountObjectCBs++);
         XMFLOAT3 pos, scale, rot;
-
-        waterObject->name = entry["Name"];
 
         pos.x = entry["Position"][0];
         pos.y = entry["Position"][1];
@@ -1131,7 +1109,7 @@ bool Level::parseWater(const json& waterJson)
         waterObject->updateTransforms();
 
         waterObject->renderItem->NumFramesDirty = gNumFrameResources;
-        mGameObjects[waterObject->name] = std::move(waterObject);
+        mGameObjects[waterObject->Name] = std::move(waterObject);
 
         /*create water material updater if needed*/
 
@@ -1183,9 +1161,8 @@ bool Level::parseParticleSystems(const json& particleJson)
         mParticleSystems[entry["Name"]]->init(entry);
 
         /*create game object*/
-        auto particleObject = std::make_unique<GameObject>(amountObjectCBs++);
+        auto particleObject = std::make_unique<GameObject>(std::string(entry["Name"]), amountObjectCBs++);
 
-        particleObject->name = entry["Name"];
         particleObject->isFrustumCulled = true;
         particleObject->isShadowEnabled = false;
         particleObject->isDrawEnabled = true;

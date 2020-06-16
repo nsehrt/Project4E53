@@ -408,7 +408,7 @@ void EditModeHUD::update()
 
 
         /*object info window*/
-        mFontElements[9]->text = d3dUtil::s2ws(editSetting->currentSelection->name);
+        mFontElements[9]->text = d3dUtil::s2ws(editSetting->currentSelection->Name);
 
         XMFLOAT3 p = editSetting->currentSelection->getPosition();
         XMFLOAT3 s = editSetting->currentSelection->getScale();

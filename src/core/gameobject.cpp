@@ -5,7 +5,7 @@ using namespace DirectX;
 GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 {
     /*Name*/
-    name = objectJson["Name"];
+    Name = objectJson["Name"];
 
     /*Transforms*/
 
@@ -139,7 +139,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
         }
         else
         {
-            LOG(Severity::Warning, "GameObject " << name << " specified not loaded model " << objectJson["Model"] << "!");
+            LOG(Severity::Warning, "GameObject " << Name << " specified not loaded model " << objectJson["Model"] << "!");
 
             rItem->staticModel = renderResource->mModels["box"].get();
         }
@@ -160,7 +160,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
             }
             else
             {
-                LOG(Severity::Warning, "GameObject " << name << " specified not loaded material " << objectJson["Material"] << "!");
+                LOG(Severity::Warning, "GameObject " << Name << " specified not loaded material " << objectJson["Material"] << "!");
                 rItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
             }
         }
@@ -242,9 +242,11 @@ GameObject::GameObject()
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 }
 
-GameObject::GameObject(int index, int skinnedIndex)
+GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
 {
     auto renderResource = ServiceProvider::getRenderResource();
+
+    Name = name;
 
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
     Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -267,6 +269,8 @@ GameObject::GameObject(int index, int skinnedIndex)
     }
     else
     {
+        gameObjectType = GameObjectType::Dynamic;
+        tItem->renderType = RenderType::SkinnedDefault;
         tItem->SkinnedCBIndex = skinnedIndex;
     }
     
@@ -276,6 +280,9 @@ GameObject::GameObject(int index, int skinnedIndex)
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
 }
 
+
+
+/***UDPATE***/
 void GameObject::update(const GameTime& gt)
 {
     if (gameObjectType == GameObjectType::Dynamic)
@@ -287,7 +294,8 @@ void GameObject::update(const GameTime& gt)
             renderItem->animationTimer = 0.0f;
         }
 
-        renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->animationTimer);
+        if(isInFrustum)
+            renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->animationTimer);
     }
 
 
@@ -445,7 +453,7 @@ json GameObject::toJson()
 {
     json jElement;
 
-    jElement["Name"] = name;
+    jElement["Name"] = Name;
     jElement["Model"] = gameObjectType != GameObjectType::Wall ? renderItem->staticModel->name : "";
 
     if (renderItem->MaterialOverwrite != nullptr)
@@ -500,6 +508,20 @@ json GameObject::toJson()
     }
 
     return jElement;
+}
+
+void GameObject::setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip)
+{
+    renderItem->skinnedModel = sModel;
+    setAnimation(aClip);
+}
+
+void GameObject::setAnimation(AnimationClip* aClip)
+{
+    renderItem->currentClip = aClip;
+    renderItem->animationTimer = 0.0f;
+
+    renderItem->skinnedModel->finalTransforms.resize(aClip->boneAnimations.size());
 }
 
 void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)

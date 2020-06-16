@@ -1103,7 +1103,7 @@ void P_4E53::update(const GameTime& gt)
 
                     for (const auto& e : activeLevel->mGameObjects)
                     {
-                        if (e.second->name == newGO["Name"])
+                        if (e.second->Name == newGO["Name"])
                         {
                             editSettings->currentSelection = e.second.get();
 
@@ -1435,7 +1435,7 @@ void P_4E53::update(const GameTime& gt)
 
                 if (selectedObject)
                 {
-                    LOG(Severity::Info, "Picked GameObject " << selectedObject->name << ".");
+                    LOG(Severity::Info, "Picked GameObject " << selectedObject->Name << ".");
 
                     std::vector<GameObject*> validGameObjects;
 

@@ -34,7 +34,7 @@ public:
     explicit GameObject();
 
     /*create empty game object with object cb and skinned cb index*/
-    explicit GameObject(int index, int skinnedIndex = -1);
+    explicit GameObject(const std::string& name, int index, int skinnedIndex = -1);
 
     ~GameObject() = default;
 
@@ -50,9 +50,11 @@ public:
 
 
     GameObjectType gameObjectType = GameObjectType::Static;
-    std::string name;
+    std::string Name;
     std::unique_ptr<RenderItem> renderItem;
     float animationTimeScale = 1.0f;
+
+
 
     /*Transform getter/setter*/
     void setPosition(XMFLOAT3 _pos)
@@ -155,6 +157,9 @@ public:
     {
         return isInFrustum;
     }
+
+    void setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip);
+    void setAnimation(AnimationClip* aClip);
 
     void checkInViewFrustum(BoundingFrustum& localCamFrustum);
 
