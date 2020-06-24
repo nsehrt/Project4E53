@@ -2,6 +2,7 @@
 #include "../util/geogen.h"
 #include "../util/serviceprovider.h"
 #include "../render/renderresource.h"
+#include "../util/perlin.h"
 
 Terrain::Terrain(const json& terrainInfo)
 {
@@ -346,10 +347,53 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
     terrainModel->meshes[0]->VertexBufferGPU = terrainVB->getResource();
 }
 
+
+
+/*generate height map with perlin noise*/
+void Terrain::generateHeight()
+{
+    int octaveCount = 7;
+    float scalingBias = 1.8f;
+    float heightMod = 3.5f;
+
+    /*init vectors*/
+    std::vector<float> fSeed((INT_PTR)terrainSlices * terrainSlices);
+    std::vector<float> fPerlin((INT_PTR)terrainSlices * terrainSlices);
+    Perlin::randomize(fSeed);
+
+    /*call perlin*/
+    Perlin::perlinNoise(terrainSlices, terrainSlices, fSeed, octaveCount, scalingBias, mHeightMap);
+
+    float heightAcc = 0.0f;
+
+    for (size_t i = 0; i < mHeightMap.size(); i++)
+    {
+        heightAcc += mHeightMap[i];
+    }
+
+    heightAcc /= (int)mHeightMap.size();
+
+    /*apply to terrain*/
+    for (size_t i = 0; i < mTerrainVertices.size(); i++)
+    {
+        mHeightMap[i] = mHeightMap[i] * (heightScale / heightMod) - heightAcc - (heightScale / heightMod / 2.0f);
+        mTerrainVertices[i].Pos.y = mHeightMap[i];
+    }
+
+    /*copy to gpu*/
+    auto terrainVB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->TerrainVB.get();
+    terrainVB->copyAll(mTerrainVertices[0]);
+    holder = terrainModel->meshes[0]->VertexBufferGPU;
+    terrainModel->meshes[0]->VertexBufferGPU = terrainVB->getResource();
+}
+
+
+
 bool Terrain::save()
 {
     return saveBlendMap() && saveHeightMap();
 }
+
 
 bool Terrain::saveBlendMap()
 {

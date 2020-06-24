@@ -613,6 +613,13 @@ void P_4E53::update(const GameTime& gt)
                                                                              editSettings->Position.y);
             }
 
+            /*generate random height map*/
+            if (inputData.Pressed(BTN::BACK))
+            {
+                activeLevel->mTerrain->generateHeight();
+            }
+
+
             /*process height increase*/
 
             if (inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f)

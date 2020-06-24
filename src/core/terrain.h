@@ -17,6 +17,7 @@ public:
 
     void increaseHeight(float x, float z, float fallStart, float fallEnd, float increase, float resetHeight, bool setHeight, bool setZero);
     void paint(float x, float z, float fallStart, float fallEnd, float increase, int indexTexture, bool setZero = false);
+    void generateHeight();
 
     const float terrainSize = 150.0f;
     const UINT terrainSlices = 500;
