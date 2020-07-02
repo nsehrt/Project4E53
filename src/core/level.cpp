@@ -97,9 +97,11 @@ bool Level::load(const std::string& levelFile)
 
     auto testObject = std::make_unique<GameObject>(std::string("soldier"), amountObjectCBs++, 0);
 
-    testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["basic"].get(), ServiceProvider::getRenderResource()->mAnimations["take1"].get());
-    testObject->setScale({ 0.1f,0.1f,0.1f });
-    testObject->renderItem->renderType = RenderType::SkinnedBind;
+    testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["basic"].get(), ServiceProvider::getRenderResource()->mAnimations["Armature_ArmatureAction"].get());
+    //testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get(), ServiceProvider::getRenderResource()->mAnimations["take1"].get());
+    testObject->setScale({ 0.5f,0.5f,0.5f });
+    testObject->setPosition({ 0.0f,1.0f,0.0f });
+    testObject->renderItem->renderType = RenderType::SkinnedDefault;
 
     mGameObjects[testObject->Name] = std::move(testObject);
 

@@ -19,7 +19,7 @@ public:
         return a + randF() * (b - a);
     }
 
-    /*random int betwwen a and b*/
+    /*random int between a and b*/
     static int randI(int a, int b)
     {
         return a + rand() % ((b - a) + 1);
@@ -51,6 +51,13 @@ public:
     static T clampH(const T& x, const T& low, const T& high)
     {
         return x < low ? low : (x > high ? high : x);
+    }
+
+    /*smoothstep*/
+    static float smoothStepH(const float edge0, const float edge1, const float value)
+    {
+        float result = clampH((value - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+        return result * result * (3 - 2 * result);
     }
 
     /*map*/
