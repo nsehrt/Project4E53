@@ -252,6 +252,9 @@
     <ClCompile Include="src\util\cliploader.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\renderstructs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

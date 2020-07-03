@@ -178,6 +178,7 @@
     <ClCompile Include="src\render\blur.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
     <ClCompile Include="src\render\renderresource.cpp" />
+    <ClCompile Include="src\render\renderstructs.cpp" />
     <ClCompile Include="src\render\rendertarget.cpp" />
     <ClCompile Include="src\render\shadowmap.cpp" />
     <ClCompile Include="src\render\sobel.cpp" />
