@@ -36,6 +36,30 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         return nullptr;
     }
 
+    /*armature*/
+    XMFLOAT4X4 armatureMatrix;
+
+    file.read((char*)&armatureMatrix._11, sizeof(float));
+    file.read((char*)&armatureMatrix._12, sizeof(float));
+    file.read((char*)&armatureMatrix._13, sizeof(float));
+    file.read((char*)&armatureMatrix._14, sizeof(float));
+
+    file.read((char*)&armatureMatrix._21, sizeof(float));
+    file.read((char*)&armatureMatrix._22, sizeof(float));
+    file.read((char*)&armatureMatrix._23, sizeof(float));
+    file.read((char*)&armatureMatrix._24, sizeof(float));
+
+    file.read((char*)&armatureMatrix._31, sizeof(float));
+    file.read((char*)&armatureMatrix._32, sizeof(float));
+    file.read((char*)&armatureMatrix._33, sizeof(float));
+    file.read((char*)&armatureMatrix._34, sizeof(float));
+
+    file.read((char*)&armatureMatrix._41, sizeof(float));
+    file.read((char*)&armatureMatrix._42, sizeof(float));
+    file.read((char*)&armatureMatrix._43, sizeof(float));
+    file.read((char*)&armatureMatrix._44, sizeof(float));
+
+
     /*number of bones*/
     char numBones = 0;
     file.read((char*)(&numBones), sizeof(char));
@@ -105,6 +129,8 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
     mRet->boneCount = numBones;
     mRet->boneHierarchy = boneHierarchy;
     mRet->boneOffsets = boneOffset;
+
+    mRet->globalArmatureInverse = armatureMatrix;
 
     XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
     XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);

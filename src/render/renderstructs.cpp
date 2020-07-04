@@ -137,8 +137,9 @@ void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, float ti
         XMMATRIX globalInverse = XMMatrixRotationQuaternion(XMVectorSet(0, 0.707f, 0.707f, 0));
         
         auto det = XMMatrixDeterminant(globalInverse);
-        XMMATRIX finalTransform = XMMatrixMultiply(XMMatrixInverse(&det, globalInverse), XMMatrixMultiply(offset, toRoot)); //
-
+        //XMMATRIX finalTransform = XMMatrixMultiply(XMMatrixInverse(&det, globalInverse), XMMatrixMultiply(offset, toRoot));
+        //XMMATRIX finalTransform = XMMatrixMultiply(XMLoadFloat4x4(&globalArmatureInverse), XMMatrixMultiply(offset, toRoot));
+        XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);
 
         //XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);
         XMStoreFloat4x4(&finalTransforms[i], XMMatrixTranspose(finalTransform));

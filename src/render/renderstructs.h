@@ -180,6 +180,7 @@ struct SkinnedModel : Model
     UINT boneCount = 0;
     std::vector<int> boneHierarchy;
     std::vector<DirectX::XMFLOAT4X4> boneOffsets;
+    DirectX::XMFLOAT4X4 globalArmatureInverse;
 
     void calculateFinalTransforms(AnimationClip* currentClip, float timePos);
 };
