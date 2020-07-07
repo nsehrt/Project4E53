@@ -36,30 +36,6 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         return nullptr;
     }
 
-    /*armature*/
-    XMFLOAT4X4 armatureMatrix;
-
-    file.read((char*)&armatureMatrix._11, sizeof(float));
-    file.read((char*)&armatureMatrix._12, sizeof(float));
-    file.read((char*)&armatureMatrix._13, sizeof(float));
-    file.read((char*)&armatureMatrix._14, sizeof(float));
-
-    file.read((char*)&armatureMatrix._21, sizeof(float));
-    file.read((char*)&armatureMatrix._22, sizeof(float));
-    file.read((char*)&armatureMatrix._23, sizeof(float));
-    file.read((char*)&armatureMatrix._24, sizeof(float));
-
-    file.read((char*)&armatureMatrix._31, sizeof(float));
-    file.read((char*)&armatureMatrix._32, sizeof(float));
-    file.read((char*)&armatureMatrix._33, sizeof(float));
-    file.read((char*)&armatureMatrix._34, sizeof(float));
-
-    file.read((char*)&armatureMatrix._41, sizeof(float));
-    file.read((char*)&armatureMatrix._42, sizeof(float));
-    file.read((char*)&armatureMatrix._43, sizeof(float));
-    file.read((char*)&armatureMatrix._44, sizeof(float));
-
-
     /*number of bones*/
     char numBones = 0;
     file.read((char*)(&numBones), sizeof(char));
@@ -68,7 +44,7 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
     /*bone information*/
     std::vector<int> boneID(numBones);
     std::vector<std::string> boneName(numBones);
-    std::vector<DirectX::XMFLOAT4X4> boneOffset(numBones);
+    std::vector<std::pair<std::string, DirectX::XMFLOAT4X4>> boneOffset(numBones);
 
     for (char i = 0; i < numBones; i++)
     {
@@ -88,25 +64,11 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         delete[] bname;
 
         /*matrix*/
-        file.read((char*)&boneOffset[i]._11, sizeof(float));
-        file.read((char*)&boneOffset[i]._12, sizeof(float));
-        file.read((char*)&boneOffset[i]._13, sizeof(float));
-        file.read((char*)&boneOffset[i]._14, sizeof(float));
+        float tFloat[16];
+        file.read((char*)&tFloat[0], sizeof(float) * 16);
+        boneOffset[i].first = boneName[i];
+        boneOffset[i].second = XMFLOAT4X4(tFloat);
 
-        file.read((char*)&boneOffset[i]._21, sizeof(float));
-        file.read((char*)&boneOffset[i]._22, sizeof(float));
-        file.read((char*)&boneOffset[i]._23, sizeof(float));
-        file.read((char*)&boneOffset[i]._24, sizeof(float));
-
-        file.read((char*)&boneOffset[i]._31, sizeof(float));
-        file.read((char*)&boneOffset[i]._32, sizeof(float));
-        file.read((char*)&boneOffset[i]._33, sizeof(float));
-        file.read((char*)&boneOffset[i]._34, sizeof(float));
-
-        file.read((char*)&boneOffset[i]._41, sizeof(float));
-        file.read((char*)&boneOffset[i]._42, sizeof(float));
-        file.read((char*)&boneOffset[i]._43, sizeof(float));
-        file.read((char*)&boneOffset[i]._44, sizeof(float));
     }
 
     /*bone hierarchy*/
@@ -120,17 +82,72 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         file.read((char*)(&boneHierarchy[index]), sizeof(int));
     }
 
-    /*number of meshes*/
-    char numMeshes = 0;
-    file.read(&numMeshes, sizeof(numMeshes));
 
+    /*node tree*/
+    Node root;
+
+    std::function<void(Node*, Node*)> loadTree = [&](Node* node, Node* parent)
+    {
+        /*read data*/
+        short slen = 0;
+        file.read((char*)(&slen), sizeof(short));
+
+        char* nameStr = new char[(INT_PTR)slen + 1];
+        file.read(nameStr, slen);
+        nameStr[slen] = '\0';
+
+        float mTemp[16];
+        file.read((char*)&mTemp[0], sizeof(float) * 16);
+
+        int numChildren = 0;
+        file.read((char*)(&numChildren), sizeof(int));
+
+
+        /*fill node*/
+        node->name = nameStr;
+        node->transform = XMFLOAT4X4(mTemp);
+        node->parent = parent;
+
+        XMStoreFloat4x4(&node->boneOffset, XMMatrixIdentity());
+        for (int i = 0; i < (int)boneOffset.size(); i++)
+        {
+            if (node->name == boneOffset[i].first)
+            {
+                node->isBone = true;
+                node->boneOffset = boneOffset[i].second;
+            }
+        }
+
+        for (int i = 0; i < numChildren; i++)
+        {
+            node->children.push_back(std::move(std::make_unique<Node>()));
+            loadTree(node->children.back().get(), node);
+        }
+
+
+    };
+
+
+   
+
+    /*put bone data into model*/
     std::unique_ptr<SkinnedModel> mRet = std::make_unique<SkinnedModel>();
 
     mRet->boneCount = numBones;
     mRet->boneHierarchy = boneHierarchy;
-    mRet->boneOffsets = boneOffset;
+    loadTree(&mRet->nodeTree, nullptr);
 
-    mRet->globalArmatureInverse = armatureMatrix;
+    //std::stringstream out;
+    //printNodes(out, &mRet->nodeTree);
+    //LOG(Severity::Debug, "\n" << out.str() << std::endl);
+
+
+    auto det = XMMatrixDeterminant(XMLoadFloat4x4(&root.transform));
+    XMStoreFloat4x4(&mRet->globalInverse,XMMatrixInverse(&det, XMLoadFloat4x4(&root.transform)));
+
+    /*number of meshes*/
+    char numMeshes = 0;
+    file.read(&numMeshes, sizeof(numMeshes));
 
     XMFLOAT3 cMin(+FLT_MAX, +FLT_MAX, +FLT_MAX);
     XMFLOAT3 cMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);

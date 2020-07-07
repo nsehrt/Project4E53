@@ -500,7 +500,15 @@ void GameObject::setAnimation(AnimationClip* aClip)
     renderItem->currentClip = aClip;
     renderItem->animationTimer = 0.0f;
 
-    renderItem->skinnedModel->finalTransforms.resize(aClip->boneAnimations.size());
+    if (aClip != nullptr)
+    {
+        renderItem->skinnedModel->finalTransforms.resize(aClip->boneAnimations.size());
+    }
+    else
+    {
+        renderItem->skinnedModel->finalTransforms.resize(96);
+    }
+    
 }
 
 void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)

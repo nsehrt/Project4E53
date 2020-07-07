@@ -253,7 +253,7 @@
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\render\renderstructs.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\src\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

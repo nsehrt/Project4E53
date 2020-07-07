@@ -10,6 +10,8 @@
 #include <DirectXCollision.h>
 #include <string>
 #include <unordered_map>
+#include <iostream>
+#include <sstream>
 #include "../util/mathhelper.h"
 #include "../extern/json.hpp"
 
@@ -170,17 +172,69 @@ public:
     void interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms) const;
 };
 
+struct Node
+{
+    std::string name = "";
+    Node* parent = nullptr;
+
+    DirectX::XMFLOAT4X4 transform = {};
+
+    bool isBone = false;
+    DirectX::XMFLOAT4X4 boneOffset = {};
+
+    std::vector<std::unique_ptr<Node>> children;
+};
+
+static void printNodes(std::stringstream& str, Node* node, int depth = 0)
+{
+    str << std::string((long long)depth * 3, ' ') << std::string(2, '-') << ">" << node->name << (node->isBone ? " (Bone)" : " (Not a bone)");
+
+    if (node->parent != nullptr)
+    {
+        str << " child of node " << node->parent->name;
+    }
+    else
+    {
+        str << " root node";
+    }
+
+    DirectX::XMMATRIX trf = DirectX::XMLoadFloat4x4(&node->transform);
+
+    if (DirectX::XMMatrixIsIdentity(trf))
+    {
+        str << " (Identity Transform)";
+    }
+    str << "\n";
+
+    if (!DirectX::XMMatrixIsIdentity(trf))
+        str << MathHelper::printMatrix(node->transform) << "\n";
+
+    if (node->isBone)
+    {
+        str << "\nBone Offset:\n";
+        str << MathHelper::printMatrix(node->boneOffset) << "\n";
+    }
+
+    for (UINT i = 0; i < node->children.size(); i++)
+    {
+        printNodes(str, node->children[i].get(), depth + 1);
+    }
+
+}
+
+
 /*skinned model*/
 struct SkinnedModel : Model
 {
-    /*gets copied to gpu*/
+    /*gets copied to gpu*/ // belongs in model instance / game object
     std::vector<DirectX::XMFLOAT4X4> finalTransforms;
 
     /*bone information*/
     UINT boneCount = 0;
     std::vector<int> boneHierarchy;
-    std::vector<DirectX::XMFLOAT4X4> boneOffsets;
-    DirectX::XMFLOAT4X4 globalArmatureInverse;
+    //std::vector<DirectX::XMFLOAT4X4> boneOffsets;
+    Node nodeTree;
+    DirectX::XMFLOAT4X4 globalInverse;
 
     void calculateFinalTransforms(AnimationClip* currentClip, float timePos);
 };
@@ -235,7 +289,7 @@ enum class RenderType
     NoCullNoNormal,
     DefaultAlpha,
     SkinnedDefault,
-    SkinnedBind,
+    SkinnedNone,
     Sky, /*everything before transparent objects*/
     Particle_Smoke,
     Particle_Fire,

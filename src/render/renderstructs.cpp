@@ -56,10 +56,10 @@ void BoneAnimation::interpolate(float time, XMFLOAT4X4& matrix) const
 
 float AnimationClip::getStartTime()
 {
-    if (startTime != -1.0f)
-    {
-        return startTime;
-    }
+    //if (startTime != -1.0f)
+    //{
+    //    return startTime;
+    //}
 
     float result = MathHelper::Infinity;
 
@@ -77,10 +77,10 @@ float AnimationClip::getStartTime()
 
 float AnimationClip::getEndTime()
 {
-    if (endTime != -1.0f)
-    {
-        return endTime;
-    }
+    //if (endTime != -1.0f)
+    //{
+    //    return endTime;
+    //}
 
     float result = 0.0f;
 
@@ -104,7 +104,7 @@ void AnimationClip::interpolate(float t, std::vector<XMFLOAT4X4>& boneTransforms
 
 void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, float timePos)
 {
-    UINT numBones = (UINT)boneOffsets.size();
+    UINT numBones = 0;// (UINT)boneOffsets.size();
 
     std::vector<XMFLOAT4X4> toParentTransforms(numBones);
 
@@ -123,23 +123,17 @@ void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, float ti
         XMMATRIX parentToRoot = XMLoadFloat4x4(&toRootTransforms[parentIndex]);
 
         XMMATRIX toRoot = XMMatrixMultiply(toParent, parentToRoot);
-
         XMStoreFloat4x4(&toRootTransforms[i], toRoot);
     }
 
     // Premultiply by the bone offset transform to get the final transform.
     for (UINT i = 0; i < numBones; ++i)
     {
-        XMMATRIX offset = XMLoadFloat4x4(&boneOffsets[i]);
+        XMMATRIX offset = XMLoadFloat4x4(&toRootTransforms[i]);// = XMLoadFloat4x4(&boneOffsets[i]);
         XMMATRIX toRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+        XMMATRIX gInverse = XMLoadFloat4x4(&globalInverse);
 
-        /*multiply the global transform inverse*/
-        XMMATRIX globalInverse = XMMatrixRotationQuaternion(XMVectorSet(0, 0.707f, 0.707f, 0));
-        
-        auto det = XMMatrixDeterminant(globalInverse);
-        //XMMATRIX finalTransform = XMMatrixMultiply(XMMatrixInverse(&det, globalInverse), XMMatrixMultiply(offset, toRoot));
-        //XMMATRIX finalTransform = XMMatrixMultiply(XMLoadFloat4x4(&globalArmatureInverse), XMMatrixMultiply(offset, toRoot));
-        XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);
+        XMMATRIX finalTransform = gInverse * toRoot * offset;
 
         //XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);
         XMStoreFloat4x4(&finalTransforms[i], XMMatrixTranspose(finalTransform));

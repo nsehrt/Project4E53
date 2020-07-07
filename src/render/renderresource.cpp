@@ -796,7 +796,7 @@ void RenderResource::buildPSOs()
         mShaders["skinnedBindVS"]->GetBufferSize()
     };
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&skinnedBindPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::SkinnedBind])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&skinnedBindPSODesc, IID_PPV_ARGS(&mPSOs[RenderType::SkinnedNone])));
 
 
     /* default alpha PSO*/
