@@ -180,7 +180,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     /*load all animations*/
 
-    ClipLoader cLoader(device, cmdList);
+    ClipLoader cLoader;
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(_animPath))
     {

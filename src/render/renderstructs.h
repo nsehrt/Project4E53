@@ -140,14 +140,19 @@ struct KeyFrame
 struct BoneAnimation
 {
     std::vector<KeyFrame> keyFrames;
+    bool isEmpty = false;
 
     float getStartTime() const
     {
+        if (isEmpty) return D3D12_FLOAT32_MAX;
+
         return keyFrames.front().timeStamp;
     }
 
     float getEndTime() const
     {
+        if (isEmpty) return -D3D12_FLOAT32_MAX;
+
         return keyFrames.back().timeStamp;
     }
 
@@ -177,51 +182,44 @@ struct Node
     std::string name = "";
     Node* parent = nullptr;
 
-    DirectX::XMFLOAT4X4 transform = {};
-
     bool isBone = false;
+    int boneIndex = -1;
+
+    DirectX::XMFLOAT4X4 transform = {};
     DirectX::XMFLOAT4X4 boneOffset = {};
 
-    std::vector<std::unique_ptr<Node>> children;
+    std::vector<Node*> children;
+
+    ~Node()
+    {
+        for (auto i = 0; i < children.size(); i++)
+        {
+            delete children[i];
+        }
+    }
 };
 
-static void printNodes(std::stringstream& str, Node* node, int depth = 0)
+struct NodeTree
 {
-    str << std::string((long long)depth * 3, ' ') << std::string(2, '-') << ">" << node->name << (node->isBone ? " (Bone)" : " (Not a bone)");
-
-    if (node->parent != nullptr)
+    NodeTree()
     {
-        str << " child of node " << node->parent->name;
-    }
-    else
-    {
-        str << " root node";
+        root = new Node();
     }
 
-    DirectX::XMMATRIX trf = DirectX::XMLoadFloat4x4(&node->transform);
-
-    if (DirectX::XMMatrixIsIdentity(trf))
+    ~NodeTree()
     {
-        str << " (Identity Transform)";
-    }
-    str << "\n";
-
-    if (!DirectX::XMMatrixIsIdentity(trf))
-        str << MathHelper::printMatrix(node->transform) << "\n";
-
-    if (node->isBone)
-    {
-        str << "\nBone Offset:\n";
-        str << MathHelper::printMatrix(node->boneOffset) << "\n";
+        delete root;
     }
 
-    for (UINT i = 0; i < node->children.size(); i++)
-    {
-        printNodes(str, node->children[i].get(), depth + 1);
-    }
 
-}
+    Node* root;
 
+    Node* findNodeByBoneIndex(int index) const;
+    std::string toString();
+
+private:
+    void printNodes(std::stringstream& str, Node* node, int depth = 0);
+};
 
 /*skinned model*/
 struct SkinnedModel : Model
@@ -232,8 +230,7 @@ struct SkinnedModel : Model
     /*bone information*/
     UINT boneCount = 0;
     std::vector<int> boneHierarchy;
-    //std::vector<DirectX::XMFLOAT4X4> boneOffsets;
-    Node nodeTree;
+    NodeTree nodeTree;
     DirectX::XMFLOAT4X4 globalInverse;
 
     void calculateFinalTransforms(AnimationClip* currentClip, float timePos);

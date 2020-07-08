@@ -84,8 +84,6 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
 
 
     /*node tree*/
-    Node root;
-
     std::function<void(Node*, Node*)> loadTree = [&](Node* node, Node* parent)
     {
         /*read data*/
@@ -108,6 +106,8 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         node->transform = XMFLOAT4X4(mTemp);
         node->parent = parent;
 
+        delete[] nameStr;
+
         XMStoreFloat4x4(&node->boneOffset, XMMatrixIdentity());
         for (int i = 0; i < (int)boneOffset.size(); i++)
         {
@@ -115,13 +115,14 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
             {
                 node->isBone = true;
                 node->boneOffset = boneOffset[i].second;
+                node->boneIndex = i;
             }
         }
 
         for (int i = 0; i < numChildren; i++)
         {
-            node->children.push_back(std::move(std::make_unique<Node>()));
-            loadTree(node->children.back().get(), node);
+            node->children.push_back(new Node());
+            loadTree(node->children.back(), node);
         }
 
 
@@ -135,15 +136,12 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
 
     mRet->boneCount = numBones;
     mRet->boneHierarchy = boneHierarchy;
-    loadTree(&mRet->nodeTree, nullptr);
+    loadTree(mRet->nodeTree.root, nullptr);
 
-    //std::stringstream out;
-    //printNodes(out, &mRet->nodeTree);
-    //LOG(Severity::Debug, "\n" << out.str() << std::endl);
+    LOG(Severity::Debug, "\n" << mRet->nodeTree.toString() << std::endl);
 
-
-    auto det = XMMatrixDeterminant(XMLoadFloat4x4(&root.transform));
-    XMStoreFloat4x4(&mRet->globalInverse,XMMatrixInverse(&det, XMLoadFloat4x4(&root.transform)));
+    auto det = XMMatrixDeterminant(XMLoadFloat4x4(&mRet->nodeTree.root->transform));
+    XMStoreFloat4x4(&mRet->globalInverse,XMMatrixInverse(&det, XMLoadFloat4x4(&mRet->nodeTree.root->transform)));
 
     /*number of meshes*/
     char numMeshes = 0;

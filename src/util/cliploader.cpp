@@ -56,6 +56,12 @@ std::unique_ptr<AnimationClip> ClipLoader::loadCLP(const std::filesystem::direct
         UINT keyfrCount = 0;
         file.read((char*)(&keyfrCount), sizeof(int));
 
+        if (keyfrCount == -1)
+        {
+            anim->boneAnimations[i].isEmpty = true;
+            continue;
+        }
+
         anim->boneAnimations[i].keyFrames.resize(keyfrCount);
 
         for (UINT j = 0; j < keyfrCount; j++)
