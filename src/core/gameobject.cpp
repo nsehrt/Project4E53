@@ -292,11 +292,11 @@ void GameObject::update(const GameTime& gt)
 
         if (renderItem->animationTimer >= renderItem->currentClip->getEndTime())
         {
-            renderItem->animationTimer = 0.0f;
+            renderItem->animationTimer = fmod(renderItem->animationTimer, renderItem->currentClip->getEndTime());
         }
 
         if(isInFrustum)
-            renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->animationTimer);
+            renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->finalTransforms, renderItem->animationTimer);
     }
 
 
@@ -502,11 +502,11 @@ void GameObject::setAnimation(AnimationClip* aClip)
 
     if (aClip != nullptr)
     {
-        renderItem->skinnedModel->finalTransforms.resize(aClip->boneAnimations.size());
+        renderItem->finalTransforms.resize(aClip->boneAnimations.size());
     }
     else
     {
-        renderItem->skinnedModel->finalTransforms.resize(96);
+        renderItem->finalTransforms.resize(96);
     }
     
 }

@@ -67,7 +67,9 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         float tFloat[16];
         file.read((char*)&tFloat[0], sizeof(float) * 16);
         boneOffset[i].first = boneName[i];
-        boneOffset[i].second = XMFLOAT4X4(tFloat);
+
+        XMFLOAT4X4 tMat = XMFLOAT4X4(tFloat);
+        XMStoreFloat4x4(&boneOffset[i].second, MathHelper::transposeFromXMFloat(tMat));
 
     }
 
@@ -103,7 +105,8 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
 
         /*fill node*/
         node->name = nameStr;
-        node->transform = XMFLOAT4X4(mTemp);
+        XMFLOAT4X4 tMat = XMFLOAT4X4(mTemp);
+        XMStoreFloat4x4(&node->transform, MathHelper::transposeFromXMFloat(tMat));
         node->parent = parent;
 
         delete[] nameStr;
@@ -137,6 +140,7 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
     mRet->boneCount = numBones;
     mRet->boneHierarchy = boneHierarchy;
     loadTree(mRet->nodeTree.root, nullptr);
+    mRet->nodeTree.boneRoot = mRet->nodeTree.findNodeByBoneIndex(0);
 
     LOG(Severity::Debug, "\n" << mRet->nodeTree.toString() << std::endl);
 

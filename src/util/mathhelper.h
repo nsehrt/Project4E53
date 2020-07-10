@@ -89,6 +89,11 @@ public:
         return DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(&det, A));
     }
 
+    static DirectX::XMMATRIX transposeFromXMFloat(const DirectX::XMFLOAT4X4& m)
+    {
+        return DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m));
+    }
+
     static DirectX::XMFLOAT4X4 identity4x4()
     {
         static DirectX::XMFLOAT4X4 I(

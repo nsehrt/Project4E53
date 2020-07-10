@@ -188,6 +188,8 @@ struct Node
     DirectX::XMFLOAT4X4 transform = {};
     DirectX::XMFLOAT4X4 boneOffset = {};
 
+    DirectX::XMFLOAT4X4 globalTransform = {};
+
     std::vector<Node*> children;
 
     ~Node()
@@ -212,7 +214,8 @@ struct NodeTree
     }
 
 
-    Node* root;
+    Node* root = nullptr;
+    Node* boneRoot = nullptr;
 
     Node* findNodeByBoneIndex(int index) const;
     std::string toString();
@@ -224,16 +227,13 @@ private:
 /*skinned model*/
 struct SkinnedModel : Model
 {
-    /*gets copied to gpu*/ // belongs in model instance / game object
-    std::vector<DirectX::XMFLOAT4X4> finalTransforms;
-
     /*bone information*/
     UINT boneCount = 0;
     std::vector<int> boneHierarchy;
     NodeTree nodeTree;
     DirectX::XMFLOAT4X4 globalInverse;
 
-    void calculateFinalTransforms(AnimationClip* currentClip, float timePos);
+    void calculateFinalTransforms(AnimationClip* currentClip, std::vector<DirectX::XMFLOAT4X4>& finalTransforms, float timePos);
 };
 
 
@@ -334,6 +334,7 @@ struct RenderItem
     SkinnedModel* skinnedModel = nullptr;
 
     AnimationClip* currentClip = nullptr;
+    std::vector<DirectX::XMFLOAT4X4> finalTransforms;
     Material* MaterialOverwrite = nullptr;
 
     float animationTimer = 0.0f;

@@ -1471,8 +1471,8 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
         SkinnedConstants skinnedConstants;
 
         std::copy(
-            std::begin(e->skinnedModel->finalTransforms),
-            std::end(e->skinnedModel->finalTransforms),
+            std::begin(e->finalTransforms),
+            std::end(e->finalTransforms),
             &skinnedConstants.BoneTransforms[0]);
 
         currSkinnedCB->copyData(e->SkinnedCBIndex, skinnedConstants);

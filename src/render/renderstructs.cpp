@@ -56,10 +56,10 @@ void BoneAnimation::interpolate(float time, XMFLOAT4X4& matrix) const
 
 float AnimationClip::getStartTime()
 {
-    //if (startTime != -1.0f)
-    //{
-    //    return startTime;
-    //}
+    if (startTime != -1.0f)
+    {
+        return startTime;
+    }
 
     float result = MathHelper::Infinity;
 
@@ -77,10 +77,10 @@ float AnimationClip::getStartTime()
 
 float AnimationClip::getEndTime()
 {
-    //if (endTime != -1.0f)
-    //{
-    //    return endTime;
-    //}
+    if (endTime != -1.0f)
+    {
+        return endTime;
+    }
 
     float result = 0.0f;
 
@@ -103,50 +103,50 @@ void AnimationClip::interpolate(float t, std::vector<XMFLOAT4X4>& boneTransforms
     }
 }
 
-void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, float timePos)
+void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, std::vector<XMFLOAT4X4>& finalTransforms, float timePos)
 {
 
     std::vector<XMFLOAT4X4> localTransforms(boneCount);
-    std::vector<XMFLOAT4X4> globalTransforms(boneCount);
 
     /*fill local transforms with the local node transforms of the bones*/
     for (auto i = 0; i < localTransforms.size(); i++)
     {
-        localTransforms[i] = nodeTree.findNodeByBoneIndex(i)->transform;
+        localTransforms[i] =  nodeTree.findNodeByBoneIndex(i)->transform;
+        //XMStoreFloat4x4(&localTransforms[i], XMLoadFloat4x4(&nodeTree.findNodeByBoneIndex(i)->transform));
     }
-
 
     currentClip->interpolate(timePos, localTransforms);
 
 
     /*calculate global transforms*/
 
-    /*root is equal to local*/
-    globalTransforms[0] = localTransforms[0];
-
-    // find the toRootTransform of the children.
-    for (UINT i = 1; i < boneCount; ++i)
+    std::function<void (Node*)> updateGlobalTransforms = [&](Node* node)
     {
-        XMMATRIX local = XMLoadFloat4x4(&localTransforms[i]);
+        if (node->parent->isBone)
+        {
+            XMStoreFloat4x4(&node->globalTransform, XMLoadFloat4x4(&localTransforms[node->boneIndex]) * XMLoadFloat4x4(&node->parent->globalTransform));
+        }
+        else
+        {
+            node->globalTransform = localTransforms[node->boneIndex];
+        }
 
-        int parentIndex = boneHierarchy[i];
-        XMMATRIX parentToRoot = XMLoadFloat4x4(&globalTransforms[parentIndex]);
-
-        XMMATRIX global = XMMatrixMultiply(local, parentToRoot);
-        XMStoreFloat4x4(&globalTransforms[i], global);
-    }
-
-    // Premultiply by the bone offset transform to get the final transform.
-    for (UINT i = 0; i < boneCount; ++i)
-    {
-        XMMATRIX offset = XMLoadFloat4x4(&nodeTree.findNodeByBoneIndex(i)->transform);
-        XMMATRIX toRoot = XMLoadFloat4x4(&globalTransforms[i]);
+        XMMATRIX offset = XMLoadFloat4x4(&node->boneOffset);
+        XMMATRIX toRoot = XMLoadFloat4x4(&node->globalTransform);
         XMMATRIX gInverse = XMLoadFloat4x4(&globalInverse);
 
-        XMMATRIX finalTransform = gInverse * toRoot * offset;
+        XMMATRIX finalTransform = offset * toRoot * gInverse;
+        XMStoreFloat4x4(&finalTransforms[node->boneIndex], XMMatrixTranspose(finalTransform));
 
-        XMStoreFloat4x4(&finalTransforms[i], XMMatrixTranspose(finalTransform));
-    }
+        for (auto i = 0; i < node->children.size(); i++)
+        {
+            updateGlobalTransforms(node->children[i]);
+        }
+
+    };
+
+    updateGlobalTransforms(nodeTree.boneRoot);
+
 }
 
 
