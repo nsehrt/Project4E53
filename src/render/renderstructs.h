@@ -231,7 +231,7 @@ struct SkinnedModel : Model
     UINT boneCount = 0;
     std::vector<int> boneHierarchy;
     NodeTree nodeTree;
-    DirectX::XMFLOAT4X4 globalInverse;
+    DirectX::XMFLOAT4X4 rootTransform;
 
     void calculateFinalTransforms(AnimationClip* currentClip, std::vector<DirectX::XMFLOAT4X4>& finalTransforms, float timePos);
 };

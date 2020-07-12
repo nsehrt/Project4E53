@@ -158,7 +158,7 @@ public:
         return isInFrustum;
     }
 
-    void setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip);
+    void setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip, UINT skinnedCBIndex);
     void setAnimation(AnimationClip* aClip);
 
     void checkInViewFrustum(BoundingFrustum& localCamFrustum);
@@ -199,6 +199,7 @@ private:
     /*precise hitbox needed*/
 
     UINT objectCBSize = 0;
+    UINT skinnedCBSize = 0;
 
     bool exists(const nlohmann::json& j, const std::string& key)
     {

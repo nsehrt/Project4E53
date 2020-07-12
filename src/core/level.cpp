@@ -97,14 +97,15 @@ bool Level::load(const std::string& levelFile)
 
     auto testObject = std::make_unique<GameObject>(std::string("test"), amountObjectCBs++, 0);
 
-    testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get());
-    //testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["soldier"].get(), ServiceProvider::getRenderResource()->mAnimations["take1"].get());
-    testObject->setScale({ 1,1,1 });
+    testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), ServiceProvider::getRenderResource()->mAnimations["metarig_metarigAction"].get(), 0);
     testObject->setPosition({ 0.0f,3.0f,0.0f });
-    testObject->animationTimeScale = 0.5f;
-    testObject->renderItem->renderType = RenderType::SkinnedDefault;
-
     mGameObjects[testObject->Name] = std::move(testObject);
+
+    auto testObject2 = std::make_unique<GameObject>(std::string("test2"), amountObjectCBs++, 1);
+    testObject2->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get(), 1);
+    testObject2->setPosition({ 5.0f,3.0f,0.0f });
+
+    mGameObjects[testObject2->Name] = std::move(testObject2);
 
 
 

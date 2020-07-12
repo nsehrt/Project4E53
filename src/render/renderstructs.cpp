@@ -112,9 +112,9 @@ void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, std::vec
     for (auto i = 0; i < localTransforms.size(); i++)
     {
         localTransforms[i] =  nodeTree.findNodeByBoneIndex(i)->transform;
-        //XMStoreFloat4x4(&localTransforms[i], XMLoadFloat4x4(&nodeTree.findNodeByBoneIndex(i)->transform));
     }
 
+    if(currentClip)
     currentClip->interpolate(timePos, localTransforms);
 
 
@@ -133,9 +133,9 @@ void SkinnedModel::calculateFinalTransforms(AnimationClip* currentClip, std::vec
 
         XMMATRIX offset = XMLoadFloat4x4(&node->boneOffset);
         XMMATRIX toRoot = XMLoadFloat4x4(&node->globalTransform);
-        XMMATRIX gInverse = XMLoadFloat4x4(&globalInverse);
+        XMMATRIX gInverse = XMLoadFloat4x4(&rootTransform);
 
-        XMMATRIX finalTransform = offset * toRoot * gInverse;
+        XMMATRIX finalTransform = offset * toRoot;// *gInverse;
         XMStoreFloat4x4(&finalTransforms[node->boneIndex], XMMatrixTranspose(finalTransform));
 
         for (auto i = 0; i < node->children.size(); i++)

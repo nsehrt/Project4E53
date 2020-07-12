@@ -221,6 +221,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     }
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+    skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
 
     renderItem = std::move(rItem);
 
@@ -240,6 +241,7 @@ GameObject::GameObject()
     SimpleRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+    skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
 }
 
 GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
@@ -261,11 +263,11 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
     tItem->ObjCBIndex.push_back(index); 
     tItem->ObjCBIndex.push_back(index); 
     tItem->ObjCBIndex.push_back(index);
-    tItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
 
     if (skinnedIndex == -1)
     {
         tItem->staticModel = renderResource->mModels["box"].get();
+        tItem->MaterialOverwrite = renderResource->mMaterials["default"].get();
     }
     else
     {
@@ -279,6 +281,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
     renderItem = std::move(tItem);
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
+    skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
 }
 
 
@@ -288,15 +291,25 @@ void GameObject::update(const GameTime& gt)
 {
     if (gameObjectType == GameObjectType::Dynamic)
     {
-        renderItem->animationTimer += gt.DeltaTime() * animationTimeScale;
-
-        if (renderItem->animationTimer >= renderItem->currentClip->getEndTime())
+        if (renderItem->currentClip != nullptr)
         {
-            renderItem->animationTimer = fmod(renderItem->animationTimer, renderItem->currentClip->getEndTime());
+            renderItem->animationTimer += gt.DeltaTime() * animationTimeScale;
+
+            if (renderItem->animationTimer >= renderItem->currentClip->getEndTime())
+            {
+                renderItem->animationTimer = fmod(renderItem->animationTimer, renderItem->currentClip->getEndTime());
+            }
+
+            if (renderItem->animationTimer <= renderItem->currentClip->getStartTime())
+            {
+                renderItem->animationTimer = renderItem->currentClip->getEndTime() - fmod(renderItem->animationTimer, renderItem->currentClip->getEndTime());
+            }
+
         }
 
-        if(isInFrustum)
+        if (isInFrustum)
             renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->finalTransforms, renderItem->animationTimer);
+
     }
 
 
@@ -318,6 +331,7 @@ bool GameObject::draw()
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
+    if (gameObjectType == GameObjectType::Debug) return false;
 
     if (!isDrawEnabled &&
         !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
@@ -350,7 +364,7 @@ bool GameObject::draw()
 
         if (gObjRenderItem->isSkinned())
         {
-            D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress();
+            D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress() + (long long)gObjRenderItem->SkinnedCBIndex * skinnedCBSize;
             renderResource->cmdList->SetGraphicsRootConstantBufferView(6, skinnedCBAddress);
         }
 
@@ -393,7 +407,7 @@ bool GameObject::drawShadow()
 
         if (gObjRenderItem->isSkinned())
         {
-            D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress();
+            D3D12_GPU_VIRTUAL_ADDRESS skinnedCBAddress = ServiceProvider::getRenderResource()->getCurrentFrameResource()->SkinnedCB->getResource()->GetGPUVirtualAddress() + (long long)gObjRenderItem->SkinnedCBIndex * skinnedCBSize;;
             renderResource->cmdList->SetGraphicsRootConstantBufferView(6, skinnedCBAddress);
         }
 
@@ -489,7 +503,7 @@ json GameObject::toJson()
     return jElement;
 }
 
-void GameObject::setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip)
+void GameObject::setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip, UINT cbIndex)
 {
     renderItem->skinnedModel = sModel;
     setAnimation(aClip);
@@ -557,9 +571,19 @@ bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere)
 void GameObject::updateTransforms()
 {
     /*update transforms for constant buffer*/
-    XMStoreFloat4x4(&renderItem->World, XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
-                    XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
-                    XMMatrixTranslationFromVector(XMLoadFloat3(&Position)));
+    XMMATRIX rootTransform = XMMatrixIdentity();
+
+    /*for dynamic objects apply scene root transform*/
+    if (gameObjectType == GameObjectType::Dynamic)
+    {
+        rootTransform = XMLoadFloat4x4(&renderItem->skinnedModel->rootTransform);
+    }
+
+    XMMATRIX preWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+        XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
+        XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
+
+    XMStoreFloat4x4(&renderItem->World, rootTransform *preWorld);
 
     XMStoreFloat4x4(&renderItem->TexTransform, XMMatrixScalingFromVector(XMLoadFloat3(&TextureScale)) *
                     XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *

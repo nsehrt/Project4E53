@@ -158,6 +158,15 @@
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.3
     },
+    
+    {
+        "Name" : "cboy",
+        "Texture" : "cowboy",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.3
+    },
 
     {
         "Name" : "man",
@@ -167,6 +176,8 @@
         "FresnelR0" : [0.01,0.01,0.01],
         "Roughness" : 0.3
     },
+
+
 
     {
         "Name" : "skull",

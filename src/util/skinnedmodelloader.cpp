@@ -67,9 +67,7 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
         float tFloat[16];
         file.read((char*)&tFloat[0], sizeof(float) * 16);
         boneOffset[i].first = boneName[i];
-
-        XMFLOAT4X4 tMat = XMFLOAT4X4(tFloat);
-        XMStoreFloat4x4(&boneOffset[i].second, MathHelper::transposeFromXMFloat(tMat));
+        boneOffset[i].second = XMFLOAT4X4(tFloat);
 
     }
 
@@ -105,8 +103,7 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
 
         /*fill node*/
         node->name = nameStr;
-        XMFLOAT4X4 tMat = XMFLOAT4X4(mTemp);
-        XMStoreFloat4x4(&node->transform, MathHelper::transposeFromXMFloat(tMat));
+        node->transform = XMFLOAT4X4(mTemp);
         node->parent = parent;
 
         delete[] nameStr;
@@ -142,10 +139,9 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
     loadTree(mRet->nodeTree.root, nullptr);
     mRet->nodeTree.boneRoot = mRet->nodeTree.findNodeByBoneIndex(0);
 
-    LOG(Severity::Debug, "\n" << mRet->nodeTree.toString() << std::endl);
+    //LOG(Severity::Debug, "\n" << mRet->nodeTree.toString() << std::endl);
 
-    auto det = XMMatrixDeterminant(XMLoadFloat4x4(&mRet->nodeTree.root->transform));
-    XMStoreFloat4x4(&mRet->globalInverse,XMMatrixInverse(&det, XMLoadFloat4x4(&mRet->nodeTree.root->transform)));
+    mRet->rootTransform = mRet->nodeTree.boneRoot->parent->transform;
 
     /*number of meshes*/
     char numMeshes = 0;
@@ -161,7 +157,7 @@ std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem:
     {
         std::unique_ptr<Mesh> m = std::make_unique<Mesh>();
 
-        /*read map strings*/
+        /*read material string*/
 
         short slen = 0;
         file.read((char*)(&slen), sizeof(short));
