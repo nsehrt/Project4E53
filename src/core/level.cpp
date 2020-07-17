@@ -97,13 +97,17 @@ bool Level::load(const std::string& levelFile)
 
     auto testObject = std::make_unique<GameObject>(std::string("test"), amountObjectCBs++, 0);
 
-    testObject->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), ServiceProvider::getRenderResource()->mAnimations["metarig_metarigAction"].get(), 0);
+    testObject->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), 0);
+    testObject->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Walk"].get());
     testObject->setPosition({ 0.0f,3.0f,0.0f });
+
     mGameObjects[testObject->Name] = std::move(testObject);
 
     auto testObject2 = std::make_unique<GameObject>(std::string("test2"), amountObjectCBs++, 1);
-    testObject2->setSkinnedModel(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get(), 1);
-    testObject2->setPosition({ 5.0f,3.0f,0.0f });
+    testObject2->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), 1);
+    testObject2->setAnimation(ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get());
+    testObject2->setPosition({ 5.0f,8.0f,0.0f });
+    testObject2->animationTimeScale = 0.8f;
 
     mGameObjects[testObject2->Name] = std::move(testObject2);
 

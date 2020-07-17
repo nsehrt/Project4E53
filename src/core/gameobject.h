@@ -158,7 +158,7 @@ public:
         return isInFrustum;
     }
 
-    void setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip, UINT skinnedCBIndex);
+    void makeDynamic(SkinnedModel* sModel, UINT skinnedCBIndex);
     void setAnimation(AnimationClip* aClip);
 
     void checkInViewFrustum(BoundingFrustum& localCamFrustum);

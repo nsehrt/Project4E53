@@ -177,7 +177,14 @@
         "Roughness" : 0.3
     },
 
-
+    {
+        "Name" : "player",
+        "Texture" : "textureTest",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
+        "FresnelR0" : [0.01,0.01,0.01],
+        "Roughness" : 0.3
+    },
 
     {
         "Name" : "skull",

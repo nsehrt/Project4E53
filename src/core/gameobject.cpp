@@ -503,10 +503,11 @@ json GameObject::toJson()
     return jElement;
 }
 
-void GameObject::setSkinnedModel(SkinnedModel* sModel, AnimationClip* aClip, UINT cbIndex)
+void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)
 {
+    gameObjectType = GameObjectType::Dynamic;
     renderItem->skinnedModel = sModel;
-    setAnimation(aClip);
+    setAnimation(nullptr);
 }
 
 void GameObject::setAnimation(AnimationClip* aClip)

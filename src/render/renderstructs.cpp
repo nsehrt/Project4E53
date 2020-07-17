@@ -1,4 +1,5 @@
 #include "renderstructs.h"
+#include "../util/serviceprovider.h"
 
 using namespace DirectX;
 
