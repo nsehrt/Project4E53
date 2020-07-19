@@ -1,4 +1,6 @@
 #include "level.h"
+#include "../core/editmode.h"
+#include "../util/debuginfo.h"
 
 bool Level::load(const std::string& levelFile)
 {

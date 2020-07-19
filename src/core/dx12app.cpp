@@ -1,5 +1,6 @@
 #include "dx12app.h"
 #include "../util/serviceprovider.h"
+#include "../util/debuginfo.h"
 #include <windowsx.h>
 
 using Microsoft::WRL::ComPtr;

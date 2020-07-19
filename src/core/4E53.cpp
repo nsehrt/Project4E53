@@ -8,11 +8,11 @@
 #include "dx12app.h"
 #include "../util/settings.h"
 #include "../util/serviceprovider.h"
+#include "../audio/soundengine.h"
 #include "../render/renderresource.h"
 #include "../core/camera.h"
 #include "../core/fpscamera.h"
 #include "../core/fixedcamera.h"
-#include "../util/modelloader.h"
 #include "../core/level.h"
 #include "../hud/editmodehud.h"
 #include <filesystem>

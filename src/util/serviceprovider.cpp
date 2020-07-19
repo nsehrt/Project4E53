@@ -1,5 +1,9 @@
 #include "serviceprovider.h"
 
+#include "../audio/soundengine.h"
+#include "../util/debuginfo.h"
+#include "../core/editmode.h"
+
 std::shared_ptr<Logger<LogPolicy>>ServiceProvider::vsLogger = nullptr;
 
 std::shared_ptr<Settings>ServiceProvider::settings = nullptr;

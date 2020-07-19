@@ -2,6 +2,7 @@
 #include "../util/modelloader.h"
 #include "../util/skinnedmodelloader.h"
 #include "../util/cliploader.h"
+#include "../core/level.h"
 #include "../util/serviceprovider.h"
 
 bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath, const std::filesystem::path& _skinnedPath, const std::filesystem::path& _animPath)

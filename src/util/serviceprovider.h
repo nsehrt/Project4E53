@@ -6,22 +6,12 @@ class SoundEngine;
 class RenderResource;
 class Level;
 class Camera;
-class GameObject;
-class ShadowMap;
-class LightObject;
-class EditModeHUD;
 
 struct EditSettings;
+struct DebugInfo;
 
-#include "log.h"
-#include "settings.h"
-#include "../input/InputManager.h"
-#include "../audio/soundengine.h"
-#include "../render/renderresource.h"
-#include "../core/level.h"
-#include "../core/camera.h"
-#include "../util/debuginfo.h"
-#include "../core/editmode.h"
+#include "../util/log.h"
+#include "../util/settings.h"
 
 class ServiceProvider
 {

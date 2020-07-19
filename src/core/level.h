@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../extern/json.hpp"
-#include "../core/gameobject.h"
 #include "../util/serviceprovider.h"
+#include "../core/gameobject.h"
 #include "../core/lightobject.h"
 #include "../core/terrain.h"
 #include "../core/water.h"

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "camera.h"
-#include "../input/inputmanager.h"
-#include "gametime.h"
 #include "../util/serviceprovider.h"
+#include "../input/inputmanager.h"
+#include "../util/mathhelper.h"
+#include "gametime.h"
 
 class FixedCamera : public Camera
 {
@@ -28,5 +29,5 @@ private:
     float mCurrentDistance = 15.0f;
     float mMinDistance = 15.0f;
     float mMaxDistance = 100.0f;
-    float mTurn = XM_PI;
+    float mTurn = DirectX::XM_PI;
 };

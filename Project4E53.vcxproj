@@ -109,6 +109,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +148,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,7 +195,6 @@
     <ClCompile Include="src\util\skinnedmodelloader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="debuginfo.h" />
     <ClInclude Include="src\audio\soundengine.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\dx12app.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\util\cliploader.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
+    <ClInclude Include="src\util\debuginfo.h" />
     <ClInclude Include="src\util\geogen.h" />
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\mathhelper.h" />

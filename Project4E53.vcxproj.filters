@@ -100,9 +100,6 @@
     <ClInclude Include="src\core\level.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
-    <ClInclude Include="debuginfo.h">
-      <Filter>Source Files\src\util</Filter>
-    </ClInclude>
     <ClInclude Include="src\render\shadowmap.h">
       <Filter>Source Files\src\render</Filter>
     </ClInclude>
@@ -146,6 +143,9 @@
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\cliploader.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\debuginfo.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,9 +1,16 @@
 #include "editmodehud.h"
+
 #include "ResourceUploadBatch.h"
 #include "WICTextureLoader.h"
 #include "DirectXHelpers.h"
 #include "CommonStates.h"
+
 #include "../util/serviceprovider.h"
+#include "../render/renderresource.h"
+#include "../core/level.h"
+#include "../util/settings.h"
+
+using namespace DirectX;
 
 EditModeHUD::EditModeHUD()
 {

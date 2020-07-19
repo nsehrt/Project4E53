@@ -1,5 +1,6 @@
 #include "fixedcamera.h"
-#include "../util/mathhelper.h"
+
+using namespace DirectX;
 
 void FixedCamera::updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zoomDelta, float turnDelta)
 {

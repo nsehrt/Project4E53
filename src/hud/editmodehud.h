@@ -2,10 +2,11 @@
 
 #include "../core/editmode.h"
 #include "SpriteBatch.h"
-#include "SpriteFont.h"
+#include <SpriteFont.h>
 #include "DescriptorHeap.h"
 #include "SimpleMath.h"
 #include "GraphicsMemory.h"
+
 
 class EditModeHUD
 {
@@ -20,7 +21,7 @@ public:
 private:
     std::unique_ptr<DirectX::DescriptorHeap> m_resourceDescriptors;
     std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> mTextures;
-    std::vector<std::unique_ptr<SpriteFont>> mFonts;
+    std::vector<std::unique_ptr<DirectX::SpriteFont>> mFonts;
 
     const DirectX::SimpleMath::Vector2 saveWindowPos = { 0.5f, 0.05f };
     const DirectX::SimpleMath::Vector2 saveWindowIconPos = { 0.46f, 0.05f };

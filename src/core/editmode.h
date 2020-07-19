@@ -1,7 +1,9 @@
 #pragma once
 
+class GameObject;
+
 #include "../util/d3dUtil.h"
-#include "../core/gameobject.h"
+#include <DirectXMath.h>
 
 enum class EditTool
 {
@@ -143,7 +145,7 @@ struct EditSettings
 
     const float translationIncreaseBase = 60.0f;
     const float scaleIncreaseBase = 0.5f;
-    const float rotationIncreaseBase = XM_PIDIV2;
+    const float rotationIncreaseBase = DirectX::XM_PIDIV2;
 
     /*game object meta tool*/
     GameObjectProperty gameObjectProperty = GameObjectProperty::Collision;
