@@ -10,7 +10,7 @@ namespace Perlin {
 	}
 
 	static void perlinNoise(const int width, const std::vector<float> fSeed, const int octaves, const float fBias, std::vector<float>& fOut)
-    {
+	{
 
 		for (int x = 0; x < width; x++)
 		{
@@ -37,10 +37,10 @@ namespace Perlin {
 			// Scale to seed range
 			fOut[x] = fNoise / fScaleAcc;
 		}
-    }
+	}
 
-    static void perlinNoise(const int width, const int height, const std::vector<float> fSeed, const int octaves, const float fBias, std::vector<float>& fOut)
-    {
+	static void perlinNoise(const int width, const int height, const std::vector<float> fSeed, const int octaves, const float fBias, std::vector<float>& fOut)
+	{
 
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++)

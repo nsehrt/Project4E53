@@ -32,8 +32,8 @@ void EditModeHUD::init()
     resourceUpload.Begin();
 
     /*load png textures*/
-    mTextures.resize(TextureDescriptors::TCount);
-    mFonts.resize(FontDescriptors::FCount);
+    mTextures.resize(static_cast<int>(TextureDescriptors::TCount));
+    mFonts.resize(static_cast<int>(FontDescriptors::FCount));
 
     std::vector<std::wstring> texPaths = {
         /*xbox buttons*/
@@ -89,8 +89,8 @@ void EditModeHUD::init()
          L"data\\font\\editor64.font"
     };
 
-    ASSERT(texPaths.size() == TextureDescriptors::TCount);
-    ASSERT(fontPaths.size() == FontDescriptors::FCount);
+    ASSERT(texPaths.size() == static_cast<int>(TextureDescriptors::TCount));
+    ASSERT(fontPaths.size() == static_cast<int>(FontDescriptors::FCount));
 
     /*load textures*/
     for (int i = 0; i < mTextures.size(); i++)
@@ -106,8 +106,8 @@ void EditModeHUD::init()
     for (int i = 0; i < mFonts.size(); i++)
     {
         mFonts[i] = std::make_unique<SpriteFont>(renderResource->device, resourceUpload, fontPaths[i].c_str(),
-                                                 m_resourceDescriptors->GetCpuHandle((INT_PTR)i + TextureDescriptors::TCount),
-                                                 m_resourceDescriptors->GetGpuHandle((INT_PTR)i + TextureDescriptors::TCount));
+                                                 m_resourceDescriptors->GetCpuHandle((INT_PTR)i + static_cast<int>(TextureDescriptors::TCount)),
+                                                 m_resourceDescriptors->GetGpuHandle((INT_PTR)i + static_cast<int>(TextureDescriptors::TCount)));
     }
 
     RenderTargetState rtState(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_D32_FLOAT);
@@ -566,7 +566,7 @@ void EditModeHUD::draw()
         if (e->hudVisibility == HUDVisibility::FPS_CAMERA && toolMode != EditTool::Camera) continue;
         if (e->hudVisibility == HUDVisibility::LIGHT && toolMode != EditTool::Light) continue;
 
-        mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(e->TexDescriptor),
+        mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(static_cast<int>(e->TexDescriptor)),
                            e->TextureSize,
                            e->ScreenPosition,
                            &e->SourceRectangle,
@@ -588,7 +588,7 @@ void EditModeHUD::draw()
         if (f->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
         if (f->hudVisibility == HUDVisibility::LIGHT && toolMode != EditTool::Light)continue;
 
-        mFonts[f->font]->DrawString(mSpriteBatch.get(),
+        mFonts[static_cast<int>(f->font)]->DrawString(mSpriteBatch.get(),
                                     f->text.c_str(),
                                     f->ScreenPosition,
                                     Colors::RosyBrown,
@@ -629,7 +629,7 @@ std::unique_ptr<EditModeHUD::HUDElement> EditModeHUD::initHUDElement(TextureDesc
 {
     auto element = std::make_unique<HUDElement>(desc);
 
-    element->TextureSize = GetTextureSize(mTextures[element->TexDescriptor].Get());
+    element->TextureSize = GetTextureSize(mTextures[static_cast<int>(element->TexDescriptor)].Get());
     element->Origin.x = float(element->TextureSize.x / 2);
     element->Origin.y = float(element->TextureSize.y / 2);
 

@@ -6,7 +6,6 @@
 
 #include <Windows.h>
 #include "dx12app.h"
-#include "../util/settings.h"
 #include "../util/serviceprovider.h"
 #include "../audio/soundengine.h"
 #include "../render/renderresource.h"

@@ -148,6 +148,9 @@
     <ClInclude Include="src\util\debuginfo.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\perlin.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">

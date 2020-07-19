@@ -231,6 +231,7 @@
     <ClInclude Include="src\util\log.h" />
     <ClInclude Include="src\util\mathhelper.h" />
     <ClInclude Include="src\util\modelloader.h" />
+    <ClInclude Include="src\util\perlin.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
     <ClInclude Include="src\util\settings.h" />
     <ClInclude Include="src\util\skinnedmodelloader.h" />

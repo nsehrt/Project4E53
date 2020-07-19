@@ -31,7 +31,7 @@ private:
 
     const DirectX::SimpleMath::Vector2 sliderMinMax = { 0.046f, 0.204f };
 
-    enum TextureDescriptors
+    enum class TextureDescriptors
     {
         /*Xbox Buttons*/
         BUTTON_A,
@@ -83,7 +83,7 @@ private:
         TCount
     };
 
-    enum FontDescriptors
+    enum class FontDescriptors
     {
         Editor64,
         FCount
