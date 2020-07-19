@@ -1,5 +1,7 @@
 #include "grass.h"
 
+using namespace DirectX;
+
 void Grass::create(const json& grassJson, Terrain* terrain)
 {
     /*read properties from json*/

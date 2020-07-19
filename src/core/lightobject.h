@@ -70,7 +70,7 @@ public:
     }
 
     /*setter*/
-    void setStrength(XMFLOAT3 str)
+    void setStrength(DirectX::XMFLOAT3 str)
     {
         properties.Strength = str;
     }

@@ -1,5 +1,8 @@
 #include "particlesystem.h"
 
+
+using namespace DirectX;
+
 void ParticleSystem::init(const json& particleJson)
 {
     name = particleJson["Name"];

@@ -56,21 +56,21 @@ public:
 
 
     /*Transform getter/setter*/
-    void setPosition(XMFLOAT3 _pos)
+    void setPosition(DirectX::XMFLOAT3 _pos)
     {
         Position = _pos;
 
         updateTransforms();
     }
 
-    void setScale(XMFLOAT3 _scale)
+    void setScale(DirectX::XMFLOAT3 _scale)
     {
         Scale = _scale;
 
         updateTransforms();
     }
 
-    void setRotation(XMFLOAT3 _rot)
+    void setRotation(DirectX::XMFLOAT3 _rot)
     {
         Rotation = _rot;
 
@@ -93,21 +93,21 @@ public:
     }
 
     /*Texture transform getter/setter*/
-    void setTextureTranslation(XMFLOAT3 _translation)
+    void setTextureTranslation(DirectX::XMFLOAT3 _translation)
     {
         TextureTranslation = _translation;
 
         updateTransforms();
     }
 
-    void setTextureScale(XMFLOAT3 _scale)
+    void setTextureScale(DirectX::XMFLOAT3 _scale)
     {
         TextureScale = _scale;
 
         updateTransforms();
     }
 
-    void setTextureRotation(XMFLOAT3 _rot)
+    void setTextureRotation(DirectX::XMFLOAT3 _rot)
     {
         TextureRotation = _rot;
 
@@ -160,7 +160,7 @@ public:
     void makeDynamic(SkinnedModel* sModel, UINT skinnedCBIndex);
     void setAnimation(AnimationClip* aClip);
 
-    void checkInViewFrustum(BoundingFrustum& localCamFrustum);
+    void checkInViewFrustum(DirectX::BoundingFrustum& localCamFrustum);
 
     bool intersectsRough(GameObject& obj);
     bool intersectsRough(DirectX::BoundingOrientedBox& box);

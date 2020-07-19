@@ -5,6 +5,10 @@
 #include "../core/level.h"
 #include "../util/serviceprovider.h"
 
+using Microsoft::WRL::ComPtr;
+using namespace DirectX;
+using namespace DirectX::PackedVector;
+
 bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmdList, const std::filesystem::path& _texturePath, const std::filesystem::path& _modelPath, const std::filesystem::path& _skinnedPath, const std::filesystem::path& _animPath)
 {
     device = _device;

@@ -16,14 +16,10 @@
 #define SKINNED_PATH "data/skinned"
 #define ANIM_PATH "data/anim"
 
-using Microsoft::WRL::ComPtr;
-using namespace DirectX;
-using namespace DirectX::PackedVector;
-
 class RenderResource
 {
 public:
-    explicit RenderResource(ComPtr<ID3D12DescriptorHeap> rtvHeap, ComPtr<ID3D12DescriptorHeap> dsvHeap)
+    explicit RenderResource(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap, Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap)
     {
         mRtvHeap = rtvHeap;
         mDsvHeap = dsvHeap;
@@ -95,13 +91,13 @@ public:
     ID3D12GraphicsCommandList* cmdList = nullptr;
     ID3D12CommandQueue* cmdQueue = nullptr;
 
-    ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
-    ComPtr<ID3D12RootSignature> mPostProcessRootSignature = nullptr;
-    ComPtr<ID3D12RootSignature> mTerrainRootSignature = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mMainRootSignature = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mPostProcessRootSignature = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mTerrainRootSignature = nullptr;
 
-    ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
-    ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
-    ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap = nullptr;
 
 
     ShadowMap* getShadowMap()
@@ -150,11 +146,11 @@ public:
 
 private:
 
-    std::unordered_map <RenderType, ComPtr<ID3D12PipelineState>> mPSOs;
-    std::unordered_map <ShadowRenderType, ComPtr<ID3D12PipelineState>> mShadowPSOs;
-    std::unordered_map <PostProcessRenderType, ComPtr<ID3D12PipelineState>> mPostProcessPSOs;
+    std::unordered_map <RenderType, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
+    std::unordered_map <ShadowRenderType, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mShadowPSOs;
+    std::unordered_map <PostProcessRenderType, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPostProcessPSOs;
 
-    std::unordered_map <std::string, ComPtr<ID3DBlob>> mShaders;
+    std::unordered_map <std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
     std::vector<std::vector<D3D12_INPUT_ELEMENT_DESC>> mInputLayouts;
 
     /*post process*/
@@ -170,10 +166,10 @@ private:
 
     float mLightNearZ = 0.0f;
     float mLightFarZ = 0.0f;
-    XMFLOAT3 mLightPosW;
-    XMFLOAT4X4 mLightView = MathHelper::identity4x4();
-    XMFLOAT4X4 mLightProj = MathHelper::identity4x4();
-    XMFLOAT4X4 mShadowTransform = MathHelper::identity4x4();
+    DirectX::XMFLOAT3 mLightPosW;
+    DirectX::XMFLOAT4X4 mLightView = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 mLightProj = MathHelper::identity4x4();
+    DirectX::XMFLOAT4X4 mShadowTransform = MathHelper::identity4x4();
 
     UINT mNullCubeSrvIndex = 0;
     UINT mNullTexSrvIndex = 0;

@@ -2,6 +2,8 @@
 #include "../core/editmode.h"
 #include "../util/debuginfo.h"
 
+using namespace DirectX;
+
 bool Level::load(const std::string& levelFile)
 {
     auto startTime = std::chrono::system_clock::now();

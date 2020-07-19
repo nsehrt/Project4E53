@@ -74,7 +74,7 @@ public:
     std::vector<std::unique_ptr<Grass>> mGrass;
     std::unordered_map<std::string, std::unique_ptr<ParticleSystem>> mParticleSystems;
 
-    XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
+    DirectX::XMFLOAT4 AmbientLight = { 0.25f, 0.25f, 0.25f, 1.0f };
 
     std::vector<std::shared_ptr<Camera>> mCameras;
 

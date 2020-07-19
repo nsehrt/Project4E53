@@ -1,5 +1,8 @@
 #include "water.h"
 
+
+using namespace DirectX;
+
 Water::Water(RenderResource* r, const json& waterJson)
 {
 

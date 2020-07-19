@@ -4,6 +4,9 @@
 #include "../render/renderresource.h"
 #include "../util/perlin.h"
 
+
+using namespace DirectX;
+
 Terrain::Terrain(const json& terrainInfo)
 {
     auto renderResource = ServiceProvider::getRenderResource();
