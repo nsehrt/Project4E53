@@ -98,7 +98,7 @@ bool Level::load(const std::string& levelFile)
     auto testObject = std::make_unique<GameObject>(std::string("test"), amountObjectCBs++, 0);
 
     testObject->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), 0);
-    testObject->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Walk"].get());
+    testObject->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Run"].get());
     testObject->setPosition({ 0.0f,3.0f,0.0f });
 
     mGameObjects[testObject->Name] = std::move(testObject);

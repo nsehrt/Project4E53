@@ -1,4 +1,5 @@
 #include "gameobject.h"
+#include "../util/serviceprovider.h"
 
 using namespace DirectX;
 

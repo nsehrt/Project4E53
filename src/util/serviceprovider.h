@@ -44,43 +44,29 @@ private:
 
 public:
 
-    static Logger<LogPolicy>* getLogger() { return vsLogger.get(); }
-    static void setLoggingService(std::shared_ptr<Logger<LogPolicy>> providedFileLogger);
+    static Logger<LogPolicy>* getLogger();
+    static void setLoggingService(std::shared_ptr<Logger<LogPolicy>> _fileLogger);
 
-    static Settings* getSettings() { return settings.get(); }
-    static void setSettings(std::shared_ptr<Settings> providedSettings);
+    static Settings* getSettings();
+    static void setSettings(std::shared_ptr<Settings> _settings);
 
-    static SoundEngine* getAudio() { return audio.get(); }
-    static void setAudioEngine(std::shared_ptr<SoundEngine> providedAudio);
+    static SoundEngine* getAudio();
+    static void setAudioEngine(std::shared_ptr<SoundEngine> _audio);
 
-    static InputManager* getInputManager() { return input.get(); }
-    static void setInputManager(std::shared_ptr<InputManager> providedInputManager);
+    static InputManager* getInputManager();
+    static void setInputManager(std::shared_ptr<InputManager> _input);
 
-    static RenderResource* getRenderResource() { return renderResource.get(); }
+    static RenderResource* getRenderResource();
     static void setRenderResource(std::shared_ptr<RenderResource> providedRenderResource);
 
-    static Level* getActiveLevel() { return activeLevel.get(); };
-    static void setActiveLevel(std::shared_ptr<Level> providedLevel);
+    static Level* getActiveLevel();
+    static void setActiveLevel(std::shared_ptr<Level> _level);
 
-    static Camera* getActiveCamera() { return activeCamera.get(); };
-    static void setActiveCamera(std::shared_ptr<Camera> providedCamera);
+    static Camera* getActiveCamera();
+    static void setActiveCamera(std::shared_ptr<Camera> _camera);
 
-    static DebugInfo* getDebugInfo() { return debugInfo.get(); };
+    static DebugInfo* getDebugInfo();
+    static EditSettings* getEditSettings();
 
-    static EditSettings* getEditSettings() { return editSettings.get(); };
-
-    static unsigned int getAudioGuid()
-    {
-        std::lock_guard<std::mutex> lock(ServiceProvider::audioLock);
-
-        unsigned int ret = audioGuid.load();
-        audioGuid++;
-
-        if (audioGuid == 0)
-        {
-            audioGuid++;
-        }
-
-        return ret;
-    }
+    static unsigned int getAudioGuid();
 };
