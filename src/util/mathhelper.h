@@ -106,6 +106,12 @@ public:
         return I;
     }
 
+    static float biasFunction(float x, float bias)
+    {
+        float k = std::powf(1 - bias, 3);
+        return (x * k) / (x * k - x + 1);
+    }
+
     static std::string printMatrix(const DirectX::XMFLOAT4X4& m, bool toLog = false);
     static DirectX::XMVECTOR randUnitVec3();
     static DirectX::XMVECTOR randHemisphereUnitVec3(DirectX::XMVECTOR n);

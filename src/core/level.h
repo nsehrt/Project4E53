@@ -85,7 +85,7 @@ public:
 private:
 
     /* total amount of object cbs used in the level*/
-    int amountObjectCBs = 0;
+    int amountObjectCBs = 1;
 
     bool parseSky(const json& skyJson);
     bool parseLights(const json& lightJson);

@@ -37,12 +37,12 @@ public:
 
 
 
-    void update(const GameTime& gt);
-    bool draw();
-    bool drawShadow();
-    void drawRoughHitbox();
+    virtual void update(const GameTime& gt);
+    bool draw() const;
+    bool drawShadow() const;
+    void drawRoughHitbox() const;
 
-    json toJson();
+    json toJson() const;
 
 
 
@@ -127,7 +127,7 @@ public:
         return TextureRotation;
     }
 
-    float getRoughHitBoxExtentY()
+    float getRoughHitBoxExtentY() const
     {
         return roughBoundingBox.Extents.y;
     }
@@ -150,7 +150,7 @@ public:
         return frustumCheckBoundingBox;
     }
 
-    bool getIsInFrustum()
+    bool getIsInFrustum() const
     {
         return isInFrustum;
     }
@@ -160,10 +160,10 @@ public:
 
     void checkInViewFrustum(DirectX::BoundingFrustum& localCamFrustum);
 
-    bool intersectsRough(GameObject& obj);
-    bool intersectsRough(DirectX::BoundingOrientedBox& box);
+    bool intersectsRough(GameObject& obj) const;
+    bool intersectsRough(DirectX::BoundingOrientedBox& box) const;
 
-    bool intersectsShadowBounds(DirectX::BoundingSphere& sphere); /*only for shadow culling*/
+    bool intersectsShadowBounds(DirectX::BoundingSphere& sphere) const; /*only for shadow culling*/
 
     void updateTransforms();
 

@@ -102,6 +102,7 @@ public:
         WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0);
         return r;
     }
+
 };
 
 class DxException

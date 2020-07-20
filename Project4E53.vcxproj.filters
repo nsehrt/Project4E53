@@ -151,6 +151,15 @@
     <ClInclude Include="src\util\perlin.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\animationevaluator.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\character.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\player.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -257,6 +266,15 @@
     </ClCompile>
     <ClCompile Include="src\render\renderstructs.cpp">
       <Filter>Source Files\src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\animationevaluator.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\character.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\player.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -330,7 +330,7 @@ void GameObject::update(const GameTime& gt)
 
 }
 
-bool GameObject::draw()
+bool GameObject::draw() const
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
@@ -381,7 +381,7 @@ bool GameObject::draw()
     return true;
 }
 
-bool GameObject::drawShadow()
+bool GameObject::drawShadow() const
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
@@ -423,7 +423,7 @@ bool GameObject::drawShadow()
     return true;
 }
 
-void GameObject::drawRoughHitbox()
+void GameObject::drawRoughHitbox() const
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
@@ -446,7 +446,7 @@ void GameObject::drawRoughHitbox()
     renderResource->cmdList->DrawIndexedInstanced(boxMesh->IndexCount, 1, 0, 0, 0);
 }
 
-json GameObject::toJson()
+json GameObject::toJson() const
 {
     json jElement;
 
@@ -548,7 +548,7 @@ void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
 
 }
 
-bool GameObject::intersectsRough(GameObject& obj)
+bool GameObject::intersectsRough(GameObject& obj) const
 {
     if (!isCollisionEnabled || !obj.isCollisionEnabled)
     {
@@ -558,7 +558,7 @@ bool GameObject::intersectsRough(GameObject& obj)
     return roughBoundingBox.Intersects(obj.roughBoundingBox);
 }
 
-bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box)
+bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box) const
 {
     if (!isCollisionEnabled)
     {
@@ -568,7 +568,7 @@ bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box)
     return roughBoundingBox.Intersects(box);
 }
 
-bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere)
+bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere) const
 {
     return frustumCheckBoundingBox.Intersects(sphere);
 }

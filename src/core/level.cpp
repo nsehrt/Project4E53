@@ -85,8 +85,6 @@ bool Level::load(const std::string& levelFile)
     auto defaultCamera = std::make_shared<Camera>();
     defaultCamera->setPosition(0.0f, 5.0f, -20.f);
 
-    ServiceProvider::setActiveCamera(defaultCamera);
-
     mCameras.push_back(std::move(defaultCamera));
 
     ServiceProvider::getActiveCamera()->updateViewMatrix();
@@ -104,15 +102,14 @@ bool Level::load(const std::string& levelFile)
 
     testObject->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), 0);
     testObject->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Run"].get());
-    testObject->setPosition({ 0.0f,3.0f,0.0f });
+    testObject->setPosition({ 15.0f,5.0f,0.0f });
 
     mGameObjects[testObject->Name] = std::move(testObject);
 
     auto testObject2 = std::make_unique<GameObject>(std::string("test2"), amountObjectCBs++, 1);
     testObject2->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), 1);
     testObject2->setAnimation(ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get());
-    testObject2->setPosition({ 5.0f,8.0f,0.0f });
-    testObject2->animationTimeScale = 0.8f;
+    testObject2->setPosition({ 20.0f,10.0f,0.0f });
 
     mGameObjects[testObject2->Name] = std::move(testObject2);
 

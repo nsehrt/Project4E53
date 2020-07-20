@@ -13,6 +13,7 @@
 #include "../core/fpscamera.h"
 #include "../core/fixedcamera.h"
 #include "../core/level.h"
+#include "../core/player.h"
 #include "../hud/editmodehud.h"
 #include <filesystem>
 
@@ -48,7 +49,10 @@ private:
 
     std::unique_ptr<EditModeHUD> editModeHUD = nullptr;
 
+    std::unique_ptr<Player> mPlayer;
+
     std::shared_ptr<FPSCamera> fpsCamera;
+    std::shared_ptr<FixedCamera> mainCamera;
     bool fpsCameraMode = false;
 
     std::shared_ptr<FixedCamera> editCamera;
@@ -228,6 +232,19 @@ bool P_4E53::Initialize()
     renderResource->cmdQueue = mCommandQueue.Get();
 
     ServiceProvider::setRenderResource(renderResource);
+
+
+    /*initialize player and camera*/
+
+    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        mainCamera = std::make_shared<FixedCamera>();
+        mainCamera->initFixedDistance(10.0f, 15.0f);
+
+        mPlayer = std::make_unique<Player>("geo");
+
+        ServiceProvider::setActiveCamera(mainCamera);
+    }
 
     /*load first level*/
     std::string levelFile = "Test";
@@ -1541,6 +1558,12 @@ void P_4E53::update(const GameTime& gt)
     /*************/
     else
     {
+
+        /*update player*/
+        mPlayer->update(inputData, gt);
+
+
+
         if (inputData.Pressed(BTN::A))
         {
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
@@ -1557,7 +1580,7 @@ void P_4E53::update(const GameTime& gt)
             }
             else
             {
-                ServiceProvider::setActiveCamera(activeLevel->mCameras[0]);
+                ServiceProvider::setActiveCamera(mainCamera);
             }
         }
 
@@ -1575,6 +1598,10 @@ void P_4E53::update(const GameTime& gt)
         if (fpsCameraMode)
         {
             fpsCamera->updateFPSCamera(inputData.current, gt);
+        }
+        else
+        {
+            mainCamera->updateFixedCamera(mPlayer->getPosition(), 0.0f, 0.0f);
         }
     }
 
@@ -1686,6 +1713,13 @@ void P_4E53::draw(const GameTime& gt)
     /*bind cube map and texture array*/
     mCommandList->SetGraphicsRootDescriptorTable(4, ServiceProvider::getActiveLevel()->defaultCubeMapHandle);
     mCommandList->SetGraphicsRootDescriptorTable(5, renderResource->mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+
+
+    if (mPlayer)
+    {
+        renderResource->setPSO(RenderType::SkinnedDefault);
+        mPlayer->draw();
+    }
 
     ServiceProvider::getActiveLevel()->draw();
 
@@ -1847,6 +1881,12 @@ void P_4E53::drawToShadowMap()
     auto passCB = renderResource->getCurrentFrameResource()->PassCB->getResource();
     D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
     mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
+
+    if (mPlayer)
+    {
+        renderResource->setPSO(ShadowRenderType::ShadowSkinned);
+        mPlayer->drawShadow();
+    }
 
     ServiceProvider::getActiveLevel()->drawShadow();
 

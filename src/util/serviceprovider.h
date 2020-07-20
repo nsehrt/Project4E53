@@ -12,6 +12,7 @@ struct DebugInfo;
 
 #include "../util/log.h"
 #include "../util/settings.h"
+#include <unordered_map>
 
 class ServiceProvider
 {
@@ -60,3 +61,17 @@ public:
 
     static unsigned int getAudioGuid();
 };
+
+namespace Helper {
+
+    template<typename T>
+    static bool keyInMap(std::unordered_map<std::string, T>& map, const std::string& key)
+    {
+        // Key is not present 
+        if (map.find(key) == map.end())
+            return false;
+
+        return true;
+    }
+
+}

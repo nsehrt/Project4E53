@@ -160,7 +160,9 @@
   <ItemGroup>
     <ClCompile Include="src\audio\soundengine.cpp" />
     <ClCompile Include="src\core\4E53.cpp" />
+    <ClCompile Include="src\core\animationevaluator.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
+    <ClCompile Include="src\core\character.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\fixedcamera.cpp" />
     <ClCompile Include="src\core\fpscamera.cpp" />
@@ -170,6 +172,7 @@
     <ClCompile Include="src\core\level.cpp" />
     <ClCompile Include="src\core\lightobject.cpp" />
     <ClCompile Include="src\core\particlesystem.cpp" />
+    <ClCompile Include="src\core\player.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
@@ -196,7 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio\soundengine.h" />
+    <ClInclude Include="src\core\animationevaluator.h" />
     <ClInclude Include="src\core\camera.h" />
+    <ClInclude Include="src\core\character.h" />
     <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\editmode.h" />
     <ClInclude Include="src\core\fixedcamera.h" />
@@ -207,6 +212,7 @@
     <ClInclude Include="src\core\level.h" />
     <ClInclude Include="src\core\lightobject.h" />
     <ClInclude Include="src\core\particlesystem.h" />
+    <ClInclude Include="src\core\player.h" />
     <ClInclude Include="src\core\terrain.h" />
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
