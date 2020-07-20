@@ -1,9 +1,6 @@
 #pragma once
 
-#include "../extern/json.hpp"
-#include "../render/renderstructs.h"
 #include "../render/renderresource.h"
-#include "../util/serviceprovider.h"
 
 using json = nlohmann::json;
 

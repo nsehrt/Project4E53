@@ -1,4 +1,6 @@
 #include "inputmanager.h"
+#include "../util/serviceprovider.h"
+
 
 InputManager::InputManager()
 {

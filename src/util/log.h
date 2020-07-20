@@ -21,7 +21,7 @@
    ServiceProvider::getLogger()->print<sev>(os_.str().c_str());  \
 }
 
-enum Severity
+enum class Severity : int
 {
     Info = 0,
     Debug,
@@ -60,23 +60,7 @@ public:
 template<typename LogPolicy> class Logger;
 
 template<typename LogPolicy>
-void loggingDaemon(Logger<LogPolicy>* logger)
-{
-    std::unique_lock<std::timed_mutex> lock(logger->writeMutex, std::defer_lock);
-    do
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds{ 50 });
-        if (logger->logBuffer.size())
-        {
-            if (!lock.try_lock_for(std::chrono::milliseconds{ 50 }))
-                continue;
-            for (auto& x : logger->logBuffer)
-                logger->policy.write(x);
-            logger->logBuffer.clear();
-            lock.unlock();
-        }
-    } while (logger->isStillRunning.test_and_set() || logger->logBuffer.size());
-}
+void loggingDaemon(Logger<LogPolicy>* logger);
 
 template<typename LogPolicy>
 class Logger
@@ -185,4 +169,23 @@ void Logger<LogPolicy>::print(std::string msg)
     std::stringstream stream;
     stream << msg.c_str();
     this->print<severity>(std::stringstream(stream.str()));
+}
+
+template<typename LogPolicy>
+inline void loggingDaemon(Logger<LogPolicy>* logger)
+{
+    std::unique_lock<std::timed_mutex> lock(logger->writeMutex, std::defer_lock);
+    do
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds{ 50 });
+        if (logger->logBuffer.size())
+        {
+            if (!lock.try_lock_for(std::chrono::milliseconds{ 50 }))
+                continue;
+            for (auto& x : logger->logBuffer)
+                logger->policy.write(x);
+            logger->logBuffer.clear();
+            lock.unlock();
+        }
+    } while (logger->isStillRunning.test_and_set() || logger->logBuffer.size());
 }

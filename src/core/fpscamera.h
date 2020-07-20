@@ -1,9 +1,8 @@
 #pragma once
 
-#include "camera.h"
-#include "../input/inputmanager.h"
-#include "gametime.h"
-#include "../util/serviceprovider.h"
+#include "..\core\camera.h"
+#include "..\input\inputmanager.h"
+#include "..\core\gametime.h"
 
 class FPSCamera : public Camera
 {

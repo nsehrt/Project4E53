@@ -1,7 +1,7 @@
 #include "../core/terrain.h"
+
 #include "../util/geogen.h"
 #include "../util/serviceprovider.h"
-#include "../render/renderresource.h"
 #include "../util/perlin.h"
 
 
@@ -234,12 +234,12 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
             }
 
             /*increase height*/
-            mHeightMap[currentIndex] += increase * sin(normalizedDistance * XM_PIDIV2);
+            mHeightMap[currentIndex] += increase * std::sinf(normalizedDistance * XM_PIDIV2);
 
             if (setHeight)
             {
-                if(mHeightMap[currentIndex] < (resetHeight * sin(normalizedDistance * XM_PIDIV2)))
-                    mHeightMap[currentIndex] = resetHeight * sin(normalizedDistance * XM_PIDIV2);
+                if(mHeightMap[currentIndex] < (resetHeight * std::sinf(normalizedDistance * XM_PIDIV2)))
+                    mHeightMap[currentIndex] = resetHeight * std::sinf(normalizedDistance * XM_PIDIV2);
             }
 
             if (setZero)

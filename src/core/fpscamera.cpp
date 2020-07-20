@@ -1,4 +1,5 @@
 #include "fpscamera.h"
+#include "..\util\serviceprovider.h"
 
 void FPSCamera::updateFPSCamera(InputData& inputData, const GameTime& gt)
 {

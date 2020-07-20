@@ -575,8 +575,8 @@ void P_4E53::update(const GameTime& gt)
             XMFLOAT2 in = XMFLOAT2(inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY]);
             XMFLOAT2 v;
 
-            v.x = in.x * cos(-editCamera->getTurn()) - in.y * sin(-editCamera->getTurn());
-            v.y = in.x * sin(-editCamera->getTurn()) + in.y * cos(-editCamera->getTurn());
+            v.x = in.x * std::cosf(-editCamera->getTurn()) - in.y * std::sinf(-editCamera->getTurn());
+            v.y = in.x * std::sinf(-editCamera->getTurn()) + in.y * std::cosf(-editCamera->getTurn());
 
             editSettings->Position.x -= v.x * editSettings->Velocity * gt.DeltaTime();
             editSettings->Position.y -= v.y * editSettings->Velocity * gt.DeltaTime();

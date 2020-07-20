@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../render/renderresource.h"
-#include "serviceprovider.h"
+#include "../render/renderstructs.h"
 #include <filesystem>
 
 class ClipLoader

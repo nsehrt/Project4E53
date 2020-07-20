@@ -1,7 +1,10 @@
 #include "gameobject.h"
 #include "../util/serviceprovider.h"
 
+
 using namespace DirectX;
+
+
 
 GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 {

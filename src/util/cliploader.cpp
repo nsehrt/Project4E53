@@ -1,4 +1,5 @@
 #include "cliploader.h"
+#include <fstream>
 
 std::unique_ptr<AnimationClip> ClipLoader::loadCLP(const std::filesystem::directory_entry& fileName)
 {

@@ -1,5 +1,6 @@
 #include "blur.h"
 
+
 void Blur::buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE hCpuDescriptor, CD3DX12_GPU_DESCRIPTOR_HANDLE hGpuDescriptor, UINT descriptorSize)
 {
     mBlur0CpuSrv = hCpuDescriptor;

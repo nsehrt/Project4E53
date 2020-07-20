@@ -1,4 +1,5 @@
 #include "grass.h"
+#include "../core/terrain.h"
 
 using namespace DirectX;
 

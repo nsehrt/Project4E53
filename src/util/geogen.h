@@ -43,7 +43,6 @@ public:
         DirectX::XMFLOAT3 TangentU;
         DirectX::XMFLOAT2 TexC;
     };
-#pragma warning(default:26495)
 
     struct MeshData
     {

@@ -1,7 +1,8 @@
 #pragma once
 
+class Terrain;
+
 #include "../render/renderresource.h"
-#include "../core/terrain.h"
 
 class Grass
 {

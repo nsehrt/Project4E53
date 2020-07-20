@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <DirectXMath.h>
+#include <cmath>
 #include <cstdint>
 #include <iostream>
 
@@ -74,9 +75,9 @@ public:
     static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi)
     {
         return DirectX::XMVectorSet(
-            radius * sinf(phi) * cosf(theta),
-            radius * cosf(phi),
-            radius * sinf(phi) * sinf(theta),
+            radius * std::sinf(phi) * std::cosf(theta),
+            radius * std::cosf(phi),
+            radius * std::sinf(phi) * std::sinf(theta),
             1.0f);
     }
 

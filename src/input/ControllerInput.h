@@ -96,7 +96,7 @@ XINPUT_CAPS_NO_NAVIGATION 	Device lacks menu navigation buttons (START, BACK, DP
 class ControllerInput
 {
 public:
-    ControllerInput();
+    explicit ControllerInput();
     ~ControllerInput();
 
     void Update();

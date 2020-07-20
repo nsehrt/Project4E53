@@ -1,5 +1,6 @@
 #include "geogen.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace DirectX;
 
@@ -128,14 +129,14 @@ GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32
             Vertex v;
 
             // spherical to cartesian
-            v.Position.x = radius * sinf(phi) * cosf(theta);
-            v.Position.y = radius * cosf(phi);
-            v.Position.z = radius * sinf(phi) * sinf(theta);
+            v.Position.x = radius * std::sinf(phi) * std::cosf(theta);
+            v.Position.y = radius * std::cosf(phi);
+            v.Position.z = radius * std::sinf(phi) * std::sinf(theta);
 
             // Partial derivative of P with respect to theta
-            v.TangentU.x = -radius * sinf(phi) * sinf(theta);
+            v.TangentU.x = -radius * std::sinf(phi) * std::sinf(theta);
             v.TangentU.y = 0.0f;
-            v.TangentU.z = +radius * sinf(phi) * cosf(theta);
+            v.TangentU.z = +radius * std::sinf(phi) * std::cosf(theta);
 
             XMVECTOR T = XMLoadFloat3(&v.TangentU);
             XMStoreFloat3(&v.TangentU, XMVector3Normalize(T));
@@ -357,15 +358,15 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
         if (theta < 0.0f)
             theta += XM_2PI;
 
-        float phi = acosf(meshData.Vertices[i].Position.y / radius);
+        float phi = std::acosf(meshData.Vertices[i].Position.y / radius);
 
         meshData.Vertices[i].TexC.x = theta / XM_2PI;
         meshData.Vertices[i].TexC.y = phi / XM_PI;
 
         // Partial derivative of P with respect to theta
-        meshData.Vertices[i].TangentU.x = -radius * sinf(phi) * sinf(theta);
+        meshData.Vertices[i].TangentU.x = -radius * std::sinf(phi) * std::sinf(theta);
         meshData.Vertices[i].TangentU.y = 0.0f;
-        meshData.Vertices[i].TangentU.z = +radius * sinf(phi) * cosf(theta);
+        meshData.Vertices[i].TangentU.z = +radius * std::sinf(phi) * std::cosf(theta);
 
         XMVECTOR T = XMLoadFloat3(&meshData.Vertices[i].TangentU);
         XMStoreFloat3(&meshData.Vertices[i].TangentU, XMVector3Normalize(T));
@@ -401,34 +402,14 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
         {
             Vertex vertex;
 
-            float c = cosf(j * dTheta);
-            float s = sinf(j * dTheta);
+            float c = std::cosf(j * dTheta);
+            float s = std::sinf(j * dTheta);
 
             vertex.Position = XMFLOAT3(r * c, y, r * s);
 
             vertex.TexC.x = (float)j / sliceCount;
             vertex.TexC.y = 1.0f - (float)i / stackCount;
 
-            // Cylinder can be parameterized as follows, where we introduce v
-            // parameter that goes in the same direction as the v tex-coord
-            // so that the bitangent goes in the same direction as the v tex-coord.
-            //   Let r0 be the bottom radius and let r1 be the top radius.
-            //   y(v) = h - hv for v in [0,1].
-            //   r(v) = r1 + (r0-r1)v
-            //
-            //   x(t, v) = r(v)*cos(t)
-            //   y(t, v) = h - hv
-            //   z(t, v) = r(v)*sin(t)
-            //
-            //  dx/dt = -r(v)*sin(t)
-            //  dy/dt = 0
-            //  dz/dt = +r(v)*cos(t)
-            //
-            //  dx/dv = (r0-r1)*cos(t)
-            //  dy/dv = -h
-            //  dz/dv = (r0-r1)*sin(t)
-
-            // This is unit length.
             vertex.TangentU = XMFLOAT3(-s, 0.0f, c);
 
             float dr = bottomRadius - topRadius;
@@ -479,8 +460,8 @@ void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius,
     // Duplicate cap ring vertices because the texture coordinates and normals differ.
     for (uint32 i = 0; i <= sliceCount; ++i)
     {
-        float x = topRadius * cosf(i * dTheta);
-        float z = topRadius * sinf(i * dTheta);
+        float x = topRadius * std::cosf(i * dTheta);
+        float z = topRadius * std::sinf(i * dTheta);
 
         // Scale down by the height to try and make top cap texture coord area
         // proportional to base.
@@ -518,8 +499,8 @@ void GeometryGenerator::BuildCylinderBottomCap(float bottomRadius, float topRadi
     float dTheta = 2.0f * XM_PI / sliceCount;
     for (uint32 i = 0; i <= sliceCount; ++i)
     {
-        float x = bottomRadius * cosf(i * dTheta);
-        float z = bottomRadius * sinf(i * dTheta);
+        float x = bottomRadius * std::cosf(i * dTheta);
+        float z = bottomRadius * std::sinf(i * dTheta);
 
         // Scale down by the height to try and make top cap texture coord area
         // proportional to base.

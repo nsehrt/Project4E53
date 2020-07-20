@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../core/editmode.h"
-#include "SpriteBatch.h"
+#include <SpriteBatch.h>
 #include <SpriteFont.h>
-#include "DescriptorHeap.h"
-#include "SimpleMath.h"
-#include "GraphicsMemory.h"
+#include <DescriptorHeap.h>
+#include <SimpleMath.h>
+#include <GraphicsMemory.h>
 
 
 class EditModeHUD

@@ -1,10 +1,7 @@
 #pragma once
 
 #include "camera.h"
-#include "../util/serviceprovider.h"
-#include "../input/inputmanager.h"
-#include "../util/mathhelper.h"
-#include "gametime.h"
+
 
 class FixedCamera : public Camera
 {

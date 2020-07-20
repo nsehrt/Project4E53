@@ -1,6 +1,9 @@
 #include "skinnedmodelloader.h"
 #include "geogen.h"
 
+#include "../render/renderresource.h"
+#include "../render/renderstructs.h"
+
 using namespace DirectX;
 
 std::unique_ptr<SkinnedModel> SkinnedModelLoader::loadS3D(const std::filesystem::directory_entry& fileName)

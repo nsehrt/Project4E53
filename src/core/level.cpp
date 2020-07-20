@@ -1,6 +1,7 @@
 #include "level.h"
 #include "../core/editmode.h"
 #include "../util/debuginfo.h"
+#include "../util/serviceprovider.h"
 
 using namespace DirectX;
 

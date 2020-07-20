@@ -1,4 +1,7 @@
 #include "modelloader.h"
+
+#include "../render/renderstructs.h"
+#include "../render/renderresource.h"
 #include "geogen.h"
 
 using namespace DirectX;

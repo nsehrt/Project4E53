@@ -1,9 +1,6 @@
 #pragma once
 
-#include "../render/renderstructs.h"
 #include "d3dUtil.h"
-#include "../render/renderresource.h"
-#include "serviceprovider.h"
 #include <filesystem>
 
 class SkinnedModelLoader

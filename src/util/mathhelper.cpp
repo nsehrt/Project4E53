@@ -1,6 +1,5 @@
 #include "mathhelper.h"
 #include <float.h>
-#include <cmath>
 #include <iostream>
 #include <iomanip>
 #include "serviceprovider.h"

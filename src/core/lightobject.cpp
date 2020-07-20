@@ -1,4 +1,5 @@
 #include "..\core\lightobject.h"
+#include "..\util\serviceprovider.h"
 
 LightObject::LightObject(LightType type, const json& lightJson)
 {

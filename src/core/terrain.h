@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../util/d3dUtil.h"
 #include "../render/renderresource.h"
 
 class Terrain

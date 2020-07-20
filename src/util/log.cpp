@@ -1,8 +1,8 @@
+#include "log.h"
+
 #include <ShlObj.h>
 #include <Shlwapi.h>
 #include <PathCch.h>
-
-#include "log.h"
 
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "Pathcch.lib")

@@ -1,5 +1,7 @@
 #include "fixedcamera.h"
 
+#include "..\util\mathhelper.h"
+
 using namespace DirectX;
 
 void FixedCamera::updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zoomDelta, float turnDelta)
@@ -13,8 +15,8 @@ void FixedCamera::updateFixedCamera(const DirectX::XMFLOAT3& targetPos, float zo
     XMFLOAT3 newPos = targetPos;
 
     newPos.y += mCurrentDistance;
-    newPos.x += sin(mTurn) * mCurrentDistance;
-    newPos.z += cos(mTurn) * mCurrentDistance;
+    newPos.x += std::sinf(mTurn) * mCurrentDistance;
+    newPos.z += std::cosf(mTurn) * mCurrentDistance;
 
     mTarget = targetPos;
     lookAt(newPos, targetPos, mUpConst);

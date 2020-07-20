@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../util/d3dUtil.h"
-#include "../util/mathhelper.h"
 #include "../render/uploadbuffer.h"
 
 struct ObjectConstants
