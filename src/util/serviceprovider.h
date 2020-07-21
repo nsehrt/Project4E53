@@ -6,6 +6,7 @@ class SoundEngine;
 class RenderResource;
 class Level;
 class Camera;
+class Player;
 
 struct EditSettings;
 struct DebugInfo;
@@ -25,10 +26,12 @@ private:
     static std::shared_ptr<InputManager> input;
     static std::shared_ptr<RenderResource> renderResource;
 
+    static std::shared_ptr<Player> activePlayer;
     static std::shared_ptr<Level> activeLevel;
     static std::shared_ptr<Camera> activeCamera;
     static std::shared_ptr<DebugInfo> debugInfo;
     static std::shared_ptr<EditSettings> editSettings;
+    
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -49,6 +52,9 @@ public:
 
     static RenderResource* getRenderResource();
     static void setRenderResource(std::shared_ptr<RenderResource> providedRenderResource);
+
+    static Player* getPlayer();
+    static void setPlayer(std::shared_ptr<Player> _player);
 
     static Level* getActiveLevel();
     static void setActiveLevel(std::shared_ptr<Level> _level);

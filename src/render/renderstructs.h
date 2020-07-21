@@ -339,7 +339,7 @@ struct RenderItem
 
     float animationTimer = 0.0f;
 
-    bool isSkinned()
+    bool isSkinned() const
     {
         if (!skinnedModel)
         {
@@ -351,7 +351,7 @@ struct RenderItem
         }
     }
 
-    Model* getModel()
+    Model* getModel() const
     {
         return (isSkinned() ? skinnedModel : staticModel);
     }

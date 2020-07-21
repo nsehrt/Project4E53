@@ -49,7 +49,7 @@ private:
 
     std::unique_ptr<EditModeHUD> editModeHUD = nullptr;
 
-    std::unique_ptr<Player> mPlayer;
+    std::shared_ptr<Player> mPlayer;
 
     std::shared_ptr<FPSCamera> fpsCamera;
     std::shared_ptr<FixedCamera> mainCamera;
@@ -241,9 +241,10 @@ bool P_4E53::Initialize()
         mainCamera = std::make_shared<FixedCamera>();
         mainCamera->initFixedDistance(10.0f, 15.0f);
 
-        mPlayer = std::make_unique<Player>("geo");
+        mPlayer = std::make_shared<Player>("geo");
 
         ServiceProvider::setActiveCamera(mainCamera);
+        ServiceProvider::setPlayer(mPlayer);
     }
 
     /*load first level*/

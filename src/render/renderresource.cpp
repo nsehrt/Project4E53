@@ -4,6 +4,7 @@
 #include "../util/skinnedmodelloader.h"
 #include "../util/cliploader.h"
 #include "../core/level.h"
+#include "../core/player.h"
 #include "../util/serviceprovider.h"
 
 using Microsoft::WRL::ComPtr;
@@ -1352,47 +1353,59 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
 {
     auto currObjectCB = mCurrentFrameResource->ObjectCB.get();
 
-    for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)
+    const auto updateSingleCB = [&](RenderItem* rI)
     {
-        auto e = go.second->renderItem.get();
-
         // Only update the cbuffer data if the constants have changed.
-        if (e->NumFramesDirty > 0)
+        if (rI->NumFramesDirty > 0)
         {
-            for (int i = 0; i < e->getModel()->meshes.size(); i++)
+            for (int i = 0; i < rI->getModel()->meshes.size(); i++)
             {
-                XMMATRIX world = XMLoadFloat4x4(&e->World);
+                XMMATRIX world = XMLoadFloat4x4(&rI->World);
 
                 ObjectConstants objConstants;
                 XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
 
-                if (e->renderType == RenderType::Water)
+                if (rI->renderType == RenderType::Water)
                 {
                     XMStoreFloat4x4(&objConstants.WorldInvTranspose, MathHelper::inverseTranspose(world));
                 }
-                else if (e->renderType == RenderType::Terrain)
+                else if (rI->renderType == RenderType::Terrain)
                 {
-                    XMMATRIX texTransform = XMLoadFloat4x4(&e->TexTransform);
+                    XMMATRIX texTransform = XMLoadFloat4x4(&rI->TexTransform);
                     XMStoreFloat4x4(&objConstants.WorldInvTranspose, texTransform);
                 }
 
-                if (e->MaterialOverwrite != nullptr)
+                if (rI->MaterialOverwrite != nullptr)
                 {
-                    objConstants.MaterialIndex = e->MaterialOverwrite->MatCBIndex;
+                    objConstants.MaterialIndex = rI->MaterialOverwrite->MatCBIndex;
                 }
                 else
                 {
-                    objConstants.MaterialIndex = e->getModel()->meshes[i]->material->MatCBIndex;
+                    objConstants.MaterialIndex = rI->getModel()->meshes[i]->material->MatCBIndex;
                 }
 
-                currObjectCB->copyData(e->ObjCBIndex[i], objConstants);
+                currObjectCB->copyData(rI->ObjCBIndex[i], objConstants);
             }
 
             // Next FrameResource need to be updated too.
-            e->NumFramesDirty--;
+            rI->NumFramesDirty--;
         }
+    };
+
+
+    /*update the players game object*/
+    updateSingleCB(ServiceProvider::getPlayer()->renderItem.get());
+
+
+    /*update all game objects which are part of the level*/
+    for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)
+    {
+        updateSingleCB(go.second->renderItem.get());
     }
+
 }
+
+
 
 void RenderResource::updateMaterialConstantBuffers(const GameTime& gt)
 {
@@ -1468,11 +1481,11 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
 
     auto currSkinnedCB = mCurrentFrameResource->SkinnedCB.get();
 
-    for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)
+    const auto updateSingleSkinnedCB = [&](const GameObject* gO)
     {
-        if (go.second->gameObjectType != GameObjectType::Dynamic) continue;
+        if (gO->gameObjectType != GameObjectType::Dynamic) return;
 
-        auto e = go.second->renderItem.get();
+        auto e = gO->renderItem.get();
 
         SkinnedConstants skinnedConstants;
 
@@ -1482,6 +1495,15 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
             &skinnedConstants.BoneTransforms[0]);
 
         currSkinnedCB->copyData(e->SkinnedCBIndex, skinnedConstants);
+    };
+
+    /*update player*/
+    updateSingleSkinnedCB(ServiceProvider::getPlayer());
+
+    /*update level related skinned buffer*/
+    for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)
+    {
+        updateSingleSkinnedCB(go.second.get());
     }
 
 }

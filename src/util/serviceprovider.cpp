@@ -10,6 +10,7 @@ std::shared_ptr<Settings>ServiceProvider::settings = nullptr;
 std::shared_ptr<SoundEngine>ServiceProvider::audio = nullptr;
 std::shared_ptr<InputManager>ServiceProvider::input = nullptr;
 std::shared_ptr<RenderResource>ServiceProvider::renderResource = nullptr;
+std::shared_ptr<Player>ServiceProvider::activePlayer = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
 std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInfo>();
@@ -67,6 +68,16 @@ RenderResource* ServiceProvider::getRenderResource()
 void ServiceProvider::setRenderResource(std::shared_ptr<RenderResource> providedRenderResource)
 {
     renderResource = providedRenderResource;
+}
+
+Player* ServiceProvider::getPlayer()
+{
+    return activePlayer.get();
+}
+
+void ServiceProvider::setPlayer(std::shared_ptr<Player> _player)
+{
+    activePlayer = _player;
 }
 
 Level* ServiceProvider::getActiveLevel()
