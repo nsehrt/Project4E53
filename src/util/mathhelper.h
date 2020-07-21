@@ -81,6 +81,18 @@ public:
             1.0f);
     }
 
+    static DirectX::XMFLOAT3 forward(DirectX::XMFLOAT3 V)
+    {
+        DirectX::XMFLOAT3 res;
+
+        res.x = std::sinf(V.y) * std::cosf(V.x);
+        res.y = std::sinf(-V.x);
+        res.z = std::cosf(V.x) * std::cosf(V.y);
+
+        return res;
+    }
+
+
     static DirectX::XMMATRIX inverseTranspose(DirectX::CXMMATRIX M)
     {
         DirectX::XMMATRIX A = M;
