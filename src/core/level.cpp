@@ -1,4 +1,5 @@
 #include "level.h"
+#include "../core/player.h"
 #include "../core/editmode.h"
 #include "../util/debuginfo.h"
 #include "../util/serviceprovider.h"
@@ -98,20 +99,21 @@ bool Level::load(const std::string& levelFile)
 
     /*add test dynamic object*/
 
-    auto testObject = std::make_unique<GameObject>(std::string("test"), amountObjectCBs++, 0);
+    //auto testObject = std::make_unique<Player>("geo");
+    //auto testObject = std::make_unique<GameObject>(std::string("test"), amountObjectCBs++, 0);
 
-    testObject->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), 0);
-    testObject->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Run"].get());
-    testObject->setPosition({ 15.0f,5.0f,0.0f });
+    //testObject->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), 0);
+    //testObject->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Run"].get());
+    //testObject->setPosition({ 0.0f,5.0f,0.0f });
 
-    mGameObjects[testObject->Name] = std::move(testObject);
+    ////mGameObjects[testObject->Name] = std::move(testObject);
 
-    auto testObject2 = std::make_unique<GameObject>(std::string("test2"), amountObjectCBs++, 1);
-    testObject2->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), 1);
-    testObject2->setAnimation(ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get());
-    testObject2->setPosition({ 20.0f,10.0f,0.0f });
+    //auto testObject2 = std::make_unique<GameObject>(std::string("test2"), amountObjectCBs++, 1);
+    //testObject2->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["model"].get(), 1);
+    //testObject2->setAnimation(ServiceProvider::getRenderResource()->mAnimations["model_Animation"].get());
+    //testObject2->setPosition({ 20.0f,10.0f,0.0f });
 
-    mGameObjects[testObject2->Name] = std::move(testObject2);
+    //mGameObjects[testObject2->Name] = std::move(testObject2);
 
 
 
@@ -215,27 +217,27 @@ void Level::update(const GameTime& gt)
     }
 
     /*particle systems*/
-for (auto& p : mParticleSystems)
-{
-    if (mGameObjects[p.first]->getIsInFrustum())
+    for (auto& p : mParticleSystems)
     {
-        p.second->update(gt);
+        if (mGameObjects[p.first]->getIsInFrustum())
+        {
+            p.second->update(gt);
+        }
     }
-}
 
-/*TEST Collision test*/
-if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-for (const auto& gameObj : mGameObjects)
-{
-    if (gameObj.second->gameObjectType != GameObjectType::Static &&
-        gameObj.second->gameObjectType != GameObjectType::Wall) continue;
-
-    if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
+    /*TEST Collision test*/
+    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    for (const auto& gameObj : mGameObjects)
     {
-        LOG(Severity::Info, "Camera collided with " << gameObj.second->Name);
-        //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
+        if (gameObj.second->gameObjectType != GameObjectType::Static &&
+            gameObj.second->gameObjectType != GameObjectType::Wall) continue;
+
+        if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
+        {
+            LOG(Severity::Info, "Camera collided with " << gameObj.second->Name);
+            //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
+        }
     }
-}
 
 
 
@@ -277,8 +279,6 @@ void Level::drawTerrain()
 
 void Level::draw()
 {
-    UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
-
     auto renderResource = ServiceProvider::getRenderResource();
 
     /*sort the transparent objects by distance from camera*/
@@ -712,10 +712,7 @@ bool Level::levelExists(const std::string& levelFile)
 
 void Level::drawShadow()
 {
-    UINT objCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
-
     auto renderResource = ServiceProvider::getRenderResource();
-    auto objectCB = renderResource->getCurrentFrameResource()->ObjectCB->getResource();
 
     UINT objectsDrawn = 0;
 

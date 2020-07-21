@@ -343,7 +343,7 @@ bool GameObject::draw() const
         return false;
     }
 
-    if (!isInFrustum) return false;
+    //if (!isInFrustum) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 

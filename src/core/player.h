@@ -7,7 +7,7 @@ class Player : public Character
 {
 public:
 
-    explicit Player(const std::string& model);
+    Player(const std::string& model);
 
     void update(const InputSet& input, const GameTime& gt);
 

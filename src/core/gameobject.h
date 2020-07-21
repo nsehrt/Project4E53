@@ -155,6 +155,11 @@ public:
         return isInFrustum;
     }
 
+    void setIsInFrustum(bool t)
+    {
+        isInFrustum = t;
+    }
+
     void makeDynamic(SkinnedModel* sModel, UINT skinnedCBIndex);
     void setAnimation(AnimationClip* aClip);
 
