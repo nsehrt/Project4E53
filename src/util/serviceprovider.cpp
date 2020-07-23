@@ -16,8 +16,9 @@ std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
 std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInfo>();
 std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<EditSettings>();
 
-std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
+GameState ServiceProvider::mainGameState = GameState::UNDEF;
 
+std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 std::mutex ServiceProvider::audioLock;
 
 Logger<LogPolicy>* ServiceProvider::getLogger()
@@ -123,4 +124,14 @@ unsigned int ServiceProvider::getAudioGuid()
     }
 
     return ret;
+}
+
+GameState ServiceProvider::getGameState()
+{
+    return mainGameState;
+}
+
+void ServiceProvider::setGameState(GameState gameState)
+{
+    mainGameState = gameState;
 }

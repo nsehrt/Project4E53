@@ -88,8 +88,6 @@ bool Level::load(const std::string& levelFile)
 
     mCameras.push_back(std::move(defaultCamera));
 
-    ServiceProvider::getActiveCamera()->updateViewMatrix();
-
     /*parse game objects*/
     if (!parseGameObjects(levelJson["GameObject"]))
     {

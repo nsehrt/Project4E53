@@ -48,6 +48,21 @@ public:
         return a + (b - a) * t;
     }
 
+    /*lerp for radian angles*/
+    template<typename T>
+    static float lerpAngle(const T& from, const T& to, const float t)
+    {
+        return from + shortAnglesDistance(from, to) * t;
+    }
+
+    /*shortest distance between to angles (radians)*/
+    static float shortAnglesDistance(const float from, const float to)
+    {
+        const float maxAngle = DirectX::XM_2PI;
+        const float diff = std::fmod(to - from, maxAngle);
+        return std::fmod(2 * diff, maxAngle) - diff;
+    }
+
     /*clamp*/
     template<typename T>
     static T clampH(const T& x, const T& low, const T& high)
@@ -71,6 +86,19 @@ public:
 
     /*polar angle of point*/
     static float angleFromXY(float x, float y);
+
+    /*angle to vector(x,y)*/
+    static DirectX::XMFLOAT3 vectorFromAngle(float angle)
+    {
+        DirectX::XMFLOAT3 vec;
+
+        vec.x = cos(angle);
+        vec.y = 0.0f;
+        vec.z = -sin(angle);
+
+        return vec;
+    }
+
 
     static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi)
     {

@@ -16,4 +16,7 @@ Character::Character(const std::string& name, const std::string& model, int inde
 
 void Character::update(const GameTime& gt)
 {
+
+
+
 }

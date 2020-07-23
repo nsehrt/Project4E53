@@ -207,6 +207,7 @@
     <ClInclude Include="src\core\fixedcamera.h" />
     <ClInclude Include="src\core\fpscamera.h" />
     <ClInclude Include="src\core\gameobject.h" />
+    <ClInclude Include="src\core\gamestate.h" />
     <ClInclude Include="src\core\gametime.h" />
     <ClInclude Include="src\core\grass.h" />
     <ClInclude Include="src\core\level.h" />

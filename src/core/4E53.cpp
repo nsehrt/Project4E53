@@ -112,6 +112,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 
     LOG(Severity::Info, "Debug Mode is " << (ServiceProvider::getSettings()->miscSettings.DebugEnabled ? "enabled" : "disabled") << ".");
 
+
+    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        ServiceProvider::setGameState(GameState::EDITOR);
+    }
+    else
+    {
+        ServiceProvider::setGameState(GameState::INGAME);
+    }
+    
     LOG(Severity::Info, "Edit Mode is " << (ServiceProvider::getSettings()->miscSettings.EditModeEnabled ? "enabled" : "disabled") << ".");
 
     /*initialize main window and directx12*/
@@ -248,7 +258,7 @@ bool P_4E53::Initialize()
     }
 
     /*load first level*/
-    std::string levelFile = "0";
+    std::string levelFile = "Test";
 
     auto level = std::make_shared<Level>();
 
@@ -488,7 +498,7 @@ void P_4E53::update(const GameTime& gt)
     /************************/
     /**** Edit Mode *********/
     /************************/
-    if (settingsData->miscSettings.EditModeEnabled)
+    if (ServiceProvider::getGameState() == GameState::EDITOR)
     {
         auto editSettings = ServiceProvider::getEditSettings();
 
@@ -1557,7 +1567,7 @@ void P_4E53::update(const GameTime& gt)
     /*************/
     /*Game Update*/
     /*************/
-    else
+    else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
 
         /*update player*/
@@ -1586,15 +1596,18 @@ void P_4E53::update(const GameTime& gt)
         }
 
         /**BLUR TEST**/
-        float blurriness = renderResource->getBlurFilter()->getSigma();
+        //float blurriness = renderResource->getBlurFilter()->getSigma();
 
-        blurriness += 1.25f * (inputData.current.buttons[BTN::DPAD_UP] ? 1.0f : inputData.current.buttons[BTN::DPAD_DOWN] ? -1.0f : 0.0f) * gt.DeltaTime();
-        blurriness = MathHelper::clampH(blurriness, 0.0f, 2.5f);
+        //blurriness += 1.25f * (inputData.current.buttons[BTN::DPAD_UP] ? 1.0f : inputData.current.buttons[BTN::DPAD_DOWN] ? -1.0f : 0.0f) * gt.DeltaTime();
+        //blurriness = MathHelper::clampH(blurriness, 0.0f, 2.5f);
 
-        renderResource->getBlurFilter()->setSigma(blurriness);
+        //renderResource->getBlurFilter()->setSigma(blurriness);
 
-        /**COMPOSITE COLOR TEST**/
-        renderResource->addToCompositeColor(inputData.current.buttons[BTN::A] ? gt.DeltaTime() : inputData.current.buttons[BTN::B] ? -gt.DeltaTime() : 0.0f);
+        ///**COMPOSITE COLOR TEST**/
+        //renderResource->addToCompositeColor(inputData.current.buttons[BTN::A] ? gt.DeltaTime() : inputData.current.buttons[BTN::B] ? -gt.DeltaTime() : 0.0f);
+
+
+
 
         if (fpsCameraMode)
         {
@@ -1604,10 +1617,18 @@ void P_4E53::update(const GameTime& gt)
         {
             mainCamera->updateFixedCamera(mPlayer->getPosition(), 0.0f, 0.0f);
         }
+
+    }
+    else if (ServiceProvider::getGameState() == GameState::PAUSE)
+    {
+
+
+
+
     }
 
     /*debug actions*/
-    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.EditModeEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera))
+    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.DebugEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera))
     {
         renderResource->toggleRoughHitBoxDraw();
     }

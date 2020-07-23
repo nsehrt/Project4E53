@@ -1394,7 +1394,10 @@ void RenderResource::updateGameObjectConstantBuffers(const GameTime& gt)
 
 
     /*update the players game object*/
-    updateSingleCB(ServiceProvider::getPlayer()->renderItem.get());
+    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        updateSingleCB(ServiceProvider::getPlayer()->renderItem.get());
+    } 
 
 
     /*update all game objects which are part of the level*/
@@ -1498,7 +1501,11 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
     };
 
     /*update player*/
-    updateSingleSkinnedCB(ServiceProvider::getPlayer());
+    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        updateSingleSkinnedCB(ServiceProvider::getPlayer());
+    }
+    
 
     /*update level related skinned buffer*/
     for (auto& go : ServiceProvider::getActiveLevel()->mGameObjects)

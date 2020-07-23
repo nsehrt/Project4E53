@@ -161,7 +161,7 @@ public:
     }
 
     void makeDynamic(SkinnedModel* sModel, UINT skinnedCBIndex);
-    void setAnimation(AnimationClip* aClip);
+    void setAnimation(AnimationClip* aClip, bool keepRelativeTime = false);
 
     void checkInViewFrustum(DirectX::BoundingFrustum& localCamFrustum);
 

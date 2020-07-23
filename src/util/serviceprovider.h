@@ -13,7 +13,10 @@ struct DebugInfo;
 
 #include "../util/log.h"
 #include "../util/settings.h"
+#include "../core/gamestate.h"
 #include <unordered_map>
+
+#define SP_ANIM(x) (ServiceProvider::getRenderResource()->mAnimations[x].get())
 
 class ServiceProvider
 {
@@ -35,6 +38,7 @@ private:
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
+    static GameState mainGameState;
 
 public:
 
@@ -66,6 +70,9 @@ public:
     static EditSettings* getEditSettings();
 
     static unsigned int getAudioGuid();
+
+    static GameState getGameState();
+    static void setGameState(GameState gameState);
 };
 
 namespace Helper {

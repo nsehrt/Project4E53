@@ -343,7 +343,7 @@ bool GameObject::draw() const
         return false;
     }
 
-    //if (!isInFrustum) return false;
+    if (!isInFrustum) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -514,17 +514,25 @@ void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)
     setAnimation(nullptr);
 }
 
-void GameObject::setAnimation(AnimationClip* aClip)
+void GameObject::setAnimation(AnimationClip* aClip, bool keepRelativeTime)
 {
+    float percentTime = 0.0f;
+
+    if (keepRelativeTime)
+    {
+        percentTime = renderItem->animationTimer / renderItem->currentClip->getEndTime();
+    }
+
     renderItem->currentClip = aClip;
-    renderItem->animationTimer = 0.0f;
 
     if (aClip != nullptr)
     {
+        renderItem->animationTimer = percentTime * renderItem->currentClip->getEndTime();
         renderItem->finalTransforms.resize(aClip->boneAnimations.size());
     }
     else
     {
+        renderItem->animationTimer = 0.0f;
         renderItem->finalTransforms.resize(96);
     }
     
