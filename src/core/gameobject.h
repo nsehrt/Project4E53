@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../render/renderresource.h"
+#include "../core/gamecollider.h"
 
 using json = nlohmann::json;
 
@@ -16,7 +17,6 @@ enum class GameObjectType
     Grass,
     Particle
 };
-
 
 
 class GameObject
@@ -48,9 +48,8 @@ public:
 
     GameObjectType gameObjectType = GameObjectType::Static;
     std::string Name;
-    std::unique_ptr<RenderItem> renderItem;
+    std::unique_ptr<RenderItem> renderItem = nullptr;
     float animationTimeScale = 1.0f;
-
 
 
     /*Transform getter/setter*/
@@ -127,37 +126,37 @@ public:
         return TextureRotation;
     }
 
-    float getRoughHitBoxExtentY() const
-    {
-        return roughBoundingBox.Extents.y;
-    }
+    //float getRoughHitBoxExtentY() const
+    //{
+    //    return roughBoundingBox.Extents.y;
+    //}
 
-    void setFrustumHitBoxExtents(DirectX::XMFLOAT3 e)
-    {
-        useCustomFrustumBoundingBoxExtents = true;
-        customFrustumBoundingBoxExtents = e;
+    //void setFrustumHitBoxExtents(DirectX::XMFLOAT3 e)
+    //{
+    //    useCustomFrustumBoundingBoxExtents = true;
+    //    customFrustumBoundingBoxExtents = e;
 
-        updateTransforms();
-    }
+    //    updateTransforms();
+    //}
 
-    DirectX::BoundingOrientedBox& getRoughBoundingBox()
-    {
-        return roughBoundingBox;
-    }
+    //DirectX::BoundingOrientedBox& getRoughBoundingBox()
+    //{
+    //    return roughBoundingBox;
+    //}
 
-    DirectX::BoundingBox& getFrustumCheckBoundingBox()
-    {
-        return frustumCheckBoundingBox;
-    }
+    //DirectX::BoundingBox& getFrustumCheckBoundingBox()
+    //{
+    //    return frustumCheckBoundingBox;
+    //}
+
+    void setColliderProperties(GameCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
+
+    bool intersects(const GameObject& obj) const;
+    //bool intersectsRough(DirectX::BoundingOrientedBox& box) const;
 
     bool getIsInFrustum() const
     {
-        return isInFrustum;
-    }
-
-    void setIsInFrustum(bool t)
-    {
-        isInFrustum = t;
+        return currentlyInFrustum;
     }
 
     void makeDynamic(SkinnedModel* sModel, UINT skinnedCBIndex);
@@ -165,10 +164,10 @@ public:
 
     void checkInViewFrustum(DirectX::BoundingFrustum& localCamFrustum);
 
-    bool intersectsRough(GameObject& obj) const;
-    bool intersectsRough(DirectX::BoundingOrientedBox& box) const;
-
-    bool intersectsShadowBounds(DirectX::BoundingSphere& sphere) const; /*only for shadow culling*/
+    GameCollider& getCollider()
+    {
+        return collider;
+    }
 
     void updateTransforms();
 
@@ -176,29 +175,19 @@ public:
     bool isCollisionEnabled = true;
     bool isDrawEnabled = true;
     bool isShadowEnabled = true;
-    bool isShadowForced = false;
     bool isFrustumCulled = true;
 
-private:
+protected:
+
+    GameCollider collider;
 
     /*transforms*/
     DirectX::XMFLOAT3 Position, Rotation, Scale;
-
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
 
-    /*rough hitbox*/
-    DirectX::BoundingOrientedBox roughBoundingBox;
-    DirectX::BoundingBox frustumCheckBoundingBox;
-    DirectX::XMFLOAT3 customFrustumBoundingBoxExtents;
-    bool useCustomFrustumBoundingBoxExtents = false;
+    
+    bool currentlyInFrustum = false;
 
-    bool isInFrustum = false;
-
-    /*simple rotation animation*/
-    bool isSimpleAnimated = false;
-    DirectX::XMFLOAT3 SimpleRotation;
-
-    /*precise hitbox needed*/
 
     UINT objectCBSize = 0;
     UINT skinnedCBSize = 0;

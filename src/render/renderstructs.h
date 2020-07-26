@@ -5,7 +5,6 @@
 #include <dxgi1_6.h>
 #include <d3d12.h>
 #include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
 #include <string>
@@ -113,8 +112,7 @@ struct Model
 
     std::vector<std::unique_ptr<Mesh>> meshes;
 
-    DirectX::BoundingOrientedBox boundingBox;
-    DirectX::BoundingBox frustumBoundingBox;
+    DirectX::BoundingBox baseModelBox;
 
     std::unique_ptr<Mesh> boundingBoxMesh = nullptr;
 };
@@ -157,7 +155,7 @@ struct BoneAnimation
     }
 
     void interpolate(float time, DirectX::XMFLOAT4X4& matrix) const;
-
+    void interpolate(float time, KeyFrame& keyFrame) const;
 };
 
 
@@ -175,6 +173,7 @@ public:
     float getStartTime();
     float getEndTime();
     void interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms) const;
+    void interpolate(float t, std::vector<KeyFrame>& keyTransforms) const;
 };
 
 struct Node

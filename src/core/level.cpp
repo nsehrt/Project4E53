@@ -223,44 +223,6 @@ void Level::update(const GameTime& gt)
         }
     }
 
-    /*TEST Collision test*/
-    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-    for (const auto& gameObj : mGameObjects)
-    {
-        if (gameObj.second->gameObjectType != GameObjectType::Static &&
-            gameObj.second->gameObjectType != GameObjectType::Wall) continue;
-
-        if (gameObj.second->intersectsRough(ServiceProvider::getActiveCamera()->getBoundingBox()))
-        {
-            LOG(Severity::Info, "Camera collided with " << gameObj.second->Name);
-            //ServiceProvider::getActiveCamera()->setPosition(ServiceProvider::getActiveCamera()->mPreviousPosition);
-        }
-    }
-
-
-
-//if (mGameObjects["box1"]->intersects(*mGameObjects["box2"].get()))
-//{
-    //LOG(Severity::Info, "Box collision");
-//}
-
-//for (auto& gameObj : mGameObjects)
-//{
-//    if (gameObj.second->gameObjectType != GameObjectType::Static) continue;
-
-//    auto h = gameObj.second->hitBox;
-
-//    for (auto& gameObj2 : mGameObjects)
-//    {
-//        if (gameObj == gameObj2) continue;
-//        if (gameObj2.second->gameObjectType != GameObjectType::Static) continue;
-
-//        if (h.Intersects(gameObj2.second->hitBox))
-//        {
-//            LOG(Severity::Info, "Collision between " << gameObj.second->name << " and " << gameObj2.second->name);
-//        }
-//    }
-//}
 }
 
 void Level::drawTerrain()
@@ -723,7 +685,7 @@ void Level::drawShadow()
 
         for (const auto& gameObject : shadowRenderOrder[i])
         {
-            if (gameObject->intersectsShadowBounds(renderResource->getShadowMap()->shadowBounds))
+            if (gameObject->getCollider().intersects(renderResource->getShadowMap()->shadowBounds))
             {
                 objectsDrawn += gameObject->drawShadow();
             }
@@ -772,6 +734,25 @@ void Level::calculateRenderOrderSizes()
     calculateRenderOrder();
     calculateShadowRenderOrder();
 }
+
+bool Level::playerCollides()
+{
+
+    for (const auto& gameObj : mGameObjects)
+    {
+        if (gameObj.second->isCollisionEnabled == false) continue;
+
+        if (gameObj.second->intersects(*ServiceProvider::getPlayer()))
+        {
+            LOG(Severity::Debug, "Player collided with " << gameObj.first << ".");
+            return true;
+        }
+
+    }
+
+    return false;
+}
+
 
 void Level::calculateRenderOrder()
 {
@@ -843,6 +824,7 @@ bool Level::parseSky(const json& skyJson)
     gameObject->renderItem = std::move(rItem);
     gameObject->gameObjectType = GameObjectType::Sky;
     gameObject->isFrustumCulled = false;
+    gameObject->isCollisionEnabled = false;
 
     mGameObjects[gameObject->Name] = std::move(gameObject);
 
@@ -973,6 +955,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
     debugObject->isShadowEnabled = false;
     debugObject->renderItem->renderType = RenderType::Default;
     debugObject->gameObjectType = GameObjectType::Debug;
+    debugObject->isCollisionEnabled = false;
     debugObject->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["quad"].get();
 
     mGameObjects["debugQuad"] = std::move(debugObject);
@@ -1048,7 +1031,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
         grassObject->setPosition(mGrass.back()->getPosition());
-        grassObject->setFrustumHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y));
+        //grassObject->setFrustumHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y));
 
 
         mGameObjects[mGrass.back()->getName()] = std::move(grassObject);
@@ -1097,7 +1080,6 @@ bool Level::parseWater(const json& waterJson)
 
         waterObject->isShadowEnabled = false;
         waterObject->isCollisionEnabled = false;
-        waterObject->isShadowForced = false;
         waterObject->isFrustumCulled = true;
         waterObject->gameObjectType = GameObjectType::Water;
 
@@ -1182,7 +1164,7 @@ bool Level::parseParticleSystems(const json& particleJson)
         particleObject->renderItem->staticModel = mParticleSystems[entry["Name"]]->getModel();
         particleObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         particleObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mParticleSystems[entry["Name"]]->getMaterialName()].get();
-        particleObject->setFrustumHitBoxExtents(mParticleSystems[entry["Name"]]->getRoughDimensions());
+        //particleObject->setFrustumHitBoxExtents(mParticleSystems[entry["Name"]]->getRoughDimensions());
         particleObject->setPosition(mParticleSystems[entry["Name"]]->getPosition());
 
         mGameObjects[entry["Name"]] = std::move(particleObject);

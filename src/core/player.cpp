@@ -7,10 +7,8 @@ using namespace DirectX;
 
 Player::Player(const std::string& model) : Character("Player", model, 0, 0)
 {
-    setIsInFrustum(true);
     setPosition({ 0,0,0 });
     setAnimation(SP_ANIM("geo_Idle"));
-
 }
 
 void Player::update(const InputSet& input, const GameTime& gt)
@@ -19,7 +17,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
     auto activeLevel = ServiceProvider::getActiveLevel();
 
     /*--- player movement*/
-
+    XMFLOAT3 projectedPosition = getPosition();
     XMFLOAT2 inputVector = { input.current.trigger[TRG::THUMB_LX], input.current.trigger[TRG::THUMB_LY] };
     bool jumped = input.Pressed(BTN::A);
     bool running = input.current.trigger[TRG::RIGHT_TRIGGER] > 0.75f;
@@ -83,7 +81,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
 
 
         /*players y position to terrain height*/
-        setPosition({ pPos.x, 0, pPos.z });
+        projectedPosition = { pPos.x, activeLevel->mTerrain->getHeight(getPosition().x, getPosition().z), pPos.z };
 
     }
     else
@@ -108,7 +106,13 @@ void Player::update(const InputSet& input, const GameTime& gt)
     }
 
     /*players y position to terrain height*/
-    setPosition({ getPosition().x,activeLevel->mTerrain->getHeight(getPosition().x, getPosition().z), getPosition().z });
+    XMFLOAT3 currentPosition = getPosition();
+    setPosition(projectedPosition);
+
+    if (activeLevel->playerCollides())
+    {
+        setPosition(currentPosition);
+    }
 
     /*TEMP*/
     GameObject::update(gt);

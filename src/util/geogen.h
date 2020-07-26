@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <DirectXMath.h>
+#include "../util/mathhelper.h"
 #include <vector>
 
 class GeometryGenerator

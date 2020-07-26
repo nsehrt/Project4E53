@@ -258,7 +258,7 @@ bool P_4E53::Initialize()
     }
 
     /*load first level*/
-    std::string levelFile = "Test";
+    std::string levelFile = "0";
 
     auto level = std::make_shared<Level>();
 
@@ -769,12 +769,12 @@ void P_4E53::update(const GameTime& gt)
                         {
                             case TranslationAxis::XY: nPos.x = 0.0f; 
                                                       nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
-                                                                editSettings->currentSelection->getRoughHitBoxExtentY();
+                                                                editSettings->currentSelection->getCollider().getFrustumBox().Extents.y;
                                                       break;
                             case TranslationAxis::XZ: nPos.x = 0.0f; nPos.z = 0.0f; break;
                             case TranslationAxis::X: nPos.x = 0.0f; break;
                             case TranslationAxis::Y: nPos.y = activeLevel->mTerrain->getHeight(nPos.x, nPos.z) +
-                                                                editSettings->currentSelection->getRoughHitBoxExtentY();
+                                                                editSettings->currentSelection->getCollider().getFrustumBox().Extents.y;
                                                     break;
                             case TranslationAxis::Z: nPos.z = 0.0f; break;
                         }
@@ -921,7 +921,6 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                         editSettings->currentSelection->isDrawEnabled = false;
                         editSettings->currentSelection->isShadowEnabled = false;
-                        editSettings->currentSelection->isShadowForced = false;
                         editSettings->currentSelection->isCollisionEnabled = true;
 
                         activeLevel->calculateRenderOrderSizes();
@@ -1207,7 +1206,6 @@ void P_4E53::update(const GameTime& gt)
                         case GameObjectProperty::Collision: editSettings->currentSelection->isCollisionEnabled = !editSettings->currentSelection->isCollisionEnabled;  break;
                         case GameObjectProperty::Draw: editSettings->currentSelection->isDrawEnabled = !editSettings->currentSelection->isDrawEnabled;  break;
                         case GameObjectProperty::Shadow: editSettings->currentSelection->isShadowEnabled = !editSettings->currentSelection->isShadowEnabled;  break;
-                        case GameObjectProperty::ShadowForce: editSettings->currentSelection->isShadowForced = !editSettings->currentSelection->isShadowForced;  break;
                     }
 
                 }
@@ -1458,7 +1456,7 @@ void P_4E53::update(const GameTime& gt)
                         e.second->gameObjectType == GameObjectType::Debug)
                         continue;
 
-                    if (e.second->getRoughBoundingBox().Intersects(fpsCamera->getPosition(),
+                    if (e.second->getCollider().getFrustumBox().Intersects(fpsCamera->getPosition(),
                         fpsCamera->getLook(),
                         dist))
                     {
@@ -1523,7 +1521,6 @@ void P_4E53::update(const GameTime& gt)
                     case GameObjectProperty::Collision: editSettings->currentSelection->isCollisionEnabled = !editSettings->currentSelection->isCollisionEnabled;  break;
                     case GameObjectProperty::Draw: editSettings->currentSelection->isDrawEnabled = !editSettings->currentSelection->isDrawEnabled;  break;
                     case GameObjectProperty::Shadow: editSettings->currentSelection->isShadowEnabled = !editSettings->currentSelection->isShadowEnabled;  break;
-                    case GameObjectProperty::ShadowForce: editSettings->currentSelection->isShadowForced = !editSettings->currentSelection->isShadowForced;  break;
                 }
             }
 
@@ -1533,7 +1530,7 @@ void P_4E53::update(const GameTime& gt)
                 if (editSettings->currentSelection)
                 {
                     XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
-                    auto box = editSettings->currentSelection->getRoughBoundingBox();
+                    auto box = editSettings->currentSelection->getCollider().getFrustumBox();
 
                     nPos.z -= MathHelper::maxH(5.0f, box.Extents.z * 4.5f);
                     nPos.y += MathHelper::maxH(4.0f, box.Extents.y * 3.0f);
@@ -1628,7 +1625,7 @@ void P_4E53::update(const GameTime& gt)
     }
 
     /*debug actions*/
-    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.DebugEnabled && ServiceProvider::getEditSettings()->toolMode == EditTool::Camera))
+    if (inputData.Released(BTN::DPAD_DOWN) && (settingsData->miscSettings.DebugEnabled && (ServiceProvider::getEditSettings()->toolMode == EditTool::Camera || ServiceProvider::getGameState() == GameState::INGAME)))
     {
         renderResource->toggleRoughHitBoxDraw();
     }

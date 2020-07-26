@@ -53,6 +53,54 @@ void BoneAnimation::interpolate(float time, XMFLOAT4X4& matrix) const
     }
 }
 
+void BoneAnimation::interpolate(float time, KeyFrame& keyFrame) const
+{
+    keyFrame.timeStamp = time;
+
+    if (time <= keyFrames.front().timeStamp)
+    {
+        keyFrame.translation = keyFrames.front().translation;
+        keyFrame.scale = keyFrames.front().scale;
+        keyFrame.rotationQuat = keyFrames.front().rotationQuat;
+    }
+    else if (time >= keyFrames.back().timeStamp)
+    {
+        keyFrame.translation = keyFrames.back().translation;
+        keyFrame.scale = keyFrames.back().scale;
+        keyFrame.rotationQuat = keyFrames.back().rotationQuat;
+    }
+    else
+    {
+        for (UINT i = 0; i < keyFrames.size() - 1; ++i)
+        {
+            if (time >= keyFrames[i].timeStamp && time <= keyFrames[(INT_PTR)i + 1].timeStamp)
+            {
+                float lerpPercent = (time - keyFrames[i].timeStamp) / (keyFrames[(INT_PTR)i + 1].timeStamp - keyFrames[i].timeStamp);
+
+                XMVECTOR s0 = XMLoadFloat3(&keyFrames[i].scale);
+                XMVECTOR s1 = XMLoadFloat3(&keyFrames[(INT_PTR)i + 1].scale);
+
+                XMVECTOR p0 = XMLoadFloat3(&keyFrames[i].translation);
+                XMVECTOR p1 = XMLoadFloat3(&keyFrames[(INT_PTR)i + 1].translation);
+
+                XMVECTOR q0 = XMLoadFloat4(&keyFrames[i].rotationQuat);
+                XMVECTOR q1 = XMLoadFloat4(&keyFrames[(INT_PTR)i + 1].rotationQuat);
+
+                XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);
+                XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);
+                XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);
+
+                XMStoreFloat3(&keyFrame.translation, P);
+                XMStoreFloat3(&keyFrame.scale, S);
+                XMStoreFloat4(&keyFrame.rotationQuat, Q);
+
+                break;
+            }
+        }
+    }
+
+}
+
 
 
 float AnimationClip::getStartTime()
@@ -101,6 +149,15 @@ void AnimationClip::interpolate(float t, std::vector<XMFLOAT4X4>& boneTransforms
     {
         if(!boneAnimations[i].isEmpty)
             boneAnimations[i].interpolate(t, boneTransforms[i]);
+    }
+}
+
+void AnimationClip::interpolate(float t, std::vector<KeyFrame>& keyTransforms) const
+{
+    for (UINT i = 0; i < keyTransforms.size(); ++i)
+    {
+        if (!boneAnimations[i].isEmpty)
+            boneAnimations[i].interpolate(t, keyTransforms[i]);
     }
 }
 

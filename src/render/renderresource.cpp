@@ -1660,11 +1660,8 @@ void RenderResource::generateDefaultShapes()
     mModels["box"] = std::move(m);
 
     /*box hitbox*/
-    XMStoreFloat3(&mModels["box"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["box"]->boundingBox.Extents, 0.5f * (vMax - vMin));
-
-    XMStoreFloat3(&mModels["box"]->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["box"]->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["box"]->baseModelBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["box"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
     std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
 
@@ -1782,15 +1779,13 @@ void RenderResource::generateDefaultShapes()
     v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
-    XMStoreFloat3(&mModels["grid"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["grid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["grid"]->baseModelBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["grid"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
-    XMStoreFloat3(&mModels["grid"]->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["grid"]->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
 
-    GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->boundingBox.Extents.x * 2.f,
-                                                               mModels["grid"]->boundingBox.Extents.y * 2.f,
-                                                               mModels["grid"]->boundingBox.Extents.z * 2.f,
+    GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->baseModelBox.Extents.x * 2.f,
+                                                               mModels["grid"]->baseModelBox.Extents.y * 2.f,
+                                                               mModels["grid"]->baseModelBox.Extents.z * 2.f,
                                                                0);
     vertices.clear();
     vertices.resize(boxMeshGrid.Vertices.size());
@@ -1799,7 +1794,7 @@ void RenderResource::generateDefaultShapes()
 
     for (size_t i = 0; i < boxMeshGrid.Vertices.size(); i++)
     {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshGrid.Vertices[i].Position), XMLoadFloat3(&mModels["grid"]->boundingBox.Center)));
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshGrid.Vertices[i].Position), XMLoadFloat3(&mModels["grid"]->baseModelBox.Center)));
         vertices[i].Normal = boxMeshGrid.Vertices[i].Normal;
         vertices[i].TexC = boxMeshGrid.Vertices[i].TexC;
         vertices[i].TangentU = boxMeshGrid.Vertices[i].TangentU;
@@ -1885,17 +1880,12 @@ void RenderResource::generateDefaultShapes()
     v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
-    XMStoreFloat3(&mModels["watergrid"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["watergrid"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
-    XMStoreFloat3(&mModels["watergrid"]->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["watergrid"]->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
-
-    mModels["watergrid"]->frustumBoundingBox.Extents.y = 2.5f;
-
-    GeometryGenerator::MeshData boxMeshWGrid = geoGen.CreateBox(mModels["watergrid"]->boundingBox.Extents.x * 2.f,
-                                                               mModels["watergrid"]->boundingBox.Extents.y * 2.f,
-                                                               mModels["watergrid"]->boundingBox.Extents.z * 2.f,
+    GeometryGenerator::MeshData boxMeshWGrid = geoGen.CreateBox(mModels["watergrid"]->baseModelBox.Extents.x * 2.f,
+                                                               mModels["watergrid"]->baseModelBox.Extents.y * 2.f,
+                                                               mModels["watergrid"]->baseModelBox.Extents.z * 2.f,
                                                                0);
     vertices.clear();
     vertices.resize(boxMeshWGrid.Vertices.size());
@@ -1904,7 +1894,7 @@ void RenderResource::generateDefaultShapes()
 
     for (size_t i = 0; i < boxMeshWGrid.Vertices.size(); i++)
     {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshWGrid.Vertices[i].Position), XMLoadFloat3(&mModels["watergrid"]->boundingBox.Center)));
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshWGrid.Vertices[i].Position), XMLoadFloat3(&mModels["watergrid"]->baseModelBox.Center)));
         vertices[i].Normal = boxMeshWGrid.Vertices[i].Normal;
         vertices[i].TexC = boxMeshWGrid.Vertices[i].TexC;
         vertices[i].TangentU = boxMeshWGrid.Vertices[i].TangentU;
@@ -1983,15 +1973,12 @@ void RenderResource::generateDefaultShapes()
 
     /*sphere hitbox*/
 
-    XMStoreFloat3(&mModels["sphere"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["sphere"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
-    XMStoreFloat3(&mModels["sphere"]->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["sphere"]->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
-
-    GeometryGenerator::MeshData boxMeshSp = geoGen.CreateBox(mModels["sphere"]->boundingBox.Extents.x * 2.f,
-                                                             mModels["sphere"]->boundingBox.Extents.y * 2.f,
-                                                             mModels["sphere"]->boundingBox.Extents.z * 2.f,
+    GeometryGenerator::MeshData boxMeshSp = geoGen.CreateBox(mModels["sphere"]->baseModelBox.Extents.x * 2.f,
+                                                             mModels["sphere"]->baseModelBox.Extents.y * 2.f,
+                                                             mModels["sphere"]->baseModelBox.Extents.z * 2.f,
                                                              0);
     vertices.clear();
     vertices.resize(boxMeshSp.Vertices.size());
@@ -2000,7 +1987,7 @@ void RenderResource::generateDefaultShapes()
 
     for (size_t i = 0; i < boxMeshSp.Vertices.size(); i++)
     {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshSp.Vertices[i].Position), XMLoadFloat3(&mModels["sphere"]->boundingBox.Center)));
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshSp.Vertices[i].Position), XMLoadFloat3(&mModels["sphere"]->baseModelBox.Center)));
         vertices[i].Normal = boxMeshSp.Vertices[i].Normal;
         vertices[i].TexC = boxMeshSp.Vertices[i].TexC;
         vertices[i].TangentU = boxMeshSp.Vertices[i].TangentU;
@@ -2078,15 +2065,12 @@ void RenderResource::generateDefaultShapes()
 
     /*cylinder hitbox*/
 
-    XMStoreFloat3(&mModels["cylinder"]->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["cylinder"]->boundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
-    XMStoreFloat3(&mModels["cylinder"]->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["cylinder"]->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
-
-    GeometryGenerator::MeshData boxMeshCyl = geoGen.CreateBox(mModels["cylinder"]->boundingBox.Extents.x * 2.f,
-                                                              mModels["cylinder"]->boundingBox.Extents.y * 2.f,
-                                                              mModels["cylinder"]->boundingBox.Extents.z * 2.f,
+    GeometryGenerator::MeshData boxMeshCyl = geoGen.CreateBox(mModels["cylinder"]->baseModelBox.Extents.x * 2.f,
+                                                              mModels["cylinder"]->baseModelBox.Extents.y * 2.f,
+                                                              mModels["cylinder"]->baseModelBox.Extents.z * 2.f,
                                                               0);
     vertices.clear();
     vertices.resize(boxMeshCyl.Vertices.size());
@@ -2095,7 +2079,7 @@ void RenderResource::generateDefaultShapes()
 
     for (size_t i = 0; i < boxMeshCyl.Vertices.size(); i++)
     {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshCyl.Vertices[i].Position), XMLoadFloat3(&mModels["cylinder"]->boundingBox.Center)));
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMeshCyl.Vertices[i].Position), XMLoadFloat3(&mModels["cylinder"]->baseModelBox.Center)));
         vertices[i].Normal = boxMeshCyl.Vertices[i].Normal;
         vertices[i].TexC = boxMeshCyl.Vertices[i].TexC;
         vertices[i].TangentU = boxMeshCyl.Vertices[i].TangentU;

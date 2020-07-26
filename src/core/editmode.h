@@ -3,7 +3,7 @@
 class GameObject;
 
 #include "../util/d3dUtil.h"
-#include <DirectXMath.h>
+#include "../util/mathhelper.h"
 
 enum class EditTool
 {

@@ -135,16 +135,13 @@ std::unique_ptr<Model> ModelLoader::loadB3D(const std::filesystem::directory_ent
     }
 
     /*create AABB*/
-    XMStoreFloat3(&mRet->boundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mRet->boundingBox.Extents, 0.5f * (vMax - vMin));
-
-    XMStoreFloat3(&mRet->frustumBoundingBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mRet->frustumBoundingBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mRet->baseModelBox.Center, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mRet->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
     GeometryGenerator geoGen;
-    GeometryGenerator::MeshData boxMesh = geoGen.CreateBox(mRet->boundingBox.Extents.x * 2.f,
-                                                           mRet->boundingBox.Extents.y * 2.f,
-                                                           mRet->boundingBox.Extents.z * 2.f,
+    GeometryGenerator::MeshData boxMesh = geoGen.CreateBox(mRet->baseModelBox.Extents.x * 2.f,
+                                                           mRet->baseModelBox.Extents.y * 2.f,
+                                                           mRet->baseModelBox.Extents.z * 2.f,
                                                            0);
 
     std::vector<Vertex> vertices(boxMesh.Vertices.size());
@@ -152,7 +149,7 @@ std::unique_ptr<Model> ModelLoader::loadB3D(const std::filesystem::directory_ent
 
     for (size_t i = 0; i < boxMesh.Vertices.size(); i++)
     {
-        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMesh.Vertices[i].Position), XMLoadFloat3(&mRet->boundingBox.Center)));
+        XMStoreFloat3(&vertices[i].Pos, XMVectorAdd(XMLoadFloat3(&boxMesh.Vertices[i].Position), XMLoadFloat3(&mRet->baseModelBox.Center)));
         vertices[i].Normal = boxMesh.Vertices[i].Normal;
         vertices[i].TexC = boxMesh.Vertices[i].TexC;
         vertices[i].TangentU = boxMesh.Vertices[i].TangentU;

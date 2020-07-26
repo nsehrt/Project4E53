@@ -81,20 +81,6 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
         TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
     }
 
-    /*simple animation*/
-    if (exists(objectJson, "SimpleRotation"))
-    {
-        isSimpleAnimated = true;
-        SimpleRotation = XMFLOAT3{ XMConvertToRadians(objectJson["SimpleRotation"][0]),
-                                   XMConvertToRadians(objectJson["SimpleRotation"][1]),
-                                   XMConvertToRadians(objectJson["SimpleRotation"][2]) };
-    }
-    else
-    {
-        isSimpleAnimated = false;
-        SimpleRotation = XMFLOAT3{ 0.0f,0.0f,0.0f };
-    }
-
     /*Flags*/
     if (exists(objectJson, "CollisionEnabled"))
     {
@@ -116,11 +102,6 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
         isFrustumCulled = objectJson["FrustumCulled"];
     }
 
-    if (exists(objectJson, "ShadowForced"))
-    {
-        isShadowForced = objectJson["ShadowForced"];
-    }
-
     /*RenderItem*/
 
     auto renderResource = ServiceProvider::getRenderResource();
@@ -136,7 +117,6 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
             isCollisionEnabled = true;
             isDrawEnabled = false;
             isShadowEnabled = false;
-            isShadowForced = false;
             rItem->staticModel = renderResource->mModels["box"].get();
             TextureScale = Scale;
             gameObjectType = GameObjectType::Wall;
@@ -237,12 +217,10 @@ GameObject::GameObject()
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
     Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-    customFrustumBoundingBoxExtents = { 0.0f,0.0f,0.0f };
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
     TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-    SimpleRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
     skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
@@ -311,22 +289,11 @@ void GameObject::update(const GameTime& gt)
 
         }
 
-        if (isInFrustum)
+        if (currentlyInFrustum)
             renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->finalTransforms, renderItem->animationTimer);
 
     }
 
-
-    /*simple animation*/
-    if (isSimpleAnimated)
-    {
-        XMFLOAT3 r = getRotation();
-        r.x += SimpleRotation.x * gt.DeltaTime();
-        r.y += SimpleRotation.y * gt.DeltaTime();
-        r.z += SimpleRotation.z * gt.DeltaTime();
-
-        setRotation(r);
-    }
 
 }
 
@@ -343,7 +310,7 @@ bool GameObject::draw() const
         return false;
     }
 
-    if (!isInFrustum) return false;
+    if (!currentlyInFrustum) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -471,7 +438,6 @@ json GameObject::toJson() const
     jElement["CollisionEnabled"] = isCollisionEnabled;
     jElement["DrawEnabled"] = isDrawEnabled;
     jElement["ShadowEnabled"] = isShadowEnabled;
-    jElement["ShadowForced"] = isShadowForced;
 
     jElement["Position"][0] = getPosition().x;
     jElement["Position"][1] = getPosition().y;
@@ -496,13 +462,6 @@ json GameObject::toJson() const
     jElement["TexRotation"][0] = XMConvertToDegrees(getTextureRotation().x);
     jElement["TexRotation"][1] = XMConvertToDegrees(getTextureRotation().y);
     jElement["TexRotation"][2] = XMConvertToDegrees(getTextureRotation().z);
-
-    if (isSimpleAnimated)
-    {
-        jElement["SimpleRotation"][0] = XMConvertToDegrees(SimpleRotation.x);
-        jElement["SimpleRotation"][1] = XMConvertToDegrees(SimpleRotation.y);
-        jElement["SimpleRotation"][2] = XMConvertToDegrees(SimpleRotation.z);
-    }
 
     return jElement;
 }
@@ -546,40 +505,43 @@ void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
 
         XMMATRIX world = XMLoadFloat4x4(&renderItem->World);
 
-        isInFrustum = !(localCamFrustum.Contains(frustumCheckBoundingBox) == DirectX::DISJOINT);
+        currentlyInFrustum = !collider.intersects(localCamFrustum);
 
     }
     else
     {
-        isInFrustum = true;
+        currentlyInFrustum = true;
     }
 
 }
 
-bool GameObject::intersectsRough(GameObject& obj) const
+void GameObject::setColliderProperties(GameCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
+{
+    collider.setColliderType(type);
+    collider.setProperties(center, extents);
+
+    updateTransforms();
+}
+
+bool GameObject::intersects(const GameObject& obj) const
 {
     if (!isCollisionEnabled || !obj.isCollisionEnabled)
     {
         return false;
     }
 
-    return roughBoundingBox.Intersects(obj.roughBoundingBox);
+    return collider.intersects(obj.collider);
 }
 
-bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box) const
-{
-    if (!isCollisionEnabled)
-    {
-        return false;
-    }
-
-    return roughBoundingBox.Intersects(box);
-}
-
-bool GameObject::intersectsShadowBounds(DirectX::BoundingSphere& sphere) const
-{
-    return frustumCheckBoundingBox.Intersects(sphere);
-}
+//bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box) const
+//{
+//    if (!isCollisionEnabled)
+//    {
+//        return false;
+//    }
+//
+//    return roughBoundingBox.Intersects(box);
+//}
 
 void GameObject::updateTransforms()
 {
@@ -602,22 +564,10 @@ void GameObject::updateTransforms()
                     XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
                     XMMatrixTranslationFromVector(XMLoadFloat3(&TextureTranslation)));
 
-    /*update rough hitbox*/
-    auto model = renderItem->getModel();
-
-    if (model)
-    {
-        model->boundingBox.Transform(roughBoundingBox, XMLoadFloat4x4(&renderItem->World));
-        model->frustumBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&renderItem->World));
-    }
+    /*update collider*/
+    collider.update(renderItem->World);
 
 
-    if (useCustomFrustumBoundingBoxExtents)
-    {
-        frustumCheckBoundingBox.Extents = customFrustumBoundingBoxExtents;
-    }
-
-    /*update for precise hitbox needed*/
 
     renderItem->NumFramesDirty = gNumFrameResources;
 }

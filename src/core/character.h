@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../core/gameobject.h"
+#include "../core/animationblender.h"
 
 
 class Character : public GameObject
@@ -26,6 +27,8 @@ public:
     void update(const GameTime& gt) override;
 
 protected:
+
+    AnimationBlender animationBlender;
 
     CharacterState currentCState = CharacterState::Idle;
     CharacterState previousCState = CharacterState::Idle;

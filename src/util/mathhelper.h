@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Windows.h>
+#define _XM_AVX_INTRINSICS_
+
 #include <DirectXMath.h>
 #include <cmath>
 #include <cstdint>
