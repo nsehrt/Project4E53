@@ -15,6 +15,7 @@ public:
     explicit GameCollider();
     ~GameCollider() = default;
 
+    void setBaseBoxes(DirectX::BoundingBox box);
     void setColliderType(GameObjectCollider goCollider);
     void setProperties(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
 
@@ -27,6 +28,10 @@ public:
         return frustumCheckBoundingBox;
     }
 
+    DirectX::BoundingOrientedBox& getPickBox()
+    {
+        return pickBox;
+    }
 
     /*collision functions*/
     bool intersects(const DirectX::BoundingFrustum& cameraFrustum) const;
@@ -40,6 +45,9 @@ private:
     /*is always baseModelBox * world*/
     DirectX::BoundingBox internalFrustumCheckBoundingBox;
     DirectX::BoundingBox frustumCheckBoundingBox;
+
+    DirectX::BoundingOrientedBox internalPickBox;
+    DirectX::BoundingOrientedBox pickBox;
 
     DirectX::BoundingOrientedBox internalBoundingBox;
     DirectX::BoundingSphere internalBoundingSphere;

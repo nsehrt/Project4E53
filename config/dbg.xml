@@ -37,7 +37,7 @@
     <Misc>
         <DebugEnabled>1</DebugEnabled>
         <DebugQuadEnabled>0</DebugQuadEnabled>
-        <EditModeEnabled>0</EditModeEnabled>
+        <EditModeEnabled>1</EditModeEnabled>
         <DrawFPSEnabled>1</DrawFPSEnabled>
     </Misc>
 </root>

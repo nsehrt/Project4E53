@@ -209,6 +209,10 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 
     renderItem = std::move(rItem);
 
+    /*set collider properties*/
+    collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
+    setColliderProperties(GameCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
+
     updateTransforms();
 }
 
@@ -502,11 +506,7 @@ void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
 
     if (isFrustumCulled)
     {
-
-        XMMATRIX world = XMLoadFloat4x4(&renderItem->World);
-
         currentlyInFrustum = !collider.intersects(localCamFrustum);
-
     }
     else
     {

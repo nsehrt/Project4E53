@@ -6,7 +6,14 @@ GameCollider::GameCollider()
 {
     internalFrustumCheckBoundingBox = BoundingBox({ 0,0,0 }, { 0.5f,0.5f,0.5f });
     internalBoundingBox = BoundingOrientedBox({ 0,0,0 }, { 0.5f,0.5f,0.5f }, { 0.0f,0.0f,0.0f,1.0f });
+    internalPickBox = internalBoundingBox;
     internalBoundingSphere = BoundingSphere({ 0,0,0 }, 0.5f);
+}
+
+void GameCollider::setBaseBoxes(DirectX::BoundingBox box)
+{
+    internalFrustumCheckBoundingBox = box;
+    internalPickBox = BoundingOrientedBox(box.Center, box.Extents, { 0,0,0,1 });
 }
 
 void GameCollider::setColliderType(GameObjectCollider goCollider)
@@ -30,6 +37,7 @@ void GameCollider::setProperties(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 ext
 void GameCollider::update(const DirectX::XMFLOAT4X4& M)
 {
     internalBoundingBox.Transform(boundingBox, XMLoadFloat4x4(&M));
+    internalPickBox.Transform(pickBox, XMLoadFloat4x4(&M));
     internalBoundingSphere.Transform(boundingSphere, XMLoadFloat4x4(&M));
     internalFrustumCheckBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&M));
 }

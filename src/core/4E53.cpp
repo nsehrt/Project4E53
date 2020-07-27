@@ -1456,7 +1456,8 @@ void P_4E53::update(const GameTime& gt)
                         e.second->gameObjectType == GameObjectType::Debug)
                         continue;
 
-                    if (e.second->getCollider().getFrustumBox().Intersects(fpsCamera->getPosition(),
+                    /*pick object via ray cast from camera*/
+                    if (e.second->getCollider().getPickBox().Intersects(fpsCamera->getPosition(),
                         fpsCamera->getLook(),
                         dist))
                     {

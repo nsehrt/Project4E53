@@ -135,7 +135,7 @@ std::unique_ptr<Model> ModelLoader::loadB3D(const std::filesystem::directory_ent
     }
 
     /*create AABB*/
-    XMStoreFloat3(&mRet->baseModelBox.Center, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mRet->baseModelBox.Center, 0.5f * (vMax + vMin));
     XMStoreFloat3(&mRet->baseModelBox.Extents, 0.5f * (vMax - vMin));
 
     GeometryGenerator geoGen;
