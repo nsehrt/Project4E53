@@ -923,6 +923,8 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->isShadowEnabled = false;
                         editSettings->currentSelection->isCollisionEnabled = true;
 
+                        editSettings->currentSelection->getCollider().setBaseBoxes(renderResource->mModels["box"]->baseModelBox);
+                        editSettings->currentSelection->updateTransforms();
                         activeLevel->calculateRenderOrderSizes();
 
                         setModelSelection();
@@ -967,6 +969,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
 
+                    editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
+                    editSettings->currentSelection->updateTransforms();
                     setModelSelection();
                 }
 
@@ -1005,7 +1009,8 @@ void P_4E53::update(const GameTime& gt)
 
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
-
+                    editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
+                    editSettings->currentSelection->updateTransforms();
                     setModelSelection();
                 }
 
@@ -1045,6 +1050,8 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
                     }
 
+                    editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
+                    editSettings->currentSelection->updateTransforms();
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                 }
@@ -1084,6 +1091,8 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->MaterialOverwrite = nullptr;
                     }
 
+                    editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
+                    editSettings->currentSelection->updateTransforms();
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                 }

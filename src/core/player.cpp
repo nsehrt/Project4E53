@@ -10,6 +10,7 @@ Player::Player(const std::string& model) : Character("Player", model, 0, 0)
     setPosition({ 0,0,0 });
     setAnimation(SP_ANIM("geo_Idle"));
     isFrustumCulled = false;
+    setColliderProperties(GameCollider::GameObjectCollider::Sphere, { 0,0,0 }, { 0.25f,0.25f,0.25f });
 }
 
 void Player::update(const InputSet& input, const GameTime& gt)

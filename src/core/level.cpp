@@ -154,7 +154,7 @@ void Level::update(const GameTime& gt)
     const auto cameraPos = aCamera->getTarget();
 
     /*order point lights by shortest distance from camera*/
-    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    if (ServiceProvider::getGameState() == GameState::EDITOR)
     {
         auto lPtr = mLightObjects[ServiceProvider::getEditSettings()->currentLightSelectionIndex].get();
 
@@ -292,7 +292,7 @@ void Level::draw()
 
             if (g->renderItem->renderType != RenderType::Sky)
             {
-                gameObject.second->drawRoughHitbox();
+                gameObject.second->drawPickBox();
             }
         }
     }
@@ -1030,9 +1030,12 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->renderItem->staticModel = mGrass.back()->getPatchModel();
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         grassObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mGrass.back()->getMaterialName()].get();
-        grassObject->setPosition(mGrass.back()->getPosition());
-        //grassObject->setFrustumHitBoxExtents(XMFLOAT3(mGrass.back()->getSize().x, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y));
 
+
+        grassObject->setPosition(mGrass.back()->getPosition());
+        auto bBox = BoundingBox({ 0,0,0 }, XMFLOAT3(mGrass.back()->getSize().x / 2.0f, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y/2.0f) );
+        grassObject->getCollider().setBaseBoxes(bBox);
+        grassObject->updateTransforms();
 
         mGameObjects[mGrass.back()->getName()] = std::move(grassObject);
 
@@ -1091,6 +1094,7 @@ bool Level::parseWater(const json& waterJson)
                                        entry["TexScale"][1], 
                                        entry["TexScale"][2] });
 
+        waterObject->getCollider().setBaseBoxes(waterObject->renderItem->getModel()->baseModelBox);
         waterObject->updateTransforms();
 
         waterObject->renderItem->NumFramesDirty = gNumFrameResources;
@@ -1151,7 +1155,7 @@ bool Level::parseParticleSystems(const json& particleJson)
         particleObject->isFrustumCulled = true;
         particleObject->isShadowEnabled = false;
         particleObject->isDrawEnabled = true;
-        particleObject->isCollisionEnabled = true;
+        particleObject->isCollisionEnabled = false;
         particleObject->gameObjectType = GameObjectType::Particle;
 
         switch (mParticleSystems[entry["Name"]]->getType())
@@ -1164,8 +1168,10 @@ bool Level::parseParticleSystems(const json& particleJson)
         particleObject->renderItem->staticModel = mParticleSystems[entry["Name"]]->getModel();
         particleObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
         particleObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[mParticleSystems[entry["Name"]]->getMaterialName()].get();
-        //particleObject->setFrustumHitBoxExtents(mParticleSystems[entry["Name"]]->getRoughDimensions());
+
         particleObject->setPosition(mParticleSystems[entry["Name"]]->getPosition());
+        particleObject->getCollider().setBaseBoxes(BoundingBox({ 0,0,0 }, mParticleSystems[entry["Name"]]->getRoughDimensions()));
+        particleObject->updateTransforms();
 
         mGameObjects[entry["Name"]] = std::move(particleObject);
     }

@@ -293,7 +293,7 @@ void GameObject::update(const GameTime& gt)
 
         }
 
-        if (currentlyInFrustum)
+        if (currentlyInFrustum || !isFrustumCulled)
             renderItem->skinnedModel->calculateFinalTransforms(renderItem->currentClip, renderItem->finalTransforms, renderItem->animationTimer);
 
     }
@@ -314,7 +314,7 @@ bool GameObject::draw() const
         return false;
     }
 
-    if (!currentlyInFrustum) return false;
+    if (!currentlyInFrustum && isFrustumCulled) return false;
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
@@ -394,7 +394,7 @@ bool GameObject::drawShadow() const
     return true;
 }
 
-void GameObject::drawRoughHitbox() const
+void GameObject::drawPickBox() const
 {
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();

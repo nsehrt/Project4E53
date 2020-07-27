@@ -44,7 +44,7 @@ public:
 
     DirectX::XMFLOAT3 getRoughDimensions() const
     {
-        return { particleSize.x * 8.0f, particleSize.y * 16.0f * maxAge, particleSize.x * 8.0f };
+        return { particleSize.x, particleSize.y * 16.0f * maxAge, particleSize.x};
     }
 
     static const UINT MAX_PARTICLE = 5000;

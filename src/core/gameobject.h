@@ -40,10 +40,9 @@ public:
     virtual void update(const GameTime& gt);
     bool draw() const;
     bool drawShadow() const;
-    void drawRoughHitbox() const;
+    void drawPickBox() const;
 
     json toJson() const;
-
 
 
     GameObjectType gameObjectType = GameObjectType::Static;
@@ -126,33 +125,8 @@ public:
         return TextureRotation;
     }
 
-    //float getRoughHitBoxExtentY() const
-    //{
-    //    return roughBoundingBox.Extents.y;
-    //}
-
-    //void setFrustumHitBoxExtents(DirectX::XMFLOAT3 e)
-    //{
-    //    useCustomFrustumBoundingBoxExtents = true;
-    //    customFrustumBoundingBoxExtents = e;
-
-    //    updateTransforms();
-    //}
-
-    //DirectX::BoundingOrientedBox& getRoughBoundingBox()
-    //{
-    //    return roughBoundingBox;
-    //}
-
-    //DirectX::BoundingBox& getFrustumCheckBoundingBox()
-    //{
-    //    return frustumCheckBoundingBox;
-    //}
-
     void setColliderProperties(GameCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
-
     bool intersects(const GameObject& obj) const;
-    //bool intersectsRough(DirectX::BoundingOrientedBox& box) const;
 
     bool getIsInFrustum() const
     {
