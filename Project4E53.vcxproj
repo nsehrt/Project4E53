@@ -194,6 +194,7 @@
     <ClCompile Include="src\util\log.cpp" />
     <ClCompile Include="src\util\mathhelper.cpp" />
     <ClCompile Include="src\util\modelloader.cpp" />
+    <ClCompile Include="src\util\quadtree.cpp" />
     <ClCompile Include="src\util\serviceprovider.cpp" />
     <ClCompile Include="src\util\settings.cpp" />
     <ClCompile Include="src\util\skinnedmodelloader.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="src\util\mathhelper.h" />
     <ClInclude Include="src\util\modelloader.h" />
     <ClInclude Include="src\util\perlin.h" />
+    <ClInclude Include="src\util\quadtree.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
     <ClInclude Include="src\util\settings.h" />
     <ClInclude Include="src\util\skinnedmodelloader.h" />

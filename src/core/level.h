@@ -7,6 +7,7 @@
 #include "../core/water.h"
 #include "../core/grass.h"
 #include "../core/particlesystem.h"
+#include "../util/quadtree.h"
 
 #define LEVEL_PATH "data/level"
 
@@ -86,6 +87,8 @@ public:
     std::string loadedLevel;
 
 private:
+
+    QuadTree quadTree;
 
     /* total amount of object cbs used in the level*/
     int amountObjectCBs = 1;

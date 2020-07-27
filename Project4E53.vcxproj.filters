@@ -166,6 +166,9 @@
     <ClInclude Include="src\core\gamecollider.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\quadtree.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -284,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="src\core\gamecollider.cpp">
       <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\quadtree.cpp">
+      <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
