@@ -117,6 +117,27 @@ bool Level::load(const std::string& levelFile)
 
     calculateRenderOrderSizes();
 
+
+    /* build quad tree and sort game objects into it */
+    quadTree.build({ 0,0,0 }, mTerrain->terrainSize, mTerrain->terrainSize, 4);
+
+    for (auto& i : mGameObjects)
+    {
+        if (i.second->gameObjectType == GameObjectType::Sky ||
+            i.second->gameObjectType == GameObjectType::Debug ||
+            i.second->gameObjectType == GameObjectType::Terrain) continue;
+
+        if (!quadTree.insert(i.second.get()))
+        {
+            LOG(Severity::Debug, "GameObject " << i.first << " not quad tree insertable!");
+        }
+    }
+
+    LOG(Severity::Debug, "QuadTree:\n" << quadTree);
+    LOG(Severity::Debug, "Stored objects: " << quadTree.sizeContainedObjects());
+
+    /*level loading finished*/
+
     auto endTime = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - startTime;
 
