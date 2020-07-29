@@ -59,6 +59,7 @@ bool GameCollider::intersects(const DirectX::BoundingFrustum& cameraFrustum) con
 /*intersect with other game collider*/
 bool GameCollider::intersects(const GameCollider& other) const
 {
+
     if (colliderType == GameObjectCollider::OBB && other.colliderType == GameObjectCollider::OBB)
     {
         return boundingBox.Intersects(other.boundingBox);

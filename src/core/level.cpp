@@ -759,19 +759,25 @@ void Level::calculateRenderOrderSizes()
 bool Level::playerCollides()
 {
 
-    for (const auto& gameObj : mGameObjects)
-    {
-        if (gameObj.second->isCollisionEnabled == false) continue;
+    std::vector<GameObject*> collisionObjs;
 
-        if (gameObj.second->intersects(*ServiceProvider::getPlayer()))
-        {
-            LOG(Severity::Debug, "Player collided with " << gameObj.first << ".");
-            return true;
-        }
+    /*search the quad tree recursively for collision*/
+    quadTree.searchCollision(ServiceProvider::getPlayer(), collisionObjs);
 
-    }
+    return !collisionObjs.empty();
 
-    return false;
+
+    //for (const auto& gameObj : mGameObjects)
+//{
+//    if (gameObj.second->isCollisionEnabled == false) continue;
+
+//    if (gameObj.second->intersects(*ServiceProvider::getPlayer()))
+//    {
+//        LOG(Severity::Debug, "Player collided with " << gameObj.first << ".");
+//        return true;
+//    }
+
+//}
 }
 
 

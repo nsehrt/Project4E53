@@ -7,7 +7,9 @@ class GameObject;
 
 class QuadTree
 {
-private:
+
+public:
+
     struct QuadNode
     {
         DirectX::BoundingBox boundingBox;
@@ -21,7 +23,6 @@ private:
         }
     };
 
-public:
     /*default constructor*/
     explicit QuadTree() = default;
 
@@ -49,6 +50,21 @@ public:
     {
         return totalPointersStored;
     }
+
+    /*
+    @returns raw pointer to the root node of the tree
+    */
+    QuadNode* getRoot() const
+    {
+        return root.get();
+    }
+
+    /*
+    seach the tree for collisions with game object obj
+    @param object for which collisions are searched for
+    @param pointer to game objects that collide with obj will be stored here
+    */
+    void searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const;
 
     /*outputs the quadtree to a stream*/
     friend std::ostream& operator<<(std::ostream& os, const QuadTree& tree);
