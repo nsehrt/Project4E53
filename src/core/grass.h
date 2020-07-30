@@ -47,7 +47,7 @@ public:
 
     float getHighestPoint()
     {
-        return highestPoint;
+        return highestPoint + quadSize.y;
     }
 
     float getQuadSize()

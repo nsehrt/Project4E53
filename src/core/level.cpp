@@ -150,6 +150,8 @@ bool Level::load(const std::string& levelFile)
 
 void Level::update(const GameTime& gt)
 {
+    std::vector<QuadTree::QuadNode*> frustumNodes;
+
     auto renderResource = ServiceProvider::getRenderResource();
     auto aCamera = ServiceProvider::getActiveCamera();
 
@@ -158,15 +160,32 @@ void Level::update(const GameTime& gt)
     BoundingFrustum localSpaceFrustum;
     aCamera->getFrustum().Transform(localSpaceFrustum, invView);
 
+    /*update the in camera frustum property of the game objects*/
+    quadTree.searchCollision(localSpaceFrustum, frustumNodes);
+
+    /*reset*/
+    for (auto& gameObj : mGameObjects)
+    {
+        gameObj.second->resetInViewFrustum();
+        if (gameObj.second->getCollider().intersects(renderResource->getShadowMap()->shadowBounds))
+        {
+            gameObj.second->currentlyInShadowSphere = true;
+        }
+    }
+
+    /*udpate only objects in visible nodes*/
+    for (const auto& i : frustumNodes)
+    {
+        for (auto& gO : i->containedObjects)
+        {
+            gO->checkInViewFrustum(localSpaceFrustum);
+        }
+    }
+
+
     /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
-        if (gameObj.second->gameObjectType == GameObjectType::Dynamic)
-        {
-            int i = 1;
-        }
-
-        gameObj.second->checkInViewFrustum(localSpaceFrustum);
         gameObj.second->update(gt);
     }
 
@@ -706,7 +725,7 @@ void Level::drawShadow()
 
         for (const auto& gameObject : shadowRenderOrder[i])
         {
-            if (gameObject->getCollider().intersects(renderResource->getShadowMap()->shadowBounds))
+            if (gameObject->currentlyInShadowSphere)
             {
                 objectsDrawn += gameObject->drawShadow();
             }
@@ -758,26 +777,18 @@ void Level::calculateRenderOrderSizes()
 
 bool Level::playerCollides()
 {
-
     std::vector<GameObject*> collisionObjs;
 
+    /*checks collision with static objects*/
     /*search the quad tree recursively for collision*/
     quadTree.searchCollision(ServiceProvider::getPlayer(), collisionObjs);
 
+    /*TODO check collision with dynamic objects*/
+
+
+
     return !collisionObjs.empty();
 
-
-    //for (const auto& gameObj : mGameObjects)
-//{
-//    if (gameObj.second->isCollisionEnabled == false) continue;
-
-//    if (gameObj.second->intersects(*ServiceProvider::getPlayer()))
-//    {
-//        LOG(Severity::Debug, "Player collided with " << gameObj.first << ".");
-//        return true;
-//    }
-
-//}
 }
 
 
@@ -1060,7 +1071,7 @@ bool Level::parseGrass(const json& grassJson)
 
 
         grassObject->setPosition(mGrass.back()->getPosition());
-        auto bBox = BoundingBox({ 0,0,0 }, XMFLOAT3(mGrass.back()->getSize().x / 2.0f, mGrass.back()->getHighestPoint(), mGrass.back()->getSize().y/2.0f) );
+        auto bBox = BoundingBox({ 0,0,0 }, XMFLOAT3(mGrass.back()->getSize().x / 2.0f, mGrass.back()->getHighestPoint() / 2.0f, mGrass.back()->getSize().y/2.0f) );
         grassObject->getCollider().setBaseBoxes(bBox);
         grassObject->updateTransforms();
 

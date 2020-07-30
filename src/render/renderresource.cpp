@@ -1308,8 +1308,17 @@ void RenderResource::setPSO(PostProcessRenderType renderType)
 
 void RenderResource::updateShadowTransform(const GameTime& gt)
 {
-
-    mShadowMap->setBoundsCenter(ServiceProvider::getActiveCamera()->getTarget3f());
+    /*center the shadow map on the current camera*/
+    if (ServiceProvider::getGameState() == GameState::EDITOR)
+    {
+        mShadowMap->setBoundsCenter(ServiceProvider::getActiveCamera()->getTarget3f());
+    }
+    else
+    {
+        mShadowMap->setBoundsCenter(ServiceProvider::getPlayer()->getPosition());
+    }
+    
+    
 
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());
@@ -1574,7 +1583,7 @@ void RenderResource::buildFrameResource()
     {
         mFrameResources.push_back(std::make_unique<FrameResource>(device,
                                   2, /*main pass and shadow pass cbs*/
-                                  MAX_GAME_OBJECTS,
+                                  MAX_GAME_OBJECT_CB,
                                   MAX_SKINNED_OBJECTS,
                                   (UINT)mMaterials.size(),
                                   250000, /*terrain vertices*/

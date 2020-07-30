@@ -66,6 +66,13 @@ public:
     */
     void searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const;
 
+    /*
+    compute collision between all nodes in the tree and a camera frustum
+    @param frustum that is used for collision check
+    @param pointer to nodes that collide with frustum will be stored here
+    */
+    void searchCollision(const DirectX::BoundingFrustum& frustum, std::vector<QuadNode*>& nodes) const;
+
     /*outputs the quadtree to a stream*/
     friend std::ostream& operator<<(std::ostream& os, const QuadTree& tree);
 
@@ -75,7 +82,7 @@ public:
     std::string toString() const;
 
 private:
-    const float fixedHeight = 2048.0f;
+    const float fixedHeight = 64.0f;
     int totalPointersStored = 0;
 
     std::unique_ptr<QuadNode> populateNode(DirectX::XMFLOAT3 center, float x, float z, int depth);

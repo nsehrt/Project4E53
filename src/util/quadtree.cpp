@@ -1,5 +1,6 @@
 #include "quadtree.h"
 #include "../core/gameobject.h"
+#include "../util/serviceprovider.h"
 
 using namespace DirectX;
 
@@ -75,6 +76,7 @@ std::unique_ptr<QuadTree::QuadNode> QuadTree::populateNode(DirectX::XMFLOAT3 cen
 void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const
 {
     std::vector<QuadNode*> nodeCollisions;
+    UINT checks = 0;
 
     /*skip if obj has no collision*/
     if (!obj->isCollisionEnabled) return;
@@ -84,6 +86,7 @@ void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collis
     {
         if (node->children.empty())
         {
+            checks++;
             if (node->boundingBox.Intersects(obj->getCollider().getFrustumBox()))
             {
                 nodeCollisions.push_back(node);
@@ -91,6 +94,7 @@ void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collis
         }
         else
         {
+            checks++;
             if (node->boundingBox.Intersects(obj->getCollider().getFrustumBox()))
             {
                 for (auto& i : node->children)
@@ -109,6 +113,8 @@ void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collis
         for (const auto& go : i->containedObjects)
         {
             if (!go->isCollisionEnabled) continue;
+
+            checks++;
             if (go->getCollider().intersects(obj->getCollider()))
             {
                 collisions.push_back(go);
@@ -116,6 +122,41 @@ void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collis
         }
     }
 
+    //LOG(Severity::Debug, "Checks: " << checks << " in " << nodeCollisions.size() << " nodes.");
+}
+
+void QuadTree::searchCollision(const DirectX::BoundingFrustum& frustum, std::vector<QuadNode*>& nodes) const
+{
+
+    UINT checks = 0;
+
+    /*look up which quadtree nodes collide with the frustum*/
+    const std::function<void(QuadNode*)> recursiveSearch = [&](QuadNode* node)
+    {
+        if (node->children.empty())
+        {
+            checks++;
+            if (frustum.Contains(node->boundingBox) != DirectX::DISJOINT && !node->containedObjects.empty())
+            {
+                nodes.push_back(node);
+            }
+        }
+        else
+        {
+            checks++;
+            if (frustum.Contains(node->boundingBox) != DirectX::DISJOINT)
+            {
+                for (auto& i : node->children)
+                {
+                    recursiveSearch(i.get());
+                }
+            }
+        }
+    };
+
+    recursiveSearch(getRoot());
+
+    //LOG(Severity::Debug, "Checks: " << checks << " and " << nodes.size() << " collision nodes.");
 }
 
 

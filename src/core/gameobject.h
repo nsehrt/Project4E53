@@ -137,6 +137,11 @@ public:
     void setAnimation(AnimationClip* aClip, bool keepRelativeTime = false);
 
     void checkInViewFrustum(DirectX::BoundingFrustum& localCamFrustum);
+    void resetInViewFrustum()
+    {
+        currentlyInFrustum = false;
+        currentlyInShadowSphere = false;
+    }
 
     GameCollider& getCollider()
     {
@@ -151,6 +156,8 @@ public:
     bool isShadowEnabled = true;
     bool isFrustumCulled = true;
 
+    bool currentlyInShadowSphere = false;
+
 protected:
 
     GameCollider collider;
@@ -161,7 +168,6 @@ protected:
 
     
     bool currentlyInFrustum = false;
-
 
     UINT objectCBSize = 0;
     UINT skinnedCBSize = 0;
