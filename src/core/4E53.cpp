@@ -921,6 +921,7 @@ void P_4E53::update(const GameTime& gt)
                         editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
                         editSettings->currentSelection->isDrawEnabled = false;
                         editSettings->currentSelection->isShadowEnabled = false;
+                        editSettings->currentSelection->isShadowForced = false;
                         editSettings->currentSelection->isCollisionEnabled = true;
 
                         editSettings->currentSelection->getCollider().setBaseBoxes(renderResource->mModels["box"]->baseModelBox);
@@ -1215,6 +1216,7 @@ void P_4E53::update(const GameTime& gt)
                         case GameObjectProperty::Collision: editSettings->currentSelection->isCollisionEnabled = !editSettings->currentSelection->isCollisionEnabled;  break;
                         case GameObjectProperty::Draw: editSettings->currentSelection->isDrawEnabled = !editSettings->currentSelection->isDrawEnabled;  break;
                         case GameObjectProperty::Shadow: editSettings->currentSelection->isShadowEnabled = !editSettings->currentSelection->isShadowEnabled;  break;
+                        case GameObjectProperty::ShadowForce: editSettings->currentSelection->isShadowForced = !editSettings->currentSelection->isShadowForced;  break;
                     }
 
                 }
@@ -1531,6 +1533,7 @@ void P_4E53::update(const GameTime& gt)
                     case GameObjectProperty::Collision: editSettings->currentSelection->isCollisionEnabled = !editSettings->currentSelection->isCollisionEnabled;  break;
                     case GameObjectProperty::Draw: editSettings->currentSelection->isDrawEnabled = !editSettings->currentSelection->isDrawEnabled;  break;
                     case GameObjectProperty::Shadow: editSettings->currentSelection->isShadowEnabled = !editSettings->currentSelection->isShadowEnabled;  break;
+                    case GameObjectProperty::ShadowForce: editSettings->currentSelection->isShadowForced = !editSettings->currentSelection->isShadowForced;  break;
                 }
             }
 

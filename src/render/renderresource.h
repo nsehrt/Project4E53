@@ -205,7 +205,7 @@ private:
     const UINT MAX_GAME_OBJECT_CB = 16384;
     const UINT MAX_SKINNED_OBJECTS = 128;
     const UINT MAX_PARTICLE_SYSTEMS = 64;
-    const UINT SHADOW_RADIUS = 17;
+    const UINT SHADOW_RADIUS = 20;
 
     void buildFrameResource();
 

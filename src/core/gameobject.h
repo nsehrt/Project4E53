@@ -155,6 +155,7 @@ public:
     bool isDrawEnabled = true;
     bool isShadowEnabled = true;
     bool isFrustumCulled = true;
+    bool isShadowForced = false;
 
     bool currentlyInShadowSphere = false;
 

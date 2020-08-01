@@ -410,6 +410,7 @@ void EditModeHUD::update()
             mHUDElements[26]->TexDescriptor = editSetting->currentSelection->isCollisionEnabled ? TextureDescriptors::SUCCESS : TextureDescriptors::FAILED;
             mHUDElements[27]->TexDescriptor = editSetting->currentSelection->isDrawEnabled ? TextureDescriptors::SUCCESS : TextureDescriptors::FAILED;
             mHUDElements[28]->TexDescriptor = editSetting->currentSelection->isShadowEnabled ? TextureDescriptors::SUCCESS : TextureDescriptors::FAILED;
+            mHUDElements[29]->TexDescriptor = editSetting->currentSelection->isShadowForced ? TextureDescriptors::SUCCESS : TextureDescriptors::FAILED;
         }
 
 

@@ -102,6 +102,11 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
         isFrustumCulled = objectJson["FrustumCulled"];
     }
 
+    if (exists(objectJson, "ShadowForced"))
+    {
+        isShadowForced = objectJson["ShadowForced"];
+    }
+
     /*RenderItem*/
 
     auto renderResource = ServiceProvider::getRenderResource();
@@ -117,6 +122,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
             isCollisionEnabled = true;
             isDrawEnabled = false;
             isShadowEnabled = false;
+            isShadowForced = false;
             rItem->staticModel = renderResource->mModels["box"].get();
             TextureScale = Scale;
             gameObjectType = GameObjectType::Wall;
@@ -442,6 +448,7 @@ json GameObject::toJson() const
     jElement["CollisionEnabled"] = isCollisionEnabled;
     jElement["DrawEnabled"] = isDrawEnabled;
     jElement["ShadowEnabled"] = isShadowEnabled;
+    jElement["ShadowForced"] = isShadowForced;
 
     jElement["Position"][0] = getPosition().x;
     jElement["Position"][1] = getPosition().y;

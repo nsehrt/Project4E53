@@ -98,12 +98,12 @@ distribution.
 /* Versioning, past 1.0.14:
 	http://semver.org/
 */
-static const int TIXML2_MAJOR_VERSION = 7;
-static const int TIXML2_MINOR_VERSION = 1;
+static const int TIXML2_MAJOR_VERSION = 8;
+static const int TIXML2_MINOR_VERSION = 0;
 static const int TIXML2_PATCH_VERSION = 0;
 
-#define TINYXML2_MAJOR_VERSION 7
-#define TINYXML2_MINOR_VERSION 1
+#define TINYXML2_MAJOR_VERSION 8
+#define TINYXML2_MINOR_VERSION 0
 #define TINYXML2_PATCH_VERSION 0
 
 // A fixed element depth limit is problematic. There needs to be a
@@ -562,7 +562,7 @@ public:
         TIXMLASSERT( p );
         return p;
     }
-    static char* SkipWhiteSpace( char* p, int* curLineNumPtr )				{
+    static char* SkipWhiteSpace( char* const p, int* curLineNumPtr ) {
         return const_cast<char*>( SkipWhiteSpace( const_cast<const char*>(p), curLineNumPtr ) );
     }
 
@@ -590,6 +590,11 @@ public:
                || ch == '-';
     }
 
+    inline static bool IsPrefixHex( const char* p) {
+        p = SkipWhiteSpace(p, 0);
+        return p && *p == '0' && ( *(p + 1) == 'x' || *(p + 1) == 'X');
+    }
+
     inline static bool StringEqual( const char* p, const char* q, int nChar=INT_MAX )  {
         if ( p == q ) {
             return true;
@@ -600,7 +605,7 @@ public:
         return strncmp( p, q, nChar ) == 0;
     }
 
-    inline static bool IsUTF8Continuation( char p ) {
+    inline static bool IsUTF8Continuation( const char p ) {
         return ( p & 0x80 ) != 0;
     }
 
@@ -1451,6 +1456,10 @@ public:
 		return QueryFloatAttribute( name, value );
 	}
 
+	XMLError QueryAttribute(const char* name, const char** value) const {
+		return QueryStringAttribute(name, value);
+	}
+
 	/// Sets the named attribute to value.
     void SetAttribute( const char* name, const char* value )	{
         XMLAttribute* a = FindOrCreateAttribute( name );
@@ -1478,7 +1487,7 @@ public:
         XMLAttribute* a = FindOrCreateAttribute(name);
         a->SetAttribute(value);
     }
-    
+
     /// Sets the named attribute to value.
     void SetAttribute( const char* name, bool value )			{
         XMLAttribute* a = FindOrCreateAttribute( name );
@@ -1640,7 +1649,22 @@ public:
 	/// See QueryIntText()
 	double DoubleText(double defaultValue = 0) const;
 	/// See QueryIntText()
-	float FloatText(float defaultValue = 0) const;
+    float FloatText(float defaultValue = 0) const;
+
+    /**
+        Convenience method to create a new XMLElement and add it as last (right)
+        child of this node. Returns the created and inserted element.
+    */
+    XMLElement* InsertNewChildElement(const char* name);
+    /// See InsertNewChildElement()
+    XMLComment* InsertNewComment(const char* comment);
+    /// See InsertNewChildElement()
+    XMLText* InsertNewText(const char* text);
+    /// See InsertNewChildElement()
+    XMLDeclaration* InsertNewDeclaration(const char* text);
+    /// See InsertNewChildElement()
+    XMLUnknown* InsertNewUnknown(const char* text);
+
 
     // internal:
     enum ElementClosingType {
@@ -1894,7 +1918,7 @@ public:
     char* Identify( char* p, XMLNode** node );
 
 	// internal
-	void MarkInUse(XMLNode*);
+	void MarkInUse(const XMLNode* const);
 
     virtual XMLNode* ShallowClone( XMLDocument* /*document*/ ) const	{
         return 0;
@@ -2307,16 +2331,22 @@ protected:
 	    the space and tabs used. A PrintSpace() override should call Print().
 	*/
     virtual void PrintSpace( int depth );
-    void Print( const char* format, ... );
-    void Write( const char* data, size_t size );
-    inline void Write( const char* data )           { Write( data, strlen( data ) ); }
-    void Putc( char ch );
+    virtual void Print( const char* format, ... );
+    virtual void Write( const char* data, size_t size );
+    virtual void Putc( char ch );
+
+    inline void Write(const char* data) { Write(data, strlen(data)); }
 
     void SealElementIfJustOpened();
     bool _elementJustOpened;
     DynArray< const char*, 10 > _stack;
 
 private:
+    /**
+       Prepares to write a new node. This includes sealing an element that was
+       just opened, and writing any whitespace necessary if not in compact mode.
+     */
+    void PrepareForNewNode( bool compactMode );
     void PrintString( const char*, bool restrictedEntitySet );	// prints out, after detecting entities.
 
     bool _firstElement;
