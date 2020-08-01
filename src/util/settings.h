@@ -1,12 +1,7 @@
 #pragma once
 
-#include "../extern/tinyxml2.h"
 #include <string>
 #include <memory>
-
-#ifndef XMLCheckExist
-#define XMLCheckExist(eResult) if(eResult == nullptr){return false;}
-#endif
 
 static int shadowMapSizes[] = { 512, 1024,2048,4096 };
 
@@ -81,7 +76,4 @@ public:
     bool loadSettings(const std::string& path);
     std::shared_ptr<Settings> get();
 
-private:
-    bool setSetting(tinyxml2::XMLElement* r, const char* id, int* target);
-    bool setSetting(tinyxml2::XMLElement* r, const char* id, float* target);
 };

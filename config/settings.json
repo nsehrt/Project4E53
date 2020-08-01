@@ -1,0 +1,35 @@
+{
+    "Audio": {
+        "MasterVolume": 0.6,
+        "EffectVolume": 0.8,
+        "MusicVolume": 0.75
+    },
+    "Display": {
+        "Monitor": 0,
+        "RefreshRate": 144,
+        "ResolutionWidth": 1920,
+        "ResolutionHeight": 1080,
+        "FOV": 70,
+        "VSync": 0,
+        "WindowMode": 0
+    },
+    "Gameplay": [],
+    "Graphic": {
+        "NumFrameResources": 3,
+        "AnisotropicFiltering": 16,
+        "ShadowEnabled": 1,
+        "ShadowQuality": 3,
+        "SobelFilter": 1
+    },
+    "Input": {
+        "InvertYAxis": 1,
+        "Sensitivity": 1.5,
+        "FPSCameraSpeed": 25.0
+    },
+    "Misc": {
+        "DebugEnabled": 1,
+        "DebugQuadEnabled": 0,
+        "EditModeEnabled": 0,
+        "DrawFPSEnabled": 1
+    }
+}

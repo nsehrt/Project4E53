@@ -18,9 +18,9 @@
 #include <filesystem>
 
 #ifndef _DEBUG
-#define SETTINGS_FILE "config/settings.xml"
+#define SETTINGS_FILE "config/settings.json"
 #else
-#define SETTINGS_FILE "config/dbg.xml"
+#define SETTINGS_FILE "config/dbg.json"
 #endif
 
 using namespace DirectX;

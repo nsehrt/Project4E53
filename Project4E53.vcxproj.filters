@@ -40,9 +40,6 @@
     <ClInclude Include="src\util\log.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\extern\tinyxml2.h">
-      <Filter>Source Files\src\extern</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\d3dUtil.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
@@ -176,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="src\core\4E53.cpp">
       <Filter>Source Files\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\extern\tinyxml2.cpp">
-      <Filter>Source Files\src\extern</Filter>
     </ClCompile>
     <ClCompile Include="src\util\settings.cpp">
       <Filter>Source Files\src\util</Filter>
