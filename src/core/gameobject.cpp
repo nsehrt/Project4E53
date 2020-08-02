@@ -48,38 +48,9 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 
     /*Texture Transforms*/
 
-    if (exists(objectJson, "TexTranslation"))
-    {
-        TextureTranslation.x = objectJson["TexTranslation"][0];
-        TextureTranslation.y = objectJson["TexTranslation"][1];
-        TextureTranslation.z = objectJson["TexTranslation"][2];
-    }
-    else
-    {
-        TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    }
-
-    if (exists(objectJson, "TexRotation"))
-    {
-        TextureRotation.x = XMConvertToRadians(objectJson["TexRotation"][0]);
-        TextureRotation.y = XMConvertToRadians(objectJson["TexRotation"][1]);
-        TextureRotation.z = XMConvertToRadians(objectJson["TexRotation"][2]);
-    }
-    else
-    {
-        TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    }
-
-    if (exists(objectJson, "TexScale"))
-    {
-        TextureScale.x = objectJson["TexScale"][0];
-        TextureScale.y = objectJson["TexScale"][1];
-        TextureScale.z = objectJson["TexScale"][2];
-    }
-    else
-    {
-        TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-    }
+    TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    TextureScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     /*Flags*/
     if (exists(objectJson, "CollisionEnabled"))
@@ -216,8 +187,41 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     renderItem = std::move(rItem);
 
     /*set collider properties*/
+
     collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
-    setColliderProperties(GameCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
+
+
+    XMFLOAT3 colliderCenter{}, colliderExtents{};
+    int colliderType = -1;
+
+    if (!exists(objectJson, "ColliderType"))
+    {
+        colliderType = objectJson["ColliderType"];
+    }
+
+    if (!exists(objectJson, "ColliderOffset"))
+    {
+        colliderCenter.x = objectJson["ColliderOffset"][0];
+        colliderCenter.y = objectJson["ColliderOffset"][1];
+        colliderCenter.z = objectJson["ColliderOffset"][2];
+    }
+
+    if (!exists(objectJson, "ColliderExtents"))
+    {
+        colliderExtents.x = objectJson["ColliderExtents"][0];
+        colliderExtents.y = objectJson["ColliderExtents"][1];
+        colliderExtents.z = objectJson["ColliderExtents"][2];
+    }
+
+    if (colliderType == -1)
+    {
+        setColliderProperties(GameCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
+    }
+    else
+    {
+        setColliderProperties(static_cast<GameCollider::GameObjectCollider>(colliderType), colliderCenter, colliderExtents);
+    }
+
 
     updateTransforms();
 }
@@ -462,17 +466,14 @@ json GameObject::toJson() const
     jElement["Rotation"][1] = XMConvertToDegrees(getRotation().y);
     jElement["Rotation"][2] = XMConvertToDegrees(getRotation().z);
 
-    jElement["TexTranslation"][0] = getTextureTranslation().x;
-    jElement["TexTranslation"][1] = getTextureTranslation().y;
-    jElement["TexTranslation"][2] = getTextureTranslation().z;
-
-    jElement["TexScale"][0] = getTextureScale().x;
-    jElement["TexScale"][1] = getTextureScale().y;
-    jElement["TexScale"][2] = getTextureScale().z;
-
-    jElement["TexRotation"][0] = XMConvertToDegrees(getTextureRotation().x);
-    jElement["TexRotation"][1] = XMConvertToDegrees(getTextureRotation().y);
-    jElement["TexRotation"][2] = XMConvertToDegrees(getTextureRotation().z);
+    /*save game collider*/
+    jElement["ColliderType"] = static_cast<UINT>(collider.getType());
+    jElement["ColliderOffset"][0] = collider.getRelativeCenterOffset().x;
+    jElement["ColliderOffset"][1] = collider.getRelativeCenterOffset().y;
+    jElement["ColliderOffset"][2] = collider.getRelativeCenterOffset().z;
+    jElement["ColliderExtents"][0] = collider.getExtents().x;
+    jElement["ColliderExtents"][1] = collider.getExtents().y;
+    jElement["ColliderExtents"][2] = collider.getExtents().z;
 
     return jElement;
 }

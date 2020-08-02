@@ -33,6 +33,14 @@ public:
         return pickBox;
     }
 
+    GameObjectCollider getType() const
+    {
+        return colliderType;
+    }
+
+    DirectX::XMFLOAT3 getRelativeCenterOffset() const;
+    DirectX::XMFLOAT3 getExtents() const;
+
     /*collision functions*/
     bool intersects(const DirectX::BoundingFrustum& cameraFrustum) const;
     bool intersects(const GameCollider& other) const;

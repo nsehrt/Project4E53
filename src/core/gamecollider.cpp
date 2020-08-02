@@ -44,10 +44,39 @@ void GameCollider::setProperties(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 ext
 /*update all bounding boxes with world transform*/
 void GameCollider::update(const DirectX::XMFLOAT4X4& M)
 {
-    internalBoundingBox.Transform(boundingBox, XMLoadFloat4x4(&M));
-    internalPickBox.Transform(pickBox, XMLoadFloat4x4(&M));
-    internalBoundingSphere.Transform(boundingSphere, XMLoadFloat4x4(&M));
     internalFrustumCheckBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&M));
+    internalPickBox.Transform(pickBox, XMLoadFloat4x4(&M));
+
+    internalBoundingBox.Transform(boundingBox, XMLoadFloat4x4(&M));
+    internalBoundingSphere.Transform(boundingSphere, XMLoadFloat4x4(&M));
+}
+
+DirectX::XMFLOAT3 GameCollider::getRelativeCenterOffset() const
+{
+    if (colliderType == GameObjectCollider::OBB)
+    {
+        return internalBoundingBox.Center;
+    }
+    else if (colliderType == GameObjectCollider::Sphere)
+    {
+        return internalBoundingSphere.Center;
+    }
+
+    return{};
+}
+
+DirectX::XMFLOAT3 GameCollider::getExtents() const
+{
+    if (colliderType == GameObjectCollider::OBB)
+    {
+        return internalBoundingBox.Extents;
+    }
+    else if (colliderType == GameObjectCollider::Sphere)
+    {
+        return { internalBoundingSphere.Radius, internalBoundingSphere.Radius, internalBoundingSphere.Radius };
+    }
+
+    return {};
 }
 
 /*camera frustum check*/
