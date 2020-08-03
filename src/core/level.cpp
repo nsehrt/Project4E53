@@ -123,14 +123,7 @@ bool Level::load(const std::string& levelFile)
 
     for (auto& i : mGameObjects)
     {
-        if (i.second->gameObjectType == GameObjectType::Sky ||
-            i.second->gameObjectType == GameObjectType::Debug ||
-            i.second->gameObjectType == GameObjectType::Terrain) continue;
-
-        if (!quadTree.insert(i.second.get()))
-        {
-            LOG(Severity::Debug, "GameObject " << i.first << " not quad tree insertable!");
-        }
+        addGameObjectToQuadTree(i.second.get());
     }
 
     LOG(Severity::Debug, "QuadTree:\n" << quadTree);
@@ -777,6 +770,29 @@ void Level::calculateRenderOrderSizes()
 
     calculateRenderOrder();
     calculateShadowRenderOrder();
+}
+
+void Level::addGameObject(json goJson)
+{
+    mGameObjects[goJson["Name"]] = std::make_unique<GameObject>(goJson, amountObjectCBs);
+    amountObjectCBs += 4;
+
+    /*put in quadtree and recalculate render orders*/
+    addGameObjectToQuadTree(mGameObjects[goJson["Name"]].get());
+    calculateRenderOrderSizes();
+}
+
+void Level::addGameObjectToQuadTree(GameObject* go)
+{
+    if (go->gameObjectType == GameObjectType::Sky ||
+        go->gameObjectType == GameObjectType::Debug ||
+        go->gameObjectType == GameObjectType::Terrain) return;
+
+    if (!quadTree.insert(go))
+    {
+        LOG(Severity::Debug, "GameObject " << go->Name << " not quad tree insertable!");
+    }
+
 }
 
 bool Level::playerCollides()

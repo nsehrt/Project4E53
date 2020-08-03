@@ -57,12 +57,7 @@ public:
     /*need to call this if new object is added or render type is changed*/
     void calculateRenderOrderSizes();
 
-    void addGameObject(json goJson)
-    {
-        mGameObjects[goJson["Name"]] = std::make_unique<GameObject>(goJson, amountObjectCBs);
-        amountObjectCBs += 4;
-        calculateRenderOrderSizes();
-    }
+    void addGameObject(json goJson);
 
     /*check if players collides with something*/
     bool playerCollides();
@@ -89,6 +84,7 @@ public:
 private:
 
     QuadTree quadTree;
+    void addGameObjectToQuadTree(GameObject* go);
 
     /* total amount of object cbs used in the level*/
     int amountObjectCBs = 1;

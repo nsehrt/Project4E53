@@ -188,25 +188,30 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 
     /*set collider properties*/
 
+    if (objectJson["Name"] == "box_(208)")
+    {
+        int i = 1;
+    }
+
     collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
 
 
     XMFLOAT3 colliderCenter{}, colliderExtents{};
     int colliderType = -1;
 
-    if (!exists(objectJson, "ColliderType"))
+    if (exists(objectJson, "ColliderType"))
     {
         colliderType = objectJson["ColliderType"];
     }
 
-    if (!exists(objectJson, "ColliderOffset"))
+    if (exists(objectJson, "ColliderOffset"))
     {
         colliderCenter.x = objectJson["ColliderOffset"][0];
         colliderCenter.y = objectJson["ColliderOffset"][1];
         colliderCenter.z = objectJson["ColliderOffset"][2];
     }
 
-    if (!exists(objectJson, "ColliderExtents"))
+    if (exists(objectJson, "ColliderExtents"))
     {
         colliderExtents.x = objectJson["ColliderExtents"][0];
         colliderExtents.y = objectJson["ColliderExtents"][1];
@@ -215,6 +220,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 
     if (colliderType == -1)
     {
+        /*if no collider specified use base collider of the model*/
         setColliderProperties(GameCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
     }
     else
