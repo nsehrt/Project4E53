@@ -2,8 +2,8 @@
 
 #include "../util/d3dUtil.h"
 
-#define CAMERA_RESTRICTION_ANGLE 5.f
-#define CAMERA_HITBOX_SIZE_EXTENTS 0.1f
+inline constexpr float CAMERA_RESTRICTION_ANGLE = 5.0f;
+inline constexpr float CAMERA_HITBOX_SIZE_EXTENTS = 0.25f;
 
 class Camera
 {

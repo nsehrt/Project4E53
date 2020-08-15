@@ -1022,6 +1022,7 @@ void RenderResource::buildPSOs()
     outlinePSO.DepthStencilState.DepthEnable = false;
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Outline])));
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPSOs[RenderType::Outline])));
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;
@@ -1311,7 +1312,9 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
     /*center the shadow map on the current camera*/
     if (ServiceProvider::getGameState() == GameState::EDITOR)
     {
-        mShadowMap->setBoundsCenter(ServiceProvider::getActiveCamera()->getTarget3f());
+        XMFLOAT3 shadowCenter = ServiceProvider::getActiveCamera()->getTarget3f();
+        shadowCenter.y = ServiceProvider::getActiveLevel()->mTerrain->getHeight(shadowCenter.x, shadowCenter.y);
+        mShadowMap->setBoundsCenter(shadowCenter);
     }
     else
     {

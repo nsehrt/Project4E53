@@ -95,6 +95,13 @@ bool Level::load(const std::string& levelFile)
         return false;
     }
 
+    /*add hitbox edit game object*/
+    auto hitboxEdit = std::make_unique<GameObject>(std::string("HITBOX_EDIT"), amountObjectCBs++);
+    hitboxEdit->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
+    hitboxEdit->renderItem->renderType = RenderType::Outline;
+
+    mGameObjects[hitboxEdit->Name] = std::move(hitboxEdit);
+
     /*add test dynamic object*/
 
     //auto testObject = std::make_unique<Player>("geo");

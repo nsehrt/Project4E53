@@ -17,11 +17,11 @@
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "xaudio2.lib")
 
-#define MAX_CHANNELS 64
-#define SAMPLE_RATE 11025 //??
+inline constexpr int MAX_CHANNELS = 64;
+inline constexpr int SAMPLE_RATE = 11025; //??
 
-#define SOUND_PATH_MUSIC "data/sound/music"
-#define SOUND_PATH_EFFECTS "data/sound/effect"
+inline const std::string SOUND_PATH_MUSIC = "data/sound/music";
+inline const std::string  SOUND_PATH_EFFECTS = "data/sound/effect";
 
 enum class SoundType
 {

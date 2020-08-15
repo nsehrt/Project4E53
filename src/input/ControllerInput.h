@@ -17,11 +17,16 @@ polls input and status data from up to 4 controllers
 #include <XInput.h>
 #pragma comment(lib,"xinput.lib")
 #pragma warning(disable : 4995)
-#define MAX_CONTROLLERS 1
-#define INPUT_DEADZONE (0.24f* float(0x7FFF))
+
+
+inline constexpr int MAX_CONTROLLERS = 1;
+inline constexpr float INPUT_DEADZONE = (0.24f * float(0x7FFF));
+
 /*time between checking capabilites/battery level
   same controller is polled every CAP_BATTERY_POLL_TIME * COUNTOFCONTROLLER*/
-#define CAP_BATTERY_POLL_TIME 60.f
+inline constexpr float CAP_BATTERY_POLL_TIME = 60.0f;
+
+
 
 struct ControllerState
 {

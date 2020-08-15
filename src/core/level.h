@@ -9,11 +9,12 @@
 #include "../core/particlesystem.h"
 #include "../util/quadtree.h"
 
-#define LEVEL_PATH "data/level"
+inline const std::string LEVEL_PATH = "data/level";
 
-#define MAX_LIGHTS 8
-#define AMOUNT_DIRECTIONAL 3
-#define AMOUNT_SPOT 1
+inline constexpr int MAX_LIGHTS = 8;
+inline constexpr int AMOUNT_DIRECTIONAL = 3;
+inline constexpr int AMOUNT_SPOT = 1;
+
 
 using json = nlohmann::json;
 

@@ -11,10 +11,10 @@
 #include "../render/blur.h"
 #include <filesystem>
 
-#define MODEL_PATH "data/model"
-#define TEXTURE_PATH "data/texture"
-#define SKINNED_PATH "data/skinned"
-#define ANIM_PATH "data/anim"
+inline const std::string MODEL_PATH = "data/model";
+inline const std::string TEXTURE_PATH = "data/texture";
+inline const std::string SKINNED_PATH = "data/skinned";
+inline const std::string ANIM_PATH = "data/anim";
 
 class RenderResource
 {

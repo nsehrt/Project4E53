@@ -1,9 +1,3 @@
-#pragma warning(disable:4244)
-#pragma warning(disable:26812)
-#pragma warning(disable:26451)
-#pragma warning(disable:6319)
-#pragma warning(disable:6011)
-
 #include <Windows.h>
 #include "dx12app.h"
 #include "../util/serviceprovider.h"
@@ -18,10 +12,12 @@
 #include <filesystem>
 
 #ifndef _DEBUG
-#define SETTINGS_FILE "config/settings.json"
+inline const std::string SETTINGS_FILE = "config/settings.json";
 #else
-#define SETTINGS_FILE "config/dbg.json"
+inline const std::string SETTINGS_FILE = "config/dbg.json";
 #endif
+
+
 
 using namespace DirectX;
 
@@ -1439,8 +1435,8 @@ void P_4E53::update(const GameTime& gt)
         if (editSettings->toolMode != EditTool::Camera && editSettings->toolMode != EditTool::Light)
         {
             
-            float turnInput = (int)inputData.current.buttons[BTN::DPAD_LEFT] -
-                              (int)inputData.current.buttons[BTN::DPAD_RIGHT];
+            float turnInput = static_cast<float>(static_cast<int>(inputData.current.buttons[BTN::DPAD_LEFT]) -
+                                                 static_cast<int>(inputData.current.buttons[BTN::DPAD_RIGHT]));
 
             float turnDelta = turnInput * XM_PI * gt.DeltaTime();
 
@@ -1543,7 +1539,7 @@ void P_4E53::update(const GameTime& gt)
                 if (editSettings->currentSelection)
                 {
                     XMFLOAT3 nPos = editSettings->currentSelection->getPosition();
-                    auto box = editSettings->currentSelection->getCollider().getFrustumBox();
+                    auto &box = editSettings->currentSelection->getCollider().getFrustumBox();
 
                     nPos.z -= MathHelper::maxH(5.0f, box.Extents.z * 4.5f);
                     nPos.y += MathHelper::maxH(4.0f, box.Extents.y * 3.0f);
