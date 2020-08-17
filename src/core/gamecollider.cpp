@@ -65,6 +65,20 @@ DirectX::XMFLOAT3 GameCollider::getRelativeCenterOffset() const
     return{};
 }
 
+DirectX::XMFLOAT3 GameCollider::getCenterOffset() const
+{
+    if(colliderType == GameObjectCollider::OBB)
+    {
+        return boundingBox.Center;
+    }
+    else if(colliderType == GameObjectCollider::Sphere)
+    {
+        return boundingSphere.Center;
+    }
+
+    return{};
+}
+
 DirectX::XMFLOAT3 GameCollider::getExtents() const
 {
     if (colliderType == GameObjectCollider::OBB)

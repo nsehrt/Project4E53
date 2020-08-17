@@ -44,3 +44,18 @@ float4 PS(VertexOut pin) : SV_Target
     return float4(0.078f,0.086f,0.921f,1.0f);
 
 }
+
+float4 PS_COLL(VertexOut pin) : SV_Target
+{
+    MaterialData matData = gMaterialData[gMaterialIndex];
+    float4 diffuseAlbedo = matData.DiffuseAlbedo;
+    uint diffuseMapIndex = matData.DiffuseMapIndex;
+
+	diffuseAlbedo *= gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
+
+    clip(diffuseAlbedo.a - 0.05f);
+
+
+    return float4(0.925f, 0.780f, 0.094f,1.0f);
+
+}

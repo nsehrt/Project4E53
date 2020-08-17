@@ -254,7 +254,7 @@ bool P_4E53::Initialize()
     }
 
     /*load first level*/
-    std::string levelFile = "0";
+    std::string levelFile = "Test";
 
     auto level = std::make_shared<Level>();
 
@@ -358,9 +358,10 @@ bool P_4E53::Initialize()
 
             for (const auto& g : ServiceProvider::getActiveLevel()->mGameObjects)
             {
-                if (g.second->gameObjectType == GameObjectType::Static ||
+                if ((g.second->gameObjectType == GameObjectType::Static ||
                     g.second->gameObjectType == GameObjectType::Wall ||
-                    g.second->gameObjectType == GameObjectType::Dynamic)
+                    g.second->gameObjectType == GameObjectType::Dynamic) &&
+                    g.second->isSelectable)
                 {
                     validGameObjects.push_back(g.second.get());
                 }
@@ -1460,7 +1461,8 @@ void P_4E53::update(const GameTime& gt)
                 {
                     if (e.second->gameObjectType == GameObjectType::Sky ||
                         e.second->gameObjectType == GameObjectType::Terrain ||
-                        e.second->gameObjectType == GameObjectType::Debug)
+                        e.second->gameObjectType == GameObjectType::Debug ||
+                        !e.second->isSelectable)
                         continue;
 
                     /*pick object via ray cast from camera*/

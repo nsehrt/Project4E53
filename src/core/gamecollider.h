@@ -39,7 +39,12 @@ public:
     }
 
     DirectX::XMFLOAT3 getRelativeCenterOffset() const;
+    DirectX::XMFLOAT3 getCenterOffset() const;
     DirectX::XMFLOAT3 getExtents() const;
+    DirectX::XMFLOAT3 getInternalPickBoxOffset() const
+    {
+        return internalPickBox.Center;
+    }
 
     /*collision functions*/
     bool intersects(const DirectX::BoundingFrustum& cameraFrustum) const;

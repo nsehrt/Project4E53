@@ -697,6 +697,7 @@ NULL, NULL
 
     mShaders["outlineVS"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "VS", "vs_5_1");
     mShaders["outlinePS"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["outlinePSColl"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "PS_COLL", "ps_5_1");
 
 }
 
@@ -1022,7 +1023,16 @@ void RenderResource::buildPSOs()
     outlinePSO.DepthStencilState.DepthEnable = false;
 
     ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPostProcessPSOs[PostProcessRenderType::Outline])));
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&outlinePSO, IID_PPV_ARGS(&mPSOs[RenderType::Outline])));
+
+
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC outlineCollPSO = outlinePSO;
+    outlineCollPSO.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["outlinePSColl"]->GetBufferPointer()),
+        mShaders["outlinePSColl"]->GetBufferSize()
+    };
+    ThrowIfFailed(device->CreateGraphicsPipelineState(&outlineCollPSO, IID_PPV_ARGS(&mPSOs[RenderType::Outline])));
 
     /*shadow pass PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = defaultPSODesc;

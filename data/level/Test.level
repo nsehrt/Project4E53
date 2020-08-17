@@ -1,6 +1,17 @@
 {
     "GameObject": [
         {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Material": "default",
@@ -23,22 +34,42 @@
                 1.0
             ],
             "ShadowEnabled": true,
-            "ShadowForced": false,
-            "TexRotation": [
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.603573739528656,
+                1.6683287620544434,
+                0.39795157313346863
+            ],
+            "ColliderOffset": [
+                0.00018786638975143433,
+                -0.18310455977916718,
+                0.02206471934914589
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Mandolin",
+            "Name": "box_(1)",
+            "Position": [
+                1.0301933288574219,
+                6.313446044921875,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Rotation": [
                 0.0,
                 0.0,
                 0.0
             ],
-            "TexScale": [
-                1.0,
-                1.0,
-                1.0
+            "Scale": [
+                3.851350784301758,
+                3.851350784301758,
+                3.851350784301758
             ],
-            "TexTranslation": [
-                0.0,
-                0.0,
-                0.0
-            ]
+            "ShadowEnabled": true,
+            "ShadowForced": false
         }
     ],
     "Grass": [
@@ -114,13 +145,13 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 4.175702095031738,
-                "FallOffStart": 2.9665277004241943,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
                 "Position": [
-                    -3.4901010990142822,
-                    2.24263334274292,
-                    -15.943781852722168
+                    0.0,
+                    4.884568214416504,
+                    0.0
                 ],
                 "Strength": [
                     1.0,
@@ -146,11 +177,11 @@
             {
                 "FallOffEnd": 1.3844610452651978,
                 "FallOffStart": 1.3844232559204102,
-                "Name": "P_(1)",
+                "Name": "P_(2)",
                 "Position": [
-                    -21.841798782348633,
+                    -22.32672119140625,
                     0.7719643115997314,
-                    -18.11347770690918
+                    -15.388163566589355
                 ],
                 "Strength": [
                     1.0,
@@ -161,11 +192,11 @@
             {
                 "FallOffEnd": 1.3844610452651978,
                 "FallOffStart": 1.3844232559204102,
-                "Name": "P_(2)",
+                "Name": "P_(1)",
                 "Position": [
-                    -22.32672119140625,
+                    -21.841798782348633,
                     0.7719643115997314,
-                    -15.388163566589355
+                    -18.11347770690918
                 ],
                 "Strength": [
                     1.0,

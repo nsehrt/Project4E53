@@ -99,8 +99,13 @@ bool Level::load(const std::string& levelFile)
     auto hitboxEdit = std::make_unique<GameObject>(std::string("HITBOX_EDIT"), amountObjectCBs++);
     hitboxEdit->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
     hitboxEdit->renderItem->renderType = RenderType::Outline;
+    hitboxEdit->isCollisionEnabled = false;
+    hitboxEdit->isShadowEnabled = false;
+    hitboxEdit->isSelectable = false;
+    hitboxEdit->isFrustumCulled = false;
 
-    mGameObjects[hitboxEdit->Name] = std::move(hitboxEdit);
+    if(ServiceProvider::getGameState() == GameState::EDITOR)
+        mGameObjects[hitboxEdit->Name] = std::move(hitboxEdit);
 
     /*add test dynamic object*/
 
@@ -177,19 +182,27 @@ void Level::update(const GameTime& gt)
         }
     }
 
-    /*udpate only objects in visible nodes*/
-    for (const auto& i : frustumNodes)
+    /*udpate inViewFrustum status of objects in visible nodes*/
+    /* when in edit mode the quadtree is disabled because objects
+    can be moved out of their original cell.*/
+    if(ServiceProvider::getGameState() != GameState::EDITOR)
     {
-        for (auto& gO : i->containedObjects)
+        for(const auto& i : frustumNodes)
         {
-            gO->checkInViewFrustum(localSpaceFrustum);
+            for(auto& gO : i->containedObjects)
+            {
+                gO->checkInViewFrustum(localSpaceFrustum);
+            }
         }
     }
-
 
     /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
+        if(ServiceProvider::getGameState() == GameState::EDITOR)
+        {
+            gameObj.second->checkInViewFrustum(localSpaceFrustum);
+        }
         gameObj.second->update(gt);
     }
 
@@ -226,6 +239,41 @@ void Level::update(const GameTime& gt)
             }
         }
 
+        // update hitbox game object
+        auto sel = ServiceProvider::getEditSettings()->currentSelection;
+
+        if(sel != nullptr)
+        {
+            if(sel->isCollisionEnabled)
+            {
+                mGameObjects["HITBOX_EDIT"]->isDrawEnabled = true;
+
+                mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
+                mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
+
+                if(sel->getCollider().getType() == GameCollider::GameObjectCollider::OBB)
+                {
+                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
+                    XMFLOAT3 scale{};
+                    XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->getCollider().getExtents()), XMVectorSet(2.0f,2.0f,2.0f,2.0f)));
+                    mGameObjects["HITBOX_EDIT"]->setScale(scale);
+                }
+                else
+                {
+                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
+                    mGameObjects["HITBOX_EDIT"]->setScale(sel->getCollider().getExtents());
+                }
+            }
+            else
+            {
+                mGameObjects["HITBOX_EDIT"]->isDrawEnabled = false;
+            }
+
+        }
+        else
+        {
+            mGameObjects["HITBOX_EDIT"]->isDrawEnabled = false;
+        }
     }
     else
     {
@@ -418,6 +466,7 @@ bool Level::save()
     for (const auto& e : mGameObjects)
     {
         if (e.second->gameObjectType != GameObjectType::Static) continue;
+        if(e.first == "HITBOX_EDIT") continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());
     }

@@ -22,7 +22,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
     XMFLOAT3 projectedPosition = getPosition();
     XMFLOAT2 inputVector = { input.current.trigger[TRG::THUMB_LX], input.current.trigger[TRG::THUMB_LY] };
     bool jumped = input.Pressed(BTN::A);
-    bool running = input.current.trigger[TRG::RIGHT_TRIGGER] > 0.75f;
+    bool running = input.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f;
     bool rolled = input.Pressed(BTN::B);
     
     XMFLOAT2 inputDirection;

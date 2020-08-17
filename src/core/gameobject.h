@@ -59,12 +59,7 @@ public:
         updateTransforms();
     }
 
-    void setScale(DirectX::XMFLOAT3 _scale)
-    {
-        Scale = _scale;
-
-        updateTransforms();
-    }
+    void setScale(DirectX::XMFLOAT3 _scale);
 
     void setRotation(DirectX::XMFLOAT3 _rot)
     {
@@ -156,6 +151,7 @@ public:
     bool isShadowEnabled = true;
     bool isFrustumCulled = true;
     bool isShadowForced = false;
+    bool isSelectable = true;
 
     bool currentlyInShadowSphere = false;
 
