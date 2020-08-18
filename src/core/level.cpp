@@ -222,7 +222,7 @@ void Level::update(const GameTime& gt)
                       XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                       XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
-                      XMFLOAT3 t, s;
+                      XMFLOAT3 t{}, s{};
                       XMStoreFloat3(&t, lengthA);
                       XMStoreFloat3(&s, lengthB);
 
@@ -284,7 +284,7 @@ void Level::update(const GameTime& gt)
                       XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                       XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
-                      XMFLOAT3 t, s;
+                      XMFLOAT3 t{}, s{};
                       XMStoreFloat3(&t, lengthA);
                       XMStoreFloat3(&s, lengthB);
 
@@ -344,7 +344,7 @@ void Level::draw()
                   XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
                   XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
 
-                  XMFLOAT3 t, s;
+                  XMFLOAT3 t{}, s{};
                   XMStoreFloat3(&t, lengthA);
                   XMStoreFloat3(&s, lengthB);
 
@@ -1178,7 +1178,7 @@ bool Level::parseWater(const json& waterJson)
         }
 
         auto waterObject = std::make_unique<GameObject>(std::string(entry["Name"]), amountObjectCBs++);
-        XMFLOAT3 pos, scale, rot;
+        XMFLOAT3 pos{}, scale{}, rot{};
 
         pos.x = entry["Position"][0];
         pos.y = entry["Position"][1];

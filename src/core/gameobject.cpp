@@ -559,16 +559,6 @@ bool GameObject::intersects(const GameObject& obj) const
     return collider.intersects(obj.collider);
 }
 
-//bool GameObject::intersectsRough(DirectX::BoundingOrientedBox& box) const
-//{
-//    if (!isCollisionEnabled)
-//    {
-//        return false;
-//    }
-//
-//    return roughBoundingBox.Intersects(box);
-//}
-
 void GameObject::updateTransforms()
 {
     /*update transforms for constant buffer*/

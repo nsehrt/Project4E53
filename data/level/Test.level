@@ -12,7 +12,7 @@
                 0.0
             ],
             "ColliderType": 0,
-            "CollisionEnabled": true,
+            "CollisionEnabled": false,
             "DrawEnabled": true,
             "Material": "default",
             "Model": "box",
@@ -53,7 +53,7 @@
             "Model": "Mandolin",
             "Name": "box_(1)",
             "Position": [
-                1.0301933288574219,
+                3.0301933288574219,
                 6.313446044921875,
                 0.0
             ],

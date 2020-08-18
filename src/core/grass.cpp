@@ -27,7 +27,7 @@ void Grass::create(const json& grassJson, Terrain* terrain)
 
     /*create mesh from parameters*/
 
-    GeometryGenerator geoGen;
+    GeometryGenerator geoGen{};
     GeometryGenerator::MeshData grassMesh = geoGen.CreateGrid(size.x, size.y, density.y, density.x);
 
     std::vector<BillBoardVertex> vertices(grassMesh.Vertices.size());
@@ -58,7 +58,7 @@ void Grass::create(const json& grassJson, Terrain* terrain)
 
     for (int i = 0; i < indices.size(); i++)
     {
-        indices[i] = i;
+        indices[i] = static_cast<std::uint16_t>(i);
     }
 
     UINT vbByteSize = (UINT)vertices.size() * sizeof(BillBoardVertex);

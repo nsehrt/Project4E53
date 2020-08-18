@@ -66,15 +66,15 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     int tC = 0;
     int texTotal = 0;
 
-    for (auto const& s : tstr)
+    for(auto const& s : tstr)
     {
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
+        for(const auto& entry : std::filesystem::recursive_directory_iterator(std::filesystem::path(s.str())))
         {
-            if (entry.is_directory())continue;
+            if(entry.is_directory())continue;
 
             texTotal++;
 
-            if (loadTexture(entry, static_cast<TextureType>(tC)))
+            if(loadTexture(entry, static_cast<TextureType>(tC)))
             {
                 textureCounter++;
                 texCounter[tC]++;
@@ -92,17 +92,17 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     /*list loaded textures*/
     std::stringstream str;
     str << "Successfully loaded " << textureCounter << "/" << texTotal << " textures. (";
-    for (UINT i = 0; i < texTypes; i++)
+    for(UINT i = 0; i < texTypes; i++)
     {
         str << texCounter[i];
-        if (i != texTypes - 1)
+        if(i != texTypes - 1)
             str << " Texture2D, ";
     }
     str << " TextureCubeMap)";
 
     ServiceProvider::getLogger()->print<Severity::Info>(str.str().c_str());
 
-    if (!buildMaterials())
+    if(!buildMaterials())
     {
         return false;
     }
@@ -110,20 +110,20 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     /*load all static models*/
     ModelLoader mLoader(device, cmdList);
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(_modelPath))
+    for(const auto& entry : std::filesystem::recursive_directory_iterator(_modelPath))
     {
-        if (entry.is_directory())continue;
-        
+        if(entry.is_directory())continue;
+
         std::unique_ptr<Model> tModel = mLoader.loadB3D(entry);
-        if (tModel)
+        if(tModel)
         {
             modelCounter++;
             mModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
-            for (auto& e : mModels[entry.path().stem().string()]->meshes)
+            for(auto& e : mModels[entry.path().stem().string()]->meshes)
             {
-                if (mMaterials.find(e->materialName) != mMaterials.end())
+                if(mMaterials.find(e->materialName) != mMaterials.end())
                 {
                     e->material = mMaterials[e->materialName].get();
                 }
@@ -150,21 +150,21 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
     SkinnedModelLoader sLoader(device, cmdList);
 
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(_skinnedPath))
+    for(const auto& entry : std::filesystem::recursive_directory_iterator(_skinnedPath))
     {
-        if (entry.is_directory())continue;
+        if(entry.is_directory())continue;
 
         std::unique_ptr<SkinnedModel> tModel = sLoader.loadS3D(entry);
 
-        if (tModel)
+        if(tModel)
         {
             skinnedCounter++;
             mSkinnedModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
-            for (auto& e : mSkinnedModels[entry.path().stem().string()]->meshes)
+            for(auto& e : mSkinnedModels[entry.path().stem().string()]->meshes)
             {
-                if (mMaterials.find(e->materialName) != mMaterials.end())
+                if(mMaterials.find(e->materialName) != mMaterials.end())
                 {
                     e->material = mMaterials[e->materialName].get();
                 }
@@ -187,7 +187,7 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
 
     /*load all animations*/
 
-    ClipLoader cLoader;
+    ClipLoader cLoader{};
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(_animPath))
     {
@@ -257,14 +257,14 @@ bool RenderResource::buildRootSignature()
     CD3DX12_ROOT_PARAMETER rootParameter[7] = {};
 
     /*1 texture in register 0*/
-    CD3DX12_DESCRIPTOR_RANGE textureTableReg0;
+    CD3DX12_DESCRIPTOR_RANGE textureTableReg0{};
     textureTableReg0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0);
 
-    CD3DX12_DESCRIPTOR_RANGE shadowMapReg;
+    CD3DX12_DESCRIPTOR_RANGE shadowMapReg{};
     shadowMapReg.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, 0);
 
     /*x textures in register 1*/
-    CD3DX12_DESCRIPTOR_RANGE textureTableReg1;
+    CD3DX12_DESCRIPTOR_RANGE textureTableReg1{};
     textureTableReg1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1024, 2, 0);
 
     /*constant buffer views in register b0 and b1*/
@@ -321,9 +321,9 @@ bool RenderResource::buildRootSignature()
 bool RenderResource::buildPostProcessSignature()
 {
     ///*sobel root signature*/
-    CD3DX12_DESCRIPTOR_RANGE srv0;
-    CD3DX12_DESCRIPTOR_RANGE srv1;
-    CD3DX12_DESCRIPTOR_RANGE uav0;
+    CD3DX12_DESCRIPTOR_RANGE srv0{};
+    CD3DX12_DESCRIPTOR_RANGE srv1{};
+    CD3DX12_DESCRIPTOR_RANGE uav0{};
 
     srv0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
     srv1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
@@ -374,11 +374,11 @@ bool RenderResource::buildPostProcessSignature()
 
 bool RenderResource::buildTerrainRootSignature()
 {
-    CD3DX12_DESCRIPTOR_RANGE srv0;
-    CD3DX12_DESCRIPTOR_RANGE srv1;
-    CD3DX12_DESCRIPTOR_RANGE srv2;
-    CD3DX12_DESCRIPTOR_RANGE srv3;
-    CD3DX12_DESCRIPTOR_RANGE srvShadoww;
+    CD3DX12_DESCRIPTOR_RANGE srv0{};
+    CD3DX12_DESCRIPTOR_RANGE srv1{};
+    CD3DX12_DESCRIPTOR_RANGE srv2{};
+    CD3DX12_DESCRIPTOR_RANGE srv3{};
+    CD3DX12_DESCRIPTOR_RANGE srvShadoww{};
 
     srv0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0);
     srv1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, 0);
@@ -754,7 +754,7 @@ void RenderResource::buildInputLayouts()
 void RenderResource::buildPSOs()
 {
     /*default PSO*/
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultPSODesc;
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC defaultPSODesc{};
 
     ZeroMemory(&defaultPSODesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
     defaultPSODesc.InputLayout = { mInputLayouts[0].data(), (UINT)mInputLayouts[0].size() };
@@ -874,7 +874,7 @@ void RenderResource::buildPSOs()
     /* Transparency PSO*/
     D3D12_GRAPHICS_PIPELINE_STATE_DESC transparencyPSODesc = defaultAlphaDesc;
 
-    D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc;
+    D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc{};
     transparencyBlendDesc.BlendEnable = true;
     transparencyBlendDesc.LogicOpEnable = false;
     transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
@@ -1343,7 +1343,7 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
     XMStoreFloat3(&mLightPosW, lightPos);
 
     // Transform bounding sphere to light space.
-    XMFLOAT3 sphereCenterLS;
+    XMFLOAT3 sphereCenterLS{};
     XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, lightView));
 
     // Ortho frustum in light space encloses scene.
@@ -1512,7 +1512,7 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
 
         auto e = gO->renderItem.get();
 
-        SkinnedConstants skinnedConstants;
+        SkinnedConstants skinnedConstants{};
 
         std::copy(
             std::begin(e->finalTransforms),
@@ -1624,7 +1624,7 @@ FrameResource* RenderResource::getCurrentFrameResource()
 void RenderResource::generateDefaultShapes()
 {
     /*create the shapes*/
-    GeometryGenerator geoGen;
+    GeometryGenerator geoGen{};
     GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(10.0f, 10.0f, 10, 10);
     GeometryGenerator::MeshData waterGrid = geoGen.CreateGrid(10.0f, 10.0f, 20, 20);
@@ -1792,7 +1792,7 @@ void RenderResource::generateDefaultShapes()
 
     /*grid hitbox*/
 
-    XMFLOAT3 v;
+    XMFLOAT3 v{};
     XMStoreFloat3(&v, vMin);
     v.y = -0.025f;
     vMin = XMLoadFloat3(&v);

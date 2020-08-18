@@ -140,7 +140,7 @@ void Blur::buildDescriptors()
 void Blur::buildResources()
 {
 
-    D3D12_RESOURCE_DESC texDesc;
+    D3D12_RESOURCE_DESC texDesc{};
     ZeroMemory(&texDesc, sizeof(D3D12_RESOURCE_DESC));
     texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
     texDesc.Alignment = 0;

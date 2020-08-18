@@ -105,7 +105,6 @@ protected:
 
     const DirectX::XMFLOAT3 mUpConst = { 0.0f,1.0f,0.0f };
 
-    DirectX::XMVECTOR yAxis;
     float mNearZ = 0.0f;
     float mFarZ = 0.0f;
     float mAspect = 0.0f;

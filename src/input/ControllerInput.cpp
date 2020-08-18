@@ -37,7 +37,7 @@ void ControllerInput::Update()
 
 void ControllerInput::Update_Internal(bool init)
 {
-    DWORD res;
+    DWORD res{};
     for (DWORD i = 0; i < MAX_CONTROLLERS; i++)
     {
         /*query all controllers*/

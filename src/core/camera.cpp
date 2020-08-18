@@ -7,7 +7,6 @@ Camera::Camera()
 {
     setLens();
     setPosition(0, 0, 0);
-    yAxis = XMVectorSet(0.f, 1.0f, 0.f, 0.f);
 
     baseHitbox.Center = XMFLOAT3(0, 0, 0);
     baseHitbox.Extents = XMFLOAT3(CAMERA_HITBOX_SIZE_EXTENTS,
@@ -220,7 +219,7 @@ void Camera::pitch(float angle)
     XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
 
     XMVECTOR t = XMVector3TransformNormal(XMLoadFloat3(&mLook), R);
-    XMVECTOR a = XMVector3AngleBetweenNormals(yAxis, t);
+    XMVECTOR a = XMVector3AngleBetweenNormals(XMVectorSet(0.f, 1.0f, 0.f, 0.f), t);
 
     float convertedAngle = XMConvertToDegrees(XMVectorGetX(a));
 

@@ -404,7 +404,7 @@ bool P_4E53::Initialize()
 
 void P_4E53::createRtvAndDsvDescriptorHeaps()
 {
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
     rtvHeapDesc.NumDescriptors = SwapChainBufferCount + 1; /*+ 1 off screen render target*/
     rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
@@ -412,7 +412,7 @@ void P_4E53::createRtvAndDsvDescriptorHeaps()
     ThrowIfFailed(mDevice->CreateDescriptorHeap(
         &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
 
-    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
     dsvHeapDesc.NumDescriptors = 2; /*+ 1 shadow map dsv*/
     dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
     dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
@@ -598,7 +598,7 @@ void P_4E53::update(const GameTime& gt)
 
 
             XMFLOAT2 in = XMFLOAT2(inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY]);
-            XMFLOAT2 v;
+            XMFLOAT2 v{};
 
             v.x = in.x * std::cosf(-editCamera->getTurn()) - in.y * std::sinf(-editCamera->getTurn());
             v.y = in.x * std::sinf(-editCamera->getTurn()) + in.y * std::cosf(-editCamera->getTurn());
@@ -801,7 +801,7 @@ void P_4E53::update(const GameTime& gt)
                 {
                     XMFLOAT3 nRotation = editSettings->currentSelection->getRotation();
 
-                    float rot;
+                    float rot{};
                     switch (editSettings->rotationAxis)
                     {
                         case RotationAxis::X: rot = nRotation.x; break;
@@ -1167,9 +1167,9 @@ void P_4E53::update(const GameTime& gt)
                             }
 
                             UINT icounter = 0;
-                            for (const auto e : validGameObjects)
+                            for (const auto elem : validGameObjects)
                             {
-                                if (e == editSettings->currentSelection)
+                                if (elem == editSettings->currentSelection)
                                 {
                                     break;
                                 }
@@ -1397,7 +1397,7 @@ void P_4E53::update(const GameTime& gt)
 
 
 
-        XMFLOAT3 newCamTarget;
+        XMFLOAT3 newCamTarget{};
         float zoomDelta = 0.0f;
 
         /*common camera update for paint & height*/
@@ -1662,11 +1662,11 @@ void P_4E53::draw(const GameTime& gt)
     auto renderResource = ServiceProvider::getRenderResource();
     auto mCurrentFrameResource = renderResource->getCurrentFrameResource();
 
-    auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc;
+    auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc.Get();
     ThrowIfFailed(cmdListAlloc->Reset());
 
     mCommandList->Reset(
-        cmdListAlloc.Get(),
+        cmdListAlloc,
         renderResource->getPSO(ShadowRenderType::ShadowDefault)
     );
 
@@ -1909,7 +1909,7 @@ void P_4E53::drawToShadowMap()
 
     // Bind the pass constant buffer for the shadow map pass.
     auto passCB = renderResource->getCurrentFrameResource()->PassCB->getResource();
-    D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
+    D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * (long long)passCBByteSize;
     mCommandList->SetGraphicsRootConstantBufferView(1, passCBAddress);
 
     if (mPlayer)
