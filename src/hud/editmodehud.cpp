@@ -82,7 +82,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\crosshair.png",
         L"data\\texture\\hud\\gui\\edit\\light.png",
         L"data\\texture\\hud\\gui\\edit\\light_info.png",
-        L"data\\texture\\hud\\gui\\edit\\light_cursor.png"
+        L"data\\texture\\hud\\gui\\edit\\light_cursor.png",
+        L"data\\texture\\hud\\gui\\edit\\collision.png"
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -288,7 +289,8 @@ void EditModeHUD::update()
         TextureDescriptors::PAINT : editSetting->toolMode == EditTool::ObjectTransform ?
         TextureDescriptors::OBJECT : editSetting->toolMode == EditTool::ObjectMeta ?
         TextureDescriptors::OBJECT_META : editSetting->toolMode == EditTool::Light ?
-        TextureDescriptors::LIGHT : TextureDescriptors::CAMERA;
+        TextureDescriptors::LIGHT : editSetting->toolMode == EditTool::ObjectCollision ?
+        TextureDescriptors::OBJECT_COLLISION : TextureDescriptors::CAMERA;
 
     /*save window*/
     mHUDElements[5]->TexDescriptor = editSetting->saveSuccess ? TextureDescriptors::SAVED : TextureDescriptors::FAILED;
@@ -310,7 +312,7 @@ void EditModeHUD::update()
         mHUDElements[5]->NormalizedPosition.y = -saveWindowIconPos.y;
     }
 
-    if (editSetting->toolMode != EditTool::ObjectTransform && editSetting->toolMode != EditTool::ObjectMeta && editSetting->toolMode != EditTool::Camera && editSetting->toolMode != EditTool::Light)
+    if (editSetting->toolMode != EditTool::ObjectTransform && editSetting->toolMode != EditTool::ObjectMeta && editSetting->toolMode != EditTool::ObjectCollision && editSetting->toolMode != EditTool::Camera && editSetting->toolMode != EditTool::Light)
     {
         /*legend window*/
         if (editSetting->legendAnim > 0.0f)
@@ -557,13 +559,14 @@ void EditModeHUD::draw()
     {
         if (!e->Visible) continue;
 
-        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (toolMode == EditTool::ObjectTransform || toolMode == EditTool::Camera || toolMode == EditTool::ObjectMeta || toolMode == EditTool::Light)) continue;
+        if (e->hudVisibility == HUDVisibility::HEIGHT_AND_PAINT && (toolMode == EditTool::ObjectTransform || toolMode == EditTool::Camera || toolMode == EditTool::ObjectMeta || toolMode == EditTool::Light || toolMode == EditTool::ObjectCollision)) continue;
         if (e->hudVisibility == HUDVisibility::HEIGHT && toolMode != EditTool::Height)continue;
         if (e->hudVisibility == HUDVisibility::PAINT && toolMode != EditTool::Paint)continue;
         if (e->hudVisibility == HUDVisibility::OBJECT && toolMode != EditTool::ObjectTransform)continue;
         if (e->hudVisibility == HUDVisibility::BOTH_OBJECT && (toolMode != EditTool::ObjectTransform && toolMode != EditTool::ObjectMeta && toolMode != EditTool::Camera)) continue;
         if (e->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
         if (e->hudVisibility == HUDVisibility::FPS_CAMERA && toolMode != EditTool::Camera) continue;
+        if (e->hudVisibility == HUDVisibility::OBJECT_COLLISION && toolMode != EditTool::ObjectCollision)continue;
         if (e->hudVisibility == HUDVisibility::LIGHT && toolMode != EditTool::Light) continue;
 
         mSpriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(static_cast<int>(e->TexDescriptor)),
@@ -586,6 +589,7 @@ void EditModeHUD::draw()
         if (f->hudVisibility == HUDVisibility::OBJECT && toolMode != EditTool::ObjectTransform)continue;
         if (f->hudVisibility == HUDVisibility::BOTH_OBJECT && (toolMode != EditTool::ObjectTransform && toolMode != EditTool::ObjectMeta && toolMode != EditTool::Camera)) continue;
         if (f->hudVisibility == HUDVisibility::OBJECT_META && toolMode != EditTool::ObjectMeta)continue;
+        if(f->hudVisibility == HUDVisibility::OBJECT_COLLISION && toolMode != EditTool::ObjectCollision)continue;
         if (f->hudVisibility == HUDVisibility::LIGHT && toolMode != EditTool::Light)continue;
 
         mFonts[static_cast<int>(f->font)]->DrawString(mSpriteBatch.get(),

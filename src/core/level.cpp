@@ -244,29 +244,23 @@ void Level::update(const GameTime& gt)
 
         if(sel != nullptr)
         {
-            if(sel->isCollisionEnabled)
+
+            mGameObjects["HITBOX_EDIT"]->isDrawEnabled = true;
+
+            mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
+            mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
+
+            if(sel->getCollider().getType() == GameCollider::GameObjectCollider::OBB)
             {
-                mGameObjects["HITBOX_EDIT"]->isDrawEnabled = true;
-
-                mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
-                mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
-
-                if(sel->getCollider().getType() == GameCollider::GameObjectCollider::OBB)
-                {
-                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
-                    XMFLOAT3 scale{};
-                    XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->getCollider().getExtents()), XMVectorSet(2.0f,2.0f,2.0f,2.0f)));
-                    mGameObjects["HITBOX_EDIT"]->setScale(scale);
-                }
-                else
-                {
-                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
-                    mGameObjects["HITBOX_EDIT"]->setScale(sel->getCollider().getExtents());
-                }
+                mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
+                XMFLOAT3 scale{};
+                XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->getCollider().getExtents()), XMVectorSet(2.0f,2.0f,2.0f,2.0f)));
+                mGameObjects["HITBOX_EDIT"]->setScale(scale);
             }
             else
             {
-                mGameObjects["HITBOX_EDIT"]->isDrawEnabled = false;
+                mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
+                mGameObjects["HITBOX_EDIT"]->setScale(sel->getCollider().getExtents());
             }
 
         }

@@ -11,6 +11,7 @@ enum class EditTool
     Paint,
     ObjectTransform,
     ObjectMeta,
+    ObjectCollision,
     Light,
     Camera
 };
@@ -143,8 +144,13 @@ struct EditSettings
     ScaleAxis scaleAxis = ScaleAxis::XYZ;
     RotationAxis rotationAxis = RotationAxis::X;
 
+    /*control over object collision mode*/
+    TranslationAxis collisionTranslationAxis = TranslationAxis::XY;
+    ScaleAxis collisionScaleAxis = ScaleAxis::XYZ;
+
     const float translationIncreaseBase = 60.0f;
-    const float scaleIncreaseBase = 0.5f;
+    const float collisionTranslationIncreaseBase = 15.0f;
+    const float scaleIncreaseBase = 0.75f;
     const float rotationIncreaseBase = DirectX::XM_PIDIV2;
 
     /*game object meta tool*/

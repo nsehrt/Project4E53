@@ -80,6 +80,7 @@ private:
         LIGHT,
         LIGHT_INFO_WIN,
         LIGHT_CURSOR,
+        OBJECT_COLLISION,
         TCount
     };
 
@@ -98,6 +99,7 @@ private:
         OBJECT,
         OBJECT_META,
         BOTH_OBJECT,
+        OBJECT_COLLISION,
         FPS_CAMERA,
         LIGHT
     };
