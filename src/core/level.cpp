@@ -855,7 +855,10 @@ bool Level::playerCollides()
 
     /*TODO check collision with dynamic objects*/
 
-
+    for(const auto& i : collisionObjs)
+    {
+        LOG(Severity::Debug, "Collision with " << i->Name << ".");
+    }
 
     return !collisionObjs.empty();
 

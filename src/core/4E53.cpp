@@ -254,7 +254,7 @@ bool P_4E53::Initialize()
     }
 
     /*load first level*/
-    std::string levelFile = "Test";
+    std::string levelFile = "0";
 
     auto level = std::make_shared<Level>();
 

@@ -25,7 +25,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
     bool running = input.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f;
     bool rolled = input.Pressed(BTN::B);
     
-    XMFLOAT2 inputDirection;
+    XMFLOAT2 inputDirection{};
     XMVECTOR inputDirectionV = XMVector2Normalize(XMLoadFloat2(&inputVector));
     XMStoreFloat2(&inputDirection, inputDirectionV);
 
@@ -47,7 +47,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
         /*calculate movement speed*/
 
         auto inputMagnitudeV = XMVector2Length(XMLoadFloat2(&inputVector));
-        float inputMagnitude;
+        float inputMagnitude{};
         XMStoreFloat(&inputMagnitude, inputMagnitudeV);
 
         /*use unnormalized inputMagnitude to have finer control over movement speed*/

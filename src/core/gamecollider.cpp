@@ -49,6 +49,9 @@ void GameCollider::update(const DirectX::XMFLOAT4X4& M)
 
     internalBoundingBox.Transform(boundingBox, XMLoadFloat4x4(&M));
     internalBoundingSphere.Transform(boundingSphere, XMLoadFloat4x4(&M));
+
+    boundingBox.Extents = internalBoundingBox.Extents;
+    boundingSphere.Radius = internalBoundingSphere.Radius;
 }
 
 DirectX::XMFLOAT3 GameCollider::getRelativeCenterOffset() const
