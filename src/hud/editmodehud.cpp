@@ -83,7 +83,8 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\light.png",
         L"data\\texture\\hud\\gui\\edit\\light_info.png",
         L"data\\texture\\hud\\gui\\edit\\light_cursor.png",
-        L"data\\texture\\hud\\gui\\edit\\collision.png"
+        L"data\\texture\\hud\\gui\\edit\\collision.png",
+        L"data\\texture\\hud\\gui\\edit\\collision_axis_select.png",
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -199,6 +200,11 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_CURSOR, { 0.93f, 0.835f }, 1.0f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_CURSOR, { 0.93f, 0.8f }, 1.0f));
 
+    /*collision edit 34-36*/
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::COLLISION_AXIS_SELECT, { 0.905f, 0.825f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.837f, 0.7675f }, 0.5f));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.8885f,  0.7675f }, 0.5f));
+
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.56f }, 0.2f));
@@ -262,6 +268,10 @@ void EditModeHUD::init()
     mHUDElements[31]->hudVisibility = HUDVisibility::LIGHT;
     mHUDElements[32]->hudVisibility = HUDVisibility::LIGHT;
     mHUDElements[33]->hudVisibility = HUDVisibility::LIGHT;
+
+    mHUDElements[34]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
+    mHUDElements[35]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
+    mHUDElements[36]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
 
     for (int i = 0; i < mFontElements.size(); i++)
     {
@@ -525,6 +535,13 @@ void EditModeHUD::update()
             mHUDElements[33]->NormalizedPosition.x = 0.865f + 0.047f + (1-(int)editSetting->lightTranslationAxis) * 0.047f;
 
         }
+
+    }
+    else if(editSetting->toolMode == EditTool::ObjectCollision)
+    {
+
+        mHUDElements[35]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionTranslationAxis * 0.033f;
+        mHUDElements[36]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionScaleAxis * 0.033f;
 
     }
 

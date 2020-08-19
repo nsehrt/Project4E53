@@ -1252,7 +1252,7 @@ void P_4E53::update(const GameTime& gt)
                 editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
             }
 
-            if(inputData.Pressed(BTN::X))
+            if(inputData.Pressed(BTN::A))
             {
                 editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
 
