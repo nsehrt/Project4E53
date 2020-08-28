@@ -17,8 +17,6 @@ inline const std::string SETTINGS_FILE = "config/settings.json";
 inline const std::string SETTINGS_FILE = "config/dbg.json";
 #endif
 
-
-
 using namespace DirectX;
 
 class P_4E53 : public DX12App
@@ -27,14 +25,14 @@ public:
     P_4E53(HINSTANCE hInstance);
     ~P_4E53();
 
-    virtual bool Initialize()override;
+    virtual bool Initialize()override final;
 
 private:
 
-    virtual void createRtvAndDsvDescriptorHeaps()override;
-    virtual void onResize()override;
-    virtual void update(const GameTime& gt)override;
-    virtual void draw(const GameTime& gt)override;
+    virtual void createRtvAndDsvDescriptorHeaps()override final;
+    virtual void onResize()override final;
+    virtual void update(const GameTime& gt)override final;
+    virtual void draw(const GameTime& gt)override final;
 
     UINT getPointLightIndex(const std::string& name, UINT direction)const;
 

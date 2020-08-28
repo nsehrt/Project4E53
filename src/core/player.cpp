@@ -81,9 +81,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
         pPos.x += pRot.x * currentSpeed * gt.DeltaTime();
         pPos.z += pRot.z * currentSpeed * gt.DeltaTime();
 
-
-        /*players y position to terrain height*/
-        projectedPosition = { pPos.x, activeLevel->mTerrain->getHeight(getPosition().x, getPosition().z), pPos.z };
+        projectedPosition = pPos;
 
     }
     else
@@ -108,6 +106,9 @@ void Player::update(const InputSet& input, const GameTime& gt)
     }
 
     /*players y position to terrain height*/
+    projectedPosition = { projectedPosition.x, activeLevel->mTerrain->getHeight(projectedPosition.x, projectedPosition.z), projectedPosition.z };
+
+
     XMFLOAT3 currentPosition = getPosition();
     setPosition(projectedPosition);
 

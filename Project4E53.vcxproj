@@ -78,6 +78,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
     <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
+    <LibraryPath>C:\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -86,6 +88,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
     <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
+    <LibraryPath>C:\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -179,6 +183,7 @@
     <ClCompile Include="src\core\lightobject.cpp" />
     <ClCompile Include="src\core\particlesystem.cpp" />
     <ClCompile Include="src\core\player.cpp" />
+    <ClCompile Include="src\core\scripthandler.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
@@ -221,6 +226,7 @@
     <ClInclude Include="src\core\lightobject.h" />
     <ClInclude Include="src\core\particlesystem.h" />
     <ClInclude Include="src\core\player.h" />
+    <ClInclude Include="src\core\scripthandler.h" />
     <ClInclude Include="src\core\terrain.h" />
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
