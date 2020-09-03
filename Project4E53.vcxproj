@@ -115,12 +115,15 @@
       </DisableSpecificWarnings>
       <ShowIncludes>false</ShowIncludes>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <StackReserveSize>
       </StackReserveSize>
+      <AdditionalOptions>/NODEFAULTLIB:lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,6 +159,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <ShowIncludes>false</ShowIncludes>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,7 +187,6 @@
     <ClCompile Include="src\core\lightobject.cpp" />
     <ClCompile Include="src\core\particlesystem.cpp" />
     <ClCompile Include="src\core\player.cpp" />
-    <ClCompile Include="src\core\scripthandler.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
@@ -197,6 +200,7 @@
     <ClCompile Include="src\render\rendertarget.cpp" />
     <ClCompile Include="src\render\shadowmap.cpp" />
     <ClCompile Include="src\render\sobel.cpp" />
+    <ClCompile Include="src\script\scriptsystem.cpp" />
     <ClCompile Include="src\util\cliploader.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\geogen.cpp" />
@@ -226,7 +230,6 @@
     <ClInclude Include="src\core\lightobject.h" />
     <ClInclude Include="src\core\particlesystem.h" />
     <ClInclude Include="src\core\player.h" />
-    <ClInclude Include="src\core\scripthandler.h" />
     <ClInclude Include="src\core\terrain.h" />
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
@@ -243,6 +246,7 @@
     <ClInclude Include="src\render\shadowmap.h" />
     <ClInclude Include="src\render\sobel.h" />
     <ClInclude Include="src\render\uploadbuffer.h" />
+    <ClInclude Include="src\script\scriptsystem.h" />
     <ClInclude Include="src\util\cliploader.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\debuginfo.h" />

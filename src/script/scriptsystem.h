@@ -7,7 +7,7 @@
 
 
 
-class ScriptHandler
+class ScriptSystem
 {
 
 public:
@@ -16,6 +16,6 @@ public:
 
 
 private:
-
+    sol::state script;
 
 };

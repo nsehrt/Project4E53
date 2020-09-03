@@ -8,6 +8,8 @@
 #include "../core/grass.h"
 #include "../core/particlesystem.h"
 #include "../util/quadtree.h"
+#include "../script/scriptsystem.h"
+
 
 inline const std::string LEVEL_PATH = "data/level";
 
@@ -83,6 +85,8 @@ public:
     std::string loadedLevel;
 
 private:
+
+    ScriptSystem script_system;
 
     QuadTree quadTree;
     void addGameObjectToQuadTree(GameObject* go);
