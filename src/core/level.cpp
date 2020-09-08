@@ -1205,7 +1205,11 @@ bool Level::parseWater(const json& waterJson)
                                        entry["TexScale"][1], 
                                        entry["TexScale"][2] });
 
-        waterObject->getCollider().setBaseBoxes(waterObject->renderItem->getModel()->baseModelBox);
+        /*band aid fix*/
+        auto cBox = waterObject->renderItem->getModel()->baseModelBox;
+        cBox.Extents.y += 0.5f;
+
+        waterObject->getCollider().setBaseBoxes(cBox);
         waterObject->updateTransforms();
 
         waterObject->renderItem->NumFramesDirty = gNumFrameResources;
