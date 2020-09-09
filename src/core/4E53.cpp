@@ -9,6 +9,7 @@
 #include "../core/level.h"
 #include "../core/player.h"
 #include "../hud/editmodehud.h"
+#include "../physics/bulletphysics.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -37,6 +38,8 @@ private:
     UINT getPointLightIndex(const std::string& name, UINT direction)const;
 
     int vsyncIntervall = 0;
+
+    BulletPhysics physics;
 
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;

@@ -78,8 +78,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
     <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
-    <LibraryPath>C:\lua;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\n_seh\source\bullet3\debug\lib;C:\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -88,8 +88,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
     <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
-    <LibraryPath>C:\lua;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\n_seh\source\bullet3\lib;C:\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -193,6 +193,7 @@
     <ClCompile Include="src\hud\editmodehud.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
+    <ClCompile Include="src\physics\bulletphysics.cpp" />
     <ClCompile Include="src\render\blur.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
     <ClCompile Include="src\render\renderresource.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="src\hud\editmodehud.h" />
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />
+    <ClInclude Include="src\physics\bulletphysics.h" />
     <ClInclude Include="src\render\blur.h" />
     <ClInclude Include="src\render\frameresource.h" />
     <ClInclude Include="src\render\renderresource.h" />
