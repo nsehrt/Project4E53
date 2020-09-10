@@ -241,6 +241,9 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
 
+    /*initialize bullet physics*/
+    physics.init();
+
     /*initialize player and camera*/
 
     if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
@@ -1682,6 +1685,8 @@ void P_4E53::update(const GameTime& gt)
     /*************/
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
+
+        physics.simulateStep(gt.DeltaTime());
 
         /*update player*/
         mPlayer->update(inputData, gt);
