@@ -241,9 +241,6 @@ bool P_4E53::Initialize()
     ServiceProvider::setRenderResource(renderResource);
 
 
-    /*initialize bullet physics*/
-    physics.init();
-
     /*initialize player and camera*/
 
     if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
@@ -258,7 +255,7 @@ bool P_4E53::Initialize()
     }
 
     /*load first level*/
-    std::string levelFile = "0";
+    std::string levelFile = "bullet";
 
     auto level = std::make_shared<Level>();
 
@@ -362,9 +359,9 @@ bool P_4E53::Initialize()
 
             for (const auto& g : ServiceProvider::getActiveLevel()->mGameObjects)
             {
-                if ((g.second->gameObjectType == GameObjectType::Static ||
-                    g.second->gameObjectType == GameObjectType::Wall ||
-                    g.second->gameObjectType == GameObjectType::Dynamic) &&
+                if ((g.second->gameObjectType == ObjectType::Default ||
+                    g.second->gameObjectType == ObjectType::Wall ||
+                    g.second->gameObjectType == ObjectType::Skinned) &&
                     g.second->isSelectable)
                 {
                     validGameObjects.push_back(g.second.get());
@@ -919,11 +916,11 @@ void P_4E53::update(const GameTime& gt)
                 /*switch to invisible wall*/
                 if (inputData.Pressed(BTN::LEFT_THUMB))
                 {
-                    if (editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                    if (editSettings->currentSelection->gameObjectType == ObjectType::Default)
                     {
                         editSettings->currentSelection->renderItem->staticModel = renderResource->mModels["box"].get();
                         editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
-                        editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
+                        editSettings->currentSelection->gameObjectType = ObjectType::Wall;
                         editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
                         editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
                         editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
@@ -942,7 +939,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
                 /*switch model group*/
-                if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -983,7 +980,7 @@ void P_4E53::update(const GameTime& gt)
                     setModelSelection();
                 }
 
-                if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -1025,7 +1022,7 @@ void P_4E53::update(const GameTime& gt)
 
 
                 /*switch model*/
-                else if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
                     for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
                          it != editSettings->orderedModels[editSettings->selectedGroup].end();
@@ -1066,7 +1063,7 @@ void P_4E53::update(const GameTime& gt)
                 }
 
 
-                else if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
                     for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
                          it != editSettings->orderedModels[editSettings->selectedGroup].end();
@@ -1109,7 +1106,7 @@ void P_4E53::update(const GameTime& gt)
 
 
                 /*switch render type*/
-                else if (inputData.Pressed(BTN::RIGHT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::RIGHT_THUMB) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
                     switch (editSettings->currentSelection->renderItem->renderType)
                     {
@@ -1134,9 +1131,9 @@ void P_4E53::update(const GameTime& gt)
 
                 /*copy to new object*/
                 else if (inputData.Pressed(BTN::Y) && 
-                        (editSettings->currentSelection->gameObjectType == GameObjectType::Static || 
-                         editSettings->currentSelection->gameObjectType == GameObjectType::Water ||
-                         editSettings->currentSelection->gameObjectType == GameObjectType::Wall))
+                        (editSettings->currentSelection->gameObjectType == ObjectType::Default ||
+                         editSettings->currentSelection->gameObjectType == ObjectType::Water ||
+                         editSettings->currentSelection->gameObjectType == ObjectType::Wall))
                 {
                     auto prevGO = editSettings->currentSelection;
 
@@ -1168,10 +1165,10 @@ void P_4E53::update(const GameTime& gt)
 
                             for (const auto& g : activeLevel->mGameObjects)
                             {
-                                if (g.second->gameObjectType == GameObjectType::Static ||
-                                    g.second->gameObjectType == GameObjectType::Wall ||
-                                    g.second->gameObjectType == GameObjectType::Dynamic || 
-                                    g.second->gameObjectType == GameObjectType::Water)
+                                if (g.second->gameObjectType == ObjectType::Default ||
+                                    g.second->gameObjectType == ObjectType::Wall ||
+                                    g.second->gameObjectType == ObjectType::Skinned || 
+                                    g.second->gameObjectType == ObjectType::Water)
                                 {
                                     validGameObjects.push_back(g.second.get());
                                 }
@@ -1194,7 +1191,7 @@ void P_4E53::update(const GameTime& gt)
 
                     editSettings->currentSelection->gameObjectType = prevGO->gameObjectType;
 
-                    if (editSettings->currentSelection->gameObjectType == GameObjectType::Water)
+                    if (editSettings->currentSelection->gameObjectType == ObjectType::Water)
                     {
                         editSettings->currentSelection->renderItem->renderType = RenderType::Water;
                     }
@@ -1567,9 +1564,9 @@ void P_4E53::update(const GameTime& gt)
 
                 for (const auto& e : activeLevel->mGameObjects)
                 {
-                    if (e.second->gameObjectType == GameObjectType::Sky ||
-                        e.second->gameObjectType == GameObjectType::Terrain ||
-                        e.second->gameObjectType == GameObjectType::Debug ||
+                    if (e.second->gameObjectType == ObjectType::Sky ||
+                        e.second->gameObjectType == ObjectType::Terrain ||
+                        e.second->gameObjectType == ObjectType::Debug ||
                         !e.second->isSelectable)
                         continue;
 
@@ -1595,10 +1592,10 @@ void P_4E53::update(const GameTime& gt)
 
                     for (const auto& g : activeLevel->mGameObjects)
                     {
-                        if (g.second->gameObjectType == GameObjectType::Static ||
-                            g.second->gameObjectType == GameObjectType::Wall ||
-                            g.second->gameObjectType == GameObjectType::Dynamic ||
-                            g.second->gameObjectType == GameObjectType::Water)
+                        if (g.second->gameObjectType == ObjectType::Default ||
+                            g.second->gameObjectType == ObjectType::Wall ||
+                            g.second->gameObjectType == ObjectType::Skinned ||
+                            g.second->gameObjectType == ObjectType::Water)
                         {
                             validGameObjects.push_back(g.second.get());
                         }

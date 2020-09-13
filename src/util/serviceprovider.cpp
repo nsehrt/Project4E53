@@ -10,6 +10,8 @@ std::shared_ptr<Settings>ServiceProvider::settings = nullptr;
 std::shared_ptr<SoundEngine>ServiceProvider::audio = nullptr;
 std::shared_ptr<InputManager>ServiceProvider::input = nullptr;
 std::shared_ptr<RenderResource>ServiceProvider::renderResource = nullptr;
+BulletPhysics* ServiceProvider::physics = nullptr;
+
 std::shared_ptr<Player>ServiceProvider::activePlayer = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
@@ -69,6 +71,16 @@ RenderResource* ServiceProvider::getRenderResource()
 void ServiceProvider::setRenderResource(std::shared_ptr<RenderResource> providedRenderResource)
 {
     renderResource = providedRenderResource;
+}
+
+BulletPhysics* ServiceProvider::getPhysics()
+{
+    return physics;
+}
+
+void ServiceProvider::setPhysics(BulletPhysics* providedPhysics)
+{
+    physics = providedPhysics;
 }
 
 Player* ServiceProvider::getPlayer()

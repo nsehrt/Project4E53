@@ -1,0 +1,583 @@
+{
+    "GameObject": [
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(2)",
+            "Position": [
+                0.9417471885681152,
+                11.94405746459961,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(3)",
+            "Position": [
+                3.9123706817626953,
+                11.495383262634277,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(8)",
+            "Position": [
+                -0.30868494510650635,
+                10.305502891540527,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                6.5471601486206055,
+                0.1442386507987976,
+                6.548212051391602
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box",
+            "Position": [
+                0.4433003067970276,
+                2.4940483570098877,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                13.094320297241211,
+                0.2884773015975952,
+                13.096424102783203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(1)",
+            "Position": [
+                -1.6756881475448608,
+                11.567483901977539,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(4)",
+            "Position": [
+                2.4105896949768066,
+                15.35596752166748,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(5)",
+            "Position": [
+                -0.6191262006759644,
+                14.730753898620605,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(6)",
+            "Position": [
+                1.0433269739151,
+                13.896410942077637,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(7)",
+            "Position": [
+                0.5302262902259827,
+                16.979846954345703,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.9974428415298462,
+                0.9974428415298462,
+                0.9974428415298462
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(9)",
+            "Position": [
+                4.542514801025391,
+                14.601041793823242,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.9948856830596924,
+                1.9948856830596924,
+                1.9948856830596924
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        }
+    ],
+    "Grass": [
+        {
+            "Density": [
+                12,
+                17
+            ],
+            "Material": "grass_3",
+            "Name": "grass",
+            "Position": [
+                -20.11742401123047,
+                0.0,
+                0.0
+            ],
+            "QuadSize": [
+                1.0,
+                1.0
+            ],
+            "Size": [
+                5.0,
+                5.0
+            ],
+            "SizeVariation": 0.0
+        }
+    ],
+    "Light": {
+        "AmbientLight": [
+            0.30000001192092896,
+            0.30000001192092896,
+            0.30000001192092896
+        ],
+        "Directional": [
+            {
+                "Direction": [
+                    -0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D1",
+                "Strength": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            },
+            {
+                "Direction": [
+                    0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D2",
+                "Strength": [
+                    0.4000000059604645,
+                    0.4000000059604645,
+                    0.4000000059604645
+                ]
+            },
+            {
+                "Direction": [
+                    0.0,
+                    -0.699999988079071,
+                    -0.699999988079071
+                ],
+                "Name": "D3",
+                "Strength": [
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
+                ]
+            }
+        ],
+        "Point": [
+            {
+                "FallOffEnd": 12.0,
+                "FallOffStart": 10.0,
+                "Name": "P_(1)",
+                "Position": [
+                    -3.0,
+                    3.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.0,
+                    0.25
+                ]
+            },
+            {
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
+                "Name": "EditLight",
+                "Position": [
+                    0.0,
+                    0.8531982898712158,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ]
+    },
+    "ParticleSystem": [
+        {
+            "DirectionMultiplier": [
+                0.699999988079071,
+                1.2999999523162842,
+                0.699999988079071
+            ],
+            "Material": "fire1",
+            "MaxAge": 1.0,
+            "Name": "particle_fire",
+            "ParticleCount": 250,
+            "Position": [
+                10.96131420135498,
+                3.124943733215332,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.004999999888241291,
+            "Type": "Fire"
+        },
+        {
+            "DirectionMultiplier": [
+                0.10000000149011612,
+                0.4000000059604645,
+                0.10000000149011612
+            ],
+            "Material": "smoke1",
+            "MaxAge": 6.0,
+            "Name": "particle_smoke",
+            "ParticleCount": 250,
+            "Position": [
+                14.536003112792969,
+                3.4686930179595947,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.05000000074505806,
+            "Type": "Smoke"
+        }
+    ],
+    "Sky": {
+        "DefaultCubeMap": "grasscube1024.dds",
+        "Material": "sky"
+    },
+    "Terrain": {
+        "BlendMap": "bullet.bld",
+        "BlendTextures": [
+            "ForestFloorGreen.dds",
+            "DirtGround.dds",
+            "PavementGray.dds",
+            "SimpleSand.dds"
+        ],
+        "HeightMap": "bullet.raw",
+        "HeightScale": 200.0
+    },
+    "Water": [
+        {
+            "Displacement1Transform": [
+                0.800000011920929,
+                0.009999999776482582,
+                0.029999999329447746
+            ],
+            "Displacement2Transform": [
+                0.4000000059604645,
+                -0.009999999776482582,
+                0.029999999329447746
+            ],
+            "HeightScale": [
+                0.4000000059604645,
+                0.800000011920929
+            ],
+            "Material": "water",
+            "MaterialTranslation": [
+                0.15000000596046448,
+                0.4000000059604645
+            ],
+            "Name": "water",
+            "Normal1Transform": [
+                5.0,
+                0.05000000074505806,
+                0.20000000298023224
+            ],
+            "Normal2Transform": [
+                4.0,
+                -0.019999999552965164,
+                0.05000000074505806
+            ],
+            "Position": [
+                20.4315242767334,
+                0.9694780707359314,
+                0.0
+            ],
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexScale": [
+                10.0,
+                10.0,
+                1.0
+            ]
+        }
+    ]
+}

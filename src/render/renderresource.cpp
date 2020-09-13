@@ -1335,7 +1335,7 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());
-    XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir + XMLoadFloat3(&mShadowMap->shadowBounds.Center);
+    XMVECTOR lightPos = XMVectorAdd((-2.0f * mShadowMap->shadowBounds.Radius * lightDir), XMLoadFloat3(&mShadowMap->shadowBounds.Center));
     XMVECTOR targetPos = XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);
@@ -1508,7 +1508,7 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
 
     const auto updateSingleSkinnedCB = [&](const GameObject* gO)
     {
-        if (gO->gameObjectType != GameObjectType::Dynamic) return;
+        if (gO->gameObjectType != ObjectType::Skinned) return;
 
         auto e = gO->renderItem.get();
 
@@ -1682,8 +1682,8 @@ void RenderResource::generateDefaultShapes()
     mModels["box"] = std::move(m);
 
     /*box hitbox*/
-    XMStoreFloat3(&mModels["box"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["box"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["box"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["box"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
 
@@ -1801,8 +1801,8 @@ void RenderResource::generateDefaultShapes()
     v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
-    XMStoreFloat3(&mModels["grid"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["grid"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["grid"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["grid"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
 
     GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->baseModelBox.Extents.x * 2.f,
@@ -1902,8 +1902,8 @@ void RenderResource::generateDefaultShapes()
     v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
-    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     GeometryGenerator::MeshData boxMeshWGrid = geoGen.CreateBox(mModels["watergrid"]->baseModelBox.Extents.x * 2.f,
                                                                mModels["watergrid"]->baseModelBox.Extents.y * 2.f,
@@ -1995,8 +1995,8 @@ void RenderResource::generateDefaultShapes()
 
     /*sphere hitbox*/
 
-    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     GeometryGenerator::MeshData boxMeshSp = geoGen.CreateBox(mModels["sphere"]->baseModelBox.Extents.x * 2.f,
                                                              mModels["sphere"]->baseModelBox.Extents.y * 2.f,
@@ -2087,8 +2087,8 @@ void RenderResource::generateDefaultShapes()
 
     /*cylinder hitbox*/
 
-    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     GeometryGenerator::MeshData boxMeshCyl = geoGen.CreateBox(mModels["cylinder"]->baseModelBox.Extents.x * 2.f,
                                                               mModels["cylinder"]->baseModelBox.Extents.y * 2.f,

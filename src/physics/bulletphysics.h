@@ -13,10 +13,9 @@ class BulletPhysics
 {
     public:
 
-    BulletPhysics() = default;
+    BulletPhysics(float gravity = 9.81f);
     ~BulletPhysics();
 
-    bool init(float gravity = 9.81f);
     bool simulateStep(float elapsedTime);
 
     private:

@@ -2,17 +2,7 @@
 #include <iostream>
 
 
-BulletPhysics::~BulletPhysics()
-{
-
-    delete m_dynamicsWorld;
-    delete m_solver;
-    delete m_broadphase;
-    delete m_dispatcher;
-    delete m_collisionConfiguration;
-}
-
-bool BulletPhysics::init(float gravity)
+BulletPhysics::BulletPhysics(float gravity)
 {
 
     m_collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -23,8 +13,19 @@ bool BulletPhysics::init(float gravity)
 
     m_dynamicsWorld->setGravity(btVector3(0.f, gravity, 0.f));
 
-    return true;
 }
+
+BulletPhysics::~BulletPhysics()
+{
+
+    delete m_dynamicsWorld;
+    delete m_solver;
+    delete m_broadphase;
+    delete m_dispatcher;
+    delete m_collisionConfiguration;
+}
+
+
 
 bool BulletPhysics::simulateStep(float elapsedTime)
 {

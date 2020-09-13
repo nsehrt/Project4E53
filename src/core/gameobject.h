@@ -2,13 +2,14 @@
 
 #include "../render/renderresource.h"
 #include "../core/gamecollider.h"
+#include <btBulletDynamicsCommon.h>
 
 using json = nlohmann::json;
 
-enum class GameObjectType
+enum class ObjectType
 {
-    Static,
-    Dynamic,
+    Default,
+    Skinned,
     Wall,
     Sky,
     Debug,
@@ -18,6 +19,12 @@ enum class GameObjectType
     Particle
 };
 
+enum class ObjectMotionType
+{
+    Static,
+    Kinetic,
+    Dynamic
+};
 
 class GameObject
 {
@@ -45,11 +52,44 @@ public:
     json toJson() const;
 
 
-    GameObjectType gameObjectType = GameObjectType::Static;
+    ObjectType gameObjectType = ObjectType::Default;
+    ObjectMotionType motionType = ObjectMotionType::Static;
+
     std::string Name;
     std::unique_ptr<RenderItem> renderItem = nullptr;
     float animationTimeScale = 1.0f;
 
+
+    /*flags*/
+    bool isCollisionEnabled = true;
+    bool isDrawEnabled = true;
+    bool isShadowEnabled = true;
+    bool isFrustumCulled = true;
+    bool isShadowForced = false;
+    bool isSelectable = true;
+
+    bool currentlyInShadowSphere = false;
+
+    protected:
+
+    GameCollider collider;
+
+    /*transforms*/
+    DirectX::XMFLOAT3 Position, Rotation, Scale;
+    DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
+
+    /*bullet physics*/
+    float mass = 0.0f;
+    btRigidBody* bulletBody = nullptr;
+
+
+    /*render related*/
+    bool currentlyInFrustum = false;
+    UINT objectCBSize = 0;
+    UINT skinnedCBSize = 0;
+
+
+    public:
 
     /*Transform getter/setter*/
     void setPosition(DirectX::XMFLOAT3 _pos)
@@ -144,30 +184,6 @@ public:
     }
 
     void updateTransforms();
-
-    /*flags*/
-    bool isCollisionEnabled = true;
-    bool isDrawEnabled = true;
-    bool isShadowEnabled = true;
-    bool isFrustumCulled = true;
-    bool isShadowForced = false;
-    bool isSelectable = true;
-
-    bool currentlyInShadowSphere = false;
-
-protected:
-
-    GameCollider collider;
-
-    /*transforms*/
-    DirectX::XMFLOAT3 Position, Rotation, Scale;
-    DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
-
-    
-    bool currentlyInFrustum = false;
-
-    UINT objectCBSize = 0;
-    UINT skinnedCBSize = 0;
 
     bool exists(const nlohmann::json& j, const std::string& key)
     {

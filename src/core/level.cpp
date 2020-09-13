@@ -219,8 +219,8 @@ void Level::update(const GameTime& gt)
                   mLightObjects.end() - AMOUNT_SPOT,
                   [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b)
                   {
-                      XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
-                      XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+                      XMVECTOR lengthA = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&a->getPosition()), cameraPos));
+                      XMVECTOR lengthB = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&b->getPosition()), cameraPos));
 
                       XMFLOAT3 t{}, s{};
                       XMStoreFloat3(&t, lengthA);
@@ -275,8 +275,8 @@ void Level::update(const GameTime& gt)
                   mLightObjects.end() - AMOUNT_SPOT,
                   [&](const std::unique_ptr<LightObject>& a, const std::unique_ptr<LightObject>& b)
                   {
-                      XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
-                      XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+                      XMVECTOR lengthA = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&a->getPosition()), cameraPos));
+                      XMVECTOR lengthB = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&b->getPosition()), cameraPos));
 
                       XMFLOAT3 t{}, s{};
                       XMStoreFloat3(&t, lengthA);
@@ -335,8 +335,8 @@ void Level::draw()
               std::end(renderOrder[(int)RenderType::DefaultTransparency]),
               [&](const GameObject* a, const GameObject* b)
               {
-                  XMVECTOR lengthA = XMVector3LengthSq(XMLoadFloat3(&a->getPosition()) - cameraPos);
-                  XMVECTOR lengthB = XMVector3LengthSq(XMLoadFloat3(&b->getPosition()) - cameraPos);
+                  XMVECTOR lengthA = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&a->getPosition()), cameraPos));
+                  XMVECTOR lengthB = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&b->getPosition()), cameraPos));
 
                   XMFLOAT3 t{}, s{};
                   XMStoreFloat3(&t, lengthA);
@@ -387,7 +387,7 @@ void Level::draw()
     if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled &&
         ServiceProvider::getEditSettings()->toolMode == EditTool::Camera &&
         ServiceProvider::getEditSettings()->currentSelection != nullptr &&
-        ServiceProvider::getEditSettings()->currentSelection->gameObjectType == GameObjectType::Static)
+        ServiceProvider::getEditSettings()->currentSelection->gameObjectType == ObjectType::Default)
     {
         renderResource->setPSO(PostProcessRenderType::Outline);
         ServiceProvider::getEditSettings()->currentSelection->draw();
@@ -459,7 +459,7 @@ bool Level::save()
 
     for (const auto& e : mGameObjects)
     {
-        if (e.second->gameObjectType != GameObjectType::Static) continue;
+        if (e.second->gameObjectType != ObjectType::Default) continue;
         if(e.first == "HITBOX_EDIT") continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());
@@ -494,7 +494,7 @@ bool Level::save()
     for (const auto& e : mGameObjects)
     {
 
-        if (e.second->gameObjectType == GameObjectType::Water)
+        if (e.second->gameObjectType == ObjectType::Water)
         {
             json wElement;
 
@@ -834,9 +834,9 @@ void Level::addGameObject(json goJson)
 
 void Level::addGameObjectToQuadTree(GameObject* go)
 {
-    if (go->gameObjectType == GameObjectType::Sky ||
-        go->gameObjectType == GameObjectType::Debug ||
-        go->gameObjectType == GameObjectType::Terrain) return;
+    if (go->gameObjectType == ObjectType::Sky ||
+        go->gameObjectType == ObjectType::Debug ||
+        go->gameObjectType == ObjectType::Terrain) return;
 
     if (!quadTree.insert(go))
     {
@@ -890,7 +890,7 @@ void Level::calculateShadowRenderOrder()
     for (const auto& gameObject : mGameObjects)
     {
         if (gameObject.second->renderItem->renderType == RenderType::Sky ||
-            gameObject.second->gameObjectType == GameObjectType::Debug ||
+            gameObject.second->gameObjectType == ObjectType::Debug ||
             gameObject.second->renderItem->renderType == RenderType::Terrain) continue;
 
         shadowRenderOrder[(long long)gameObject.second->renderItem->shadowType].push_back(&(*gameObject.second));
@@ -933,7 +933,7 @@ bool Level::parseSky(const json& skyJson)
 
     gameObject->Name = "SKY_SPHERE";
     gameObject->renderItem = std::move(rItem);
-    gameObject->gameObjectType = GameObjectType::Sky;
+    gameObject->gameObjectType = ObjectType::Sky;
     gameObject->isFrustumCulled = false;
     gameObject->isCollisionEnabled = false;
 
@@ -1065,7 +1065,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
     debugObject->isFrustumCulled = false;
     debugObject->isShadowEnabled = false;
     debugObject->renderItem->renderType = RenderType::Default;
-    debugObject->gameObjectType = GameObjectType::Debug;
+    debugObject->gameObjectType = ObjectType::Debug;
     debugObject->isCollisionEnabled = false;
     debugObject->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["quad"].get();
 
@@ -1093,7 +1093,7 @@ bool Level::parseTerrain(const json& terrainJson)
     terrainObject->isDrawEnabled = true;
     terrainObject->isCollisionEnabled = false;
     terrainObject->renderItem->renderType = RenderType::Terrain;
-    terrainObject->gameObjectType = GameObjectType::Terrain;
+    terrainObject->gameObjectType = ObjectType::Terrain;
     terrainObject->renderItem->staticModel = mTerrain->terrainModel.get();
     terrainObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials["terrain"].get();
     XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 4.0f,
@@ -1136,7 +1136,7 @@ bool Level::parseGrass(const json& grassJson)
         grassObject->isShadowEnabled = false;
         grassObject->isDrawEnabled = true;
         grassObject->isCollisionEnabled = false;
-        grassObject->gameObjectType = GameObjectType::Grass;
+        grassObject->gameObjectType = ObjectType::Grass;
         grassObject->renderItem->renderType = RenderType::Grass;
         grassObject->renderItem->staticModel = mGrass.back()->getPatchModel();
         grassObject->renderItem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
@@ -1195,7 +1195,7 @@ bool Level::parseWater(const json& waterJson)
         waterObject->isShadowEnabled = false;
         waterObject->isCollisionEnabled = false;
         waterObject->isFrustumCulled = true;
-        waterObject->gameObjectType = GameObjectType::Water;
+        waterObject->gameObjectType = ObjectType::Water;
 
         waterObject->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["watergrid"].get();
         waterObject->renderItem->MaterialOverwrite = ServiceProvider::getRenderResource()->mMaterials[entry["Material"]].get();
@@ -1271,7 +1271,7 @@ bool Level::parseParticleSystems(const json& particleJson)
         particleObject->isShadowEnabled = false;
         particleObject->isDrawEnabled = true;
         particleObject->isCollisionEnabled = false;
-        particleObject->gameObjectType = GameObjectType::Particle;
+        particleObject->gameObjectType = ObjectType::Particle;
 
         switch (mParticleSystems[entry["Name"]]->getType())
         {

@@ -96,7 +96,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
             isShadowForced = false;
             rItem->staticModel = renderResource->mModels["box"].get();
             TextureScale = Scale;
-            gameObjectType = GameObjectType::Wall;
+            gameObjectType = ObjectType::Wall;
         }
         else
         {
@@ -115,7 +115,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     {
         if (renderResource->mMaterials.find(objectJson["Material"]) == renderResource->mMaterials.end())
         {
-            if (gameObjectType == GameObjectType::Wall)
+            if (gameObjectType == ObjectType::Wall)
             {
                 rItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
             }
@@ -141,7 +141,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     /*render type*/
     if (!exists(objectJson, "RenderType"))
     {
-        if (gameObjectType == GameObjectType::Wall)
+        if (gameObjectType == ObjectType::Wall)
         {
             rItem->renderType = RenderType::DefaultTransparency;
         }
@@ -273,7 +273,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
     }
     else
     {
-        gameObjectType = GameObjectType::Dynamic;
+        gameObjectType = ObjectType::Skinned;
         tItem->renderType = RenderType::SkinnedDefault;
         tItem->shadowType = ShadowRenderType::ShadowSkinned;
         tItem->SkinnedCBIndex = skinnedIndex;
@@ -291,7 +291,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
 /***UDPATE***/
 void GameObject::update(const GameTime& gt)
 {
-    if (gameObjectType == GameObjectType::Dynamic)
+    if (gameObjectType == ObjectType::Skinned)
     {
         if (renderItem->currentClip != nullptr)
         {
@@ -322,10 +322,10 @@ bool GameObject::draw() const
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-    if (gameObjectType == GameObjectType::Debug) return false;
+    if (gameObjectType == ObjectType::Debug) return false;
 
     if (!isDrawEnabled &&
-        !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
+        !(gameObjectType == ObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
     {
         return false;
     }
@@ -438,7 +438,7 @@ json GameObject::toJson() const
     json jElement;
 
     jElement["Name"] = Name;
-    jElement["Model"] = gameObjectType != GameObjectType::Wall ? renderItem->staticModel->name : "";
+    jElement["Model"] = gameObjectType != ObjectType::Wall ? renderItem->staticModel->name : "";
 
     if (renderItem->MaterialOverwrite != nullptr)
     {
@@ -498,7 +498,7 @@ void GameObject::setScale(DirectX::XMFLOAT3 _scale)
 
 void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)
 {
-    gameObjectType = GameObjectType::Dynamic;
+    gameObjectType = ObjectType::Skinned;
     renderItem->skinnedModel = sModel;
     setAnimation(nullptr);
 }
@@ -565,7 +565,7 @@ void GameObject::updateTransforms()
     XMMATRIX rootTransform = XMMatrixIdentity();
 
     /*for dynamic objects apply scene root transform*/
-    if (gameObjectType == GameObjectType::Dynamic)
+    if (gameObjectType == ObjectType::Skinned)
     {
         rootTransform = XMLoadFloat4x4(&renderItem->skinnedModel->rootTransform);
     }
