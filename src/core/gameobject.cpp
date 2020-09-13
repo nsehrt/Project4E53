@@ -6,7 +6,7 @@ using namespace DirectX;
 
 
 
-GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
+GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // used for all items in the level
 {
     /*Name*/
     Name = objectJson["Name"];
@@ -188,11 +188,6 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 
     /*set collider properties*/
 
-    if (objectJson["Name"] == "box_(208)")
-    {
-        int i = 1;
-    }
-
     collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
 
 
@@ -221,11 +216,33 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     if (colliderType == -1)
     {
         /*if no collider specified use base collider of the model*/
-        setColliderProperties(GameCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
+        setColliderProperties(BaseCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
     }
     else
     {
-        setColliderProperties(static_cast<GameCollider::GameObjectCollider>(colliderType), colliderCenter, colliderExtents);
+        setColliderProperties(static_cast<BaseCollider::GameObjectCollider>(colliderType), colliderCenter, colliderExtents);
+    }
+
+
+    /*load bullet physics properties*/
+    numericalID = index; 
+
+    if(exists(objectJson, "Mass"))
+    {
+        mass = objectJson["Mass"];
+        motionType = ObjectMotionType::Dynamic;
+    }
+
+    if(exists(objectJson, "MotionType"))
+    {
+        if(objectJson["MotionType"] == "Kinetic")
+        {
+            motionType = ObjectMotionType::Kinetic;
+        }
+        else if(objectJson["MotionType"] == "Dynamic")
+        {
+            motionType = ObjectMotionType::Dynamic;
+        }
     }
 
 
@@ -246,7 +263,7 @@ GameObject::GameObject()
     skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
 }
 
-GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
+GameObject::GameObject(const std::string& name, int index, int skinnedIndex) // used for character/player etc.
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
@@ -286,11 +303,39 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
     skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
 }
 
+GameObject::~GameObject()
+{
+    
+    if(bulletBody != nullptr)
+    {
+        delete bulletBody->getMotionState();
+        delete bulletBody->getCollisionShape();
+        delete bulletBody;
+    }
+
+}
+
 
 
 /***UDPATE***/
 void GameObject::update(const GameTime& gt)
 {
+
+    if(motionType != ObjectMotionType::Static)
+    {
+        // Transfer transform back from bullet object
+        btTransform t;
+        bulletBody->getMotionState()->getWorldTransform(t);
+        Position = { t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z() };
+
+        btScalar x{}, y{}, z{};
+        t.getRotation().getEulerZYX(z, y, x);
+        Rotation = { x, y, z };
+
+        updateTransforms();
+    }
+
+
     if (gameObjectType == ObjectType::Skinned)
     {
         if (renderItem->currentClip != nullptr)
@@ -481,6 +526,18 @@ json GameObject::toJson() const
     jElement["ColliderExtents"][1] = collider.getExtents().y;
     jElement["ColliderExtents"][2] = collider.getExtents().z;
 
+    /*bullet physics*/
+    jElement["Mass"] = mass;
+
+    if(motionType == ObjectMotionType::Kinetic)
+    {
+        jElement["MotionType"] = "Kinetic";
+    }
+    else if(motionType == ObjectMotionType::Dynamic)
+    {
+        jElement["MotionType"] = "Dynamic";
+    }
+
     return jElement;
 }
 
@@ -541,7 +598,7 @@ void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
 
 }
 
-void GameObject::setColliderProperties(GameCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
+void GameObject::setColliderProperties(BaseCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
 {
     collider.setColliderType(type);
     collider.setProperties(center, extents);

@@ -3,6 +3,7 @@
 #include "../core/editmode.h"
 #include "../util/debuginfo.h"
 #include "../util/serviceprovider.h"
+#include "../physics/bulletphysics.h"
 
 using namespace DirectX;
 
@@ -96,16 +97,20 @@ bool Level::load(const std::string& levelFile)
     }
 
     /*add hitbox edit game object*/
-    auto hitboxEdit = std::make_unique<GameObject>(std::string("HITBOX_EDIT"), amountObjectCBs++);
-    hitboxEdit->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
-    hitboxEdit->renderItem->renderType = RenderType::Outline;
-    hitboxEdit->isCollisionEnabled = false;
-    hitboxEdit->isShadowEnabled = false;
-    hitboxEdit->isSelectable = false;
-    hitboxEdit->isFrustumCulled = false;
-
     if(ServiceProvider::getGameState() == GameState::EDITOR)
+    {
+        auto hitboxEdit = std::make_unique<GameObject>(std::string("HITBOX_EDIT"), amountObjectCBs++);
+        hitboxEdit->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
+        hitboxEdit->renderItem->renderType = RenderType::Outline;
+        hitboxEdit->isCollisionEnabled = false;
+        hitboxEdit->isShadowEnabled = false;
+        hitboxEdit->isSelectable = false;
+        hitboxEdit->isFrustumCulled = false;
+
+
         mGameObjects[hitboxEdit->Name] = std::move(hitboxEdit);
+    }
+
 
     /*add test dynamic object*/
 
@@ -203,7 +208,11 @@ void Level::update(const GameTime& gt)
         {
             gameObj.second->checkInViewFrustum(localSpaceFrustum);
         }
-        gameObj.second->update(gt);
+        else
+        {
+            gameObj.second->update(gt);
+        }
+        
     }
 
     /*update order of light objects*/
@@ -250,7 +259,7 @@ void Level::update(const GameTime& gt)
             mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
             mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
 
-            if(sel->getCollider().getType() == GameCollider::GameObjectCollider::OBB)
+            if(sel->getCollider().getType() == BaseCollider::GameObjectCollider::OBB)
             {
                 mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
                 XMFLOAT3 scale{};
@@ -1056,6 +1065,9 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
         auto gameObject = std::make_unique<GameObject>(entryJson, amountObjectCBs);
         amountObjectCBs += 4;
+
+        //add the game object to the bullet physics world
+        ServiceProvider::getPhysics()->addGameObject(*gameObject.get());
 
         mGameObjects[gameObject->Name] = std::move(gameObject);
     }

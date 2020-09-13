@@ -179,7 +179,7 @@
     <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\fixedcamera.cpp" />
     <ClCompile Include="src\core\fpscamera.cpp" />
-    <ClCompile Include="src\core\gamecollider.cpp" />
+    <ClCompile Include="src\core\basecollider.cpp" />
     <ClCompile Include="src\core\gameobject.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\core\grass.cpp" />
@@ -222,7 +222,7 @@
     <ClInclude Include="src\core\editmode.h" />
     <ClInclude Include="src\core\fixedcamera.h" />
     <ClInclude Include="src\core\fpscamera.h" />
-    <ClInclude Include="src\core\gamecollider.h" />
+    <ClInclude Include="src\core\basecollider.h" />
     <ClInclude Include="src\core\gameobject.h" />
     <ClInclude Include="src\core\gamestate.h" />
     <ClInclude Include="src\core\gametime.h" />

@@ -166,9 +166,6 @@
     <ClInclude Include="src\core\animationblender.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\gamecollider.h">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\quadtree.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="src\physics\bulletphysics.h">
       <Filter>Source Files\src\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\basecollider.h">
+      <Filter>Source Files\src\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -291,9 +291,6 @@
     <ClCompile Include="src\core\animationblender.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\gamecollider.cpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="src\util\quadtree.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
@@ -302,6 +299,9 @@
     </ClCompile>
     <ClCompile Include="src\physics\bulletphysics.cpp">
       <Filter>Source Files\src\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\basecollider.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

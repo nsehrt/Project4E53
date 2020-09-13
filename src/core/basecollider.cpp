@@ -1,8 +1,8 @@
-#include "gamecollider.h"
+#include "../core/basecollider.h"
 
 using namespace DirectX;
 
-GameCollider::GameCollider()
+BaseCollider::BaseCollider()
 {
     internalFrustumCheckBoundingBox = BoundingBox({ 0,0,0 }, { 0.5f,0.5f,0.5f });
     internalBoundingBox = BoundingOrientedBox({ 0,0,0 }, { 0.5f,0.5f,0.5f }, { 0.0f,0.0f,0.0f,1.0f });
@@ -11,7 +11,7 @@ GameCollider::GameCollider()
 }
 
 /*set the standard boxes for frustum checking and picking*/
-void GameCollider::setBaseBoxes(DirectX::BoundingBox box)
+void BaseCollider::setBaseBoxes(DirectX::BoundingBox box)
 {
     setColliderType(GameObjectCollider::OBB);
 
@@ -22,13 +22,13 @@ void GameCollider::setBaseBoxes(DirectX::BoundingBox box)
 }
 
 /*change between gameobjectcollider types*/
-void GameCollider::setColliderType(GameObjectCollider goCollider)
+void BaseCollider::setColliderType(GameObjectCollider goCollider)
 {
     colliderType = goCollider;
 }
 
 /*change size and location of the actual bounding boxes*/
-void GameCollider::setProperties(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
+void BaseCollider::setProperties(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
 {
     if (colliderType == GameObjectCollider::OBB)
     {
@@ -42,7 +42,7 @@ void GameCollider::setProperties(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 ext
 }
 
 /*update all bounding boxes with world transform*/
-void GameCollider::update(const DirectX::XMFLOAT4X4& M)
+void BaseCollider::update(const DirectX::XMFLOAT4X4& M)
 {
     internalFrustumCheckBoundingBox.Transform(frustumCheckBoundingBox, XMLoadFloat4x4(&M));
     internalPickBox.Transform(pickBox, XMLoadFloat4x4(&M));
@@ -54,7 +54,7 @@ void GameCollider::update(const DirectX::XMFLOAT4X4& M)
     boundingSphere.Radius = internalBoundingSphere.Radius;
 }
 
-DirectX::XMFLOAT3 GameCollider::getRelativeCenterOffset() const
+DirectX::XMFLOAT3 BaseCollider::getRelativeCenterOffset() const
 {
     if (colliderType == GameObjectCollider::OBB)
     {
@@ -68,7 +68,7 @@ DirectX::XMFLOAT3 GameCollider::getRelativeCenterOffset() const
     return{};
 }
 
-DirectX::XMFLOAT3 GameCollider::getCenterOffset() const
+DirectX::XMFLOAT3 BaseCollider::getCenterOffset() const
 {
     if(colliderType == GameObjectCollider::OBB)
     {
@@ -82,7 +82,7 @@ DirectX::XMFLOAT3 GameCollider::getCenterOffset() const
     return{};
 }
 
-DirectX::XMFLOAT3 GameCollider::getExtents() const
+DirectX::XMFLOAT3 BaseCollider::getExtents() const
 {
     if (colliderType == GameObjectCollider::OBB)
     {
@@ -97,13 +97,13 @@ DirectX::XMFLOAT3 GameCollider::getExtents() const
 }
 
 /*camera frustum check*/
-bool GameCollider::intersects(const DirectX::BoundingFrustum& cameraFrustum) const
+bool BaseCollider::intersects(const DirectX::BoundingFrustum& cameraFrustum) const
 {
     return cameraFrustum.Contains(frustumCheckBoundingBox) == DirectX::DISJOINT;
 }
 
 /*intersect with other game collider*/
-bool GameCollider::intersects(const GameCollider& other) const
+bool BaseCollider::intersects(const BaseCollider& other) const
 {
 
     if (colliderType == GameObjectCollider::OBB && other.colliderType == GameObjectCollider::OBB)
@@ -125,7 +125,7 @@ bool GameCollider::intersects(const GameCollider& other) const
 }
 
 /*intersect with shadow sphere*/
-bool GameCollider::intersects(const DirectX::BoundingSphere& shadowSphere) const
+bool BaseCollider::intersects(const DirectX::BoundingSphere& shadowSphere) const
 {
     return frustumCheckBoundingBox.Intersects(shadowSphere);
 }

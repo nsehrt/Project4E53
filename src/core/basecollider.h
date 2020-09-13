@@ -2,7 +2,7 @@
 
 #include "../util/d3dUtil.h"
 
-class GameCollider
+class BaseCollider
 {
 
 public:
@@ -12,8 +12,8 @@ public:
         Sphere
     };
 
-    explicit GameCollider();
-    ~GameCollider() = default;
+    explicit BaseCollider();
+    ~BaseCollider() = default;
 
     void setBaseBoxes(DirectX::BoundingBox box);
     void setColliderType(GameObjectCollider goCollider);
@@ -48,7 +48,7 @@ public:
 
     /*collision functions*/
     bool intersects(const DirectX::BoundingFrustum& cameraFrustum) const;
-    bool intersects(const GameCollider& other) const;
+    bool intersects(const BaseCollider& other) const;
     bool intersects(const DirectX::BoundingSphere& shadowSphere) const;
 
 private:

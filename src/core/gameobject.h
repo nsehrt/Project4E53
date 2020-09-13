@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../render/renderresource.h"
-#include "../core/gamecollider.h"
+#include "../core/basecollider.h"
 #include <btBulletDynamicsCommon.h>
 
 using json = nlohmann::json;
@@ -31,6 +31,8 @@ class GameObject
 
 public:
 
+    friend class BulletPhysics;
+
     /*load a game object from a json*/
     explicit GameObject(const json& objectJson, int index, int skinnedIndex = -1);
 
@@ -40,7 +42,7 @@ public:
     /*create empty game object with object cb and skinned cb index*/
     explicit GameObject(const std::string& name, int index, int skinnedIndex = -1);
 
-    ~GameObject() = default;
+    ~GameObject();
 
 
 
@@ -53,7 +55,6 @@ public:
 
 
     ObjectType gameObjectType = ObjectType::Default;
-    ObjectMotionType motionType = ObjectMotionType::Static;
 
     std::string Name;
     std::unique_ptr<RenderItem> renderItem = nullptr;
@@ -72,14 +73,17 @@ public:
 
     protected:
 
-    GameCollider collider;
+    BaseCollider collider;
 
     /*transforms*/
     DirectX::XMFLOAT3 Position, Rotation, Scale;
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
 
     /*bullet physics*/
+    ObjectMotionType motionType = ObjectMotionType::Static;
     float mass = 0.0f;
+    int shapeType = 0;
+    int numericalID = -1; // unique int identifier
     btRigidBody* bulletBody = nullptr;
 
 
@@ -160,7 +164,7 @@ public:
         return TextureRotation;
     }
 
-    void setColliderProperties(GameCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
+    void setColliderProperties(BaseCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
     bool intersects(const GameObject& obj) const;
 
     bool getIsInFrustum() const
@@ -178,7 +182,7 @@ public:
         currentlyInShadowSphere = false;
     }
 
-    GameCollider& getCollider()
+    BaseCollider& getCollider()
     {
         return collider;
     }

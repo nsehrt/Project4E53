@@ -59,8 +59,8 @@ public:
     static RenderResource* getRenderResource();
     static void setRenderResource(std::shared_ptr<RenderResource> providedRenderResource);
 
-    BulletPhysics* getPhysics();
-    void setPhysics(BulletPhysics* providedPhysics);
+    static BulletPhysics* getPhysics();
+    static void setPhysics(BulletPhysics* providedPhysics);
 
     static Player* getPlayer();
     static void setPlayer(std::shared_ptr<Player> _player);

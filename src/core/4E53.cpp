@@ -195,6 +195,9 @@ bool P_4E53::Initialize()
     vsyncIntervall = ServiceProvider::getSettings()->displaySettings.VSync;
     gNumFrameResources = ServiceProvider::getSettings()->graphicSettings.numFrameResources;
 
+    /*register bullet physics*/
+    ServiceProvider::setPhysics(&physics);
+
     /*initialize input manager*/
     std::shared_ptr<InputManager> inputManager(new InputManager());
     ServiceProvider::setInputManager(inputManager);
@@ -1235,7 +1238,7 @@ void P_4E53::update(const GameTime& gt)
             //switch type
             if(inputData.Pressed(BTN::Y))
             {
-                auto newType = static_cast<GameCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
+                auto newType = static_cast<BaseCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
 
                 editSettings->currentSelection->setColliderProperties(
                     newType,
@@ -1257,7 +1260,7 @@ void P_4E53::update(const GameTime& gt)
             {
                 editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
 
-                if(editSettings->currentSelection->getCollider().getType() == GameCollider::GameObjectCollider::Sphere)
+                if(editSettings->currentSelection->getCollider().getType() == BaseCollider::GameObjectCollider::Sphere)
                 {
                     editSettings->collisionScaleAxis = ScaleAxis::XYZ;
                 }
