@@ -165,7 +165,7 @@ public:
     }
 
     void setColliderProperties(BaseCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
-    bool intersects(const GameObject& obj) const;
+
 
     bool getIsInFrustum() const
     {

@@ -2,6 +2,8 @@
 
 #include "../util/d3dUtil.h"
 
+/*this class holds only the basic AABB and OBB, everything else is handled by bullet*/
+
 class BaseCollider
 {
 
@@ -48,7 +50,6 @@ public:
 
     /*collision functions*/
     bool intersects(const DirectX::BoundingFrustum& cameraFrustum) const;
-    bool intersects(const BaseCollider& other) const;
     bool intersects(const DirectX::BoundingSphere& shadowSphere) const;
 
 private:

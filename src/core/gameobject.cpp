@@ -227,12 +227,6 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
     /*load bullet physics properties*/
     numericalID = index; 
 
-    if(exists(objectJson, "Mass"))
-    {
-        mass = objectJson["Mass"];
-        motionType = ObjectMotionType::Dynamic;
-    }
-
     if(exists(objectJson, "MotionType"))
     {
         if(objectJson["MotionType"] == "Kinetic")
@@ -242,6 +236,19 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
         else if(objectJson["MotionType"] == "Dynamic")
         {
             motionType = ObjectMotionType::Dynamic;
+        }
+    }
+
+    if(exists(objectJson, "Mass"))
+    {
+        mass = objectJson["Mass"];
+
+        if(mass < 0.0f) mass = 0.0f;
+
+        if(mass > 0.0f && motionType == ObjectMotionType::Static)
+        {
+            LOG(Severity::Warning, "Game object " << Name << ": Static but mass over 0!");
+            mass = 0.0f;
         }
     }
 
@@ -604,16 +611,6 @@ void GameObject::setColliderProperties(BaseCollider::GameObjectCollider type, Di
     collider.setProperties(center, extents);
 
     updateTransforms();
-}
-
-bool GameObject::intersects(const GameObject& obj) const
-{
-    if (!isCollisionEnabled || !obj.isCollisionEnabled)
-    {
-        return false;
-    }
-
-    return collider.intersects(obj.collider);
 }
 
 void GameObject::updateTransforms()

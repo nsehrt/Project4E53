@@ -1,6 +1,6 @@
 #include "bulletphysics.h"
 #include "../core/gameobject.h"
-
+#include "../util/serviceprovider.h"
 
 BulletPhysics::BulletPhysics(float gravity)
 {
@@ -71,12 +71,18 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     btRigidBody* body = new btRigidBody(bodyInfo);
     obj.bulletBody = body;
 
-    m_dynamicsWorld->addRigidBody(body);
     body->setUserPointer(&obj);
+
+    //enabl callback function
+    //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+    m_dynamicsWorld->addRigidBody(body);
+
 
     return true;
 }
 
+// TODO
 bool BulletPhysics::reset()
 {
     return true;
@@ -91,8 +97,10 @@ btCollisionShape* BulletPhysics::createShape(GameObject& obj)
 
 bool BulletPhysics::collisionCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* obj1, int id1, int index1, const btCollisionObjectWrapper* obj2, int id2, int index2)
 {
+    GameObject* a = (GameObject*)obj1->getCollisionObject()->getUserPointer();
+    GameObject* b = (GameObject*)obj2->getCollisionObject()->getUserPointer();
 
-
+    LOG(Severity::Debug, a->Name << " " << b->Name);
 
     return false;
 }

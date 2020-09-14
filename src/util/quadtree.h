@@ -64,7 +64,7 @@ public:
     @param object for which collisions are searched for
     @param pointer to game objects that collide with obj will be stored here
     */
-    void searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const;
+    //void searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const;
 
     /*
     compute collision between all nodes in the tree and a camera frustum

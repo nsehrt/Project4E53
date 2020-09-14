@@ -112,11 +112,6 @@ void Player::update(const InputSet& input, const GameTime& gt)
     XMFLOAT3 currentPosition = getPosition();
     setPosition(projectedPosition);
 
-    if (activeLevel->playerCollides())
-    {
-        setPosition(currentPosition);
-    }
-
     /*TEMP*/
     GameObject::update(gt);
 

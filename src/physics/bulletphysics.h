@@ -16,12 +16,29 @@ class BulletPhysics
 {
     public:
 
+    /* set up bullet physics
+    * @param gravity (y-acceleration)
+    */
     BulletPhysics(float gravity = -9.81f);
     ~BulletPhysics();
 
+    /* just calls the bullet physics step simulation
+    @param delta time
+    */
     bool simulateStep(float elapsedTime);
-    bool addGameObject(GameObject& obj);    
+
+    /* add a game object as a rigid body to the dynamic world. modifies game object (add btRigidBody*)
+    @param the game object
+    @returns always true
+    */
+    bool addGameObject(GameObject& obj);
+
+    /* delete all collision objects in the world / full reset for level change
+    @returns always true
+    */
     bool reset();
+
+
 
     private:
 

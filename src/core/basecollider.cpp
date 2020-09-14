@@ -102,28 +102,6 @@ bool BaseCollider::intersects(const DirectX::BoundingFrustum& cameraFrustum) con
     return cameraFrustum.Contains(frustumCheckBoundingBox) == DirectX::DISJOINT;
 }
 
-/*intersect with other game collider*/
-bool BaseCollider::intersects(const BaseCollider& other) const
-{
-
-    if (colliderType == GameObjectCollider::OBB && other.colliderType == GameObjectCollider::OBB)
-    {
-        return boundingBox.Intersects(other.boundingBox);
-    }
-    else if (colliderType == GameObjectCollider::OBB && other.colliderType == GameObjectCollider::Sphere)
-    {
-        return boundingBox.Intersects(other.boundingSphere);
-    }
-    else if (colliderType == GameObjectCollider::Sphere && other.colliderType == GameObjectCollider::OBB)
-    {
-        return boundingSphere.Intersects(other.boundingBox);
-    }
-    else
-    {
-        return boundingSphere.Intersects(other.boundingSphere);
-    }
-}
-
 /*intersect with shadow sphere*/
 bool BaseCollider::intersects(const DirectX::BoundingSphere& shadowSphere) const
 {

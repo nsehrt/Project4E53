@@ -854,25 +854,6 @@ void Level::addGameObjectToQuadTree(GameObject* go)
 
 }
 
-bool Level::playerCollides()
-{
-    std::vector<GameObject*> collisionObjs;
-
-    /*checks collision with static objects*/
-    /*search the quad tree recursively for collision*/
-    quadTree.searchCollision(ServiceProvider::getPlayer(), collisionObjs);
-
-    /*TODO check collision with dynamic objects*/
-
-    for(const auto& i : collisionObjs)
-    {
-        LOG(Severity::Debug, "Collision with " << i->Name << ".");
-    }
-
-    return !collisionObjs.empty();
-
-}
-
 
 void Level::calculateRenderOrder()
 {
