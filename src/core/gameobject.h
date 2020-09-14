@@ -78,6 +78,9 @@ public:
     /*bullet physics*/
     ObjectMotionType motionType = ObjectMotionType::Static;
     float mass = 0.0f;
+    float restitution = 0.0f;
+    float damping = 0.0f;
+    float friction = 0.5f;
     int shapeType = BOX_SHAPE_PROXYTYPE;
     int numericalID = -1; // unique int identifier
     DirectX::XMFLOAT3 extents = { 1,1,1 };

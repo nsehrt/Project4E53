@@ -14,7 +14,6 @@
             "ColliderType": 0,
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 0.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
@@ -128,7 +127,6 @@
             "ColliderType": 0,
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 0.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
@@ -139,6 +137,7 @@
                 -0.015736844390630722
             ],
             "RenderType": "Default",
+            "Restitution": 1.0,
             "Rotation": [
                 0.0,
                 0.0,
@@ -166,7 +165,6 @@
             "ColliderType": 0,
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 0.0,
             "Material": "default",
             "Model": "box",
             "Name": "box_(1)",
@@ -393,7 +391,6 @@
             "ColliderType": 0,
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 0.0,
             "Material": "default",
             "Model": "box",
             "Name": "box_(10)",
@@ -441,6 +438,7 @@
                 -0.015736844390630722
             ],
             "RenderType": "Default",
+            "Restitution": 0.800000011920929,
             "Rotation": [
                 0.0,
                 0.0,
@@ -474,15 +472,54 @@
             "MotionType": "Dynamic",
             "Name": "sphere_(2)",
             "Position": [
-                5.0827860832214355,
-                33.03044891357422,
+                -1.532507061958313,
+                19.68539810180664,
                 -0.015736844390630722
             ],
             "RenderType": "Default",
             "Rotation": [
                 0.0,
                 0.0,
-                225.0
+                224.99996948242188
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 8,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 0.019999999552965164,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "sphere_(3)",
+            "Position": [
+                -10.863347053527832,
+                35.766639709472656,
+                9.515832901000977
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
             ],
             "Scale": [
                 1.0,
@@ -581,12 +618,12 @@
                 ]
             },
             {
-                "FallOffEnd": 3.981058359146118,
-                "FallOffStart": 1.9458552598953247,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
                 "Position": [
                     0.0,
-                    0.9922128319740295,
+                    0.8531982898712158,
                     0.0
                 ],
                 "Strength": [

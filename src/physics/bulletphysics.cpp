@@ -47,7 +47,7 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     transform.setRotation(btQuaternion(obj.getRotation().x,
                                        obj.getRotation().y,
                                        obj.getRotation().z));
-
+    
     //create collision shape
     btCollisionShape* shape = createShape(obj);
 
@@ -72,6 +72,9 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     obj.bulletBody = body;
 
     body->setUserPointer(&obj);
+    body->setRestitution(obj.restitution);
+    body->setFriction(obj.friction);
+    body->setDamping(obj.damping, body->getAngularDamping());
 
     //enabl callback function
     //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
@@ -82,9 +85,13 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     return true;
 }
 
-// TODO
 bool BulletPhysics::reset()
 {
+    for(int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+    {
+        m_dynamicsWorld->removeCollisionObject(m_dynamicsWorld->getCollisionObjectArray()[i]);
+    }
+
     return true;
 }
 

@@ -239,6 +239,28 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
         }
     }
 
+    if(exists(objectJson, "Restitution"))
+    {
+        restitution = objectJson["Restitution"];
+
+        if(restitution < 0.0f) restitution = 0.0f;
+
+    }
+
+    if(exists(objectJson, "Damping"))
+    {
+        damping = objectJson["Damping"];
+
+        if(damping < 0.0f) damping = 0.0f;
+
+    }
+
+    if(exists(objectJson, "Friction"))
+    {
+        friction = objectJson["Friction"];
+
+        if(friction < 0.0f) friction = 0.0f;
+    }
 
     updateTransforms();
 }
@@ -512,7 +534,10 @@ json GameObject::toJson() const
     jElement["Rotation"][2] = XMConvertToDegrees(getRotation().z);
 
     /*bullet physics*/
-    jElement["Mass"] = mass;
+    if(mass != 0.0f)
+    {
+        jElement["Mass"] = mass;
+    }
 
     if(motionType == ObjectMotionType::Kinetic)
     {
@@ -523,7 +548,6 @@ json GameObject::toJson() const
         jElement["MotionType"] = "Dynamic";
     }
 
-    //TODO Save centerOffset, extents, type
     jElement["ColliderType"] = shapeType;
 
     jElement["ColliderExtents"][0] = extents.x;
@@ -534,7 +558,20 @@ json GameObject::toJson() const
     jElement["ColliderOffset"][1] = centerOffset.y;
     jElement["ColliderOffset"][2] = centerOffset.z;
 
+    if(restitution != 0.0f)
+    {
+        jElement["Restitution"] = restitution;
+    }
 
+    if(damping != 0.0f)
+    {
+        jElement["Damping"] = damping;
+    }
+
+    if(friction != 0.5f)
+    {
+        jElement["Friction"] = friction;
+    }
 
     return jElement;
 }

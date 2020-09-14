@@ -41,6 +41,10 @@ bool Level::load(const std::string& levelFile)
 
     levelStream.close();
 
+
+    /*reset bullet phyics world*/
+    ServiceProvider::getPhysics()->reset();
+
     /*parse terrain*/
     if (!parseTerrain(levelJson["Terrain"]))
     {
