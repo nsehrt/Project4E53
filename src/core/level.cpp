@@ -143,8 +143,8 @@ bool Level::load(const std::string& levelFile)
         addGameObjectToQuadTree(i.second.get());
     }
 
-    LOG(Severity::Debug, "QuadTree:\n" << quadTree);
-    LOG(Severity::Debug, "Stored objects: " << quadTree.sizeContainedObjects());
+    //LOG(Severity::Debug, "QuadTree:\n" << quadTree);
+    //LOG(Severity::Debug, "Stored objects: " << quadTree.sizeContainedObjects());
 
     /*level loading finished*/
 
@@ -256,21 +256,22 @@ void Level::update(const GameTime& gt)
 
             mGameObjects["HITBOX_EDIT"]->isDrawEnabled = true;
 
-            mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
-            mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
+            //TODO
+            //mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
+            //mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
 
-            if(sel->getCollider().getType() == BaseCollider::GameObjectCollider::OBB)
-            {
-                mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
-                XMFLOAT3 scale{};
-                XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->getCollider().getExtents()), XMVectorSet(2.0f,2.0f,2.0f,2.0f)));
-                mGameObjects["HITBOX_EDIT"]->setScale(scale);
-            }
-            else
-            {
-                mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
-                mGameObjects["HITBOX_EDIT"]->setScale(sel->getCollider().getExtents());
-            }
+            //if(sel->getCollider().getType() == BaseCollider::GameObjectCollider::OBB)
+            //{
+            //    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
+            //    XMFLOAT3 scale{};
+            //    XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->getCollider().getExtents()), XMVectorSet(2.0f,2.0f,2.0f,2.0f)));
+            //    mGameObjects["HITBOX_EDIT"]->setScale(scale);
+            //}
+            //else
+            //{
+            //    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
+            //    mGameObjects["HITBOX_EDIT"]->setScale(sel->getCollider().getExtents());
+            //}
 
         }
         else

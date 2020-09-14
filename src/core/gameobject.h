@@ -75,17 +75,29 @@ public:
 
     BaseCollider collider;
 
-    /*transforms*/
-    DirectX::XMFLOAT3 Position, Rotation, Scale;
-    DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
-
     /*bullet physics*/
     ObjectMotionType motionType = ObjectMotionType::Static;
     float mass = 0.0f;
-    int shapeType = 0;
+    int shapeType = BOX_SHAPE_PROXYTYPE;
     int numericalID = -1; // unique int identifier
+    DirectX::XMFLOAT3 extents = { 1,1,1 };
+    DirectX::XMFLOAT3 centerOffset = { 0,0,0 };
+
+    /*
+    Shape types
+    
+    BOX_SHAPE_PROXYTYPE = 0
+    SPHERE_SHAPE_PROXYTYPE = 8
+    CAPSULE_SHAPE_PROXYTYPE = 10
+    CYLINDER_SHAPE_PROXYTYPE = 13
+    TERRAIN_SHAPE_PROXYTYPE = 24
+    */
+
     btRigidBody* bulletBody = nullptr;
 
+    /*transforms*/
+    DirectX::XMFLOAT3 Position, Rotation, Scale;
+    DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
 
     /*render related*/
     bool currentlyInFrustum = false;
@@ -163,9 +175,6 @@ public:
     {
         return TextureRotation;
     }
-
-    void setColliderProperties(BaseCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
-
 
     bool getIsInFrustum() const
     {

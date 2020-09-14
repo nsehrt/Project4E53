@@ -1235,86 +1235,86 @@ void P_4E53::update(const GameTime& gt)
         else if(editSettings->toolMode == EditTool::ObjectCollision)
         {
 
-            //switch type
-            if(inputData.Pressed(BTN::Y))
-            {
-                auto newType = static_cast<BaseCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
+            ////switch type
+            //if(inputData.Pressed(BTN::Y))
+            //{
+            //    auto newType = static_cast<BaseCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
 
-                editSettings->currentSelection->setColliderProperties(
-                    newType,
-                    editSettings->currentSelection->getCollider().getRelativeCenterOffset(),
-                    editSettings->currentSelection->getCollider().getExtents()
-                );
+            //    editSettings->currentSelection->setColliderProperties(
+            //        newType,
+            //        editSettings->currentSelection->getCollider().getRelativeCenterOffset(),
+            //        editSettings->currentSelection->getCollider().getExtents()
+            //    );
 
-                editSettings->collisionScaleAxis = ScaleAxis::XYZ;
+            //    editSettings->collisionScaleAxis = ScaleAxis::XYZ;
 
-            }
+            //}
 
-            //switch axis
-            if(inputData.Pressed(BTN::B))
-            {
-                editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
-            }
+            ////switch axis
+            //if(inputData.Pressed(BTN::B))
+            //{
+            //    editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
+            //}
 
-            if(inputData.Pressed(BTN::A))
-            {
-                editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
+            //if(inputData.Pressed(BTN::A))
+            //{
+            //    editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
 
-                if(editSettings->currentSelection->getCollider().getType() == BaseCollider::GameObjectCollider::Sphere)
-                {
-                    editSettings->collisionScaleAxis = ScaleAxis::XYZ;
-                }
-            }
+            //    if(editSettings->currentSelection->getCollider().getType() == BaseCollider::GameObjectCollider::Sphere)
+            //    {
+            //        editSettings->collisionScaleAxis = ScaleAxis::XYZ;
+            //    }
+            //}
 
-            //translation tool
-            XMFLOAT3 nPos = editSettings->currentSelection->getCollider().getRelativeCenterOffset();
+            ////translation tool
+            //XMFLOAT3 nPos = editSettings->currentSelection->getCollider().getRelativeCenterOffset();
 
-            float camDistance = editCamera->getDistanceNormalized();
+            //float camDistance = editCamera->getDistanceNormalized();
 
-            float thumbX = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
-            float thumbY = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
+            //float thumbX = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
+            //float thumbY = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
 
-            switch(editSettings->collisionTranslationAxis)
-            {
-                case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
-                case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
-                case TranslationAxis::X: nPos.x += thumbX * 0.2f; break;
-                case TranslationAxis::Y: nPos.y += thumbY * 0.2f; break;
-                case TranslationAxis::Z: nPos.z += thumbY * 0.2f; break;
-            }
+            //switch(editSettings->collisionTranslationAxis)
+            //{
+            //    case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
+            //    case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
+            //    case TranslationAxis::X: nPos.x += thumbX * 0.2f; break;
+            //    case TranslationAxis::Y: nPos.y += thumbY * 0.2f; break;
+            //    case TranslationAxis::Z: nPos.z += thumbY * 0.2f; break;
+            //}
 
-            editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), nPos, editSettings->currentSelection->getCollider().getExtents());
+            //editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), nPos, editSettings->currentSelection->getCollider().getExtents());
 
 
-            /*scale tool*/
-            if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
-            {
-                /*which trigger pressed more*/
+            ///*scale tool*/
+            //if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
+            //{
+            //    /*which trigger pressed more*/
 
-                float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
-                    -inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
+            //    float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
+            //        -inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
 
-                /*scale*/
-                XMFLOAT3 nScale = editSettings->currentSelection->getCollider().getExtents();
+            //    /*scale*/
+            //    XMFLOAT3 nScale = editSettings->currentSelection->getCollider().getExtents();
 
-                float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
+            //    float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
 
-                switch(editSettings->collisionScaleAxis)
-                {
-                    case ScaleAxis::XYZ:
-                        nScale.x += increase;
-                        nScale.y += increase;
-                        nScale.z += increase;
-                        break;
-                    case ScaleAxis::X: nScale.x += increase; break;
-                    case ScaleAxis::Y: nScale.y += increase; break;
-                    case ScaleAxis::Z: nScale.z += increase; break;
-                }
+            //    switch(editSettings->collisionScaleAxis)
+            //    {
+            //        case ScaleAxis::XYZ:
+            //            nScale.x += increase;
+            //            nScale.y += increase;
+            //            nScale.z += increase;
+            //            break;
+            //        case ScaleAxis::X: nScale.x += increase; break;
+            //        case ScaleAxis::Y: nScale.y += increase; break;
+            //        case ScaleAxis::Z: nScale.z += increase; break;
+            //    }
 
-                editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), editSettings->currentSelection->getCollider().getRelativeCenterOffset(), nScale);
+            //    editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), editSettings->currentSelection->getCollider().getRelativeCenterOffset(), nScale);
 
           
-            }
+            //}
 
         }
         /*light*/
@@ -1537,7 +1537,7 @@ void P_4E53::update(const GameTime& gt)
 
             if(editSettings->currentSelection != nullptr)
             {
-                newCamTarget = editSettings->currentSelection->getCollider().getCenterOffset();
+                //newCamTarget = editSettings->currentSelection->getCollider().getCenterOffset(); TODO
             }
         }
 

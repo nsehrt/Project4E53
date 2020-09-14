@@ -43,6 +43,12 @@ class BulletPhysics
     private:
 
     btCollisionShape* createShape(GameObject& obj);
+    btCollisionShape* createBox(GameObject& obj);
+    btCollisionShape* createCapsule(GameObject& obj);
+    btCollisionShape* createSphere(GameObject& obj);
+    btCollisionShape* createCylinder(GameObject& obj);
+
+
     static bool collisionCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* obj1, int id1, int index1, const btCollisionObjectWrapper* obj2, int id2, int index2);
 
     //

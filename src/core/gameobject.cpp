@@ -186,45 +186,32 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
 
     renderItem = std::move(rItem);
 
-    /*set collider properties*/
+    /*set base collider properties*/
 
     collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
-
-
-    XMFLOAT3 colliderCenter{}, colliderExtents{};
-    int colliderType = -1;
-
-    if (exists(objectJson, "ColliderType"))
-    {
-        colliderType = objectJson["ColliderType"];
-    }
-
-    if (exists(objectJson, "ColliderOffset"))
-    {
-        colliderCenter.x = objectJson["ColliderOffset"][0];
-        colliderCenter.y = objectJson["ColliderOffset"][1];
-        colliderCenter.z = objectJson["ColliderOffset"][2];
-    }
-
-    if (exists(objectJson, "ColliderExtents"))
-    {
-        colliderExtents.x = objectJson["ColliderExtents"][0];
-        colliderExtents.y = objectJson["ColliderExtents"][1];
-        colliderExtents.z = objectJson["ColliderExtents"][2];
-    }
-
-    if (colliderType == -1)
-    {
-        /*if no collider specified use base collider of the model*/
-        setColliderProperties(BaseCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
-    }
-    else
-    {
-        setColliderProperties(static_cast<BaseCollider::GameObjectCollider>(colliderType), colliderCenter, colliderExtents);
-    }
-
+    extents = renderItem->getModel()->baseModelBox.Extents;
 
     /*load bullet physics properties*/
+
+    if(exists(objectJson, "ColliderType"))
+    {
+        shapeType = objectJson["ColliderType"];
+    }
+
+    if(exists(objectJson, "ColliderOffset"))
+    {
+        centerOffset.x = objectJson["ColliderOffset"][0];
+        centerOffset.y = objectJson["ColliderOffset"][1];
+        centerOffset.z = objectJson["ColliderOffset"][2];
+    }
+
+    if(exists(objectJson, "ColliderExtents"))
+    {
+        extents.x = objectJson["ColliderExtents"][0];
+        extents.y = objectJson["ColliderExtents"][1];
+        extents.z = objectJson["ColliderExtents"][2];
+    }
+
     numericalID = index; 
 
     if(exists(objectJson, "MotionType"))
@@ -524,15 +511,6 @@ json GameObject::toJson() const
     jElement["Rotation"][1] = XMConvertToDegrees(getRotation().y);
     jElement["Rotation"][2] = XMConvertToDegrees(getRotation().z);
 
-    /*save game collider*/
-    jElement["ColliderType"] = static_cast<UINT>(collider.getType());
-    jElement["ColliderOffset"][0] = collider.getRelativeCenterOffset().x;
-    jElement["ColliderOffset"][1] = collider.getRelativeCenterOffset().y;
-    jElement["ColliderOffset"][2] = collider.getRelativeCenterOffset().z;
-    jElement["ColliderExtents"][0] = collider.getExtents().x;
-    jElement["ColliderExtents"][1] = collider.getExtents().y;
-    jElement["ColliderExtents"][2] = collider.getExtents().z;
-
     /*bullet physics*/
     jElement["Mass"] = mass;
 
@@ -545,6 +523,19 @@ json GameObject::toJson() const
         jElement["MotionType"] = "Dynamic";
     }
 
+    //TODO Save centerOffset, extents, type
+    jElement["ColliderType"] = shapeType;
+
+    jElement["ColliderExtents"][0] = extents.x;
+    jElement["ColliderExtents"][1] = extents.y;
+    jElement["ColliderExtents"][2] = extents.z;
+
+    jElement["ColliderOffset"][0] = centerOffset.x;
+    jElement["ColliderOffset"][1] = centerOffset.y;
+    jElement["ColliderOffset"][2] = centerOffset.z;
+
+
+
     return jElement;
 }
 
@@ -555,9 +546,9 @@ void GameObject::setScale(DirectX::XMFLOAT3 _scale)
 
     updateTransforms();
 
-    /*apply scale to game object collider*/
-    collider.setProperties(collider.getInternalPickBoxOffset(), collider.getPickBox().Extents);
-    updateTransforms();
+    /*apply scale to game object collider*/// TODO
+    //collider.setProperties(collider.getInternalPickBoxOffset(), collider.getPickBox().Extents);
+    //updateTransforms();
 }
 
 void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)
@@ -603,14 +594,6 @@ void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
         currentlyInFrustum = true;
     }
 
-}
-
-void GameObject::setColliderProperties(BaseCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
-{
-    collider.setColliderType(type);
-    collider.setProperties(center, extents);
-
-    updateTransforms();
 }
 
 void GameObject::updateTransforms()
