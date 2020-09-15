@@ -344,10 +344,10 @@ void GameObject::update(const GameTime& gt)
         btScalar x{}, y{}, z{};
 
         bulletBody->getMotionState()->getWorldTransform(t);
-        t.getRotation().getEulerZYX(z, y, x);//!!!
+        t.getRotation().getEulerZYX(z, y, x);
 
         Position = { t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z() };
-        Rotation = { x, y, z }; 
+        Rotation = { z, y, x }; //!!!//!!!//!!!//!!!//!!!
 
         updateTransforms();
     }

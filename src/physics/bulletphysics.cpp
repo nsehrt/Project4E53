@@ -83,12 +83,11 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     btRigidBody::btRigidBodyConstructionInfo bodyInfo(obj.mass, motionState, shape, inertia);
     btRigidBody* body = new btRigidBody(bodyInfo);
     obj.bulletBody = body;
+    body->setUserPointer(&obj);
 
-    //body->setUserPointer(&obj);
-    //body->setRestitution(obj.restitution);
-    //body->setFriction(obj.friction);
-    //body->setDamping(obj.damping, body->getAngularDamping());
-    //body->setRollingFriction(0.15f);
+    body->setRestitution(obj.restitution);
+    body->setFriction(obj.friction);
+    body->setDamping(obj.damping, body->getAngularDamping());
 
     //enable callback function
     //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
