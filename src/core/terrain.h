@@ -6,6 +6,9 @@ class Terrain
 {
 public:
 
+    friend class BulletPhysics;
+
+
     explicit Terrain(const json& terrainInfo);
 
     bool save();

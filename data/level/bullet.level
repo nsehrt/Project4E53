@@ -77,6 +77,44 @@
         },
         {
             "ColliderExtents": [
+                12.547160148620605,
+                0.1442386507987976,
+                12.548212051391602
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box",
+            "Position": [
+                -0.7848452925682068,
+                2.080329656600952,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Restitution": 1.0,
+            "Rotation": [
+                10.487979888916016,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                26.09432029724121,
+                0.2884773015975952,
+                26.096424102783203
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
                 0.5,
                 0.5,
                 0.5
@@ -109,44 +147,6 @@
                 1.0,
                 1.0,
                 1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "ColliderExtents": [
-                12.547160148620605,
-                0.1442386507987976,
-                12.548212051391602
-            ],
-            "ColliderOffset": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "ColliderType": 0,
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Material": "default",
-            "Model": "box",
-            "MotionType": "Dynamic",
-            "Name": "box",
-            "Position": [
-                0.4433003067970276,
-                2.4940483570098877,
-                -0.015736844390630722
-            ],
-            "RenderType": "Default",
-            "Restitution": 1.0,
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                26.09432029724121,
-                0.2884773015975952,
-                26.096424102783203
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -472,15 +472,15 @@
             "MotionType": "Dynamic",
             "Name": "sphere_(2)",
             "Position": [
-                -1.532507061958313,
-                19.68539810180664,
+                -10.316132545471191,
+                8.877802848815918,
                 -0.015736844390630722
             ],
             "RenderType": "Default",
             "Rotation": [
                 0.0,
                 0.0,
-                224.99996948242188
+                0.0
             ],
             "Scale": [
                 1.0,
@@ -510,9 +510,9 @@
             "MotionType": "Dynamic",
             "Name": "sphere_(3)",
             "Position": [
-                -10.863347053527832,
-                35.766639709472656,
-                9.515832901000977
+                24.21066665649414,
+                4.716554641723633,
+                -11.784549713134766
             ],
             "RenderType": "Default",
             "Restitution": 0.800000011920929,
@@ -603,21 +603,6 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 12.0,
-                "FallOffStart": 10.0,
-                "Name": "P_(1)",
-                "Position": [
-                    -3.0,
-                    3.0,
-                    0.0
-                ],
-                "Strength": [
-                    1.0,
-                    0.0,
-                    0.25
-                ]
-            },
-            {
                 "FallOffEnd": 3.4250001907348633,
                 "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
@@ -630,6 +615,21 @@
                     1.0,
                     1.0,
                     1.0
+                ]
+            },
+            {
+                "FallOffEnd": 12.0,
+                "FallOffStart": 10.0,
+                "Name": "P_(1)",
+                "Position": [
+                    -3.0,
+                    3.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.0,
+                    0.25
                 ]
             }
         ]

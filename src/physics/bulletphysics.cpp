@@ -1,5 +1,8 @@
 #include "bulletphysics.h"
+#include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 #include "../core/gameobject.h"
+#include "../core/terrain.h"
+#include "../util/mathhelper.h"
 #include "../util/serviceprovider.h"
 
 BulletPhysics::BulletPhysics(float gravity)
@@ -44,9 +47,19 @@ bool BulletPhysics::addGameObject(GameObject& obj)
                                   obj.getPosition().y,
                                   obj.getPosition().z));
 
-    transform.setRotation(btQuaternion(obj.getRotation().x,
-                                       obj.getRotation().y,
-                                       obj.getRotation().z));
+    if(obj.shapeType != CYLINDER_SHAPE_PROXYTYPE)
+    {
+        transform.setRotation(btQuaternion(obj.getRotation().x,
+                                           obj.getRotation().y,
+                                           obj.getRotation().z));
+    }
+    else
+    {
+        transform.setRotation(btQuaternion(obj.getRotation().x - MathHelper::Pi / 2.0f,
+                                           obj.getRotation().y,
+                                           obj.getRotation().z));
+    }
+
     
     //create collision shape
     btCollisionShape* shape = createShape(obj);
@@ -76,11 +89,42 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     body->setFriction(obj.friction);
     body->setDamping(obj.damping, body->getAngularDamping());
 
-    //enabl callback function
+    //enable callback function
     //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
     m_dynamicsWorld->addRigidBody(body);
 
+
+    return true;
+}
+
+bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
+{
+    btTransform transform;
+    transform.setIdentity();
+
+    btCollisionShape* terrainShape = new btHeightfieldTerrainShape(static_cast<int>(terrain.terrainSize),
+                                                                   static_cast<int>(terrain.terrainSize),
+                                                                   &terrain.mHeightMap[0],
+                                                                   terrain.heightScale,
+                                                                   -terrain.heightScale,
+                                                                   terrain.heightScale,
+                                                                   1,
+                                                                   PHY_FLOAT,
+                                                                   true);
+
+    auto motionState = new btDefaultMotionState(transform);
+    btRigidBody::btRigidBodyConstructionInfo bodyInfo(0.0f, motionState, terrainShape, btVector3(0,0,0));
+    btRigidBody* body = new btRigidBody(bodyInfo);
+
+    body->setUserPointer(&obj);
+    body->setRestitution(1.0f);
+    body->setFriction(0.5f);
+    body->setDamping(0.0f, body->getAngularDamping());
+
+    obj.bulletBody = body;
+
+    m_dynamicsWorld->addRigidBody(body);
 
     return true;
 }

@@ -11,6 +11,7 @@
 #include "../core/gameobject.h"
 
 class GameObject;
+class Terrain;
 
 class BulletPhysics
 {
@@ -32,6 +33,13 @@ class BulletPhysics
     @returns always true
     */
     bool addGameObject(GameObject& obj);
+
+    /* add the terrain height map as a collision object to the physics world
+    @param the terrain object
+    @param the with the terrain associated game object
+    @returns always true
+    */
+    bool addTerrain(Terrain& terrain, GameObject& obj);
 
     /* delete all collision objects in the world / full reset for level change
     @returns always true

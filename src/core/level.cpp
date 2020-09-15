@@ -1097,6 +1097,8 @@ bool Level::parseTerrain(const json& terrainJson)
     XMStoreFloat4x4(&terrainObject->renderItem->TexTransform, XMMatrixScaling((float)mTerrain->terrainSlices / 4.0f,
                     (float)mTerrain->terrainSlices / 4.0f, (float)mTerrain->terrainSlices / 4.0f));
 
+    ServiceProvider::getPhysics()->addTerrain(*mTerrain, *terrainObject);
+
     mGameObjects["TERRAIN"] = std::move(terrainObject);
 
     return true;
