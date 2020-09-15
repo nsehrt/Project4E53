@@ -20,7 +20,7 @@ class BulletPhysics
     /* set up bullet physics
     * @param gravity (y-acceleration)
     */
-    BulletPhysics(float gravity = -9.81f);
+    BulletPhysics(float gravity = -10.0f);
     ~BulletPhysics();
 
     /* just calls the bullet physics step simulation

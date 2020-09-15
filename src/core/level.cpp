@@ -214,6 +214,12 @@ void Level::update(const GameTime& gt)
         }
         else
         {
+            /*objects that can move out of quad tree are all checked for frustum cull*/
+            if(gameObj.second->motionType != ObjectMotionType::Static)
+            {
+                gameObj.second->checkInViewFrustum(localSpaceFrustum);
+            }
+
             gameObj.second->update(gt);
         }
         

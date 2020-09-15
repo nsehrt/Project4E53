@@ -339,14 +339,15 @@ void GameObject::update(const GameTime& gt)
 
     if(motionType != ObjectMotionType::Static)
     {
-        // Transfer transform back from bullet object
+        // Transfer transformation back from bullet object
         btTransform t;
-        bulletBody->getMotionState()->getWorldTransform(t);
-        Position = { t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z() };
-
         btScalar x{}, y{}, z{};
-        t.getRotation().getEulerZYX(z, y, x);
-        Rotation = { x, y, z };
+
+        bulletBody->getMotionState()->getWorldTransform(t);
+        t.getRotation().getEulerZYX(z, y, x);//!!!
+
+        Position = { t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z() };
+        Rotation = { x, y, z }; 
 
         updateTransforms();
     }

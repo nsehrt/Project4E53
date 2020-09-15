@@ -55,6 +55,7 @@ public:
 
 
     ObjectType gameObjectType = ObjectType::Default;
+    ObjectMotionType motionType = ObjectMotionType::Static;
 
     std::string Name;
     std::unique_ptr<RenderItem> renderItem = nullptr;
@@ -76,7 +77,6 @@ public:
     BaseCollider collider;
 
     /*bullet physics*/
-    ObjectMotionType motionType = ObjectMotionType::Static;
     float mass = 0.0f;
     float restitution = 0.0f;
     float damping = 0.0f;

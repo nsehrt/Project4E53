@@ -11,7 +11,7 @@ BulletPhysics::BulletPhysics(float gravity)
     m_collisionConfiguration = new btDefaultCollisionConfiguration();
     m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
     m_broadphase = new btDbvtBroadphase();
-    m_solver = new btSequentialImpulseConstraintSolver;
+    m_solver = new btSequentialImpulseConstraintSolver();
     m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
 
     m_dynamicsWorld->setGravity(btVector3(0.f, gravity, 0.f));
@@ -49,15 +49,15 @@ bool BulletPhysics::addGameObject(GameObject& obj)
 
     if(obj.shapeType != CYLINDER_SHAPE_PROXYTYPE)
     {
-        transform.setRotation(btQuaternion(obj.getRotation().x,
-                                           obj.getRotation().y,
+        transform.setRotation(btQuaternion(obj.getRotation().y,
+                                           obj.getRotation().x,
                                            obj.getRotation().z));
     }
     else
     {
-        transform.setRotation(btQuaternion(obj.getRotation().x - MathHelper::Pi / 2.0f,
-                                           obj.getRotation().y,
-                                           obj.getRotation().z));
+        transform.setRotation(btQuaternion(obj.getRotation().y,
+                                           obj.getRotation().x - MathHelper::Pi / 2.0f,
+                                           obj.getRotation().z - MathHelper::Pi / 2.0f));
     }
 
     
@@ -77,17 +77,18 @@ bool BulletPhysics::addGameObject(GameObject& obj)
         shape->calculateLocalInertia(obj.mass, inertia);
     }
 
-    auto motionState = new btDefaultMotionState(transform);
+    btMotionState* motionState = new btDefaultMotionState(transform);
 
     //put in info struct and create rigid body
     btRigidBody::btRigidBodyConstructionInfo bodyInfo(obj.mass, motionState, shape, inertia);
     btRigidBody* body = new btRigidBody(bodyInfo);
     obj.bulletBody = body;
 
-    body->setUserPointer(&obj);
-    body->setRestitution(obj.restitution);
-    body->setFriction(obj.friction);
-    body->setDamping(obj.damping, body->getAngularDamping());
+    //body->setUserPointer(&obj);
+    //body->setRestitution(obj.restitution);
+    //body->setFriction(obj.friction);
+    //body->setDamping(obj.damping, body->getAngularDamping());
+    //body->setRollingFriction(0.15f);
 
     //enable callback function
     //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
@@ -103,15 +104,20 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
     btTransform transform;
     transform.setIdentity();
 
-    btCollisionShape* terrainShape = new btHeightfieldTerrainShape(static_cast<int>(terrain.terrainSize),
-                                                                   static_cast<int>(terrain.terrainSize),
+    btHeightfieldTerrainShape* terrainShape = new btHeightfieldTerrainShape(
+                                                                   terrain.terrainSlices,
+                                                                   terrain.terrainSlices,
                                                                    &terrain.mHeightMap[0],
-                                                                   terrain.heightScale,
+                                                                   0,
                                                                    -terrain.heightScale,
                                                                    terrain.heightScale,
                                                                    1,
                                                                    PHY_FLOAT,
-                                                                   true);
+                                                                   false);
+    float scaling = terrain.terrainSize / terrain.terrainSlices;
+    terrainShape->setLocalScaling(btVector3(scaling,1.0f, scaling));
+    terrainShape->buildAccelerator();
+    
 
     auto motionState = new btDefaultMotionState(transform);
     btRigidBody::btRigidBodyConstructionInfo bodyInfo(0.0f, motionState, terrainShape, btVector3(0,0,0));
@@ -120,11 +126,12 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
     body->setUserPointer(&obj);
     body->setRestitution(1.0f);
     body->setFriction(0.5f);
-    body->setDamping(0.0f, body->getAngularDamping());
+    body->setRollingFriction(0.1f);
+    body->setDamping(0.1f, body->getAngularDamping());
 
     obj.bulletBody = body;
 
-    m_dynamicsWorld->addRigidBody(body);
+    //m_dynamicsWorld->addRigidBody(body);
 
     return true;
 }
@@ -156,7 +163,7 @@ btCollisionShape* BulletPhysics::createShape(GameObject& obj)
 
 btCollisionShape* BulletPhysics::createBox(GameObject& obj)
 {
-    return new btBoxShape(btVector3(obj.extents.x, obj.extents.y, obj.extents.z));
+    return new btBoxShape(btVector3(obj.extents.x+0.001f, obj.extents.y, obj.extents.z)); //!!!
 }
 
 btCollisionShape* BulletPhysics::createCapsule(GameObject& obj)
