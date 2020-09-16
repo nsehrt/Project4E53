@@ -101,6 +101,7 @@ public:
     /*transforms*/
     DirectX::XMFLOAT3 Position, Rotation, Scale;
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
+    DirectX::XMFLOAT4X4 rotationQuat; //!!!
 
     /*render related*/
     bool currentlyInFrustum = false;
@@ -123,7 +124,6 @@ public:
     void setRotation(DirectX::XMFLOAT3 _rot)
     {
         Rotation = _rot;
-
         updateTransforms();
     }
 

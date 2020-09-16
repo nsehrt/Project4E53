@@ -130,7 +130,7 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
 
     obj.bulletBody = body;
 
-    //m_dynamicsWorld->addRigidBody(body);
+    m_dynamicsWorld->addRigidBody(body);
 
     return true;
 }
@@ -162,7 +162,7 @@ btCollisionShape* BulletPhysics::createShape(GameObject& obj)
 
 btCollisionShape* BulletPhysics::createBox(GameObject& obj)
 {
-    return new btBoxShape(btVector3(obj.extents.x+0.001f, obj.extents.y, obj.extents.z)); //!!!
+    return new btBoxShape(btVector3(obj.extents.x, obj.extents.y, obj.extents.z));
 }
 
 btCollisionShape* BulletPhysics::createCapsule(GameObject& obj)

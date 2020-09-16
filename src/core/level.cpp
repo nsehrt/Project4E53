@@ -142,7 +142,7 @@ bool Level::load(const std::string& levelFile)
     /* build quad tree and sort game objects into it */
     quadTree.build({ 0,0,0 }, mTerrain->terrainSize, mTerrain->terrainSize, 4);
 
-    for (auto& i : mGameObjects)
+    for (const auto& i : mGameObjects)
     {
         addGameObjectToQuadTree(i.second.get());
     }
@@ -856,7 +856,8 @@ void Level::addGameObjectToQuadTree(GameObject* go)
 {
     if (go->gameObjectType == ObjectType::Sky ||
         go->gameObjectType == ObjectType::Debug ||
-        go->gameObjectType == ObjectType::Terrain) return;
+        go->gameObjectType == ObjectType::Terrain ||
+        go->motionType != ObjectMotionType::Static) return; // dont add non static game objects to the tree
 
     if (!quadTree.insert(go))
     {

@@ -43,7 +43,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
     }
     else
     {
-        Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        Rotation = { 0,0,0 };
     }
 
     /*Texture Transforms*/
@@ -341,13 +341,10 @@ void GameObject::update(const GameTime& gt)
     {
         // Transfer transformation back from bullet object
         btTransform t;
-        btScalar x{}, y{}, z{};
-
         bulletBody->getMotionState()->getWorldTransform(t);
-        t.getRotation().getEulerZYX(z, y, x);
 
+        XMStoreFloat4x4(&rotationQuat, XMMatrixRotationQuaternion(XMVectorSet(t.getRotation().x(), t.getRotation().y(), t.getRotation().z(), t.getRotation().w())));
         Position = { t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z() };
-        Rotation = { z, y, x }; //!!!//!!!//!!!//!!!//!!!
 
         updateTransforms();
     }
@@ -639,17 +636,28 @@ void GameObject::updateTransforms()
     /*update transforms for constant buffer*/
     XMMATRIX rootTransform = XMMatrixIdentity();
 
-    /*for dynamic objects apply scene root transform*/
+    /*for skinned objects apply scene root transform*/
     if (gameObjectType == ObjectType::Skinned)
     {
         rootTransform = XMLoadFloat4x4(&renderItem->skinnedModel->rootTransform);
     }
 
-    XMMATRIX preWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
-        XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
-        XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
+    XMMATRIX mWorld;
+    if(motionType != ObjectMotionType::Static)
+    {
+        mWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+            XMLoadFloat4x4(&rotationQuat) *
+            XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
+    }
+    else
+    {
+        mWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+            XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
+            XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
+    }
 
-    XMStoreFloat4x4(&renderItem->World, rootTransform *preWorld);
+
+    XMStoreFloat4x4(&renderItem->World, rootTransform * mWorld);
 
     XMStoreFloat4x4(&renderItem->TexTransform, XMMatrixScalingFromVector(XMLoadFloat3(&TextureScale)) *
                     XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
