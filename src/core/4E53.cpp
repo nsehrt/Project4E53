@@ -1537,7 +1537,7 @@ void P_4E53::update(const GameTime& gt)
 
             if(editSettings->currentSelection != nullptr)
             {
-                //newCamTarget = editSettings->currentSelection->getCollider().getCenterOffset(); TODO
+                newCamTarget = editSettings->currentSelection->getPosition();
             }
         }
 

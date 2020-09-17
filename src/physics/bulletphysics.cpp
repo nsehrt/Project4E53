@@ -57,7 +57,7 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     {
         transform.setRotation(btQuaternion(obj.getRotation().y,
                                            obj.getRotation().x - MathHelper::Pi / 2.0f,
-                                           obj.getRotation().z - MathHelper::Pi / 2.0f));
+                                           obj.getRotation().z));
     }
 
     
@@ -167,7 +167,7 @@ btCollisionShape* BulletPhysics::createBox(GameObject& obj)
 
 btCollisionShape* BulletPhysics::createCapsule(GameObject& obj)
 {
-    return new btCapsuleShape(obj.extents.x, obj.extents.y);
+    return new btCapsuleShape(obj.extents.x * 2.0f, obj.extents.y * 2.0f);
 }
 
 btCollisionShape* BulletPhysics::createSphere(GameObject& obj)

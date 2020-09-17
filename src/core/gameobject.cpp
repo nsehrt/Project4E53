@@ -1,9 +1,7 @@
 #include "gameobject.h"
 #include "../util/serviceprovider.h"
 
-
 using namespace DirectX;
-
 
 
 GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // used for all items in the level
@@ -262,13 +260,13 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
         if(friction < 0.0f) friction = 0.0f;
     }
 
-    updateTransforms();
+    setRotation(getRotation()); //also updates transforms
 }
 
 GameObject::GameObject()
 {
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    setRotation({ 0,0,0 }, false);
     Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -286,7 +284,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex) // 
     Name = name;
 
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    setRotation({ 0,0,0 }, false);
     Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -317,6 +315,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex) // 
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
     skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
+
 }
 
 GameObject::~GameObject()
@@ -337,9 +336,9 @@ GameObject::~GameObject()
 void GameObject::update(const GameTime& gt)
 {
 
+    // Transfer transformation back from bullet object if the object is not static
     if(motionType != ObjectMotionType::Static)
     {
-        // Transfer transformation back from bullet object
         btTransform t;
         bulletBody->getMotionState()->getWorldTransform(t);
 
@@ -350,6 +349,7 @@ void GameObject::update(const GameTime& gt)
     }
 
 
+    // update animation for skinned objects
     if (gameObjectType == ObjectType::Skinned)
     {
         if (renderItem->currentClip != nullptr)
@@ -427,6 +427,8 @@ bool GameObject::draw() const
     return true;
 }
 
+
+
 bool GameObject::drawShadow() const
 {
     const auto gObjRenderItem = renderItem.get();
@@ -469,6 +471,8 @@ bool GameObject::drawShadow() const
     return true;
 }
 
+
+
 void GameObject::drawPickBox() const
 {
     const auto gObjRenderItem = renderItem.get();
@@ -491,6 +495,8 @@ void GameObject::drawPickBox() const
 
     renderResource->cmdList->DrawIndexedInstanced(boxMesh->IndexCount, 1, 0, 0, 0);
 }
+
+
 
 json GameObject::toJson() const
 {
@@ -642,19 +648,9 @@ void GameObject::updateTransforms()
         rootTransform = XMLoadFloat4x4(&renderItem->skinnedModel->rootTransform);
     }
 
-    XMMATRIX mWorld;
-    if(motionType != ObjectMotionType::Static)
-    {
-        mWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
-            XMLoadFloat4x4(&rotationQuat) *
-            XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
-    }
-    else
-    {
-        mWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
-            XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
-            XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
-    }
+    XMMATRIX mWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+                                                XMLoadFloat4x4(&rotationQuat) *
+                                                XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
 
 
     XMStoreFloat4x4(&renderItem->World, rootTransform * mWorld);
@@ -665,8 +661,6 @@ void GameObject::updateTransforms()
 
     /*update collider*/
     collider.update(renderItem->World);
-
-
 
     renderItem->NumFramesDirty = gNumFrameResources;
 }

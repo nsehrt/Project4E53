@@ -72,7 +72,7 @@ public:
 
     bool currentlyInShadowSphere = false;
 
-    protected:
+protected:
 
     BaseCollider collider;
 
@@ -101,7 +101,7 @@ public:
     /*transforms*/
     DirectX::XMFLOAT3 Position, Rotation, Scale;
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
-    DirectX::XMFLOAT4X4 rotationQuat; //!!!
+    DirectX::XMFLOAT4X4 rotationQuat;
 
     /*render related*/
     bool currentlyInFrustum = false;
@@ -109,22 +109,32 @@ public:
     UINT skinnedCBSize = 0;
 
 
-    public:
+public:
+
+    int getShape() const
+    {
+    return shapeType;
+    }
 
     /*Transform getter/setter*/
-    void setPosition(DirectX::XMFLOAT3 _pos)
+    void setPosition(DirectX::XMFLOAT3 _pos, bool updTrf = true)
     {
         Position = _pos;
 
-        updateTransforms();
+        if(updTrf)
+            updateTransforms();
     }
 
     void setScale(DirectX::XMFLOAT3 _scale);
 
-    void setRotation(DirectX::XMFLOAT3 _rot)
+    void setRotation(DirectX::XMFLOAT3 _rot, bool updTrf = true)
     {
         Rotation = _rot;
-        updateTransforms();
+        DirectX::XMStoreFloat4x4(&rotationQuat,
+                                 DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMLoadFloat3(&Rotation)));
+
+        if(updTrf)
+            updateTransforms();
     }
 
     DirectX::XMFLOAT3 getPosition() const

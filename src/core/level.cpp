@@ -191,7 +191,7 @@ void Level::update(const GameTime& gt)
         }
     }
 
-    /*udpate inViewFrustum status of objects in visible nodes*/
+    /*update inViewFrustum status of objects in visible nodes*/
     /* when in edit mode the quadtree is disabled because objects
     can be moved out of their original cell.*/
     if(ServiceProvider::getGameState() != GameState::EDITOR)
@@ -261,14 +261,36 @@ void Level::update(const GameTime& gt)
         // update hitbox game object
         auto sel = ServiceProvider::getEditSettings()->currentSelection;
 
-        if(sel != nullptr)
+        if(sel != nullptr && ServiceProvider::getEditSettings()->toolMode == EditTool::ObjectCollision)
         {
 
             mGameObjects["HITBOX_EDIT"]->isDrawEnabled = true;
 
             //TODO
-            //mGameObjects["HITBOX_EDIT"]->setPosition(sel->getCollider().getCenterOffset());
-            //mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
+            mGameObjects["HITBOX_EDIT"]->setPosition(sel->getPosition());
+            mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
+
+            switch(sel->getShape())
+            {
+                case BOX_SHAPE_PROXYTYPE: 
+                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
+                    
+                    break;
+                case SPHERE_SHAPE_PROXYTYPE: 
+                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
+                    
+                    break;
+                case CYLINDER_SHAPE_PROXYTYPE:
+                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["cylinder"].get();
+                    
+                    break;
+                case CAPSULE_SHAPE_PROXYTYPE: 
+                    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["cylinder"].get();
+                    
+                    break;
+                default: LOG(Severity::Warning, sel->Name << ": illegal shape!");
+            }
+
 
             //if(sel->getCollider().getType() == BaseCollider::GameObjectCollider::OBB)
             //{
