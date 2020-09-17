@@ -9,6 +9,7 @@
 #include "../core/level.h"
 #include "../core/player.h"
 #include "../hud/editmodehud.h"
+#include "../util/collisiondatabase.h"
 #include "../physics/bulletphysics.h"
 #include <filesystem>
 
@@ -40,6 +41,7 @@ private:
     int vsyncIntervall = 0;
 
     BulletPhysics physics;
+    CollisionDatabase collisionData;
 
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;
@@ -230,6 +232,8 @@ bool P_4E53::Initialize()
         ServiceProvider::getLogger()->print<Severity::Critical>("Unable to access model folder!");
         return false;
     }
+
+    collisionData.load();
 
     /*initialize and register render resource*/
     std::shared_ptr<RenderResource> renderResource(new RenderResource(mRtvHeap, mDsvHeap));

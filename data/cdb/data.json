@@ -1,0 +1,9 @@
+{
+    "collisions": [
+        {
+            "Name": "box",
+            "Type": 0,
+            "Extents": [0.5,0.5,0.5]
+        }
+    ]
+}

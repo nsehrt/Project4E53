@@ -205,6 +205,7 @@
     <ClCompile Include="src\render\sobel.cpp" />
     <ClCompile Include="src\script\scriptsystem.cpp" />
     <ClCompile Include="src\util\cliploader.cpp" />
+    <ClCompile Include="src\util\collisiondatabase.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\geogen.cpp" />
     <ClCompile Include="src\util\log.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\script\scriptsystem.h" />
     <ClInclude Include="src\util\cliploader.h" />
+    <ClInclude Include="src\util\collisiondatabase.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\debuginfo.h" />
     <ClInclude Include="src\util\geogen.h" />

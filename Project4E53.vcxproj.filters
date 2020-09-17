@@ -178,6 +178,9 @@
     <ClInclude Include="src\core\basecollider.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\collisiondatabase.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -302,6 +305,9 @@
     </ClCompile>
     <ClCompile Include="src\core\basecollider.cpp">
       <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\collisiondatabase.cpp">
+      <Filter>Source Files\src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
