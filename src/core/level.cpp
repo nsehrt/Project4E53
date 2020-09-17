@@ -291,19 +291,9 @@ void Level::update(const GameTime& gt)
                 default: LOG(Severity::Warning, sel->Name << ": illegal shape!");
             }
 
-
-            //if(sel->getCollider().getType() == BaseCollider::GameObjectCollider::OBB)
-            //{
-            //    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
-            //    XMFLOAT3 scale{};
-            //    XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->getCollider().getExtents()), XMVectorSet(2.0f,2.0f,2.0f,2.0f)));
-            //    mGameObjects["HITBOX_EDIT"]->setScale(scale);
-            //}
-            //else
-            //{
-            //    mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
-            //    mGameObjects["HITBOX_EDIT"]->setScale(sel->getCollider().getExtents());
-            //}
+            XMFLOAT3 scale;
+            XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->extents), XMVectorSet(2.0f, 2.0f, 2.0f, 2.0f)));
+            mGameObjects["HITBOX_EDIT"]->setScale(scale);
 
         }
         else

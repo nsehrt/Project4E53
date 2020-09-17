@@ -448,7 +448,7 @@ bool DX12App::initDirect3D()
 
     logAdapters();
 
-    LOG(Severity::Info, "Using graphic adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".");
+    LOG(Severity::Info, "Using graphics adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".");
 
     createCommandObjects();
     createSwapChain();

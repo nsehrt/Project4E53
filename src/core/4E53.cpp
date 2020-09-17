@@ -494,7 +494,16 @@ void P_4E53::update(const GameTime& gt)
 
     /***********************/
 
+    //input hold time test
+    //if(inputData.getButtonHoldTime(BTN::B) > 10.0f)
+    //{
+    //    LOG(Severity::Debug, "B");
+    //}
 
+    //if(inputData.getTriggerHoldTime(TRG::RIGHT_TRIGGER) > 5.0f)
+    //{
+    //    LOG(Severity::Debug, "TRG");
+    //}
 
     /************************/
     /**** Edit Mode *********/
@@ -891,7 +900,7 @@ void P_4E53::update(const GameTime& gt)
 
                         editSettings->currentSelection->setScale(nScale);
 
-                        /*rotation*/
+                    /*rotation*/
                     }
                     else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
                     {
@@ -1235,7 +1244,20 @@ void P_4E53::update(const GameTime& gt)
         else if(editSettings->toolMode == EditTool::ObjectCollision)
         {
 
-            ////switch type
+            //switch type
+            if(inputData.Pressed(BTN::Y))
+            {
+                // next shape
+                switch(editSettings->currentSelection->getShape())
+                {
+                    case BOX_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(SPHERE_SHAPE_PROXYTYPE); break;
+                    case SPHERE_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(CYLINDER_SHAPE_PROXYTYPE); break;
+                    case CYLINDER_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(CAPSULE_SHAPE_PROXYTYPE); break;
+                    case CAPSULE_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(BOX_SHAPE_PROXYTYPE); break;
+                }
+
+            }
+
             //if(inputData.Pressed(BTN::Y))
             //{
             //    auto newType = static_cast<BaseCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
@@ -1251,10 +1273,10 @@ void P_4E53::update(const GameTime& gt)
             //}
 
             ////switch axis
-            //if(inputData.Pressed(BTN::B))
-            //{
-            //    editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
-            //}
+            if(inputData.Pressed(BTN::B))
+            {
+                editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
+            }
 
             //if(inputData.Pressed(BTN::A))
             //{
@@ -1286,35 +1308,34 @@ void P_4E53::update(const GameTime& gt)
             //editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), nPos, editSettings->currentSelection->getCollider().getExtents());
 
 
-            ///*scale tool*/
-            //if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
-            //{
-            //    /*which trigger pressed more*/
+            /*scale tool*/
+            if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
+            {
+                /*which trigger pressed more*/
 
-            //    float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
-            //        -inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
+                float trigger = inputData.current.trigger[TRG::LEFT_TRIGGER] > inputData.current.trigger[TRG::RIGHT_TRIGGER] ?
+                    -inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
 
-            //    /*scale*/
-            //    XMFLOAT3 nScale = editSettings->currentSelection->getCollider().getExtents();
+                /*scale*/
+                XMFLOAT3 nScale = editSettings->currentSelection->extents;
 
-            //    float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
+                float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
 
-            //    switch(editSettings->collisionScaleAxis)
-            //    {
-            //        case ScaleAxis::XYZ:
-            //            nScale.x += increase;
-            //            nScale.y += increase;
-            //            nScale.z += increase;
-            //            break;
-            //        case ScaleAxis::X: nScale.x += increase; break;
-            //        case ScaleAxis::Y: nScale.y += increase; break;
-            //        case ScaleAxis::Z: nScale.z += increase; break;
-            //    }
+                switch(editSettings->collisionScaleAxis)
+                {
+                    case ScaleAxis::XYZ:
+                        nScale.x += increase;
+                        nScale.y += increase;
+                        nScale.z += increase;
+                        break;
+                    case ScaleAxis::X: nScale.x += increase; break;
+                    case ScaleAxis::Y: nScale.y += increase; break;
+                    case ScaleAxis::Z: nScale.z += increase; break;
+                }
 
-            //    editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), editSettings->currentSelection->getCollider().getRelativeCenterOffset(), nScale);
-
+                editSettings->currentSelection->extents = nScale;
           
-            //}
+            }
 
         }
         /*light*/

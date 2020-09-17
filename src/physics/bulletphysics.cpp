@@ -8,6 +8,8 @@
 BulletPhysics::BulletPhysics(float gravity)
 {
 
+    LOG(Severity::Info, "Setting up bullet physics.");
+
     m_collisionConfiguration = new btDefaultCollisionConfiguration();
     m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
     m_broadphase = new btDbvtBroadphase();
