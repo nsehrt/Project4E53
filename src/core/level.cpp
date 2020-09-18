@@ -583,6 +583,7 @@ bool Level::save()
         c++;
     }
 
+    /*save to lvl file*/
     std::ofstream file(loadedLevel);
 
     if (!file.is_open())

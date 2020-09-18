@@ -199,6 +199,7 @@ bool P_4E53::Initialize()
 
     /*register bullet physics*/
     ServiceProvider::setPhysics(&physics);
+    ServiceProvider::setCollisionDatabase(&collisionData);
 
     /*initialize input manager*/
     std::shared_ptr<InputManager> inputManager(new InputManager());
@@ -233,8 +234,6 @@ bool P_4E53::Initialize()
         return false;
     }
 
-    collisionData.load();
-
     /*initialize and register render resource*/
     std::shared_ptr<RenderResource> renderResource(new RenderResource(mRtvHeap, mDsvHeap));
 
@@ -247,6 +246,9 @@ bool P_4E53::Initialize()
 
     ServiceProvider::setRenderResource(renderResource);
 
+
+    /*load collision data base from and file and overwrite the base extracted from the models*/
+    collisionData.load();
 
     /*initialize player and camera*/
 

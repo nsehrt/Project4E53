@@ -6,6 +6,7 @@
 #include "../core/level.h"
 #include "../core/player.h"
 #include "../util/serviceprovider.h"
+#include "../util/collisiondatabase.h"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -118,6 +119,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         if(tModel)
         {
             modelCounter++;
+
+            // add to collision database
+            ServiceProvider::getCollisionDatabase()->add(entry.path().stem().string(), 0, tModel->baseModelBox.Extents);
+
             mModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
@@ -159,6 +164,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         if(tModel)
         {
             skinnedCounter++;
+
+            // add to collision database
+            ServiceProvider::getCollisionDatabase()->add(entry.path().stem().string(), 0, tModel->baseModelBox.Extents);
+
             mSkinnedModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/

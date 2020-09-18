@@ -168,6 +168,45 @@
                 0.0
             ],
             "ColliderType": 0,
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Mass": 10.0,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(23)",
+            "Position": [
+                3.142108917236328,
+                9.16772174835205,
+                1.0511783361434937
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.10000000149011612,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 0,
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Mass": 10.0,
@@ -197,6 +236,45 @@
         },
         {
             "ColliderExtents": [
+                0.497444748878479,
+                3.3124465942382813,
+                0.497444748878479
+            ],
+            "ColliderOffset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "ColliderType": 13,
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Mass": 10.0,
+            "Material": "default",
+            "Model": "cylinder",
+            "MotionType": "Dynamic",
+            "Name": "box_(28)",
+            "Position": [
+                0.8721888065338135,
+                17.774730682373047,
+                0.538521409034729
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.10000000149011612,
+            "Rotation": [
+                12.786993026733398,
+                84.49150085449219,
+                96.19209289550781
+            ],
+            "Scale": [
+                1.0,
+                6.631974697113037,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "ColliderExtents": [
                 0.5,
                 0.5,
                 0.5
@@ -207,17 +285,17 @@
                 0.0
             ],
             "ColliderType": 0,
-            "CollisionEnabled": false,
+            "CollisionEnabled": true,
             "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(23)",
+            "Name": "box_(8)",
             "Position": [
-                3.142108917236328,
-                9.16772174835205,
-                1.0511783361434937
+                0.01384989358484745,
+                9.052041053771973,
+                -0.015736844390630722
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -283,17 +361,17 @@
                 0.0
             ],
             "ColliderType": 0,
-            "CollisionEnabled": true,
+            "CollisionEnabled": false,
             "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(8)",
+            "Name": "box_(21)",
             "Position": [
-                0.01384989358484745,
-                9.052041053771973,
-                -0.015736844390630722
+                2.090492010116577,
+                9.14929485321045,
+                1.0511783361434937
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -361,17 +439,17 @@
                 0.0
             ],
             "ColliderType": 0,
-            "CollisionEnabled": false,
+            "CollisionEnabled": true,
             "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(21)",
+            "Name": "box_(10)",
             "Position": [
-                2.090492010116577,
-                9.14929485321045,
-                1.0511783361434937
+                1.0638742446899414,
+                10.222739219665527,
+                -0.015736844390630722
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -400,17 +478,17 @@
                 0.0
             ],
             "ColliderType": 0,
-            "CollisionEnabled": true,
+            "CollisionEnabled": false,
             "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(10)",
+            "Name": "box_(22)",
             "Position": [
-                1.0638742446899414,
-                10.222739219665527,
-                -0.015736844390630722
+                2.090492010116577,
+                8.048121452331543,
+                1.0511783361434937
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -484,10 +562,10 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(22)",
+            "Name": "box_(24)",
             "Position": [
-                2.090492010116577,
-                8.048121452331543,
+                3.142108917236328,
+                8.080954551696777,
                 1.0511783361434937
             ],
             "RenderType": "Default",
@@ -556,17 +634,17 @@
                 0.0
             ],
             "ColliderType": 0,
-            "CollisionEnabled": false,
+            "CollisionEnabled": true,
             "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(24)",
+            "Name": "box_(5)",
             "Position": [
-                3.142108917236328,
-                8.080954551696777,
-                1.0511783361434937
+                3.140714168548584,
+                9.052041053771973,
+                -0.015736844390630722
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -640,9 +718,9 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(5)",
+            "Name": "box_(6)",
             "Position": [
-                3.140714168548584,
+                2.085505485534668,
                 9.052041053771973,
                 -0.015736844390630722
             ],
@@ -718,10 +796,10 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(6)",
+            "Name": "box_(7)",
             "Position": [
-                2.085505485534668,
-                9.052041053771973,
+                2.3522603511810303,
+                15.928706169128418,
                 -0.015736844390630722
             ],
             "RenderType": "Default",
@@ -772,45 +850,6 @@
                 26.09432029724121,
                 2.0,
                 26.096424102783203
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "ColliderExtents": [
-                0.5,
-                0.5,
-                0.5
-            ],
-            "ColliderOffset": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "ColliderType": 0,
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Mass": 10.0,
-            "Material": "default",
-            "Model": "box",
-            "MotionType": "Dynamic",
-            "Name": "box_(7)",
-            "Position": [
-                2.3522603511810303,
-                15.928706169128418,
-                -0.015736844390630722
-            ],
-            "RenderType": "Default",
-            "Restitution": 0.10000000149011612,
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -883,7 +922,7 @@
             "Rotation": [
                 0.0,
                 0.0,
-                96.19210815429688
+                96.19210052490234
             ],
             "Scale": [
                 1.0,
@@ -1177,12 +1216,12 @@
                 ]
             },
             {
-                "FallOffEnd": 2.683079719543457,
-                "FallOffStart": 1.4365113973617554,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
                 "Position": [
                     0.0,
-                    0.6677181720733643,
+                    0.8531982898712158,
                     0.0
                 ],
                 "Strength": [

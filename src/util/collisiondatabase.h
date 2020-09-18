@@ -23,6 +23,6 @@ public:
     DirectX::XMFLOAT3& getExtents(const std::string& modelName);
 
 private:
-    const std::string path = "/data/cdb/data.json";
+    const std::string path = "data/cdb/data.json";
     std::unordered_map<std::string, CollisionInfo> database;
 };

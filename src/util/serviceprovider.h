@@ -8,6 +8,7 @@ class Level;
 class Camera;
 class Player;
 class BulletPhysics;
+class CollisionDatabase;
 
 struct EditSettings;
 struct DebugInfo;
@@ -30,6 +31,7 @@ private:
     static std::shared_ptr<InputManager> input;
     static std::shared_ptr<RenderResource> renderResource;
     static BulletPhysics* physics;
+    static CollisionDatabase* collisionDatabase;
 
     static std::shared_ptr<Player> activePlayer;
     static std::shared_ptr<Level> activeLevel;
@@ -61,6 +63,9 @@ public:
 
     static BulletPhysics* getPhysics();
     static void setPhysics(BulletPhysics* providedPhysics);
+
+    static CollisionDatabase* getCollisionDatabase();
+    static void setCollisionDatabase(CollisionDatabase* providedCdb);
 
     static Player* getPlayer();
     static void setPlayer(std::shared_ptr<Player> _player);
