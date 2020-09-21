@@ -32,6 +32,8 @@ class GameObject
 public:
 
     friend class BulletPhysics;
+    friend class P_4E53;
+    friend class EditModeHUD;
 
     /*load a game object from a json*/
     explicit GameObject(const json& objectJson, int index, int skinnedIndex = -1);

@@ -12,9 +12,7 @@
 
 using namespace DirectX;
 
-EditModeHUD::EditModeHUD()
-{
-}
+
 
 void EditModeHUD::init()
 {
@@ -203,7 +201,6 @@ void EditModeHUD::init()
     /*collision edit 34-36*/
     mHUDElements.push_back(initHUDElement(TextureDescriptors::COLLISION_AXIS_SELECT, { 0.905f, 0.825f }));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.837f, 0.7675f }, 0.5f));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.8885f,  0.7675f }, 0.5f));
 
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
@@ -241,6 +238,13 @@ void EditModeHUD::init()
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.905f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.93f }, 0.2f));
 
+    /*object physic properties 26 - 29*/
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.725f }, 0.25f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.775f }, 0.25f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.825f }, 0.25f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.8f,0.875f }, 0.25f));
+
+
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
     mHUDElements[10]->Visible = false;
@@ -271,7 +275,6 @@ void EditModeHUD::init()
 
     mHUDElements[34]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
     mHUDElements[35]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
-    mHUDElements[36]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
 
     for (int i = 0; i < mFontElements.size(); i++)
     {
@@ -284,6 +287,11 @@ void EditModeHUD::init()
     for (UINT i = 13; i < mFontElements.size(); i++)
     {
         mFontElements[i]->hudVisibility = HUDVisibility::LIGHT;
+    }
+
+    for(UINT i = 25; i < mFontElements.size(); i++)
+    {
+        mFontElements[i]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
     }
 
 }
@@ -540,8 +548,25 @@ void EditModeHUD::update()
     else if(editSetting->toolMode == EditTool::ObjectCollision)
     {
 
-        mHUDElements[35]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionTranslationAxis * 0.033f;
-        mHUDElements[36]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionScaleAxis * 0.033f;
+        mHUDElements[35]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionScaleAxis * 0.033f;
+
+        std::wstringstream ss;
+        ss << std::setprecision(4);
+
+        ss << editSetting->currentSelection->mass;
+        mFontElements[25]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->restitution;
+        mFontElements[26]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->friction;
+        mFontElements[27]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->damping;
+        mFontElements[28]->text = ss.str();
 
     }
 

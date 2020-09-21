@@ -189,7 +189,7 @@ void InputManager::Update()
 
     for(int i = 0; i < TRIGGER_COUNT; i++)
     {
-        if(inputData[currentWorkedOn].trigger[i] <= 0.05f)
+        if(inputData[currentWorkedOn].trigger[i] <= 0.0f)
         {
             inputData[currentWorkedOn].triggerHoldTime[i] = currentTimeStamp;
         }

@@ -560,13 +560,14 @@ json GameObject::toJson() const
 void GameObject::setScale(DirectX::XMFLOAT3 _scale)
 {
 
+    XMStoreFloat3(&extents, XMVectorAdd(XMLoadFloat3(&extents),
+                                        XMVectorSubtract(XMLoadFloat3(&_scale), XMLoadFloat3(&Scale))
+                                        ));
+
     Scale = _scale;
 
     updateTransforms();
 
-    /*apply scale to game object collider*/// TODO
-    //collider.setProperties(collider.getInternalPickBoxOffset(), collider.getPickBox().Extents);
-    //updateTransforms();
 }
 
 void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)

@@ -11,7 +11,7 @@
 class EditModeHUD
 {
 public:
-    EditModeHUD();
+    EditModeHUD() = default;
 
     void init();
     void update();

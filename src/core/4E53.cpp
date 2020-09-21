@@ -64,7 +64,7 @@ private:
 
     void drawToShadowMap();
     void setModelSelection();
-
+    void resetCollisionOnModelSwitch();
 };
 
 int gNumFrameResources = 1;
@@ -905,6 +905,7 @@ void P_4E53::update(const GameTime& gt)
                         }
 
                         editSettings->currentSelection->setScale(nScale);
+                        
 
                     /*rotation*/
                     }
@@ -952,6 +953,7 @@ void P_4E53::update(const GameTime& gt)
                         activeLevel->calculateRenderOrderSizes();
 
                         setModelSelection();
+                        resetCollisionOnModelSwitch();
                     }
 
                 }
@@ -996,6 +998,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
                     editSettings->currentSelection->updateTransforms();
                     setModelSelection();
+
+                    resetCollisionOnModelSwitch();
                 }
 
                 if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
@@ -1036,6 +1040,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
                     editSettings->currentSelection->updateTransforms();
                     setModelSelection();
+
+                    resetCollisionOnModelSwitch();
                 }
 
 
@@ -1078,6 +1084,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->updateTransforms();
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+                    resetCollisionOnModelSwitch();
                 }
 
 
@@ -1119,6 +1127,8 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->updateTransforms();
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+                    resetCollisionOnModelSwitch();
                 }
 
 
@@ -1262,57 +1272,23 @@ void P_4E53::update(const GameTime& gt)
                     case CAPSULE_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(BOX_SHAPE_PROXYTYPE); break;
                 }
 
+                editSettings->collisionScaleAxis = ScaleAxis::XYZ;
             }
 
-            //if(inputData.Pressed(BTN::Y))
-            //{
-            //    auto newType = static_cast<BaseCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
-
-            //    editSettings->currentSelection->setColliderProperties(
-            //        newType,
-            //        editSettings->currentSelection->getCollider().getRelativeCenterOffset(),
-            //        editSettings->currentSelection->getCollider().getExtents()
-            //    );
-
-            //    editSettings->collisionScaleAxis = ScaleAxis::XYZ;
-
-            //}
-
-            ////switch axis
-            if(inputData.Pressed(BTN::B))
+            //switch axis
+            if(inputData.Pressed(BTN::A))
             {
-                editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
+                editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
+
+                switch(editSettings->currentSelection->getShape())
+                {
+                    case BOX_SHAPE_PROXYTYPE: break;
+                    case SPHERE_SHAPE_PROXYTYPE: editSettings->collisionScaleAxis = ScaleAxis::XYZ; break;
+                    case CAPSULE_SHAPE_PROXYTYPE: if(editSettings->collisionScaleAxis == ScaleAxis::Z) editSettings->collisionScaleAxis = ScaleAxis::XYZ; break;
+                    case CYLINDER_SHAPE_PROXYTYPE: if(editSettings->collisionScaleAxis == ScaleAxis::Z) editSettings->collisionScaleAxis = ScaleAxis::XYZ; break;
+                }
+
             }
-
-            //if(inputData.Pressed(BTN::A))
-            //{
-            //    editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
-
-            //    if(editSettings->currentSelection->getCollider().getType() == BaseCollider::GameObjectCollider::Sphere)
-            //    {
-            //        editSettings->collisionScaleAxis = ScaleAxis::XYZ;
-            //    }
-            //}
-
-            ////translation tool
-            //XMFLOAT3 nPos = editSettings->currentSelection->getCollider().getRelativeCenterOffset();
-
-            //float camDistance = editCamera->getDistanceNormalized();
-
-            //float thumbX = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
-            //float thumbY = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
-
-            //switch(editSettings->collisionTranslationAxis)
-            //{
-            //    case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
-            //    case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
-            //    case TranslationAxis::X: nPos.x += thumbX * 0.2f; break;
-            //    case TranslationAxis::Y: nPos.y += thumbY * 0.2f; break;
-            //    case TranslationAxis::Z: nPos.z += thumbY * 0.2f; break;
-            //}
-
-            //editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), nPos, editSettings->currentSelection->getCollider().getExtents());
-
 
             /*scale tool*/
             if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
@@ -1343,7 +1319,62 @@ void P_4E53::update(const GameTime& gt)
           
             }
 
+            /*save current object to collision database*/
+            if(inputData.Pressed(BTN::RIGHT_THUMB))
+            {
+                XMFLOAT3 t = editSettings->currentSelection->extents;
+                XMStoreFloat3(&t, XMVectorDivide(XMLoadFloat3(&t), XMLoadFloat3(&editSettings->currentSelection->getScale())));
+
+                LOG(Severity::Info, "Adding collision of " << editSettings->currentSelection->renderItem->staticModel->name << " to database.");
+
+                collisionData.add(editSettings->currentSelection->renderItem->staticModel->name,
+                                  editSettings->currentSelection->getShape(),
+                                  t);
+
+                collisionData.save();
+            }
+
+            /*switch between physic sliders*/
+            if(inputData.Pressed(BTN::X))
+            {
+                editSettings->selectedPhysicProperty = static_cast<PhysicProperty>((static_cast<int>(editSettings->selectedPhysicProperty) + 1) % 4);
+            }
+
+            /*physic property sliders*/
+
+            if(inputData.current.trigger[TRG::THUMB_LY] != 0.0f)
+            {
+                const float dir = inputData.current.trigger[TRG::THUMB_LY];
+                float value = 0.0f;
+
+                switch(editSettings->selectedPhysicProperty)
+                {
+                    case PhysicProperty::Mass: 
+                        value = editSettings->currentSelection->mass;
+                        value += dir * gt.DeltaTime() * 2.0f;
+                        editSettings->currentSelection->mass = MathHelper::clampH(value, 0.0f, 1000.0f);
+                        break;
+                    case PhysicProperty::Friction: 
+                        value = editSettings->currentSelection->friction;
+                        value += dir * gt.DeltaTime() * 0.5f;
+                        editSettings->currentSelection->friction = MathHelper::clampH(value, 0.0f, 1.0f);
+                        break;
+                    case PhysicProperty::Restitution:
+                        value = editSettings->currentSelection->restitution;
+                        value += dir * gt.DeltaTime() * 0.5f;
+                        editSettings->currentSelection->restitution = MathHelper::clampH(value, 0.0f, 1.0f);
+                        break;
+                    case PhysicProperty::Damping: 
+                        value = editSettings->currentSelection->damping;
+                        value += dir * gt.DeltaTime() * 0.5f;
+                        editSettings->currentSelection->damping = MathHelper::clampH(value, 0.0f, 1.0f);
+                        break;
+                }
+
+            }
+
         }
+
         /*light*/
         else if (editSettings->toolMode == EditTool::Light)
         {
@@ -2080,5 +2111,20 @@ void P_4E53::setModelSelection()
     }
 
     //LOG(Severity::Debug, editSettings->selectedGroup << " " << (*editSettings->selectedModel)->name);
+
+}
+
+void P_4E53::resetCollisionOnModelSwitch()
+{
+
+    auto editSettings = ServiceProvider::getEditSettings();
+    const auto& cdb = ServiceProvider::getCollisionDatabase();
+
+    XMFLOAT3 ext = cdb->getExtents(editSettings->currentSelection->renderItem->staticModel->name);
+    XMStoreFloat3(&ext, XMVectorMultiply(XMLoadFloat3(&ext), XMLoadFloat3(&editSettings->currentSelection->getScale())));
+
+    editSettings->currentSelection->extents = ext;
+    editSettings->currentSelection->setShape(cdb->getShapeType(editSettings->currentSelection->renderItem->staticModel->name));
+    editSettings->collisionScaleAxis = ScaleAxis::XYZ;
 
 }

@@ -238,7 +238,7 @@
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
             "Rotation": [
-                12.786992073059082,
+                12.7869873046875,
                 84.49150085449219,
                 96.19209289550781
             ],
@@ -835,6 +835,35 @@
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "Damping": 0.0,
+            "DrawEnabled": true,
+            "Friction": 1.0,
+            "Mass": 0.2,
+            "Model": "Cauldron",
+            "MotionType": "Dynamic",
+            "Name": "box_(30)",
+            "Position": [
+                -9.228250503540039,
+                10.285005569458008,
+                -9.159634590148926
+            ],
+            "RenderType": "Default",
+            "Restitution": 1.0,
+            "Rotation": [
+                -40.4769172668457,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
         }
     ],
     "Grass": [
@@ -910,21 +939,6 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.7125000953674316,
-                "Name": "EditLight",
-                "Position": [
-                    0.0,
-                    0.8531982898712158,
-                    0.0
-                ],
-                "Strength": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            {
                 "FallOffEnd": 12.0,
                 "FallOffStart": 10.0,
                 "Name": "P_(1)",
@@ -937,6 +951,21 @@
                     1.0,
                     0.0,
                     0.25
+                ]
+            },
+            {
+                "FallOffEnd": 1.920470952987671,
+                "FallOffStart": 0.9602354764938354,
+                "Name": "EditLight",
+                "Position": [
+                    0.0,
+                    0.4770659804344177,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             }
         ]

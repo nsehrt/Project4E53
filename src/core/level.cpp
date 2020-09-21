@@ -266,9 +266,11 @@ void Level::update(const GameTime& gt)
 
             mGameObjects["HITBOX_EDIT"]->isDrawEnabled = true;
 
-            //TODO
             mGameObjects["HITBOX_EDIT"]->setPosition(sel->getPosition());
             mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
+
+            XMFLOAT3 scale;
+            XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->extents), XMVectorSet(2.0f, 2.0f, 2.0f, 2.0f)));
 
             switch(sel->getShape())
             {
@@ -276,23 +278,27 @@ void Level::update(const GameTime& gt)
                     mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["box"].get();
                     
                     break;
+
                 case SPHERE_SHAPE_PROXYTYPE: 
                     mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["sphere"].get();
-                    
+                    XMStoreFloat3(&scale, XMVectorSwizzle<XM_SWIZZLE_X, XM_SWIZZLE_X, XM_SWIZZLE_X, XM_SWIZZLE_X>(XMLoadFloat3(&scale)));
                     break;
+
                 case CYLINDER_SHAPE_PROXYTYPE:
                     mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["cylinder"].get();
-                    
+                    XMStoreFloat3(&scale, XMVectorSwizzle<XM_SWIZZLE_X, XM_SWIZZLE_Y, XM_SWIZZLE_X, XM_SWIZZLE_X>(XMLoadFloat3(&scale)));
                     break;
+
                 case CAPSULE_SHAPE_PROXYTYPE: 
                     mGameObjects["HITBOX_EDIT"]->renderItem->staticModel = ServiceProvider::getRenderResource()->mModels["cylinder"].get();
-                    
+                    XMStoreFloat3(&scale, XMVectorSwizzle<XM_SWIZZLE_X, XM_SWIZZLE_Y, XM_SWIZZLE_X, XM_SWIZZLE_X>(XMLoadFloat3(&scale)));
                     break;
+
+
                 default: LOG(Severity::Warning, sel->Name << ": illegal shape!");
             }
 
-            XMFLOAT3 scale;
-            XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->extents), XMVectorSet(2.0f, 2.0f, 2.0f, 2.0f)));
+
             mGameObjects["HITBOX_EDIT"]->setScale(scale);
 
         }

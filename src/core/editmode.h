@@ -81,6 +81,14 @@ enum class GameObjectProperty : int
     ShadowForce
 };
 
+enum class PhysicProperty : int
+{
+    Mass,
+    Restitution,
+    Friction,
+    Damping
+};
+
 struct EditSettings
 {
     EditTool toolMode = EditTool::Height;
@@ -145,13 +153,15 @@ struct EditSettings
     RotationAxis rotationAxis = RotationAxis::X;
 
     /*control over object collision mode*/
-    TranslationAxis collisionTranslationAxis = TranslationAxis::XY;
     ScaleAxis collisionScaleAxis = ScaleAxis::XYZ;
 
     const float translationIncreaseBase = 60.0f;
     const float collisionTranslationIncreaseBase = 15.0f;
     const float scaleIncreaseBase = 0.75f;
     const float rotationIncreaseBase = DirectX::XM_PIDIV2;
+
+    /*physic properties*/
+    PhysicProperty selectedPhysicProperty = PhysicProperty::Mass;
 
     /*game object meta tool*/
     GameObjectProperty gameObjectProperty = GameObjectProperty::Collision;
