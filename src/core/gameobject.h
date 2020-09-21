@@ -83,10 +83,11 @@ protected:
     float friction = 0.5f;
     int shapeType = BOX_SHAPE_PROXYTYPE;
     int numericalID = -1; // unique int identifier
+
     public:
     DirectX::XMFLOAT3 extents = { 1,1,1 };
+
     protected:
-    DirectX::XMFLOAT3 centerOffset = { 0,0,0 };
 
     /*
     Shape types

@@ -1,4 +1,5 @@
 #include "gameobject.h"
+#include "../util/collisiondatabase.h"
 #include "../util/serviceprovider.h"
 
 using namespace DirectX;
@@ -184,31 +185,17 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // u
 
     renderItem = std::move(rItem);
 
+
+
     /*set base collider properties*/
 
     collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
-    extents = renderItem->getModel()->baseModelBox.Extents;
 
     /*load bullet physics properties*/
 
-    if(exists(objectJson, "ColliderType"))
-    {
-        shapeType = objectJson["ColliderType"];
-    }
-
-    if(exists(objectJson, "ColliderOffset"))
-    {
-        centerOffset.x = objectJson["ColliderOffset"][0];
-        centerOffset.y = objectJson["ColliderOffset"][1];
-        centerOffset.z = objectJson["ColliderOffset"][2];
-    }
-
-    if(exists(objectJson, "ColliderExtents"))
-    {
-        extents.x = objectJson["ColliderExtents"][0];
-        extents.y = objectJson["ColliderExtents"][1];
-        extents.z = objectJson["ColliderExtents"][2];
-    }
+    shapeType = ServiceProvider::getCollisionDatabase()->getShapeType(objectJson["Model"]);
+    extents = ServiceProvider::getCollisionDatabase()->getExtents(objectJson["Model"]);
+    XMStoreFloat3(&extents, XMVectorMultiply(XMLoadFloat3(&extents), XMLoadFloat3(&Scale)));
 
     numericalID = index; 
 
@@ -551,16 +538,6 @@ json GameObject::toJson() const
     {
         jElement["MotionType"] = "Dynamic";
     }
-
-    jElement["ColliderType"] = shapeType;
-
-    jElement["ColliderExtents"][0] = extents.x;
-    jElement["ColliderExtents"][1] = extents.y;
-    jElement["ColliderExtents"][2] = extents.z;
-
-    jElement["ColliderOffset"][0] = centerOffset.x;
-    jElement["ColliderOffset"][1] = centerOffset.y;
-    jElement["ColliderOffset"][2] = centerOffset.z;
 
     if(restitution != 0.0f)
     {
