@@ -81,7 +81,7 @@ private:
         LIGHT_INFO_WIN,
         LIGHT_CURSOR,
         OBJECT_COLLISION,
-        COLLISION_AXIS_SELECT,
+        TOOL_PHYSIC_WIN,
         TCount
     };
 

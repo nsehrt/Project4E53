@@ -3,7 +3,8 @@
         {
             "CollisionEnabled": false,
             "DrawEnabled": true,
-            "Mass": 10.0,
+            "Friction": 0.0,
+            "Mass": 2.4142017364501953,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
@@ -14,7 +15,7 @@
                 1.0511783361434937
             ],
             "RenderType": "Default",
-            "Restitution": 0.10000000149011612,
+            "Restitution": 1.0,
             "Rotation": [
                 0.0,
                 0.0,
@@ -187,9 +188,9 @@
                 0.0
             ],
             "Scale": [
-                26.09432029724121,
-                2.0,
-                26.096424102783203
+                26.766023635864258,
+                0.17078837752342224,
+                26.828750610351563
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -338,8 +339,7 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Mass": 10.0,
-            "Material": "default",
-            "Model": "box",
+            "Model": "Cauldron",
             "MotionType": "Dynamic",
             "Name": "box_(2)",
             "Position": [
@@ -587,7 +587,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 10.0,
+            "Mass": 9.902281761169434,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
@@ -838,10 +838,9 @@
         },
         {
             "CollisionEnabled": true,
-            "Damping": 0.0,
             "DrawEnabled": true,
             "Friction": 1.0,
-            "Mass": 0.2,
+            "Mass": 0.20000000298023224,
             "Model": "Cauldron",
             "MotionType": "Dynamic",
             "Name": "box_(30)",
@@ -853,7 +852,287 @@
             "RenderType": "Default",
             "Restitution": 1.0,
             "Rotation": [
-                -40.4769172668457,
+                -40.47690963745117,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(31)",
+            "Position": [
+                5.925788402557373,
+                19.207727432250977,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(40)",
+            "Position": [
+                2.7019739151000977,
+                25.42949867248535,
+                -7.855630874633789
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(32)",
+            "Position": [
+                7.995229244232178,
+                25.42949867248535,
+                4.075716018676758
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(33)",
+            "Position": [
+                4.125833511352539,
+                25.42949867248535,
+                0.5619412660598755
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(34)",
+            "Position": [
+                5.652112007141113,
+                25.42949867248535,
+                -8.462565422058105
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(35)",
+            "Position": [
+                8.435040473937988,
+                25.42949867248535,
+                -3.1922736167907715
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(36)",
+            "Position": [
+                -0.9022240042686462,
+                25.42949867248535,
+                -2.21696138381958
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(37)",
+            "Position": [
+                0.9316080212593079,
+                25.42949867248535,
+                4.189383506774902
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(38)",
+            "Position": [
+                7.769978046417236,
+                25.42949867248535,
+                0.5185009241104126
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(39)",
+            "Position": [
+                3.3535029888153076,
+                25.42949867248535,
+                -3.488084316253662
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
                 0.0,
                 0.0
             ],
@@ -939,6 +1218,21 @@
         ],
         "Point": [
             {
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
+                "Name": "EditLight",
+                "Position": [
+                    0.0,
+                    0.8531982898712158,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
                 "FallOffEnd": 12.0,
                 "FallOffStart": 10.0,
                 "Name": "P_(1)",
@@ -951,21 +1245,6 @@
                     1.0,
                     0.0,
                     0.25
-                ]
-            },
-            {
-                "FallOffEnd": 1.920470952987671,
-                "FallOffStart": 0.9602354764938354,
-                "Name": "EditLight",
-                "Position": [
-                    0.0,
-                    0.4770659804344177,
-                    0.0
-                ],
-                "Strength": [
-                    1.0,
-                    1.0,
-                    1.0
                 ]
             }
         ]

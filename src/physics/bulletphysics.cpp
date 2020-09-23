@@ -49,19 +49,10 @@ bool BulletPhysics::addGameObject(GameObject& obj)
                                   obj.getPosition().y,
                                   obj.getPosition().z));
 
-    //if(obj.shapeType != CYLINDER_SHAPE_PROXYTYPE)
-    //{
+
     transform.setRotation(btQuaternion(obj.getRotation().y,
                                            obj.getRotation().x,
                                            obj.getRotation().z));
-    //}
-    //else
-    //{
-    //    transform.setRotation(btQuaternion(obj.getRotation().y,
-    //                                       obj.getRotation().x, //- MathHelper::Pi / 2.0f,
-    //                                       obj.getRotation().z));
-    //}
-
     
     //create collision shape
     btCollisionShape* shape = createShape(obj);
@@ -104,7 +95,7 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
 {
     btTransform transform;
     transform.setIdentity();
-    //transform.setRotation(btQuaternion(MathHelper::Pi * 3.0f / 4.0f, 0, 0));
+    //transform.setRotation(btQuaternion(- MathHelper::Pi / 2.0f, 0, 0));
 
     btHeightfieldTerrainShape* terrainShape = new btHeightfieldTerrainShape(
                                                                    terrain.terrainSlices,

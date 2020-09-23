@@ -1340,7 +1340,7 @@ void P_4E53::update(const GameTime& gt)
                 editSettings->selectedPhysicProperty = static_cast<PhysicProperty>((static_cast<int>(editSettings->selectedPhysicProperty) + 1) % 4);
             }
 
-            /*physic property sliders*/
+            /*physic property values*/
 
             if(inputData.current.trigger[TRG::THUMB_LY] != 0.0f)
             {
@@ -1351,8 +1351,18 @@ void P_4E53::update(const GameTime& gt)
                 {
                     case PhysicProperty::Mass: 
                         value = editSettings->currentSelection->mass;
-                        value += dir * gt.DeltaTime() * 2.0f;
+                        value += dir * gt.DeltaTime() * 5.0f;
                         editSettings->currentSelection->mass = MathHelper::clampH(value, 0.0f, 1000.0f);
+
+                        if(editSettings->currentSelection->mass > 0.0f)
+                        {
+                            editSettings->currentSelection->motionType = ObjectMotionType::Dynamic;
+                        }
+                        else if(editSettings->currentSelection->mass == 0.0f)
+                        {
+                            editSettings->currentSelection->motionType = ObjectMotionType::Static;
+                        }
+
                         break;
                     case PhysicProperty::Friction: 
                         value = editSettings->currentSelection->friction;
