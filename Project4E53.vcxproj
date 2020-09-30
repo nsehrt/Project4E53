@@ -125,7 +125,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <StackReserveSize>
       </StackReserveSize>
-      <AdditionalOptions>/NODEFAULTLIB:lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NODEFAULTLIB:libcmt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -196,6 +196,7 @@
     <ClCompile Include="src\hud\editmodehud.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
+    <ClCompile Include="src\physics\bulletcontroller.cpp" />
     <ClCompile Include="src\physics\bulletphysics.cpp" />
     <ClCompile Include="src\render\blur.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="src\hud\editmodehud.h" />
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />
+    <ClInclude Include="src\physics\bulletcontroller.h" />
     <ClInclude Include="src\physics\bulletphysics.h" />
     <ClInclude Include="src\render\blur.h" />
     <ClInclude Include="src\render\frameresource.h" />

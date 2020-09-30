@@ -181,6 +181,9 @@
     <ClInclude Include="src\util\collisiondatabase.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\physics\bulletcontroller.h">
+      <Filter>Source Files\src\physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -308,6 +311,9 @@
     </ClCompile>
     <ClCompile Include="src\util\collisiondatabase.cpp">
       <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\bulletcontroller.cpp">
+      <Filter>Source Files\src\physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

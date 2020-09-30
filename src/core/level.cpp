@@ -269,7 +269,7 @@ void Level::update(const GameTime& gt)
             mGameObjects["HITBOX_EDIT"]->setPosition(sel->getPosition());
             mGameObjects["HITBOX_EDIT"]->setRotation(sel->getRotation());
 
-            XMFLOAT3 scale;
+            XMFLOAT3 scale{};
             XMStoreFloat3(&scale, XMVectorMultiply(XMLoadFloat3(&sel->extents), XMVectorSet(2.0f, 2.0f, 2.0f, 2.0f)));
 
             switch(sel->getShape())

@@ -8,6 +8,7 @@
 #pragma comment(lib, "LinearMath.lib")
 
 #include <btBulletDynamicsCommon.h>
+#include "../physics/bulletcontroller.h"
 #include "../core/gameobject.h"
 
 class GameObject;

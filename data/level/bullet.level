@@ -114,6 +114,34 @@
             "ShadowForced": false
         },
         {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 10.0,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(3)",
+            "Position": [
+                -1.792189359664917,
+                5.687095642089844,
+                -6.194638729095459
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.10000000149011612,
+            "Rotation": [
+                64.23274230957031,
+                33.74876022338867,
+                25.434749603271484
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
             "CollisionEnabled": false,
             "DrawEnabled": true,
             "Mass": 10.0,
@@ -144,22 +172,48 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 10.0,
             "Material": "default",
             "Model": "box",
-            "MotionType": "Dynamic",
-            "Name": "box_(3)",
+            "Name": "box",
             "Position": [
-                -1.792189359664917,
-                5.687095642089844,
-                -6.194638729095459
+                -20.53314971923828,
+                1.7781087160110474,
+                -0.015736844390630722
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
             "Rotation": [
-                64.23274230957031,
-                33.74876022338867,
-                25.434749603271484
+                5.569248199462891,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                26.766023635864258,
+                0.17078837752342224,
+                26.828750610351563
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 10.0,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(8)",
+            "Position": [
+                0.01384989358484745,
+                9.052041053771973,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.10000000149011612,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
             ],
             "Scale": [
                 1.0,
@@ -204,10 +258,10 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(8)",
+            "Name": "box_(1)",
             "Position": [
-                0.01384989358484745,
-                9.052041053771973,
+                0.04526181519031525,
+                8.037029266357422,
                 -0.015736844390630722
             ],
             "RenderType": "Default",
@@ -221,32 +275,6 @@
                 1.0,
                 1.0,
                 1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Material": "default",
-            "Model": "box",
-            "Name": "box",
-            "Position": [
-                -20.53314971923828,
-                1.7781087160110474,
-                -0.015736844390630722
-            ],
-            "RenderType": "Default",
-            "Restitution": 0.10000000149011612,
-            "Rotation": [
-                5.569248199462891,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                26.766023635864258,
-                0.17078837752342224,
-                26.828750610351563
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -286,67 +314,11 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(1)",
-            "Position": [
-                0.04526181519031525,
-                8.037029266357422,
-                -0.015736844390630722
-            ],
-            "RenderType": "Default",
-            "Restitution": 0.10000000149011612,
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Mass": 10.0,
-            "Material": "default",
-            "Model": "box",
-            "MotionType": "Dynamic",
             "Name": "box_(10)",
             "Position": [
                 1.0638742446899414,
                 10.222739219665527,
                 -0.015736844390630722
-            ],
-            "RenderType": "Default",
-            "Restitution": 0.10000000149011612,
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
-            "Mass": 10.0,
-            "Material": "default",
-            "Model": "box",
-            "MotionType": "Dynamic",
-            "Name": "box_(22)",
-            "Position": [
-                2.090492010116577,
-                8.048121452331543,
-                1.0511783361434937
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -397,10 +369,10 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(24)",
+            "Name": "box_(22)",
             "Position": [
-                3.142108917236328,
-                8.080954551696777,
+                2.090492010116577,
+                8.048121452331543,
                 1.0511783361434937
             ],
             "RenderType": "Default",
@@ -447,17 +419,17 @@
             "ShadowForced": false
         },
         {
-            "CollisionEnabled": true,
+            "CollisionEnabled": false,
             "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(5)",
+            "Name": "box_(24)",
             "Position": [
-                3.140714168548584,
-                9.052041053771973,
-                -0.015736844390630722
+                3.142108917236328,
+                8.080954551696777,
+                1.0511783361434937
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
@@ -509,9 +481,9 @@
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(6)",
+            "Name": "box_(5)",
             "Position": [
-                2.085505485534668,
+                3.140714168548584,
                 9.052041053771973,
                 -0.015736844390630722
             ],
@@ -539,9 +511,9 @@
             "MotionType": "Dynamic",
             "Name": "box_(26)",
             "Position": [
-                10.665950775146484,
-                15.076573371887207,
-                -0.015736844390630722
+                17.409378051757813,
+                7.270172119140625,
+                16.255977630615234
             ],
             "RenderType": "Default",
             "Restitution": 0.800000011920929,
@@ -561,14 +533,14 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 9.902281761169434,
+            "Mass": 10.0,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(7)",
+            "Name": "box_(6)",
             "Position": [
-                2.3522603511810303,
-                15.928706169128418,
+                2.085505485534668,
+                9.052041053771973,
                 -0.015736844390630722
             ],
             "RenderType": "Default",
@@ -615,25 +587,25 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 10.0,
+            "Mass": 9.902281761169434,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
-            "Name": "box_(9)",
+            "Name": "box_(7)",
             "Position": [
-                -4.963796615600586,
-                6.711597442626953,
+                2.3522603511810303,
+                15.928706169128418,
                 -0.015736844390630722
             ],
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
             "Rotation": [
-                37.1050910949707,
-                21.819368362426758,
-                43.86313247680664
+                0.0,
+                0.0,
+                0.0
             ],
             "Scale": [
-                3.0336129665374756,
+                1.0,
                 1.0,
                 1.0
             ],
@@ -662,6 +634,34 @@
             ],
             "Scale": [
                 1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 10.0,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(9)",
+            "Position": [
+                -4.963796615600586,
+                6.711597442626953,
+                -0.015736844390630722
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.10000000149011612,
+            "Rotation": [
+                37.1050910949707,
+                21.819368362426758,
+                43.86313247680664
+            ],
+            "Scale": [
+                3.0336129665374756,
                 1.0,
                 1.0
             ],
@@ -871,11 +871,11 @@
             "Material": "default",
             "Model": "sphere",
             "MotionType": "Dynamic",
-            "Name": "box_(40)",
+            "Name": "box_(31)",
             "Position": [
-                2.7019739151000977,
-                25.42949867248535,
-                -7.855630874633789
+                5.925788402557373,
+                19.207727432250977,
+                -0.015736844390630722
             ],
             "RenderType": "Default",
             "Restitution": 0.800000011920929,
@@ -899,11 +899,11 @@
             "Material": "default",
             "Model": "sphere",
             "MotionType": "Dynamic",
-            "Name": "box_(31)",
+            "Name": "box_(40)",
             "Position": [
-                5.925788402557373,
-                19.207727432250977,
-                -0.015736844390630722
+                2.7019739151000977,
+                25.42949867248535,
+                -7.855630874633789
             ],
             "RenderType": "Default",
             "Restitution": 0.800000011920929,
@@ -1218,13 +1218,13 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 6.7120208740234375,
-                "FallOffStart": 3.31447172164917,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
                 "Position": [
-                    0.5970315337181091,
-                    4.820756912231445,
-                    -5.898719787597656
+                    0.0,
+                    4.442065238952637,
+                    0.0
                 ],
                 "Strength": [
                     1.0,
