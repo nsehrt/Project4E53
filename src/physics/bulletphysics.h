@@ -56,6 +56,7 @@ class BulletPhysics
     btCollisionShape* createSphere(GameObject& obj);
     btCollisionShape* createCylinder(GameObject& obj);
 
+    float* convertedTerrainData = nullptr;
 
     static bool collisionCallback(btManifoldPoint& cp, const btCollisionObjectWrapper* obj1, int id1, int index1, const btCollisionObjectWrapper* obj2, int id2, int index2);
 

@@ -29,6 +29,9 @@ BulletPhysics::~BulletPhysics()
     delete m_broadphase;
     delete m_dispatcher;
     delete m_collisionConfiguration;
+
+    delete convertedTerrainData;
+
 }
 
 
@@ -95,18 +98,28 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
 {
     btTransform transform;
     transform.setIdentity();
-    //transform.setRotation(btQuaternion(- MathHelper::Pi / 2.0f, 0, 0));
+
+    //convert height field data to flip z axis
+    convertedTerrainData = new float[terrain.mHeightMap.size()]();
+    for(UINT i = 0; i < terrain.terrainSlices; i++)
+    {
+        memcpy(convertedTerrainData + (long long)terrain.terrainSlices * i,
+               &terrain.mHeightMap[0] + (long long)terrain.terrainSlices * ((long long)terrain.terrainSlices - i - 1),
+               sizeof(float) * terrain.terrainSlices);
+    }
 
     btHeightfieldTerrainShape* terrainShape = new btHeightfieldTerrainShape(
                                                                    terrain.terrainSlices,
                                                                    terrain.terrainSlices,
-                                                                   &terrain.mHeightMap[0],
-                                                                   0,
+                                                                   convertedTerrainData,
+                                                                   1, //ignored
                                                                    -terrain.heightScale,
                                                                    terrain.heightScale,
-                                                                   1,
+                                                                   1, //y = up axis
                                                                    PHY_FLOAT,
-                                                                   false);
+                                                                   true); // does this even do anything
+    //terrainShape->setUseDiamondSubdivision(); // not needed?
+
     float scaling = terrain.terrainSize / terrain.terrainSlices;
     terrainShape->setLocalScaling(btVector3(scaling,1.0f, scaling));
     terrainShape->buildAccelerator();
