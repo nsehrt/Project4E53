@@ -1,5 +1,5 @@
 #include "../core/player.h"
-
+#include "../physics/bulletcontroller.h"
 #include "../core/level.h"
 #include "../util/serviceprovider.h"
 
@@ -98,7 +98,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
         timeIdle += gt.DeltaTime();
         timeMoving = 0.0f;
 
-        if (timeIdle > SP_ANIM("geo_Idle")->getEndTime() * 4)
+        if (timeIdle > SP_ANIM("geo_Idle")->getEndTime() * 3.0f)
         {
             setAnimation(SP_ANIM("geo_Idle2"), false);
             timeIdle = 0.0f;
@@ -111,7 +111,7 @@ void Player::update(const InputSet& input, const GameTime& gt)
 
 
     XMFLOAT3 currentPosition = getPosition();
-    setPosition(projectedPosition);
+    //setPosition(projectedPosition);
 
     /*TEMP*/
     GameObject::update(gt);
@@ -120,5 +120,14 @@ void Player::update(const InputSet& input, const GameTime& gt)
     
 
     previousCState = currentCState;
+
+}
+
+void Player::stickToTerrain()
+{
+    const auto pos = getPosition();
+    setPosition({ pos.x,
+                ServiceProvider::getActiveLevel()->mTerrain->getHeight(pos.x, pos.z) + 0.001f,
+                pos.z });
 
 }

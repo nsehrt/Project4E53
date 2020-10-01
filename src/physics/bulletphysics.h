@@ -10,6 +10,7 @@
 #include <btBulletDynamicsCommon.h>
 #include "../physics/bulletcontroller.h"
 #include "../core/gameobject.h"
+#include "../core/character.h"
 
 class GameObject;
 class Terrain;
@@ -34,6 +35,12 @@ class BulletPhysics
     @returns always true
     */
     bool addGameObject(GameObject& obj);
+
+    /* add a character as a rigid body to the dynamic world.modifies character (add btRigidBody*)
+    @param the game object
+    @returns always true
+    */
+    bool addCharacter(Character& obj);
 
     /* add the terrain height map as a collision object to the physics world
     @param the terrain object

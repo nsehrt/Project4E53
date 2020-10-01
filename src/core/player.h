@@ -10,6 +10,7 @@ public:
     explicit Player(const std::string& model);
 
     void update(const InputSet& input, const GameTime& gt);
+    void stickToTerrain();
 
 private:
 

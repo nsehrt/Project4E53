@@ -94,6 +94,52 @@ bool BulletPhysics::addGameObject(GameObject& obj)
     return true;
 }
 
+
+
+bool BulletPhysics::addCharacter(Character& obj)
+{
+
+    // basic origin and rotation
+    btTransform transform;
+    transform.setIdentity();
+    const auto tPos = obj.getPosition();
+    transform.setOrigin(btVector3(tPos.x,
+                                  tPos.y + obj.extents.x / 2.0f,
+                                  tPos.z));
+
+
+    transform.setRotation(btQuaternion(obj.getRotation().y,
+                                       obj.getRotation().x,
+                                       obj.getRotation().z));
+
+    //create collision shape
+    btCollisionShape* shape = new btCapsuleShape(obj.extents.y, obj.extents.x);
+
+    //local inertia
+    btVector3 inertia(0, 0, 0);
+    shape->calculateLocalInertia(obj.mass, inertia);
+
+    btMotionState* motionState = new btDefaultMotionState(transform);
+
+    //put in info struct and create rigid body
+    btRigidBody::btRigidBodyConstructionInfo bodyInfo(obj.mass, motionState, shape, inertia);
+    btRigidBody* body = new btRigidBody(bodyInfo);
+    obj.bulletBody = body;
+    body->setUserPointer(&obj);
+
+    //body->setRestitution(obj.restitution);
+    //body->setFriction(obj.friction);
+    //body->setDamping(obj.damping, body->getAngularDamping());
+
+    //enable callback function
+    //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+    m_dynamicsWorld->addRigidBody(body);
+
+
+    return true;
+}
+
 bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
 {
     btTransform transform;

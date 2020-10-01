@@ -3,6 +3,7 @@
 #include "../core/gameobject.h"
 #include "../core/animationblender.h"
 
+class BulletController;
 
 class Character : public GameObject
 {
@@ -23,7 +24,7 @@ protected:
 public:
 
     explicit Character(const std::string& name, const std::string& model, int index, int skinnedIndex = -1);
-
+    void setupController();
     void update(const GameTime& gt) override;
 
 protected:
@@ -32,6 +33,8 @@ protected:
 
     CharacterState currentCState = CharacterState::Idle;
     CharacterState previousCState = CharacterState::Idle;
+
+    std::unique_ptr<BulletController> charController;
 
     float walkSpeed = 2.5f;
     float runSpeed = 5.5f;

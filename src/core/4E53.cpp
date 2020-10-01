@@ -250,18 +250,6 @@ bool P_4E53::Initialize()
     /*load collision data base from and file and overwrite the base extracted from the models*/
     collisionData.load();
 
-    /*initialize player and camera*/
-
-    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-    {
-        mainCamera = std::make_shared<FixedCamera>();
-        mainCamera->initFixedDistance(10.0f, 15.0f);
-
-        mPlayer = std::make_shared<Player>("geo");
-
-        ServiceProvider::setActiveCamera(mainCamera);
-        ServiceProvider::setPlayer(mPlayer);
-    }
 
     /*load first level*/
     std::string levelFile = "bullet";
@@ -293,7 +281,22 @@ bool P_4E53::Initialize()
     mLevel.push_back(std::move(level));
     ServiceProvider::setActiveLevel(mLevel.back());
 
-    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    /*initialize player and camera*/
+
+    if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        mainCamera = std::make_shared<FixedCamera>();
+        mainCamera->initFixedDistance(10.0f, 15.0f);
+
+        mPlayer = std::make_shared<Player>("geo");
+        mPlayer->stickToTerrain();
+        ServiceProvider::getPhysics()->addCharacter(*mPlayer);
+        mPlayer->setupController();
+
+        ServiceProvider::setActiveCamera(mainCamera);
+        ServiceProvider::setPlayer(mPlayer);
+    }
+    else
     {
         editModeHUD = std::make_unique<EditModeHUD>();
         editModeHUD->init();

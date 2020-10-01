@@ -449,14 +449,14 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 10.0,
+            "Mass": 9.55381965637207,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
             "Name": "box_(25)",
             "Position": [
-                1.467476487159729,
-                5.4762654304504395,
+                7.027586936950684,
+                6.916416168212891,
                 0.5126632452011108
             ],
             "RenderType": "Default",
@@ -684,9 +684,9 @@
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
             "Rotation": [
-                0.0,
-                0.0,
-                96.19209289550781
+                5.8752617835998535,
+                -22.290212631225586,
+                76.6788330078125
             ],
             "Scale": [
                 1.0,
@@ -1218,21 +1218,6 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.7125000953674316,
-                "Name": "EditLight",
-                "Position": [
-                    0.0,
-                    4.442065238952637,
-                    0.0
-                ],
-                "Strength": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            {
                 "FallOffEnd": 12.0,
                 "FallOffStart": 10.0,
                 "Name": "P_(1)",
@@ -1245,6 +1230,21 @@
                     1.0,
                     0.0,
                     0.25
+                ]
+            },
+            {
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
+                "Name": "EditLight",
+                "Position": [
+                    0.0,
+                    0.8531982898712158,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             }
         ]
