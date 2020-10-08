@@ -29,7 +29,7 @@
     "Misc": {
         "DebugEnabled": 1,
         "DebugQuadEnabled": 0,
-        "EditModeEnabled": 0,
+        "EditModeEnabled": 1,
         "DrawFPSEnabled": 1
     }
 }

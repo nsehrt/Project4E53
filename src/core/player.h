@@ -11,6 +11,7 @@ public:
 
     void update(const InputSet& input, const GameTime& gt);
     void stickToTerrain();
+    virtual void update(const GameTime& gt) override;
 
 private:
 

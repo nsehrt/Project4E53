@@ -1,0 +1,447 @@
+{
+    "GameObject": [
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(3)",
+            "Position": [
+                4.0869879722595215,
+                0.6176464557647705,
+                -1.1064921617507935
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box",
+            "Position": [
+                0.0,
+                5.766857624053955,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(1)",
+            "Position": [
+                4.065190315246582,
+                0.598422110080719,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(2)",
+            "Position": [
+                4.071883201599121,
+                1.6557570695877075,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(4)",
+            "Position": [
+                4.0869879722595215,
+                1.6832715272903442,
+                -1.1064921617507935
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(5)",
+            "Position": [
+                4.0869879722595215,
+                1.6832715272903442,
+                1.0821088552474976
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(6)",
+            "Position": [
+                4.0869879722595215,
+                0.5990149974822998,
+                1.0821088552474976
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "box",
+            "MotionType": "Dynamic",
+            "Name": "box_(7)",
+            "Position": [
+                5.257791996002197,
+                1.5466010570526123,
+                -0.12449845671653748
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        }
+    ],
+    "Grass": [
+        {
+            "Density": [
+                12,
+                17
+            ],
+            "Material": "grass_3",
+            "Name": "grass",
+            "Position": [
+                -18.991479873657227,
+                0.0,
+                0.0
+            ],
+            "QuadSize": [
+                1.0,
+                1.0
+            ],
+            "Size": [
+                5.0,
+                5.0
+            ],
+            "SizeVariation": 0.0
+        }
+    ],
+    "Light": {
+        "AmbientLight": [
+            0.30000001192092896,
+            0.30000001192092896,
+            0.30000001192092896
+        ],
+        "Directional": [
+            {
+                "Direction": [
+                    -0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D1",
+                "Strength": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            },
+            {
+                "Direction": [
+                    0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D2",
+                "Strength": [
+                    0.4000000059604645,
+                    0.4000000059604645,
+                    0.4000000059604645
+                ]
+            },
+            {
+                "Direction": [
+                    0.0,
+                    -0.699999988079071,
+                    -0.699999988079071
+                ],
+                "Name": "D3",
+                "Strength": [
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
+                ]
+            }
+        ],
+        "Point": [
+            {
+                "FallOffEnd": 3.373382091522217,
+                "FallOffStart": 0.3218493163585663,
+                "Name": "EditLight",
+                "Position": [
+                    15.151830673217773,
+                    2.5762643814086914,
+                    -0.6101087927818298
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
+                "FallOffEnd": 12.0,
+                "FallOffStart": 10.0,
+                "Name": "P_(1)",
+                "Position": [
+                    -3.0,
+                    3.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.0,
+                    0.25
+                ]
+            }
+        ]
+    },
+    "ParticleSystem": [
+        {
+            "DirectionMultiplier": [
+                0.699999988079071,
+                1.2999999523162842,
+                0.699999988079071
+            ],
+            "Material": "fire1",
+            "MaxAge": 1.0,
+            "Name": "particle_fire",
+            "ParticleCount": 250,
+            "Position": [
+                -6.9846343994140625,
+                4.380584716796875,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.004999999888241291,
+            "Type": "Fire"
+        },
+        {
+            "DirectionMultiplier": [
+                0.10000000149011612,
+                0.4000000059604645,
+                0.10000000149011612
+            ],
+            "Material": "smoke1",
+            "MaxAge": 6.0,
+            "Name": "particle_smoke",
+            "ParticleCount": 250,
+            "Position": [
+                2.0,
+                3.0,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.05000000074505806,
+            "Type": "Smoke"
+        }
+    ],
+    "Sky": {
+        "DefaultCubeMap": "grasscube1024.dds",
+        "Material": "sky"
+    },
+    "Terrain": {
+        "BlendMap": "bullet2.bld",
+        "BlendTextures": [
+            "ForestFloorGreen.dds",
+            "DirtGround.dds",
+            "PavementGray.dds",
+            "SimpleSand.dds"
+        ],
+        "HeightMap": "bullet2.raw",
+        "HeightScale": 200.0
+    },
+    "Water": [
+        {
+            "Displacement1Transform": [
+                0.800000011920929,
+                0.009999999776482582,
+                0.029999999329447746
+            ],
+            "Displacement2Transform": [
+                0.4000000059604645,
+                -0.009999999776482582,
+                0.029999999329447746
+            ],
+            "HeightScale": [
+                0.4000000059604645,
+                0.800000011920929
+            ],
+            "Material": "water",
+            "MaterialTranslation": [
+                0.15000000596046448,
+                0.4000000059604645
+            ],
+            "Name": "water",
+            "Normal1Transform": [
+                5.0,
+                0.05000000074505806,
+                0.20000000298023224
+            ],
+            "Normal2Transform": [
+                4.0,
+                -0.019999999552965164,
+                0.05000000074505806
+            ],
+            "Position": [
+                20.328022003173828,
+                -1.0833159685134888,
+                0.0
+            ],
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexScale": [
+                10.0,
+                10.0,
+                1.0
+            ]
+        }
+    ]
+}

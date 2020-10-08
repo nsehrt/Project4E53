@@ -1,4 +1,5 @@
 #include "bulletcontroller.h"
+#include "../util/serviceprovider.h"
 #include <btBulletDynamicsCommon.h>
 #include <cassert>
 
@@ -12,8 +13,7 @@ BulletController::BulletController(btRigidBody* body)
 
 void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep)
 {
-
-
+    
 
 }
 

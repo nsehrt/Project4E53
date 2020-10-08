@@ -104,7 +104,7 @@ bool BulletPhysics::addCharacter(Character& obj)
     transform.setIdentity();
     const auto tPos = obj.getPosition();
     transform.setOrigin(btVector3(tPos.x,
-                                  tPos.y + obj.extents.x / 2.0f,
+                                  tPos.y,
                                   tPos.z));
 
 
@@ -112,8 +112,12 @@ bool BulletPhysics::addCharacter(Character& obj)
                                        obj.getRotation().x,
                                        obj.getRotation().z));
 
-    //create collision shape
-    btCollisionShape* shape = new btCapsuleShape(obj.extents.y, obj.extents.x);
+    /*create capsule collision shape for the player
+      Important: the actual height of the capsule is height + 2 * radius!!!
+      Height is the length between the spheres of the capsule caps
+    */
+    btCollisionShape* shape = new btCapsuleShape(obj.extents.x, obj.extents.y * 2 - 2 * obj.extents.x);
+    obj.height = obj.extents.y; // ??? why not + radius
 
     //local inertia
     btVector3 inertia(0, 0, 0);
@@ -127,9 +131,7 @@ bool BulletPhysics::addCharacter(Character& obj)
     obj.bulletBody = body;
     body->setUserPointer(&obj);
 
-    //body->setRestitution(obj.restitution);
-    //body->setFriction(obj.friction);
-    //body->setDamping(obj.damping, body->getAngularDamping());
+    body->setRestitution(0.0f);
 
     //enable callback function
     //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);

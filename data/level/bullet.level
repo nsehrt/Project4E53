@@ -3,35 +3,6 @@
         {
             "CollisionEnabled": false,
             "DrawEnabled": true,
-            "Friction": 0.0,
-            "Mass": 2.1312978267669678,
-            "Material": "default",
-            "Model": "box",
-            "MotionType": "Dynamic",
-            "Name": "box_(15)",
-            "Position": [
-                1.0464402437210083,
-                10.222739219665527,
-                1.0511783361434937
-            ],
-            "RenderType": "Default",
-            "Restitution": 1.0,
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": false,
-            "DrawEnabled": true,
             "Mass": 10.0,
             "Material": "default",
             "Model": "box",
@@ -684,9 +655,9 @@
             "RenderType": "Default",
             "Restitution": 0.10000000149011612,
             "Rotation": [
-                5.8752617835998535,
+                5.875259876251221,
                 -22.290212631225586,
-                76.6788330078125
+                76.67881774902344
             ],
             "Scale": [
                 1.0,
@@ -865,6 +836,34 @@
             "ShadowForced": false
         },
         {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Mass": 10.0,
+            "Material": "default",
+            "Model": "cylinder",
+            "MotionType": "Dynamic",
+            "Name": "box_(41)",
+            "Position": [
+                3.9779999256134033,
+                31.775754928588867,
+                0.538521409034729
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.10000000149011612,
+            "Rotation": [
+                33.28549575805664,
+                173.1770782470703,
+                110.26702117919922
+            ],
+            "Scale": [
+                1.502518892288208,
+                7.134494304656982,
+                1.502518892288208
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Mass": 5.0,
@@ -960,6 +959,34 @@
                 4.125833511352539,
                 25.42949867248535,
                 0.5619412660598755
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.800000011920929,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 5.0,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(42)",
+            "Position": [
+                7.487484931945801,
+                10.402976989746094,
+                -28.3533935546875
             ],
             "RenderType": "Default",
             "Restitution": 0.800000011920929,
@@ -1218,6 +1245,21 @@
         ],
         "Point": [
             {
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
+                "Name": "EditLight",
+                "Position": [
+                    0.0,
+                    -1.0724608898162842,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            {
                 "FallOffEnd": 12.0,
                 "FallOffStart": 10.0,
                 "Name": "P_(1)",
@@ -1230,21 +1272,6 @@
                     1.0,
                     0.0,
                     0.25
-                ]
-            },
-            {
-                "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.7125000953674316,
-                "Name": "EditLight",
-                "Position": [
-                    0.0,
-                    0.8531982898712158,
-                    0.0
-                ],
-                "Strength": [
-                    1.0,
-                    1.0,
-                    1.0
                 ]
             }
         ]

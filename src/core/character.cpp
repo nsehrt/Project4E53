@@ -17,8 +17,10 @@ Character::Character(const std::string& name, const std::string& model, int inde
     //physic properties
     shapeType = CAPSULE_SHAPE_PROXYTYPE;
     extents = ServiceProvider::getCollisionDatabase()->getExtents(model);
-    mass = 0.0f;
+    mass = 40.0f;
+    restitution = 0.0f;
     motionType = ObjectMotionType::Dynamic;
+
 }
 
 void Character::setupController()

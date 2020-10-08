@@ -181,10 +181,7 @@ void Level::update(const GameTime& gt)
     for (auto& gameObj : mGameObjects)
     {
         gameObj.second->resetInViewFrustum();
-        if (gameObj.second->isShadowForced)
-        {
-            int i = 1;
-        }
+
         if (gameObj.second->isShadowForced || gameObj.second->getCollider().intersects(renderResource->getShadowMap()->shadowBounds))
         {
             gameObj.second->currentlyInShadowSphere = true;
