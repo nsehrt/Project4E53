@@ -30,6 +30,11 @@ void Character::setupController()
 
 }
 
+btActionInterface* Character::getController() const
+{
+    return charController.get();
+}
+
 void Character::update(const GameTime& gt)
 {
 

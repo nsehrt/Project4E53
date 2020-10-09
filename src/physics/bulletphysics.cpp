@@ -142,6 +142,12 @@ bool BulletPhysics::addCharacter(Character& obj)
     return true;
 }
 
+bool BulletPhysics::addAction(btActionInterface* action)
+{
+    m_dynamicsWorld->addAction(action);
+    return true;
+}
+
 bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
 {
     btTransform transform;

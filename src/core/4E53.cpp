@@ -292,6 +292,7 @@ bool P_4E53::Initialize()
         mPlayer->stickToTerrain();
         ServiceProvider::getPhysics()->addCharacter(*mPlayer);
         mPlayer->setupController();
+        ServiceProvider::getPhysics()->addAction(mPlayer->getController());
 
         ServiceProvider::setActiveCamera(mainCamera);
         ServiceProvider::setPlayer(mPlayer);
@@ -1757,10 +1758,11 @@ void P_4E53::update(const GameTime& gt)
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
 
+        /*update physics simulation*/
         physics.simulateStep(gt.DeltaTime());
 
         /*update player*/
-        mPlayer->update(inputData, gt);
+        mPlayer->update(gt);
 
 
 

@@ -27,6 +27,7 @@ public:
 
     explicit Character(const std::string& name, const std::string& model, int index, int skinnedIndex = -1);
     void setupController();
+    btActionInterface* getController() const;
     void update(const GameTime& gt) override;
 
 protected:
@@ -40,7 +41,6 @@ protected:
 
     float walkSpeed = 2.5f;
     float runSpeed = 5.5f;
-    float turnSmoothTime = 6.25f;
     float movementRampTime = 0.275f;
 
     float timeIdle = 0.0f;

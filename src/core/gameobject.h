@@ -104,7 +104,7 @@ protected:
     btRigidBody* bulletBody = nullptr;
 
     /*transforms*/
-    DirectX::XMFLOAT3 Position, Rotation, Scale;
+    DirectX::XMFLOAT3 Position{}, Rotation{}, Scale{};
     DirectX::XMFLOAT3 TextureTranslation, TextureRotation, TextureScale;
     DirectX::XMFLOAT4X4 rotationQuat;
 

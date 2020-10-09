@@ -13,6 +13,11 @@ float MathHelper::angleFromXY(float x, float y)
 {
     float theta = 0.0f;
 
+    if(x == 0.0f && y == 0.0f)
+    {
+        return Pi;
+    }
+
     if (x >= 0.0f)
     {
         theta = atanf(y / x);

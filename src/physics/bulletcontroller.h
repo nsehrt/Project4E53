@@ -23,5 +23,5 @@ class BulletController final : public btActionInterface
 
     btRigidBody* rigidBody = nullptr;
     float bodyGravity = 0.0f;
-
+    float turnSmoothTime = 6.25f;
 };

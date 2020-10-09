@@ -42,6 +42,12 @@ class BulletPhysics
     */
     bool addCharacter(Character& obj);
 
+    /* add an action to the dynamic world
+    @param the action
+    @returns always true
+    */
+    bool addAction(btActionInterface* action);
+
     /* add the terrain height map as a collision object to the physics world
     @param the terrain object
     @param the with the terrain associated game object
