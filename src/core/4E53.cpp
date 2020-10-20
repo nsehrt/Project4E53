@@ -163,6 +163,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 P_4E53::P_4E53(HINSTANCE hInstance)
     : DX12App(hInstance)
 {
+    /*create console output window*/
+    AllocConsole();
+    FILE* dummy = freopen("CONOUT$", "w", stdout);
+
     mWindowCaption = L"Project 4E53";
 }
 
@@ -252,7 +256,7 @@ bool P_4E53::Initialize()
 
 
     /*load first level*/
-    std::string levelFile = "bullet";
+    std::string levelFile = "bullet2";
 
     auto level = std::make_shared<Level>();
 

@@ -76,6 +76,14 @@ void Player::update(const GameTime& gt)
 //        timeIdle = 0.0f;
 //    }
 //    
+    if(currentCState != previousCState)
+    {
+        switch(currentCState)
+        {
+            case CharacterState::Run: setAnimation(SP_ANIM("geo_Run")); break;
+            default: setAnimation(SP_ANIM("geo_Idle"));
+        }
+    }
 
     // Transfer transformation back from bullet object if the object is not static
     if(motionType != ObjectMotionType::Static)

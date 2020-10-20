@@ -14,6 +14,7 @@
 
 class GameObject;
 class Terrain;
+class btTriangleInfoMap;
 
 class BulletPhysics
 {
@@ -80,5 +81,5 @@ class BulletPhysics
     btConstraintSolver* m_solver = nullptr;
     btDefaultCollisionConfiguration* m_collisionConfiguration = nullptr;
     btDiscreteDynamicsWorld* m_dynamicsWorld = nullptr;
-
+    btTriangleInfoMap* terrainTriangleInfo = nullptr;
 };

@@ -160,4 +160,5 @@ public:
 
     static const float Infinity;
     static const float Pi;
+    static const float Epsilon;
 };

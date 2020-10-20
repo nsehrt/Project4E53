@@ -17,11 +17,27 @@ protected:
         Idle,
         Walk,
         Run,
-        Jump,
-        Roll,
+        JumpUp,
+        JumpDown,
+        Fall,
         Other
     };
 
+    enum class CharacterAnimationState
+    {
+        Idle,
+        Idle_2,
+        Walk,
+        Run,
+        JumpInit,
+        JumpUp,
+        JumpDown,
+        JumpRecover,
+    };
+
+    CharacterState currentCState = CharacterState::Idle;
+    CharacterState previousCState = CharacterState::Idle;
+    float timeSpentInAnimation = 0.0f;
 
 public:
 
@@ -33,9 +49,6 @@ public:
 protected:
 
     AnimationBlender animationBlender;
-
-    CharacterState currentCState = CharacterState::Idle;
-    CharacterState previousCState = CharacterState::Idle;
 
     std::unique_ptr<BulletController> charController;
 

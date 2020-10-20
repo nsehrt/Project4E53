@@ -42,8 +42,8 @@ void LogPolicy::closeOutputStream()
 void LogPolicy::write(const std::string& msg)
 {
     /*output to cmd and file*/
-    OutputDebugStringA(msg.c_str());
-
+    //OutputDebugStringA(msg.c_str());
+    std::cout << msg;
     outputStream << msg << std::flush;
 
 }

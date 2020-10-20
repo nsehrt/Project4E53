@@ -2,6 +2,7 @@
     "GameObject": [
         {
             "CollisionEnabled": true,
+            "Damping": 0.6453268527984619,
             "DrawEnabled": true,
             "Mass": 2.0180509090423584,
             "Material": "default",
@@ -14,7 +15,6 @@
                 -1.1064921617507935
             ],
             "RenderType": "Default",
-            "Restitution": 0.11786173284053802,
             "Rotation": [
                 0.0,
                 0.0,
@@ -59,6 +59,31 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(8)",
+            "Position": [
+                15.684584617614746,
+                2.084665298461914,
+                -9.802862167358398
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                7.4396586418151855,
+                13.9087553024292,
+                -4.765362739562988
+            ],
+            "Scale": [
+                10.06206226348877,
+                0.22535046935081482,
+                10.061220169067383
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
             "Mass": 2.0180509090423584,
             "Material": "default",
             "Model": "box",
@@ -87,7 +112,7 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 2.0180509090423584,
+            "Mass": 61.13669967651367,
             "Material": "default",
             "Model": "box",
             "MotionType": "Dynamic",
@@ -223,6 +248,87 @@
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.1010847091674805,
+            "Material": "default",
+            "Model": "cylinder",
+            "MotionType": "Dynamic",
+            "Name": "box_(10)",
+            "Position": [
+                -4.979979515075684,
+                1.61434805393219,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                314.9999084472656,
+                90.0,
+                90.0
+            ],
+            "Scale": [
+                0.4726157784461975,
+                0.4726157784461975,
+                0.4726157784461975
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 2.0180509090423584,
+            "Material": "default",
+            "Model": "sphere",
+            "MotionType": "Dynamic",
+            "Name": "box_(9)",
+            "Position": [
+                -7.092379093170166,
+                1.1007579565048218,
+                0.0
+            ],
+            "RenderType": "Default",
+            "Restitution": 0.11786173284053802,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.40726330876350403,
+                0.40726330876350403,
+                0.40726330876350403
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box_(11)",
+            "Position": [
+                16.204103469848633,
+                2.1261942386627197,
+                4.823007106781006
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                -6.6338372230529785,
+                13.9087553024292,
+                -4.765362739562988
+            ],
+            "Scale": [
+                10.06206226348877,
+                0.22535046935081482,
+                10.061220169067383
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
         }
     ],
     "Grass": [
@@ -298,13 +404,13 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 3.373382091522217,
-                "FallOffStart": 0.3218493163585663,
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
                 "Name": "EditLight",
                 "Position": [
-                    15.151830673217773,
-                    2.5762643814086914,
-                    -0.6101087927818298
+                    0.0,
+                    0.8531982898712158,
+                    0.0
                 ],
                 "Strength": [
                     1.0,

@@ -1,5 +1,6 @@
 #include "bulletphysics.h"
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
+#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>|
 #include "../core/gameobject.h"
 #include "../core/terrain.h"
 #include "../util/mathhelper.h"
@@ -29,7 +30,7 @@ BulletPhysics::~BulletPhysics()
     delete m_broadphase;
     delete m_dispatcher;
     delete m_collisionConfiguration;
-
+    delete terrainTriangleInfo;
     delete convertedTerrainData;
 
 }
@@ -131,7 +132,6 @@ bool BulletPhysics::addCharacter(Character& obj)
     obj.bulletBody = body;
     body->setUserPointer(&obj);
 
-    body->setRestitution(0.0f);
 
     //enable callback function
     //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
@@ -172,12 +172,13 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
                                                                    1, //y = up axis
                                                                    PHY_FLOAT,
                                                                    true); // does this even do anything
-    //terrainShape->setUseDiamondSubdivision(); // not needed?
+    //terrainShape->setUseZigzagSubdivision(true); // not needed?
 
+
+    /*set bullet properties*/
     float scaling = terrain.terrainSize / terrain.terrainSlices;
-    terrainShape->setLocalScaling(btVector3(scaling,1.0f, scaling));
-    terrainShape->buildAccelerator();
-    
+    terrainShape->setLocalScaling(btVector3(scaling, 1.0f, scaling));
+    terrainShape->buildAccelerator(64);
 
     auto motionState = new btDefaultMotionState(transform);
     btRigidBody::btRigidBodyConstructionInfo bodyInfo(0.0f, motionState, terrainShape, btVector3(0,0,0));
@@ -185,12 +186,19 @@ bool BulletPhysics::addTerrain(Terrain& terrain, GameObject& obj)
 
     body->setUserPointer(&obj);
     body->setRestitution(1.0f);
-    body->setFriction(0.5f);
-    body->setRollingFriction(0.1f);
-    body->setDamping(0.1f, body->getAngularDamping());
+    body->setFriction(1.0f);
+    body->setRollingFriction(0.0f);
+    //body->setDamping(0.0f, body->getAngularDamping());
+
+    /*generate triangle info map*/
+    terrainTriangleInfo = new btTriangleInfoMap();
+    btGenerateInternalEdgeInfo(terrainShape, terrainTriangleInfo);
+    terrainShape->setTriangleInfoMap(terrainTriangleInfo);
+
+    /*enable custom callback in order to fix edges on collision*/
+    body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
     obj.bulletBody = body;
-
     m_dynamicsWorld->addRigidBody(body);
 
     return true;
@@ -245,8 +253,17 @@ bool BulletPhysics::collisionCallback(btManifoldPoint& cp, const btCollisionObje
 {
     GameObject* a = (GameObject*)obj1->getCollisionObject()->getUserPointer();
     GameObject* b = (GameObject*)obj2->getCollisionObject()->getUserPointer();
+    
+    /*fix terrain normals on collision*/
+    if(b->gameObjectType == ObjectType::Terrain)
+    {
+        btAdjustInternalEdgeContacts(cp, obj2, obj1, id2, index2);
+        return true;
+    }
 
-    LOG(Severity::Debug, a->Name << " " << b->Name);
+    return true;
 
-    return false;
+    //LOG(Severity::Debug, a->Name << " " << b->Name);
+
+    //return false;
 }
