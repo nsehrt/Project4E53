@@ -81,6 +81,7 @@ void Player::update(const GameTime& gt)
         switch(currentCState)
         {
             case CharacterState::Run: setAnimation(SP_ANIM("geo_Run")); break;
+            case CharacterState::Walk: setAnimation(SP_ANIM("geo_Walk")); break;
             default: setAnimation(SP_ANIM("geo_Idle"));
         }
     }

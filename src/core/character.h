@@ -52,12 +52,5 @@ protected:
 
     std::unique_ptr<BulletController> charController;
 
-    float walkSpeed = 2.5f;
-    float runSpeed = 5.5f;
-    float movementRampTime = 0.275f;
-
-    float timeIdle = 0.0f;
-    float timeMoving = 0.0f;
-
     float height = -1.0f;
 };

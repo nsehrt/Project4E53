@@ -20,38 +20,34 @@ class BulletController final : public btActionInterface
 
     void setupBody();
 
-    bool onGround = false;
-    float maxDistanceFromGround = 0.0f;
-    GameObject* objectUnderPlayer = nullptr;
 
+    GameObject* objectUnderPlayer = nullptr;
     btRigidBody* rigidBody = nullptr;
-    float bodyGravity = 0.0f;
+
+
+    /*movement properties*/
+    btVector3 velocity{}; 
+
+    bool onGround = false;
+    bool previousOnGround = false;
+
+    float distanceToGround = 0.0f;
+    float previousDistanceToGround = 0.0f;
+
+    float timeIdle = 0.0f;
+    float timeMoving = 0.0f;
+    float timeInCurrentState = 0.0f;
+
 
     const float turnSmoothTime = 6.25f;
-    const float rayLength = 100.0f;
-    const float slopeThresholdPerSecond = 0.5f;
+    const float rayLength = 50.0f;
+    const float offGroundThreshold = 0.2f;
+
+    const float walkSpeed = 2.5f;
+    const float runSpeed = 5.5f;
+    const float movementRampTime = 0.275f;
+
+    const btVector3 onGroundGravity = { 0.0f,-50.0f,0.0f };
+    const btVector3 inAirGravity = { 0.0f,-9.81f,0.0f };
+    const btVector3 onIdleGravity = { 0.0f,0.0f,0.0f };
 };
-
-class GroundCheck : public btCollisionWorld::ContactResultCallback
-{
-	public:
-    GroundCheck(const BulletController* controller,
-                const btCollisionWorld* world)
-        : mController(controller), mWorld(world)
-    {
-    }
-
-	btScalar addSingleResult(btManifoldPoint& cp,
-							 const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-							 const btCollisionObjectWrapper* colObj1, int partId1, int index1);
-
-	bool mOnGround = false;
-	btVector3 mGroundPoint;
-
-	private:
-	void checkGround(const btManifoldPoint& cp);
-
-	const BulletController* mController;
-	const btCollisionWorld* mWorld;
-};
-

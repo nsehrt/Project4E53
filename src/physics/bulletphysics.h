@@ -14,7 +14,7 @@
 
 class GameObject;
 class Terrain;
-class btTriangleInfoMap;
+struct btTriangleInfoMap;
 
 class BulletPhysics
 {

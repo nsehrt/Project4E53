@@ -1,6 +1,6 @@
 #include "bulletphysics.h"
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
-#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>|
+#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 #include "../core/gameobject.h"
 #include "../core/terrain.h"
 #include "../util/mathhelper.h"
