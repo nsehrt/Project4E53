@@ -101,6 +101,17 @@ public:
         return vec;
     }
 
+    static DirectX::XMFLOAT2 vector2FromAngle(float angle)
+    {
+        DirectX::XMFLOAT2 vec;
+
+        vec.x = cos(angle);
+        vec.y = -sin(angle);
+
+        return vec;
+    }
+
+    static DirectX::XMFLOAT2 rotateByAngle(DirectX::XMFLOAT2& vec, float angle);
 
     static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi)
     {

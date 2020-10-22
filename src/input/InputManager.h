@@ -111,7 +111,7 @@ public:
 
     void Update();
 
-    InputSet& getInput();
+    InputSet getInput();
     void setPrevious(InputData data);
 
     void releaseInput();

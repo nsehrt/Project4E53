@@ -5,6 +5,40 @@
 
 class BulletController;
 
+enum class CharacterState
+{
+    Ground,
+    Jump,
+    Fall,
+    Other
+};
+
+inline std::ostream& operator<< (std::ostream& os, const CharacterState& c)
+{
+    switch(c)
+    {
+        case CharacterState::Ground: os << "State::Ground"; break;
+        case CharacterState::Jump: os << "State::Jump"; break;
+        case CharacterState::Fall: os << "State::Fall"; break;
+        case CharacterState::Other: os << "State::Other"; break;
+        default: os << "State::???"; break;
+    }
+
+    return os;
+}
+
+enum class CharacterAnimationState
+{
+    Idle,
+    Idle_2,
+    Walk,
+    Run,
+    JumpInit,
+    JumpUp,
+    JumpDown,
+    JumpRecover
+};
+
 class Character : public GameObject
 {
 
@@ -12,38 +46,15 @@ class Character : public GameObject
 
 protected:
 
-    enum class CharacterState
-    {
-        Idle,
-        Walk,
-        Run,
-        JumpUp,
-        JumpDown,
-        Fall,
-        Other
-    };
-
-    enum class CharacterAnimationState
-    {
-        Idle,
-        Idle_2,
-        Walk,
-        Run,
-        JumpInit,
-        JumpUp,
-        JumpDown,
-        JumpRecover,
-    };
-
-    CharacterState currentCState = CharacterState::Idle;
-    CharacterState previousCState = CharacterState::Idle;
+    CharacterState currentCState = CharacterState::Ground;
+    CharacterState previousCState = CharacterState::Ground;
     float timeSpentInAnimation = 0.0f;
 
 public:
 
     explicit Character(const std::string& name, const std::string& model, int index, int skinnedIndex = -1);
     void setupController();
-    btActionInterface* getController() const;
+    BulletController* getController() const;
     void update(const GameTime& gt) override;
 
 protected:

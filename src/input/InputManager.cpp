@@ -47,7 +47,7 @@ void InputManager::Stop()
     looped = false;
 }
 
-InputSet& InputManager::getInput()
+InputSet InputManager::getInput()
 {
     inUse = lastFinished.load();
     inputSet.current = inputData[inUse];

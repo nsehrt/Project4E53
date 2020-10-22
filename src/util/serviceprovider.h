@@ -17,6 +17,7 @@ struct DebugInfo;
 #include "../util/settings.h"
 #include "../core/gamestate.h"
 #include <unordered_map>
+#include "../input/inputmanager.h"
 
 #define SP_ANIM(x) (ServiceProvider::getRenderResource()->mAnimations[x].get())
 
@@ -43,6 +44,7 @@ private:
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
     static GameState mainGameState;
+    static InputSet inputSet;
 
 public:
 
@@ -57,6 +59,9 @@ public:
 
     static InputManager* getInputManager();
     static void setInputManager(std::shared_ptr<InputManager> _input);
+
+    static void updateInput();
+    static InputSet getInput();
 
     static RenderResource* getRenderResource();
     static void setRenderResource(std::shared_ptr<RenderResource> providedRenderResource);

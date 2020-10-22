@@ -20,6 +20,7 @@ std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInf
 std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<EditSettings>();
 
 GameState ServiceProvider::mainGameState = GameState::UNDEF;
+InputSet ServiceProvider::inputSet{};
 
 std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 std::mutex ServiceProvider::audioLock;
@@ -62,6 +63,16 @@ InputManager* ServiceProvider::getInputManager()
 void ServiceProvider::setInputManager(std::shared_ptr<InputManager> providedInputManager)
 {
     input = providedInputManager;
+}
+
+void ServiceProvider::updateInput()
+{
+    inputSet = input->getInput();
+}
+
+InputSet ServiceProvider::getInput()
+{
+    return inputSet;
 }
 
 RenderResource* ServiceProvider::getRenderResource()

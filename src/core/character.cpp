@@ -30,7 +30,7 @@ void Character::setupController()
 
 }
 
-btActionInterface* Character::getController() const
+BulletController* Character::getController() const
 {
     return charController.get();
 }

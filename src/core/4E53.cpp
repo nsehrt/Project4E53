@@ -501,10 +501,12 @@ void P_4E53::update(const GameTime& gt)
     /****************************/
 
     /*get input and settings*/
-    InputSet& inputData = ServiceProvider::getInputManager()->getInput();
+    ServiceProvider::updateInput();
+    InputSet inputData = ServiceProvider::getInput();
     Settings* settingsData = ServiceProvider::getSettings();
 
     activeCamera->mPreviousPosition = activeCamera->getPosition3f();
+
 
     /***********************/
 
@@ -1762,12 +1764,34 @@ void P_4E53::update(const GameTime& gt)
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
 
+        /*update player control data*/
+        auto controller = mPlayer->getController();
+
+        if(inputData.Pressed(BTN::A))
+        {
+            controller->jump();
+        }
+
+        if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f)
+        {
+            controller->run();
+        }
+
+        float inputMagnitude{};
+        XMFLOAT2 inputDirection = { inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY] };
+        XMVECTOR inputDirectionV = XMVector2Normalize(XMLoadFloat2(&inputDirection));
+        XMVECTOR inputMagnitudeV = XMVector2Length(XMLoadFloat2(&inputDirection));
+        XMStoreFloat2(&inputDirection, inputDirectionV);
+        XMStoreFloat(&inputMagnitude, inputMagnitudeV);
+        inputMagnitude = inputMagnitude > 1.0f ? 1.0f : inputMagnitude;
+
+        controller->setMovement(inputDirection, inputMagnitude);
+
         /*update physics simulation*/
         physics.simulateStep(gt.DeltaTime());
 
         /*update player*/
         mPlayer->update(gt);
-
 
 
         if (inputData.Pressed(BTN::A))

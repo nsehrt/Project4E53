@@ -33,6 +33,16 @@ float MathHelper::angleFromXY(float x, float y)
     return theta;
 }
 
+DirectX::XMFLOAT2 MathHelper::rotateByAngle(DirectX::XMFLOAT2& vec, float angle)
+{
+    DirectX::XMFLOAT2 res{};
+
+    res.x = std::cosf(angle * vec.x) - std::sinf(angle * vec.y);
+    res.y = std::sinf(angle * vec.x) + std::cosf(angle * vec.y);
+
+    return res;
+}
+
 std::string MathHelper::printMatrix(const DirectX::XMFLOAT4X4& m, bool toLog)
 {
     std::stringstream ret;

@@ -1,10 +1,7 @@
 #include "bulletcontroller.h"
 #include "../util/serviceprovider.h"
 #include "../input/inputmanager.h"
-#include "../core/player.h"
-#include "../util/mathhelper.h"
 #include <cassert>
-#include <DirectXMath.h>
 
 using namespace DirectX;
 
@@ -17,24 +14,19 @@ BulletController::BulletController(btRigidBody* body)
 
 void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep)
 {
+
     /*get pointer from service provider*/
     auto player = ServiceProvider::getPlayer();
     auto activeLevel = ServiceProvider::getActiveLevel();
-    InputSet& input = ServiceProvider::getInputManager()->getInput();
 
     /*keep old states*/
     player->previousCState = player->currentCState;
     previousDistanceToGround = distanceToGround;
     previousOnGround = onGround;
+    previousVelocity = velocity;
+    jumpedThisFrame = false;
 
-    /*read player input*/
-    bool pressedJump = input.Pressed(BTN::A);
-    bool pressedRun = input.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f;
-    bool pressedRoll = input.Pressed(BTN::B);
-
-    XMFLOAT2 inputDirection = { input.current.trigger[TRG::THUMB_LX], input.current.trigger[TRG::THUMB_LY] };
-    XMVECTOR inputDirectionV = XMVector2Normalize(XMLoadFloat2(&inputDirection));
-    XMStoreFloat2(&inputDirection, inputDirectionV);
+    timeInCurrentState += deltaTimeStep;
 
 
     /*ray test to check distance from ground*/
@@ -66,34 +58,116 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
         distanceToGround = rayLength - player->extents.y;
     }
 
-
-    /*actions/states based on current player state/position */
-    if(player->previousCState == Character::CharacterState::Idle)
+    /*calculate intended velocity purely based on current input*/
+    XMFLOAT2 intendedVelocity{};
+    XMStoreFloat2(&intendedVelocity, XMVectorScale(XMLoadFloat2(&inputDirection), inputMagnitude));
+    
+    if(!pressedRun)
     {
-        if(!onGround)
-        {
-            player->currentCState = Character::CharacterState::Walk;
-        }
-    }
-
-    /*rotate player in left stick direction*/
-    if(inputDirection.x != 0.0f && inputDirection.y != 0.0f)
-    {
-        float targetRotationY = MathHelper::angleFromXY(inputDirection.y, inputDirection.x) - MathHelper::Pi;
-        player->Rotation.y = MathHelper::lerpAngle(player->Rotation.y, targetRotationY, 6.25f * deltaTimeStep);
-        rigidBody->setGravity(onGroundGravity);
+        XMStoreFloat2(&intendedVelocity, XMVectorScale(XMLoadFloat2(&intendedVelocity), walkSpeed));
     }
     else
     {
-        player->currentCState = Character::CharacterState::Walk;
-        rigidBody->setGravity(onIdleGravity);
+        XMStoreFloat2(&intendedVelocity, XMVectorScale(XMLoadFloat2(&intendedVelocity), runSpeed));
+    }
+    
+    /* figure out the next state */
+    if(player->currentCState == CharacterState::Ground)
+    {
+
+        // no ground under player -> player must be falling
+        if(!onGround)
+        {
+            setState(CharacterState::Fall);
+            rigidBody->setGravity(inAirGravity);
+        }
+
+        // pressed jump is valid, initiate jump
+        if(pressedJump)
+        {
+            setState(CharacterState::Jump);
+            jumpedThisFrame = true;
+            rigidBody->setGravity(inAirGravity);
+        }
+
+    }
+    else if(player->currentCState == CharacterState::Jump)
+    {
+
+        if(player->currentCState == CharacterState::Jump)
+        {
+
+        }
+
+        if(onGround && timeInCurrentState > minimumJumpTime)
+        {
+            setState(CharacterState::Ground);
+            rigidBody->setGravity(onGroundGravity);
+        }
+
+    }
+    else if(player->currentCState == CharacterState::Fall)
+    {
+
+        if(onGround)
+        {
+            setState(CharacterState::Ground);
+            rigidBody->setGravity(onGroundGravity);
+        }
+
+        // pressed jump is valid if grace period not over
+        if(pressedJump && timeInCurrentState < fallJumpGracePeriod)
+        {
+            setState(CharacterState::Jump);
+            jumpedThisFrame = true;
+            rigidBody->setGravity(inAirGravity);
+        }
+
     }
 
- 
-    //TODO
-    const btVector3& current = rigidBody->getLinearVelocity();
-    rigidBody->setLinearVelocity({ inputDirection.x * 7.0f, pressedJump ? 10.0f : current.y(), inputDirection.y * 7.0f });
+
+    /*controls according to current state*/
+    const btVector3& currentVelocity = rigidBody->getLinearVelocity();
+
     
+
+    if(player->currentCState == CharacterState::Ground)
+    {
+        /*rotate player in left stick direction*/
+        if(inputDirection.x != 0.0f && inputDirection.y != 0.0f)
+        {
+            float targetRotationY = MathHelper::angleFromXY(inputDirection.y, inputDirection.x) - MathHelper::Pi;
+            targetRotationY = MathHelper::lerpAngle(player->Rotation.y, targetRotationY, turnSmoothTime * deltaTimeStep);
+            player->Rotation.y = targetRotationY;
+
+            velocity = intendedVelocity;
+            rigidBody->setLinearVelocity({ velocity.x, currentVelocity.y(), velocity.y });
+        }
+        else
+        {
+            velocity = intendedVelocity;
+            rigidBody->setLinearVelocity({ velocity.x, currentVelocity.y(), velocity.y });
+        }
+
+
+    }
+    else if(player->currentCState == CharacterState::Jump ||
+            player->currentCState == CharacterState::Fall)
+    {
+
+        if(jumpedThisFrame)
+        {
+            rigidBody->setLinearVelocity({ intendedVelocity.x, jumpUpVelocity, intendedVelocity.y });
+        }
+        else
+        {
+
+        }
+
+    }
+
+
+    resetMovementParameters();
 
 }
 
@@ -105,10 +179,41 @@ void BulletController::setupBody()
     rigidBody->setRestitution(0.0f);
     rigidBody->setFriction(0.0f);
     rigidBody->setRollingFriction(0.0f);
+    rigidBody->setDamping(0.3f, 0.0f);
     rigidBody->setGravity(onGroundGravity);
+}
+
+void BulletController::setState(const CharacterState state)
+{
+    std::cout << "State changed to " << state << " after " << timeInCurrentState << "s.\n";
+    ServiceProvider::getPlayer()->currentCState = state;
+    timeInCurrentState = 0.0f;
+}
+
+void BulletController::resetMovementParameters()
+{
+    pressedJump = false;
+    pressedRoll = false;
+    pressedRun = false;
 }
 
 
 void BulletController::debugDraw(btIDebugDraw* debugDrawer)
 {
+}
+
+void BulletController::jump()
+{
+    pressedJump = true;
+}
+
+void BulletController::run(bool value)
+{
+    pressedRun = true;
+}
+
+void BulletController::setMovement(const XMFLOAT2& direction, const float magnitude)
+{
+    inputDirection = direction;
+    inputMagnitude = magnitude;
 }
