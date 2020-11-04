@@ -136,9 +136,11 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
         /*rotate player in left stick direction*/
         if(inputDirection.x != 0.0f && inputDirection.y != 0.0f)
         {
-            float targetRotationY = MathHelper::angleFromXY(inputDirection.y, inputDirection.x) - MathHelper::Pi;
-            targetRotationY = MathHelper::lerpAngle(player->Rotation.y, targetRotationY, turnSmoothTime * deltaTimeStep);
+            float targetRotationY = MathHelper::angleFromVector2Centered(inputDirection);
+            //targetRotationY = MathHelper::lerpAngle(player->Rotation.y, targetRotationY, turnSmoothTime * deltaTimeStep);
             player->Rotation.y = targetRotationY;
+
+            std::cout << XMConvertToDegrees(player->Rotation.y) << "\n";
 
             velocity = intendedVelocity;
             rigidBody->setLinearVelocity({ velocity.x, currentVelocity.y(), velocity.y });
