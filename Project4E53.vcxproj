@@ -78,8 +78,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
     <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
-    <LibraryPath>C:\Users\n_seh\source\bullet3\debug\lib;C:\lua;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\n_seh\source\bullet3\debug\lib;C:\sdk\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\sdk\lua\include;$(IncludePath)</IncludePath>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,8 +89,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
     <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
-    <LibraryPath>C:\Users\n_seh\source\bullet3\lib;C:\lua;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\n_seh\source\bullet3\lib;C:\sdk\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\sdk\lua\include;$(IncludePath)</IncludePath>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

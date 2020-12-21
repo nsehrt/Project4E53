@@ -1485,11 +1485,15 @@ void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 {
     XMMATRIX view = XMLoadFloat4x4(&mLightView);
     XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
-
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+    XMVECTOR mDetView = XMMatrixDeterminant(view);
+    XMVECTOR mDetProj = XMMatrixDeterminant(proj);
+    XMVECTOR mDetViewProj = XMMatrixDeterminant(viewProj);
+
+    XMMATRIX invView = XMMatrixInverse(&mDetView, view);
+    XMMATRIX invProj = XMMatrixInverse(&mDetProj, proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&mDetViewProj, viewProj);
 
     UINT w = mShadowMap->Width();
     UINT h = mShadowMap->Height();
@@ -1551,11 +1555,15 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     /*always update the camera light etc buffer*/
     XMMATRIX view = ServiceProvider::getActiveCamera()->getView();
     XMMATRIX proj = ServiceProvider::getActiveCamera()->getProj();
-
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+    XMVECTOR mDetView = XMMatrixDeterminant(view);
+    XMVECTOR mDetProj = XMMatrixDeterminant(proj);
+    XMVECTOR mDetViewProj = XMMatrixDeterminant(viewProj);
+
+    XMMATRIX invView = XMMatrixInverse(&mDetView, view);
+    XMMATRIX invProj = XMMatrixInverse(&mDetProj, proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&mDetViewProj, viewProj);
 
     XMStoreFloat4x4(&mMainPassConstants.View, XMMatrixTranspose(view));
     XMStoreFloat4x4(&mMainPassConstants.InvView, XMMatrixTranspose(invView));

@@ -169,7 +169,8 @@ void Level::update(const GameTime& gt)
     auto renderResource = ServiceProvider::getRenderResource();
     auto aCamera = ServiceProvider::getActiveCamera();
 
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(aCamera->getView()), aCamera->getView());
+    XMVECTOR mDetView = XMMatrixDeterminant(aCamera->getView());
+    XMMATRIX invView = XMMatrixInverse(&mDetView, aCamera->getView());
 
     BoundingFrustum localSpaceFrustum;
     aCamera->getFrustum().Transform(localSpaceFrustum, invView);
@@ -370,8 +371,10 @@ void Level::draw()
               std::end(renderOrder[(int)RenderType::DefaultTransparency]),
               [&](const GameObject* a, const GameObject* b)
               {
-                  XMVECTOR lengthA = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&a->getPosition()), cameraPos));
-                  XMVECTOR lengthB = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&b->getPosition()), cameraPos));
+                  const auto posA = a->getPosition();
+                  const auto posB = b->getPosition();
+                  XMVECTOR lengthA = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&posA), cameraPos));
+                  XMVECTOR lengthB = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&posB), cameraPos));
 
                   XMFLOAT3 t{}, s{};
                   XMStoreFloat3(&t, lengthA);

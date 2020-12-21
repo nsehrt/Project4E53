@@ -36,12 +36,12 @@ public:
         return properties.Strength;
     }
 
-    DirectX::XMFLOAT3 getDirection() const
+    DirectX::XMFLOAT3& getDirection()
     {
         return properties.Direction;
     }
 
-    DirectX::XMFLOAT3 getPosition() const
+    DirectX::XMFLOAT3& getPosition()
     {
         return properties.Position;
     }

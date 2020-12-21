@@ -386,8 +386,10 @@ bool GameObject::draw() const
 
     for (const auto& gObjMeshes : gObjRenderItem->getModel()->meshes)
     {
-        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+        const auto vbv = gObjMeshes->VertexBufferView();
+        const auto ibv = gObjMeshes->IndexBufferView();
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &vbv);
+        renderResource->cmdList->IASetIndexBuffer(&ibv);
         renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
@@ -431,8 +433,10 @@ bool GameObject::drawShadow() const
 
     for (const auto& gObjMeshes : gObjRenderItem->getModel()->meshes)
     {
-        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+        const auto vbv = gObjMeshes->VertexBufferView();
+        const auto ibv = gObjMeshes->IndexBufferView();
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &vbv);
+        renderResource->cmdList->IASetIndexBuffer(&ibv);
         renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
@@ -472,8 +476,10 @@ void GameObject::drawPickBox() const
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
-    renderResource->cmdList->IASetVertexBuffers(0, 1, &boxMesh->VertexBufferView());
-    renderResource->cmdList->IASetIndexBuffer(&boxMesh->IndexBufferView());
+    const auto vbv = boxMesh->VertexBufferView();
+    const auto ibv = boxMesh->IndexBufferView();
+    renderResource->cmdList->IASetVertexBuffers(0, 1, &vbv);
+    renderResource->cmdList->IASetIndexBuffer(&ibv);
     renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
     D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[0] * objectCBSize;

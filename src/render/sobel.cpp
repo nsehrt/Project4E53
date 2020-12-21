@@ -6,13 +6,16 @@ void Sobel::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* roo
     cmdList->SetPipelineState(pso);
     cmdList->SetComputeRootDescriptorTable(1, input);
     cmdList->SetComputeRootDescriptorTable(3, mGpuUavHandle);
-    cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mOutput.Get(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
+
+    const auto resDesc = CD3DX12_RESOURCE_BARRIER::Transition(mOutput.Get(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    cmdList->ResourceBarrier(1, &resDesc);
 
     UINT threadGroupsX = (UINT)ceilf(mWidth / 16.0f);
     UINT threadGroupsY = (UINT)ceilf(mHeight / 16.0f);
     cmdList->Dispatch(threadGroupsX, threadGroupsY, 1);
 
-    cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mOutput.Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ));
+    const auto resDesc2 = CD3DX12_RESOURCE_BARRIER::Transition(mOutput.Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ);
+    cmdList->ResourceBarrier(1, &resDesc2);
 }
 
 void Sobel::buildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandle, CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle, UINT descriptorSize)
@@ -73,8 +76,9 @@ void Sobel::buildResource()
     texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
+    const auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
     ThrowIfFailed(mDevice->CreateCommittedResource(
-        &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+        &heapProps,
         D3D12_HEAP_FLAG_NONE,
         &texDesc,
         D3D12_RESOURCE_STATE_GENERIC_READ,

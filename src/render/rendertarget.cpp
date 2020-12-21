@@ -73,8 +73,10 @@ void RenderTarget::buildResource()
     clearValue.Color[2] = 0.196078449f;
     clearValue.Color[3] = 1.000000000f;
 
+    const auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
     ThrowIfFailed(mDevice->CreateCommittedResource(
-        &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+        &heapProps,
         D3D12_HEAP_FLAG_NONE,
         &textureDesc,
         D3D12_RESOURCE_STATE_GENERIC_READ,

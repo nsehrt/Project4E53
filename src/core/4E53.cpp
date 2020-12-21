@@ -1333,7 +1333,8 @@ void P_4E53::update(const GameTime& gt)
             if(inputData.Pressed(BTN::RIGHT_THUMB))
             {
                 XMFLOAT3 t = editSettings->currentSelection->extents;
-                XMStoreFloat3(&t, XMVectorDivide(XMLoadFloat3(&t), XMLoadFloat3(&editSettings->currentSelection->getScale())));
+                const auto& sRef = editSettings->currentSelection->getScale();
+                XMStoreFloat3(&t, XMVectorDivide(XMLoadFloat3(&t), XMLoadFloat3(&sRef)));
 
                 LOG(Severity::Info, "Adding collision of " << editSettings->currentSelection->renderItem->staticModel->name << " to database.");
 
@@ -1911,15 +1912,18 @@ void P_4E53::draw(const GameTime& gt)
 
     auto offscreenRT = renderResource->getRenderTarget();
 
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
-                                  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_RENDER_TARGET));
+    const auto resBarr = CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
+                                                              D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    mCommandList->ResourceBarrier(1, &resBarr);
 
     /*clear buffers*/
     mCommandList->ClearRenderTargetView(offscreenRT->getRtv(), Colors::LimeGreen, 0, nullptr);
     mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
     /*set render target*/
-    mCommandList->OMSetRenderTargets(1, &offscreenRT->getRtv(), true, &getDepthStencilView());
+    const auto lRtv = offscreenRT->getRtv();
+    const auto lDSV = getDepthStencilView();
+    mCommandList->OMSetRenderTargets(1, &lRtv, true, &lDSV);
 
     /*set per pass data*/
     auto pass2CB = mCurrentFrameResource->PassCB->getResource();
@@ -1965,8 +1969,9 @@ void P_4E53::draw(const GameTime& gt)
     ServiceProvider::getActiveLevel()->draw();
 
     /*to srv read*/
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
-                                  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_GENERIC_READ));
+    const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
+                                                               D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_GENERIC_READ);
+    mCommandList->ResourceBarrier(1, &resBarr2);
 
     renderResource->getSobelFilter()->execute(mCommandList.Get(),
                                               renderResource->mPostProcessRootSignature.Get(),
@@ -1974,11 +1979,14 @@ void P_4E53::draw(const GameTime& gt)
                                               offscreenRT->getSrv());
 
     // Indicate a state transition on the resource usage.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-                                  D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+    const auto resBarr3 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                                               D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    mCommandList->ResourceBarrier(1, &resBarr3);
 
     // Specify the buffers we are going to render to.
-    mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
+    const auto lCBBV = getCurrentBackBufferView();
+
+    mCommandList->OMSetRenderTargets(1, &lCBBV, true, &lDSV);
 
 
 
@@ -2025,21 +2033,25 @@ void P_4E53::draw(const GameTime& gt)
                             renderResource->getPSO(PostProcessRenderType::BlurHorz), renderResource->getPSO(PostProcessRenderType::BlurVert),
                             getCurrentBackBuffer());
 
-        mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,
-                                      D3D12_RESOURCE_STATE_COPY_DEST));
+        const auto resBarr = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,
+                                                                  D3D12_RESOURCE_STATE_COPY_DEST);
+        const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                                                   D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+        mCommandList->ResourceBarrier(1, &resBarr);
 
         mCommandList->CopyResource(getCurrentBackBuffer(), blurFilter->getOutput());
 
-        mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-                                      D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET));
+        mCommandList->ResourceBarrier(1, &resBarr2);
     }
 
     /*draw hud for the edit mode*/
     if (editModeHUD != nullptr)
         editModeHUD->draw();
 
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-                                  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+    const auto resBarr4 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                                               D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+    mCommandList->ResourceBarrier(1, &resBarr4);
 
     // done
     ThrowIfFailed(mCommandList->Close());
@@ -2100,12 +2112,15 @@ void P_4E53::drawToShadowMap()
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
-    mCommandList->RSSetViewports(1, &renderResource->getShadowMap()->Viewport());
-    mCommandList->RSSetScissorRects(1, &renderResource->getShadowMap()->ScissorRect());
+    const auto lSMV = renderResource->getShadowMap()->Viewport();
+    const auto lSMSR = renderResource->getShadowMap()->ScissorRect();
+    mCommandList->RSSetViewports(1, &lSMV);
+    mCommandList->RSSetScissorRects(1, &lSMSR);
 
     // Change to DEPTH_WRITE.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
-                                  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+    const auto resBarr = CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
+                                                              D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+    mCommandList->ResourceBarrier(1, &resBarr);
 
     UINT passCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(PassConstants));
 
@@ -2116,7 +2131,8 @@ void P_4E53::drawToShadowMap()
     // Set null render target because we are only going to draw to
     // depth buffer.  Setting a null render target will disable color writes.
     // Note the active PSO also must specify a render target count of 0.
-    mCommandList->OMSetRenderTargets(0, nullptr, false, &renderResource->getShadowMap()->Dsv());
+    const auto lSMDSV = renderResource->getShadowMap()->Dsv();
+    mCommandList->OMSetRenderTargets(0, nullptr, false, &lSMDSV);
 
     // Bind the pass constant buffer for the shadow map pass.
     auto passCB = renderResource->getCurrentFrameResource()->PassCB->getResource();
@@ -2132,8 +2148,9 @@ void P_4E53::drawToShadowMap()
     ServiceProvider::getActiveLevel()->drawShadow();
 
     // Change back to GENERIC_READ so we can read the texture in a shader.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
-                                  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
+    const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
+                                                               D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
+    mCommandList->ResourceBarrier(1, &resBarr2);
 }
 
 void P_4E53::setModelSelection()
@@ -2164,7 +2181,8 @@ void P_4E53::resetCollisionOnModelSwitch()
     const auto& cdb = ServiceProvider::getCollisionDatabase();
 
     XMFLOAT3 ext = cdb->getExtents(editSettings->currentSelection->renderItem->staticModel->name);
-    XMStoreFloat3(&ext, XMVectorMultiply(XMLoadFloat3(&ext), XMLoadFloat3(&editSettings->currentSelection->getScale())));
+    const XMFLOAT3 lScale = editSettings->currentSelection->getScale();
+    XMStoreFloat3(&ext, XMVectorMultiply(XMLoadFloat3(&ext), XMLoadFloat3(&lScale)));
 
     editSettings->currentSelection->extents = ext;
     editSettings->currentSelection->setShape(cdb->getShapeType(editSettings->currentSelection->renderItem->staticModel->name));
