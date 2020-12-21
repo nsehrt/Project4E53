@@ -7,8 +7,13 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace std;
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    if(ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+        return true;
+
     return DX12App::getApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
@@ -33,6 +38,10 @@ DX12App::DX12App(HINSTANCE /*hInstance*/)
 
 DX12App::~DX12App()
 {
+    ImGui_ImplDX12_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
     if (mDevice != nullptr)
         flushCommandQueue();
 }
@@ -178,7 +187,13 @@ bool DX12App::Initialize()
     mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode == 1 ? 1 : 0;
     setFullscreen(mFullscreenState);
 
-    ShowCursor(false);
+    ShowCursor(true);
+
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    imgui_IO = &ImGui::GetIO();
+
+    ImGui_ImplWin32_Init(mMainWindow);
 
     return true;
 }

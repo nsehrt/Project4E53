@@ -193,6 +193,12 @@
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\hud\editmodehud.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
@@ -240,6 +246,14 @@
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
+    <ClInclude Include="src\extern\imgui\imconfig.h" />
+    <ClInclude Include="src\extern\imgui\imgui.h" />
+    <ClInclude Include="src\extern\imgui\imgui_impl_dx12.h" />
+    <ClInclude Include="src\extern\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="src\extern\imgui\imgui_internal.h" />
+    <ClInclude Include="src\extern\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\extern\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\extern\imgui\imstb_truetype.h" />
     <ClInclude Include="src\extern\json.hpp" />
     <ClInclude Include="src\hud\editmodehud.h" />
     <ClInclude Include="src\input\controllerinput.h" />

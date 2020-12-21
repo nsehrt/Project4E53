@@ -73,6 +73,8 @@ int gNumFrameResources = 1;
 /*main entry point*/
 /*******/
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/,
                    _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
@@ -181,9 +183,6 @@ P_4E53::~P_4E53()
     audioThread->join();
 
     ServiceProvider::getAudio()->uninit();
-
-    if (mDevice != nullptr)
-        flushCommandQueue();
 }
 
 /*****************/
@@ -249,6 +248,12 @@ bool P_4E53::Initialize()
     renderResource->cmdQueue = mCommandQueue.Get();
 
     ServiceProvider::setRenderResource(renderResource);
+
+    //setup dear imgui
+    ImGui_ImplDX12_Init(mDevice.Get(), gNumFrameResources, DXGI_FORMAT_R8G8B8A8_UNORM,
+                        renderResource->mSrvDescriptorHeap.Get(),
+                        renderResource->mSrvDescriptorHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+                        renderResource->mSrvDescriptorHeap.Get()->GetGPUDescriptorHandleForHeapStart());
 
 
     /*load collision data base from and file and overwrite the base extracted from the models*/
@@ -1874,6 +1879,17 @@ void P_4E53::draw(const GameTime& gt)
     auto renderResource = ServiceProvider::getRenderResource();
     auto mCurrentFrameResource = renderResource->getCurrentFrameResource();
 
+    // Start the Dear ImGui frame
+    ImGui_ImplDX12_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    
+    {
+        ImGui::Begin("Frames per second");
+        ImGui::Text("%.1f", imgui_IO->Framerate);
+        ImGui::End();
+    }
+
     auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc.Get();
     ThrowIfFailed(cmdListAlloc->Reset());
 
@@ -2044,6 +2060,10 @@ void P_4E53::draw(const GameTime& gt)
 
         mCommandList->ResourceBarrier(1, &resBarr2);
     }
+
+    /*draw dear imgui*/
+    ImGui::Render();
+    ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), mCommandList.Get());
 
     /*draw hud for the edit mode*/
     if (editModeHUD != nullptr)
