@@ -10,6 +10,7 @@
 #include "../core/player.h"
 #include "../hud/editmodehud.h"
 #include "../util/collisiondatabase.h"
+#include "../util/debuginfo.h"
 #include "../physics/bulletphysics.h"
 #include <filesystem>
 
@@ -1885,8 +1886,12 @@ void P_4E53::draw(const GameTime& gt)
     ImGui::NewFrame();
     
     {
-        ImGui::Begin("Frames per second");
-        ImGui::Text("%.1f", imgui_IO->Framerate);
+        const std::vector<float> fpsVec = { ServiceProvider::getDebugInfo()->fpsData.begin(), ServiceProvider::getDebugInfo()->fpsData.end() };
+        const float max = fpsVec.empty() ? 0 : *(std::max_element(fpsVec.begin(), fpsVec.end()));
+
+        ImGui::Begin("Frame stats");
+        ImGui::Text("%.0f FPS | %.3f mspf", ServiceProvider::getDebugInfo()->CurrentFPS, ServiceProvider::getDebugInfo()->Mspf);
+        ImGui::PlotHistogram("", &fpsVec[0], fpsVec.size(), 0, NULL, 0.0f, max, ImVec2(250, 75));
         ImGui::End();
     }
 

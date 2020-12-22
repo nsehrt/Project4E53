@@ -571,26 +571,25 @@ void DX12App::calculateFrameStats()
 
     frameCount++;
 
-    if ((mTimer.TotalTime() - timeElapsed) >= 0.25f)
+    if ((mTimer.TotalTime() - timeElapsed) >= 0.1f)
     {
-        float fps = (float)frameCount * 4;
+        float fps = (float)frameCount * 10;
         float mspf = 1000.0f / fps;
 
         ServiceProvider::getDebugInfo()->CurrentFPS = fps;
         ServiceProvider::getDebugInfo()->Mspf = mspf;
+        ServiceProvider::getDebugInfo()->fpsData.push_back(fps);
 
         wstring fpsStr = to_wstring(fps);
         wstring mspfStr = to_wstring(mspf);
         wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);
         wstring shadowsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnShadowObjects);
 
-        wstring windowText = mWindowCaption +
-            L"    fps: " + fpsStr +
-            L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
+        wstring windowText = mWindowCaption + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
         SetWindowText(mMainWindow, windowText.c_str());
 
         frameCount = 0;
-        timeElapsed += 0.25f;
+        timeElapsed += 0.1f;
     }
 }
 

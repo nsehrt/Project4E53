@@ -211,6 +211,9 @@
     <ClInclude Include="src\extern\imgui\imstb_truetype.h">
       <Filter>Source Files\src\extern\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\collector.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">

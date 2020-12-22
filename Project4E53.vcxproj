@@ -270,6 +270,7 @@
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\script\scriptsystem.h" />
     <ClInclude Include="src\util\cliploader.h" />
+    <ClInclude Include="src\util\collector.h" />
     <ClInclude Include="src\util\collisiondatabase.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\debuginfo.h" />
