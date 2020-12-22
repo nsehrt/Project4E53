@@ -403,7 +403,7 @@ void Level::draw()
 
     }
 
-    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn;
+    ServiceProvider::getDebugInfo()->DrawnGameObjects = objectsDrawn + 1;
 
     /* Draw the hitboxes of the GameObjects if enabled */
     if (renderResource->isHitBoxDrawEnabled())
@@ -818,7 +818,7 @@ void Level::drawShadow()
         }
     }
 
-    ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn;
+    ServiceProvider::getDebugInfo()->DrawnShadowObjects = objectsDrawn + 1;
 }
 
 bool Level::existsLightByName(const std::string& name)

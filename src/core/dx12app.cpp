@@ -580,14 +580,6 @@ void DX12App::calculateFrameStats()
         ServiceProvider::getDebugInfo()->Mspf = mspf;
         ServiceProvider::getDebugInfo()->fpsData.push_back(fps);
 
-        wstring fpsStr = to_wstring(fps);
-        wstring mspfStr = to_wstring(mspf);
-        wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);
-        wstring shadowsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnShadowObjects);
-
-        wstring windowText = mWindowCaption + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
-        SetWindowText(mMainWindow, windowText.c_str());
-
         frameCount = 0;
         timeElapsed += 0.1f;
     }
