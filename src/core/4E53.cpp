@@ -63,6 +63,7 @@ private:
 
     std::vector<std::string> mPointLightNames;
 
+    void drawFrameStats();
     void drawToShadowMap();
     void setModelSelection();
     void resetCollisionOnModelSwitch();
@@ -1885,22 +1886,15 @@ void P_4E53::draw(const GameTime& gt)
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-    
+
+    // Prepare all dear imgui windows
+
+    //ImGui::ShowDemoWindow();
+
+    //draw frame stats overlay
     if(settings->miscSettings.DrawFPSEnabled)
     {
-        const std::vector<float> fpsVec = { ServiceProvider::getDebugInfo()->fpsData.begin(), ServiceProvider::getDebugInfo()->fpsData.end() };
-        const float max = fpsVec.empty() ? 0 : *(std::max_element(fpsVec.begin(), fpsVec.end()));
-
-        ImGui::Begin("Frame stats");
-        ImGui::Text("%.0f FPS | %.3f mspf",
-                    ServiceProvider::getDebugInfo()->CurrentFPS,
-                    ServiceProvider::getDebugInfo()->Mspf);
-        ImGui::Text("%d object(s) | %d shadow(s)", 
-                    ServiceProvider::getDebugInfo()->DrawnGameObjects,
-                    ServiceProvider::getDebugInfo()->DrawnShadowObjects);
-
-        ImGui::PlotHistogram("", &fpsVec[0], fpsVec.size(), 0, NULL, 0.0f, max, ImVec2(250, 75));
-        ImGui::End();
+        drawFrameStats();
     }
 
     auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc.Get();
@@ -2139,6 +2133,34 @@ UINT P_4E53::getPointLightIndex(const std::string& name, UINT direction) const
     }
 
     return 0;
+}
+
+void P_4E53::drawFrameStats()
+{
+    const float offset = 10.0f;
+
+    const std::vector<float> fpsVec = { ServiceProvider::getDebugInfo()->fpsData.begin(), ServiceProvider::getDebugInfo()->fpsData.end() };
+    const float max = fpsVec.empty() ? 0 : *(std::max_element(fpsVec.begin(), fpsVec.end()));
+
+
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+                                    ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+    ImGui::SetNextWindowBgAlpha(0.5f);
+
+    ImVec2 window_pos = ImVec2(offset, offset);
+    ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, { 0,0 });
+
+    ImGui::Begin("Frame stats", NULL, windowFlags);
+    ImGui::Text("%.0f FPS | %.3f mspf",
+                ServiceProvider::getDebugInfo()->CurrentFPS,
+                ServiceProvider::getDebugInfo()->Mspf);
+    ImGui::Text("%d object(s) | %d shadow(s)",
+                ServiceProvider::getDebugInfo()->DrawnGameObjects,
+                ServiceProvider::getDebugInfo()->DrawnShadowObjects);
+
+    ImGui::PlotHistogram("", &fpsVec[0], static_cast<int>(fpsVec.size()), 0, NULL, 0.0f, max, ImVec2(250, 75));
+    ImGui::End();
+
 }
 
 void P_4E53::drawToShadowMap()

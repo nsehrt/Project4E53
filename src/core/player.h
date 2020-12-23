@@ -10,7 +10,6 @@ class Player : public Character
 public:
 
     explicit Player(const std::string& model);
-
     void stickToTerrain();
     virtual void update(const GameTime& gt) override;
 

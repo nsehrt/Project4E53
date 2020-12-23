@@ -92,6 +92,7 @@ public:
 
     /*angle to vector(x,y)*/
     static DirectX::XMFLOAT2 vector2FromAngleCentered(float angle);
+    /*angle to vector(x,0,z)*/
     static DirectX::XMFLOAT3 vector3FromAngle(float angle);
     static DirectX::XMFLOAT2 rotateUnitVectorByAngle(DirectX::XMFLOAT2& vec, float angle);
     static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi);

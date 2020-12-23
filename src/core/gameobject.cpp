@@ -585,6 +585,9 @@ void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)
 
 void GameObject::setAnimation(AnimationClip* aClip, bool keepRelativeTime)
 {
+    //nothing to do
+    if(renderItem->currentClip == aClip && keepRelativeTime) return;
+
     float percentTime = 0.0f;
 
     if (keepRelativeTime)

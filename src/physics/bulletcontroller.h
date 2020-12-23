@@ -33,15 +33,24 @@ class BulletController final : public btActionInterface
 
 
     /*movement properties*/
-    DirectX::XMFLOAT2 velocity{};
-    DirectX::XMFLOAT2 previousVelocity{};
+    DirectX::XMFLOAT2 movementVector{};
+    DirectX::XMFLOAT2 prevMovementVector{};
 
+    //
     float inputMagnitude = 0.0f;
     DirectX::XMFLOAT2 inputDirection;
+
+    float intendedVelocity = 0.0f;
+    float currentVelocity = 0.0f;
+    float previouseVelocity = 0.0f;
+
+
 
     bool onGround = false;
     bool previousOnGround = false;
     bool jumpedThisFrame = false;
+    bool isIdle = false;
+    bool previousIsIdle = false;
 
     bool pressedJump = false;
     bool pressedRun = false;
@@ -55,15 +64,16 @@ class BulletController final : public btActionInterface
     float timeInCurrentState = 0.0f;
 
 
-    const float turnSmoothTime = 10.5f;
+    const float turnSmoothConstant = 7.0f;
     const float rayLength = 50.0f;
     const float offGroundThreshold = 0.2f;
     const float minimumJumpTime = 0.1f;
-    const float fallJumpGracePeriod = 0.18f;
+    const float fallJumpGracePeriod = 0.125f;
 
     const float walkSpeed = 4.0f;
     const float runSpeed = 6.5f;
-    const float movementRampTime = 0.275f;
+    const float moveIncreaseConstant = 8.5f;
+    const float moveDecreaseConstant = 24.0f;
     const float jumpUpVelocity = 12.5f;
 
     const btVector3 onGroundGravity = { 0.0f,-50.0f,0.0f };
