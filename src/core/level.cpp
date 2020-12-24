@@ -778,7 +778,7 @@ bool Level::createNew(const std::string& levelFile)
     newLevel["ParticleSystem"].push_back(particleObj2);
 
     /*write to file*/
-    std::ofstream out (LEVEL_PATH + std::string("/") + levelFile + ".level");
+    std::ofstream out (LEVEL_PATH + std::string("/") + levelFile);
 
     if (!out.is_open())
     {

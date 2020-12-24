@@ -263,6 +263,7 @@ bool P_4E53::Initialize()
 
 
     /*load first level*/
+    const std::string suffix = ".level";
     std::string levelFile = "bullet2";
 
     auto level = std::make_shared<Level>();
@@ -270,19 +271,25 @@ bool P_4E53::Initialize()
     if (__argc == 2)
     {
         levelFile = __argv[1];
+    
+        // cut off ".level" if it's there
+        if(levelFile.size() >= suffix.size() && 0 == levelFile.compare(levelFile.size() - suffix.size(), suffix.size(), suffix))
+        {
+            levelFile = levelFile.substr(0, levelFile.size() - suffix.size());
+        }
     }
 
-    if (!Level::levelExists(levelFile + ".level"))
+    levelFile += suffix;
+
+    if (!Level::levelExists(levelFile))
     {
-        LOG(Severity::Info, levelFile << ".level not found, creating new..");
+        LOG(Severity::Info, levelFile << " not found, creating new..");
         if (!level->createNew(levelFile))
         {
             LOG(Severity::Error, "Failed to create new level!");
             return 0;
         }
     }
-
-    levelFile += ".level";
 
     if (!level->load(levelFile))
     {
