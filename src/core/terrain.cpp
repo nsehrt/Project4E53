@@ -357,7 +357,7 @@ void Terrain::generateHeight()
 {
     int octaveCount = 7;
     float scalingBias = 1.8f;
-    float heightMod = 3.5f;
+    float heightMod = 2.5f;
 
     /*init vectors*/
     std::vector<float> fSeed((INT_PTR)terrainSlices * terrainSlices);

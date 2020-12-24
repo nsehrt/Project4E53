@@ -2075,13 +2075,18 @@ void P_4E53::draw(const GameTime& gt)
         mCommandList->ResourceBarrier(1, &resBarr2);
     }
 
-    /*draw dear imgui*/
-    ImGui::Render();
-    ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), mCommandList.Get());
-
     /*draw hud for the edit mode*/
-    if (editModeHUD != nullptr)
+    if(editModeHUD != nullptr)
+    {
         editModeHUD->draw();
+    }
+    else
+    {
+        /*draw dear imgui*/
+        ImGui::Render();
+        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), mCommandList.Get());
+    }
+
 
     const auto resBarr4 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
                                                                D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
