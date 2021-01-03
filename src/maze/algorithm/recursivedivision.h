@@ -1,7 +1,6 @@
 #pragma once
 
-#include "grid.h"
-#include "randomizer.h"
+#include "../grid.h"
 
 namespace RecursiveDivision {
     static void divide(Grid& grid, Randomizer& rand, int row, int column,

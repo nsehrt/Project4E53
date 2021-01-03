@@ -1,6 +1,8 @@
 #pragma once
+
 #include "cell.h"
-#include "randomizer.h"
+#include "../util/randomizer.h"
+#include <iostream>
 
 class Grid
 {

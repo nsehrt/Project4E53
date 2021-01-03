@@ -256,6 +256,9 @@
     <ClInclude Include="src\maze\algorithm\trueprims.h">
       <Filter>Source Files\src\maze\algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="src\maze\maze.h">
+      <Filter>Source Files\src\maze</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -406,6 +409,9 @@
       <Filter>Source Files\src\extern\imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\maze\distances.cpp">
+      <Filter>Source Files\src\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="src\maze\maze.cpp">
       <Filter>Source Files\src\maze</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "grid.h"
-#include "randomizer.h"
+#include "../grid.h"
 #include <stack>
 
 namespace RecursiveBacktracker

@@ -209,6 +209,7 @@
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
     <ClCompile Include="src\maze\distances.cpp" />
+    <ClCompile Include="src\maze\maze.cpp" />
     <ClCompile Include="src\physics\bulletcontroller.cpp" />
     <ClCompile Include="src\physics\bulletphysics.cpp" />
     <ClCompile Include="src\render\blur.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="src\maze\cell.h" />
     <ClInclude Include="src\maze\distances.h" />
     <ClInclude Include="src\maze\grid.h" />
+    <ClInclude Include="src\maze\maze.h" />
     <ClInclude Include="src\physics\bulletcontroller.h" />
     <ClInclude Include="src\physics\bulletphysics.h" />
     <ClInclude Include="src\render\blur.h" />

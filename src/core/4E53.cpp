@@ -12,6 +12,7 @@
 #include "../util/collisiondatabase.h"
 #include "../util/debuginfo.h"
 #include "../physics/bulletphysics.h"
+#include "../maze/maze.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -43,6 +44,8 @@ private:
 
     BulletPhysics physics;
     CollisionDatabase collisionData;
+    Randomizer rand{};
+    Maze mazeGenerator{rand};
 
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;

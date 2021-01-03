@@ -1,8 +1,7 @@
 #pragma once
 
 #define NOMINMAX
-#include "grid.h"
-#include "randomizer.h"
+#include "../grid.h"
 
 namespace TruePrims
 {
