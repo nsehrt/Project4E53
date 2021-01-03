@@ -1177,6 +1177,7 @@ void P_4E53::update(const GameTime& gt)
                         case RenderType::NoCullNoNormal: editSettings->currentSelection->renderItem->renderType = RenderType::Default;
                             editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowDefault;
                             break;
+                        default: break;
                     }
                     activeLevel->calculateRenderOrderSizes();
                 }
@@ -2076,6 +2077,8 @@ void P_4E53::draw(const GameTime& gt)
     }
 
     /*draw hud for the edit mode*/
+
+    ImGui::Render();
     if(editModeHUD != nullptr)
     {
         editModeHUD->draw();
@@ -2083,7 +2086,7 @@ void P_4E53::draw(const GameTime& gt)
     else
     {
         /*draw dear imgui*/
-        ImGui::Render();
+        
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), mCommandList.Get());
     }
 

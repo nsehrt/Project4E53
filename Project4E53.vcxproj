@@ -208,6 +208,7 @@
     <ClCompile Include="src\hud\editmodehud.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
+    <ClCompile Include="src\maze\distances.cpp" />
     <ClCompile Include="src\physics\bulletcontroller.cpp" />
     <ClCompile Include="src\physics\bulletphysics.cpp" />
     <ClCompile Include="src\render\blur.cpp" />
@@ -264,6 +265,17 @@
     <ClInclude Include="src\hud\editmodehud.h" />
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />
+    <ClInclude Include="src\maze\algorithm\aldousbroder.h" />
+    <ClInclude Include="src\maze\algorithm\binarytree.h" />
+    <ClInclude Include="src\maze\algorithm\growingtree.h" />
+    <ClInclude Include="src\maze\algorithm\huntkill.h" />
+    <ClInclude Include="src\maze\algorithm\recursivebacktracker.h" />
+    <ClInclude Include="src\maze\algorithm\recursivedivision.h" />
+    <ClInclude Include="src\maze\algorithm\sidewinder.h" />
+    <ClInclude Include="src\maze\algorithm\trueprims.h" />
+    <ClInclude Include="src\maze\cell.h" />
+    <ClInclude Include="src\maze\distances.h" />
+    <ClInclude Include="src\maze\grid.h" />
     <ClInclude Include="src\physics\bulletcontroller.h" />
     <ClInclude Include="src\physics\bulletphysics.h" />
     <ClInclude Include="src\render\blur.h" />
@@ -286,6 +298,7 @@
     <ClInclude Include="src\util\modelloader.h" />
     <ClInclude Include="src\util\perlin.h" />
     <ClInclude Include="src\util\quadtree.h" />
+    <ClInclude Include="src\util\randomizer.h" />
     <ClInclude Include="src\util\serviceprovider.h" />
     <ClInclude Include="src\util\settings.h" />
     <ClInclude Include="src\util\skinnedmodelloader.h" />
