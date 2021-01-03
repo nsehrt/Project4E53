@@ -8,24 +8,65 @@ using namespace DirectX;
 
 const float MathHelper::Infinity = FLT_MAX;
 const float MathHelper::Pi = XM_PI;
+const float MathHelper::Epsilon = 0.001f;
 
-float MathHelper::angleFromXY(float x, float y)
+float MathHelper::angleFromVector2(const DirectX::XMFLOAT2& vector)
 {
-    float theta = 0.0f;
-
-    if (x >= 0.0f)
-    {
-        theta = atanf(y / x);
-        if (theta < 0.0f)
-            theta += 2.0f * Pi;
-    }
-    else
-    {
-        theta = atanf(y / x) + Pi;
-    }
-
-    return theta;
+    return std::atan2f(vector.y, vector.x);
 }
+
+float MathHelper::angleFromVector2Centered(const DirectX::XMFLOAT2& vector)
+{
+    if(vector.x == 0.0f && vector.y == 0.0f)
+    {
+        return 0.0f;
+    }
+
+    return angleFromVector2(vector) +DirectX::XM_PIDIV2;
+}
+
+DirectX::XMFLOAT3 MathHelper::vector3FromAngle(float angle)
+{
+    DirectX::XMFLOAT3 vec;
+
+    vec.x = cos(angle);
+    vec.y = 0.0f;
+    vec.z = -sin(angle);
+
+    return vec;
+}
+
+DirectX::XMFLOAT2 MathHelper::vector2FromAngleCentered(float angle)
+{
+    DirectX::XMFLOAT2 res{};
+
+    float v = angle - DirectX::XM_PIDIV2;
+
+    res.x = std::cosf(v);
+    res.y = std::sinf(v);
+
+    return res;
+}
+
+DirectX::XMFLOAT2 MathHelper::rotateUnitVectorByAngle(DirectX::XMFLOAT2& vec, float angle)
+{
+    DirectX::XMFLOAT2 res{};
+
+    DirectX::XMStoreFloat2(&res, DirectX::XMVector2Transform(XMLoadFloat2(&vec), DirectX::XMMatrixRotationZ(angle)));
+    DirectX::XMStoreFloat2(&res, DirectX::XMVector2Normalize(XMLoadFloat2(&res)));
+
+    return res;
+}
+
+DirectX::XMVECTOR MathHelper::sphericalToCartesian(float radius, float theta, float phi)
+{
+    return DirectX::XMVectorSet(
+        radius * std::sinf(phi) * std::cosf(theta),
+        radius * std::cosf(phi),
+        radius * std::sinf(phi) * std::sinf(theta),
+        1.0f);
+}
+
 
 std::string MathHelper::printMatrix(const DirectX::XMFLOAT4X4& m, bool toLog)
 {

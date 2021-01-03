@@ -9,6 +9,8 @@
 #include "../core/level.h"
 #include "../core/player.h"
 #include "../hud/editmodehud.h"
+#include "../util/collisiondatabase.h"
+#include "../util/debuginfo.h"
 #include "../physics/bulletphysics.h"
 #include <filesystem>
 
@@ -40,6 +42,7 @@ private:
     int vsyncIntervall = 0;
 
     BulletPhysics physics;
+    CollisionDatabase collisionData;
 
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;
@@ -60,9 +63,10 @@ private:
 
     std::vector<std::string> mPointLightNames;
 
+    void drawFrameStats();
     void drawToShadowMap();
     void setModelSelection();
-
+    void resetCollisionOnModelSwitch();
 };
 
 int gNumFrameResources = 1;
@@ -70,6 +74,8 @@ int gNumFrameResources = 1;
 /*******/
 /*main entry point*/
 /*******/
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/,
                    _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
@@ -161,6 +167,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 P_4E53::P_4E53(HINSTANCE hInstance)
     : DX12App(hInstance)
 {
+    /*create console output window*/
+    AllocConsole();
+    FILE* dummy = freopen("CONOUT$", "w", stdout);
+
     mWindowCaption = L"Project 4E53";
 }
 
@@ -175,9 +185,6 @@ P_4E53::~P_4E53()
     audioThread->join();
 
     ServiceProvider::getAudio()->uninit();
-
-    if (mDevice != nullptr)
-        flushCommandQueue();
 }
 
 /*****************/
@@ -194,6 +201,10 @@ bool P_4E53::Initialize()
     /**copy settings **/
     vsyncIntervall = ServiceProvider::getSettings()->displaySettings.VSync;
     gNumFrameResources = ServiceProvider::getSettings()->graphicSettings.numFrameResources;
+
+    /*register bullet physics*/
+    ServiceProvider::setPhysics(&physics);
+    ServiceProvider::setCollisionDatabase(&collisionData);
 
     /*initialize input manager*/
     std::shared_ptr<InputManager> inputManager(new InputManager());
@@ -240,41 +251,45 @@ bool P_4E53::Initialize()
 
     ServiceProvider::setRenderResource(renderResource);
 
+    //setup dear imgui
+    ImGui_ImplDX12_Init(mDevice.Get(), gNumFrameResources, DXGI_FORMAT_R8G8B8A8_UNORM,
+                        renderResource->mSrvDescriptorHeap.Get(),
+                        renderResource->mSrvDescriptorHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+                        renderResource->mSrvDescriptorHeap.Get()->GetGPUDescriptorHandleForHeapStart());
 
-    /*initialize player and camera*/
 
-    if (!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
-    {
-        mainCamera = std::make_shared<FixedCamera>();
-        mainCamera->initFixedDistance(10.0f, 15.0f);
+    /*load collision data base from and file and overwrite the base extracted from the models*/
+    collisionData.load();
 
-        mPlayer = std::make_shared<Player>("geo");
-
-        ServiceProvider::setActiveCamera(mainCamera);
-        ServiceProvider::setPlayer(mPlayer);
-    }
 
     /*load first level*/
-    std::string levelFile = "0";
+    const std::string suffix = ".level";
+    std::string levelFile = "bullet2";
 
     auto level = std::make_shared<Level>();
 
     if (__argc == 2)
     {
         levelFile = __argv[1];
+    
+        // cut off ".level" if it's there
+        if(levelFile.size() >= suffix.size() && 0 == levelFile.compare(levelFile.size() - suffix.size(), suffix.size(), suffix))
+        {
+            levelFile = levelFile.substr(0, levelFile.size() - suffix.size());
+        }
     }
 
-    if (!Level::levelExists(levelFile + ".level"))
+    levelFile += suffix;
+
+    if (!Level::levelExists(levelFile))
     {
-        LOG(Severity::Info, levelFile << ".level not found, creating new..");
+        LOG(Severity::Info, levelFile << " not found, creating new..");
         if (!level->createNew(levelFile))
         {
             LOG(Severity::Error, "Failed to create new level!");
             return 0;
         }
     }
-
-    levelFile += ".level";
 
     if (!level->load(levelFile))
     {
@@ -284,7 +299,23 @@ bool P_4E53::Initialize()
     mLevel.push_back(std::move(level));
     ServiceProvider::setActiveLevel(mLevel.back());
 
-    if (ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    /*initialize player and camera*/
+
+    if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        mainCamera = std::make_shared<FixedCamera>();
+        mainCamera->initFixedDistance(10.0f, 15.0f);
+
+        mPlayer = std::make_shared<Player>("geo");
+        mPlayer->stickToTerrain();
+        ServiceProvider::getPhysics()->addCharacter(*mPlayer);
+        mPlayer->setupController();
+        ServiceProvider::getPhysics()->addAction(mPlayer->getController());
+
+        ServiceProvider::setActiveCamera(mainCamera);
+        ServiceProvider::setPlayer(mPlayer);
+    }
+    else
     {
         editModeHUD = std::make_unique<EditModeHUD>();
         editModeHUD->init();
@@ -359,9 +390,9 @@ bool P_4E53::Initialize()
 
             for (const auto& g : ServiceProvider::getActiveLevel()->mGameObjects)
             {
-                if ((g.second->gameObjectType == GameObjectType::Static ||
-                    g.second->gameObjectType == GameObjectType::Wall ||
-                    g.second->gameObjectType == GameObjectType::Dynamic) &&
+                if ((g.second->gameObjectType == ObjectType::Default ||
+                    g.second->gameObjectType == ObjectType::Wall ||
+                    g.second->gameObjectType == ObjectType::Skinned) &&
                     g.second->isSelectable)
                 {
                     validGameObjects.push_back(g.second.get());
@@ -484,14 +515,25 @@ void P_4E53::update(const GameTime& gt)
     /****************************/
 
     /*get input and settings*/
-    InputSet& inputData = ServiceProvider::getInputManager()->getInput();
+    ServiceProvider::updateInput();
+    InputSet inputData = ServiceProvider::getInput();
     Settings* settingsData = ServiceProvider::getSettings();
 
     activeCamera->mPreviousPosition = activeCamera->getPosition3f();
 
+
     /***********************/
 
+    //input hold time test
+    //if(inputData.getButtonHoldTime(BTN::B) > 10.0f)
+    //{
+    //    LOG(Severity::Debug, "B");
+    //}
 
+    //if(inputData.getTriggerHoldTime(TRG::RIGHT_TRIGGER) > 5.0f)
+    //{
+    //    LOG(Severity::Debug, "TRG");
+    //}
 
     /************************/
     /**** Edit Mode *********/
@@ -887,8 +929,9 @@ void P_4E53::update(const GameTime& gt)
                         }
 
                         editSettings->currentSelection->setScale(nScale);
+                        
 
-                        /*rotation*/
+                    /*rotation*/
                     }
                     else if (editSettings->objTransformTool == ObjectTransformTool::Rotation)
                     {
@@ -916,11 +959,11 @@ void P_4E53::update(const GameTime& gt)
                 /*switch to invisible wall*/
                 if (inputData.Pressed(BTN::LEFT_THUMB))
                 {
-                    if (editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                    if (editSettings->currentSelection->gameObjectType == ObjectType::Default)
                     {
                         editSettings->currentSelection->renderItem->staticModel = renderResource->mModels["box"].get();
                         editSettings->currentSelection->renderItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
-                        editSettings->currentSelection->gameObjectType = GameObjectType::Wall;
+                        editSettings->currentSelection->gameObjectType = ObjectType::Wall;
                         editSettings->currentSelection->renderItem->renderType = RenderType::DefaultTransparency;
                         editSettings->currentSelection->renderItem->shadowType = ShadowRenderType::ShadowAlpha;
                         editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
@@ -934,12 +977,13 @@ void P_4E53::update(const GameTime& gt)
                         activeLevel->calculateRenderOrderSizes();
 
                         setModelSelection();
+                        resetCollisionOnModelSwitch();
                     }
 
                 }
 
                 /*switch model group*/
-                if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::B) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -978,9 +1022,11 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
                     editSettings->currentSelection->updateTransforms();
                     setModelSelection();
+
+                    resetCollisionOnModelSwitch();
                 }
 
-                if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                if (inputData.Pressed(BTN::X) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
 
                     for (auto it = editSettings->orderedModels.begin();
@@ -1018,11 +1064,13 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->getCollider().setBaseBoxes(editSettings->currentSelection->renderItem->staticModel->baseModelBox);
                     editSettings->currentSelection->updateTransforms();
                     setModelSelection();
+
+                    resetCollisionOnModelSwitch();
                 }
 
 
                 /*switch model*/
-                else if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::DPAD_RIGHT) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
                     for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
                          it != editSettings->orderedModels[editSettings->selectedGroup].end();
@@ -1060,10 +1108,12 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->updateTransforms();
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+                    resetCollisionOnModelSwitch();
                 }
 
 
-                else if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::DPAD_LEFT) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
                     for (auto it = editSettings->orderedModels[editSettings->selectedGroup].begin();
                          it != editSettings->orderedModels[editSettings->selectedGroup].end();
@@ -1101,12 +1151,14 @@ void P_4E53::update(const GameTime& gt)
                     editSettings->currentSelection->updateTransforms();
                     editSettings->currentSelection->setTextureScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
                     editSettings->currentSelection->renderItem->NumFramesDirty = gNumFrameResources;
+
+                    resetCollisionOnModelSwitch();
                 }
 
 
 
                 /*switch render type*/
-                else if (inputData.Pressed(BTN::RIGHT_THUMB) && editSettings->currentSelection->gameObjectType == GameObjectType::Static)
+                else if (inputData.Pressed(BTN::RIGHT_THUMB) && editSettings->currentSelection->gameObjectType == ObjectType::Default)
                 {
                     switch (editSettings->currentSelection->renderItem->renderType)
                     {
@@ -1131,9 +1183,9 @@ void P_4E53::update(const GameTime& gt)
 
                 /*copy to new object*/
                 else if (inputData.Pressed(BTN::Y) && 
-                        (editSettings->currentSelection->gameObjectType == GameObjectType::Static || 
-                         editSettings->currentSelection->gameObjectType == GameObjectType::Water ||
-                         editSettings->currentSelection->gameObjectType == GameObjectType::Wall))
+                        (editSettings->currentSelection->gameObjectType == ObjectType::Default ||
+                         editSettings->currentSelection->gameObjectType == ObjectType::Water ||
+                         editSettings->currentSelection->gameObjectType == ObjectType::Wall))
                 {
                     auto prevGO = editSettings->currentSelection;
 
@@ -1165,10 +1217,10 @@ void P_4E53::update(const GameTime& gt)
 
                             for (const auto& g : activeLevel->mGameObjects)
                             {
-                                if (g.second->gameObjectType == GameObjectType::Static ||
-                                    g.second->gameObjectType == GameObjectType::Wall ||
-                                    g.second->gameObjectType == GameObjectType::Dynamic || 
-                                    g.second->gameObjectType == GameObjectType::Water)
+                                if (g.second->gameObjectType == ObjectType::Default ||
+                                    g.second->gameObjectType == ObjectType::Wall ||
+                                    g.second->gameObjectType == ObjectType::Skinned || 
+                                    g.second->gameObjectType == ObjectType::Water)
                                 {
                                     validGameObjects.push_back(g.second.get());
                                 }
@@ -1191,7 +1243,7 @@ void P_4E53::update(const GameTime& gt)
 
                     editSettings->currentSelection->gameObjectType = prevGO->gameObjectType;
 
-                    if (editSettings->currentSelection->gameObjectType == GameObjectType::Water)
+                    if (editSettings->currentSelection->gameObjectType == ObjectType::Water)
                     {
                         editSettings->currentSelection->renderItem->renderType = RenderType::Water;
                     }
@@ -1235,53 +1287,32 @@ void P_4E53::update(const GameTime& gt)
             //switch type
             if(inputData.Pressed(BTN::Y))
             {
-                auto newType = static_cast<GameCollider::GameObjectCollider>(!static_cast<int>(editSettings->currentSelection->getCollider().getType()));
-
-                editSettings->currentSelection->setColliderProperties(
-                    newType,
-                    editSettings->currentSelection->getCollider().getRelativeCenterOffset(),
-                    editSettings->currentSelection->getCollider().getExtents()
-                );
+                // next shape
+                switch(editSettings->currentSelection->getShape())
+                {
+                    case BOX_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(SPHERE_SHAPE_PROXYTYPE); break;
+                    case SPHERE_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(CYLINDER_SHAPE_PROXYTYPE); break;
+                    case CYLINDER_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(CAPSULE_SHAPE_PROXYTYPE); break;
+                    case CAPSULE_SHAPE_PROXYTYPE: editSettings->currentSelection->setShape(BOX_SHAPE_PROXYTYPE); break;
+                }
 
                 editSettings->collisionScaleAxis = ScaleAxis::XYZ;
-
             }
 
             //switch axis
-            if(inputData.Pressed(BTN::B))
-            {
-                editSettings->collisionTranslationAxis = static_cast<TranslationAxis>(((int)editSettings->collisionTranslationAxis + 1) % 5);
-            }
-
             if(inputData.Pressed(BTN::A))
             {
                 editSettings->collisionScaleAxis = static_cast<ScaleAxis>(((int)editSettings->collisionScaleAxis + 1) % 4);
 
-                if(editSettings->currentSelection->getCollider().getType() == GameCollider::GameObjectCollider::Sphere)
+                switch(editSettings->currentSelection->getShape())
                 {
-                    editSettings->collisionScaleAxis = ScaleAxis::XYZ;
+                    case BOX_SHAPE_PROXYTYPE: break;
+                    case SPHERE_SHAPE_PROXYTYPE: editSettings->collisionScaleAxis = ScaleAxis::XYZ; break;
+                    case CAPSULE_SHAPE_PROXYTYPE: if(editSettings->collisionScaleAxis == ScaleAxis::Z) editSettings->collisionScaleAxis = ScaleAxis::XYZ; break;
+                    case CYLINDER_SHAPE_PROXYTYPE: if(editSettings->collisionScaleAxis == ScaleAxis::Z) editSettings->collisionScaleAxis = ScaleAxis::XYZ; break;
                 }
+
             }
-
-            //translation tool
-            XMFLOAT3 nPos = editSettings->currentSelection->getCollider().getRelativeCenterOffset();
-
-            float camDistance = editCamera->getDistanceNormalized();
-
-            float thumbX = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LX] * gt.DeltaTime();
-            float thumbY = editSettings->collisionTranslationIncreaseBase * camDistance * inputData.current.trigger[TRG::THUMB_LY] * gt.DeltaTime();
-
-            switch(editSettings->collisionTranslationAxis)
-            {
-                case TranslationAxis::XY: nPos.x += thumbX; nPos.y += thumbY; break;
-                case TranslationAxis::XZ: nPos.x += thumbX; nPos.z += thumbY; break;
-                case TranslationAxis::X: nPos.x += thumbX * 0.2f; break;
-                case TranslationAxis::Y: nPos.y += thumbY * 0.2f; break;
-                case TranslationAxis::Z: nPos.z += thumbY * 0.2f; break;
-            }
-
-            editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), nPos, editSettings->currentSelection->getCollider().getExtents());
-
 
             /*scale tool*/
             if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.15f || inputData.current.trigger[TRG::LEFT_TRIGGER])
@@ -1292,7 +1323,7 @@ void P_4E53::update(const GameTime& gt)
                     -inputData.current.trigger[TRG::LEFT_TRIGGER] : inputData.current.trigger[TRG::RIGHT_TRIGGER];
 
                 /*scale*/
-                XMFLOAT3 nScale = editSettings->currentSelection->getCollider().getExtents();
+                XMFLOAT3 nScale = editSettings->currentSelection->extents;
 
                 float increase = editSettings->scaleIncreaseBase * trigger * gt.DeltaTime();
 
@@ -1308,12 +1339,77 @@ void P_4E53::update(const GameTime& gt)
                     case ScaleAxis::Z: nScale.z += increase; break;
                 }
 
-                editSettings->currentSelection->setColliderProperties(editSettings->currentSelection->getCollider().getType(), editSettings->currentSelection->getCollider().getRelativeCenterOffset(), nScale);
-
+                editSettings->currentSelection->extents = nScale;
           
             }
 
+            /*save current object to collision database*/
+            if(inputData.Pressed(BTN::RIGHT_THUMB))
+            {
+                XMFLOAT3 t = editSettings->currentSelection->extents;
+                const auto& sRef = editSettings->currentSelection->getScale();
+                XMStoreFloat3(&t, XMVectorDivide(XMLoadFloat3(&t), XMLoadFloat3(&sRef)));
+
+                LOG(Severity::Info, "Adding collision of " << editSettings->currentSelection->renderItem->staticModel->name << " to database.");
+
+                collisionData.add(editSettings->currentSelection->renderItem->staticModel->name,
+                                  editSettings->currentSelection->getShape(),
+                                  t);
+
+                collisionData.save();
+            }
+
+            /*switch between physic sliders*/
+            if(inputData.Pressed(BTN::X))
+            {
+                editSettings->selectedPhysicProperty = static_cast<PhysicProperty>((static_cast<int>(editSettings->selectedPhysicProperty) + 1) % 4);
+            }
+
+            /*physic property values*/
+
+            if(inputData.current.trigger[TRG::THUMB_LY] != 0.0f)
+            {
+                const float dir = inputData.current.trigger[TRG::THUMB_LY];
+                float value = 0.0f;
+
+                switch(editSettings->selectedPhysicProperty)
+                {
+                    case PhysicProperty::Mass: 
+                        value = editSettings->currentSelection->mass;
+                        value += dir * gt.DeltaTime() * 5.0f;
+                        editSettings->currentSelection->mass = MathHelper::clampH(value, 0.0f, 1000.0f);
+
+                        if(editSettings->currentSelection->mass > 0.0f)
+                        {
+                            editSettings->currentSelection->motionType = ObjectMotionType::Dynamic;
+                        }
+                        else if(editSettings->currentSelection->mass == 0.0f)
+                        {
+                            editSettings->currentSelection->motionType = ObjectMotionType::Static;
+                        }
+
+                        break;
+                    case PhysicProperty::Friction: 
+                        value = editSettings->currentSelection->friction;
+                        value += dir * gt.DeltaTime() * 0.5f;
+                        editSettings->currentSelection->friction = MathHelper::clampH(value, 0.0f, 1.0f);
+                        break;
+                    case PhysicProperty::Restitution:
+                        value = editSettings->currentSelection->restitution;
+                        value += dir * gt.DeltaTime() * 0.5f;
+                        editSettings->currentSelection->restitution = MathHelper::clampH(value, 0.0f, 1.0f);
+                        break;
+                    case PhysicProperty::Damping: 
+                        value = editSettings->currentSelection->damping;
+                        value += dir * gt.DeltaTime() * 0.5f;
+                        editSettings->currentSelection->damping = MathHelper::clampH(value, 0.0f, 1.0f);
+                        break;
+                }
+
+            }
+
         }
+
         /*light*/
         else if (editSettings->toolMode == EditTool::Light)
         {
@@ -1534,7 +1630,7 @@ void P_4E53::update(const GameTime& gt)
 
             if(editSettings->currentSelection != nullptr)
             {
-                newCamTarget = editSettings->currentSelection->getCollider().getCenterOffset();
+                newCamTarget = editSettings->currentSelection->getPosition();
             }
         }
 
@@ -1564,9 +1660,9 @@ void P_4E53::update(const GameTime& gt)
 
                 for (const auto& e : activeLevel->mGameObjects)
                 {
-                    if (e.second->gameObjectType == GameObjectType::Sky ||
-                        e.second->gameObjectType == GameObjectType::Terrain ||
-                        e.second->gameObjectType == GameObjectType::Debug ||
+                    if (e.second->gameObjectType == ObjectType::Sky ||
+                        e.second->gameObjectType == ObjectType::Terrain ||
+                        e.second->gameObjectType == ObjectType::Debug ||
                         !e.second->isSelectable)
                         continue;
 
@@ -1592,10 +1688,10 @@ void P_4E53::update(const GameTime& gt)
 
                     for (const auto& g : activeLevel->mGameObjects)
                     {
-                        if (g.second->gameObjectType == GameObjectType::Static ||
-                            g.second->gameObjectType == GameObjectType::Wall ||
-                            g.second->gameObjectType == GameObjectType::Dynamic ||
-                            g.second->gameObjectType == GameObjectType::Water)
+                        if (g.second->gameObjectType == ObjectType::Default ||
+                            g.second->gameObjectType == ObjectType::Wall ||
+                            g.second->gameObjectType == ObjectType::Skinned ||
+                            g.second->gameObjectType == ObjectType::Water)
                         {
                             validGameObjects.push_back(g.second.get());
                         }
@@ -1683,9 +1779,34 @@ void P_4E53::update(const GameTime& gt)
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
 
-        /*update player*/
-        mPlayer->update(inputData, gt);
+        /*update player control data*/
+        auto controller = mPlayer->getController();
 
+        if(inputData.Pressed(BTN::A))
+        {
+            controller->jump();
+        }
+
+        if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f)
+        {
+            controller->run();
+        }
+
+        float inputMagnitude{};
+        XMFLOAT2 inputDirection = { inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY] };
+        XMVECTOR inputDirectionV = XMVector2Normalize(XMLoadFloat2(&inputDirection));
+        XMVECTOR inputMagnitudeV = XMVector2Length(XMLoadFloat2(&inputDirection));
+        XMStoreFloat2(&inputDirection, inputDirectionV);
+        XMStoreFloat(&inputMagnitude, inputMagnitudeV);
+        inputMagnitude = inputMagnitude > 1.0f ? 1.0f : inputMagnitude;
+
+        controller->setMovement(inputDirection, inputMagnitude);
+
+        /*update physics simulation*/
+        physics.simulateStep(gt.DeltaTime());
+
+        /*update player*/
+        mPlayer->update(gt);
 
 
         if (inputData.Pressed(BTN::A))
@@ -1766,6 +1887,22 @@ void P_4E53::draw(const GameTime& gt)
 {
     auto renderResource = ServiceProvider::getRenderResource();
     auto mCurrentFrameResource = renderResource->getCurrentFrameResource();
+    const auto settings = ServiceProvider::getSettings();
+
+    // Start the Dear ImGui frame
+    ImGui_ImplDX12_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    // Prepare all dear imgui windows
+
+    //ImGui::ShowDemoWindow();
+
+    //draw frame stats overlay
+    if(settings->miscSettings.DrawFPSEnabled)
+    {
+        drawFrameStats();
+    }
 
     auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc.Get();
     ThrowIfFailed(cmdListAlloc->Reset());
@@ -1805,15 +1942,18 @@ void P_4E53::draw(const GameTime& gt)
 
     auto offscreenRT = renderResource->getRenderTarget();
 
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
-                                  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_RENDER_TARGET));
+    const auto resBarr = CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
+                                                              D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    mCommandList->ResourceBarrier(1, &resBarr);
 
     /*clear buffers*/
     mCommandList->ClearRenderTargetView(offscreenRT->getRtv(), Colors::LimeGreen, 0, nullptr);
     mCommandList->ClearDepthStencilView(getDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
     /*set render target*/
-    mCommandList->OMSetRenderTargets(1, &offscreenRT->getRtv(), true, &getDepthStencilView());
+    const auto lRtv = offscreenRT->getRtv();
+    const auto lDSV = getDepthStencilView();
+    mCommandList->OMSetRenderTargets(1, &lRtv, true, &lDSV);
 
     /*set per pass data*/
     auto pass2CB = mCurrentFrameResource->PassCB->getResource();
@@ -1859,8 +1999,9 @@ void P_4E53::draw(const GameTime& gt)
     ServiceProvider::getActiveLevel()->draw();
 
     /*to srv read*/
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
-                                  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_GENERIC_READ));
+    const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(offscreenRT->getResource(),
+                                                               D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_GENERIC_READ);
+    mCommandList->ResourceBarrier(1, &resBarr2);
 
     renderResource->getSobelFilter()->execute(mCommandList.Get(),
                                               renderResource->mPostProcessRootSignature.Get(),
@@ -1868,11 +2009,14 @@ void P_4E53::draw(const GameTime& gt)
                                               offscreenRT->getSrv());
 
     // Indicate a state transition on the resource usage.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-                                  D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+    const auto resBarr3 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                                               D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    mCommandList->ResourceBarrier(1, &resBarr3);
 
     // Specify the buffers we are going to render to.
-    mCommandList->OMSetRenderTargets(1, &getCurrentBackBufferView(), true, &getDepthStencilView());
+    const auto lCBBV = getCurrentBackBufferView();
+
+    mCommandList->OMSetRenderTargets(1, &lCBBV, true, &lDSV);
 
 
 
@@ -1919,21 +2063,34 @@ void P_4E53::draw(const GameTime& gt)
                             renderResource->getPSO(PostProcessRenderType::BlurHorz), renderResource->getPSO(PostProcessRenderType::BlurVert),
                             getCurrentBackBuffer());
 
-        mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,
-                                      D3D12_RESOURCE_STATE_COPY_DEST));
+        const auto resBarr = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(), D3D12_RESOURCE_STATE_COPY_SOURCE,
+                                                                  D3D12_RESOURCE_STATE_COPY_DEST);
+        const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                                                   D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+        mCommandList->ResourceBarrier(1, &resBarr);
 
         mCommandList->CopyResource(getCurrentBackBuffer(), blurFilter->getOutput());
 
-        mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-                                      D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET));
+        mCommandList->ResourceBarrier(1, &resBarr2);
     }
 
     /*draw hud for the edit mode*/
-    if (editModeHUD != nullptr)
+    if(editModeHUD != nullptr)
+    {
         editModeHUD->draw();
+    }
+    else
+    {
+        /*draw dear imgui*/
+        ImGui::Render();
+        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), mCommandList.Get());
+    }
 
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
-                                  D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+
+    const auto resBarr4 = CD3DX12_RESOURCE_BARRIER::Transition(getCurrentBackBuffer(),
+                                                               D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+    mCommandList->ResourceBarrier(1, &resBarr4);
 
     // done
     ThrowIfFailed(mCommandList->Close());
@@ -1990,16 +2147,47 @@ UINT P_4E53::getPointLightIndex(const std::string& name, UINT direction) const
     return 0;
 }
 
+void P_4E53::drawFrameStats()
+{
+    const float offset = 10.0f;
+
+    const std::vector<float> fpsVec = { ServiceProvider::getDebugInfo()->fpsData.begin(), ServiceProvider::getDebugInfo()->fpsData.end() };
+    const float max = fpsVec.empty() ? 0 : *(std::max_element(fpsVec.begin(), fpsVec.end()));
+
+
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+                                    ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+    ImGui::SetNextWindowBgAlpha(0.5f);
+
+    ImVec2 window_pos = ImVec2(offset, offset);
+    ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, { 0,0 });
+
+    ImGui::Begin("Frame stats", NULL, windowFlags);
+    ImGui::Text("%.0f FPS | %.3f mspf",
+                ServiceProvider::getDebugInfo()->CurrentFPS,
+                ServiceProvider::getDebugInfo()->Mspf);
+    ImGui::Text("%d object(s) | %d shadow(s)",
+                ServiceProvider::getDebugInfo()->DrawnGameObjects,
+                ServiceProvider::getDebugInfo()->DrawnShadowObjects);
+
+    ImGui::PlotHistogram("", &fpsVec[0], static_cast<int>(fpsVec.size()), 0, NULL, 0.0f, max, ImVec2(250, 75));
+    ImGui::End();
+
+}
+
 void P_4E53::drawToShadowMap()
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
-    mCommandList->RSSetViewports(1, &renderResource->getShadowMap()->Viewport());
-    mCommandList->RSSetScissorRects(1, &renderResource->getShadowMap()->ScissorRect());
+    const auto lSMV = renderResource->getShadowMap()->Viewport();
+    const auto lSMSR = renderResource->getShadowMap()->ScissorRect();
+    mCommandList->RSSetViewports(1, &lSMV);
+    mCommandList->RSSetScissorRects(1, &lSMSR);
 
     // Change to DEPTH_WRITE.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
-                                  D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+    const auto resBarr = CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
+                                                              D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+    mCommandList->ResourceBarrier(1, &resBarr);
 
     UINT passCBByteSize = d3dUtil::CalcConstantBufferSize(sizeof(PassConstants));
 
@@ -2010,7 +2198,8 @@ void P_4E53::drawToShadowMap()
     // Set null render target because we are only going to draw to
     // depth buffer.  Setting a null render target will disable color writes.
     // Note the active PSO also must specify a render target count of 0.
-    mCommandList->OMSetRenderTargets(0, nullptr, false, &renderResource->getShadowMap()->Dsv());
+    const auto lSMDSV = renderResource->getShadowMap()->Dsv();
+    mCommandList->OMSetRenderTargets(0, nullptr, false, &lSMDSV);
 
     // Bind the pass constant buffer for the shadow map pass.
     auto passCB = renderResource->getCurrentFrameResource()->PassCB->getResource();
@@ -2026,8 +2215,9 @@ void P_4E53::drawToShadowMap()
     ServiceProvider::getActiveLevel()->drawShadow();
 
     // Change back to GENERIC_READ so we can read the texture in a shader.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
-                                  D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
+    const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(renderResource->getShadowMap()->Resource(),
+                                                               D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
+    mCommandList->ResourceBarrier(1, &resBarr2);
 }
 
 void P_4E53::setModelSelection()
@@ -2048,5 +2238,21 @@ void P_4E53::setModelSelection()
     }
 
     //LOG(Severity::Debug, editSettings->selectedGroup << " " << (*editSettings->selectedModel)->name);
+
+}
+
+void P_4E53::resetCollisionOnModelSwitch()
+{
+
+    auto editSettings = ServiceProvider::getEditSettings();
+    const auto& cdb = ServiceProvider::getCollisionDatabase();
+
+    XMFLOAT3 ext = cdb->getExtents(editSettings->currentSelection->renderItem->staticModel->name);
+    const XMFLOAT3 lScale = editSettings->currentSelection->getScale();
+    XMStoreFloat3(&ext, XMVectorMultiply(XMLoadFloat3(&ext), XMLoadFloat3(&lScale)));
+
+    editSettings->currentSelection->extents = ext;
+    editSettings->currentSelection->setShape(cdb->getShapeType(editSettings->currentSelection->renderItem->staticModel->name));
+    editSettings->collisionScaleAxis = ScaleAxis::XYZ;
 
 }

@@ -5,6 +5,9 @@
 #endif
 
 #include "../util/d3dUtil.h"
+#include "../extern/imgui/imgui.h"
+#include "../extern/imgui/imgui_impl_win32.h"
+#include "../extern/imgui/imgui_impl_dx12.h"
 #include "gametime.h"
 
 /*d3d12 libraries*/
@@ -73,6 +76,8 @@ protected:
     bool mFullscreenState = false;
 
     GameTime mTimer;
+
+    ImGuiIO* imgui_IO = nullptr;
 
     Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
     Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;

@@ -5,11 +5,13 @@
 
 class Player : public Character
 {
+    friend class BulletController;
+
 public:
 
     explicit Player(const std::string& model);
-
-    void update(const InputSet& input, const GameTime& gt);
+    void stickToTerrain();
+    virtual void update(const GameTime& gt) override;
 
 private:
 

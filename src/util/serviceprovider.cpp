@@ -10,6 +10,9 @@ std::shared_ptr<Settings>ServiceProvider::settings = nullptr;
 std::shared_ptr<SoundEngine>ServiceProvider::audio = nullptr;
 std::shared_ptr<InputManager>ServiceProvider::input = nullptr;
 std::shared_ptr<RenderResource>ServiceProvider::renderResource = nullptr;
+BulletPhysics* ServiceProvider::physics = nullptr;
+CollisionDatabase* ServiceProvider::collisionDatabase = nullptr;
+
 std::shared_ptr<Player>ServiceProvider::activePlayer = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
@@ -17,6 +20,7 @@ std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInf
 std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<EditSettings>();
 
 GameState ServiceProvider::mainGameState = GameState::UNDEF;
+InputSet ServiceProvider::inputSet{};
 
 std::atomic<unsigned int> ServiceProvider::audioGuid = 1;
 std::mutex ServiceProvider::audioLock;
@@ -61,6 +65,16 @@ void ServiceProvider::setInputManager(std::shared_ptr<InputManager> providedInpu
     input = providedInputManager;
 }
 
+void ServiceProvider::updateInput()
+{
+    inputSet = input->getInput();
+}
+
+InputSet ServiceProvider::getInput()
+{
+    return inputSet;
+}
+
 RenderResource* ServiceProvider::getRenderResource()
 {
     return renderResource.get();
@@ -69,6 +83,26 @@ RenderResource* ServiceProvider::getRenderResource()
 void ServiceProvider::setRenderResource(std::shared_ptr<RenderResource> providedRenderResource)
 {
     renderResource = providedRenderResource;
+}
+
+BulletPhysics* ServiceProvider::getPhysics()
+{
+    return physics;
+}
+
+void ServiceProvider::setPhysics(BulletPhysics* providedPhysics)
+{
+    physics = providedPhysics;
+}
+
+CollisionDatabase* ServiceProvider::getCollisionDatabase()
+{
+    return collisionDatabase;
+}
+
+void ServiceProvider::setCollisionDatabase(CollisionDatabase* providedCdb)
+{
+    collisionDatabase = providedCdb;
 }
 
 Player* ServiceProvider::getPlayer()

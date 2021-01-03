@@ -1,4 +1,5 @@
 #include "inputmanager.h"
+#include <chrono>
 #include "../util/serviceprovider.h"
 
 
@@ -46,7 +47,7 @@ void InputManager::Stop()
     looped = false;
 }
 
-InputSet& InputManager::getInput()
+InputSet InputManager::getInput()
 {
     inUse = lastFinished.load();
     inputSet.current = inputData[inUse];
@@ -169,6 +170,35 @@ void InputManager::Update()
     inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbLY);
     inputData[currentWorkedOn].trigger[TRG::THUMB_RX] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRX);
     inputData[currentWorkedOn].trigger[TRG::THUMB_RY] = controller->normalizeThumbs(cs->state.Gamepad.sThumbRY);
+
+
+    // accumulate hold time by saving the timestamp a button was pressed
+    auto currentTimeStamp = std::chrono::steady_clock::now();
+
+    for(int i = 0; i < BUTTON_COUNT; i++)
+    {
+        if(!inputData[currentWorkedOn].buttons[i])
+        {
+            inputData[currentWorkedOn].buttonHoldTime[i] = currentTimeStamp;
+        }
+        else
+        {
+            inputData[currentWorkedOn].buttonHoldTime[i] = inputData[tLastFinished].buttonHoldTime[i];
+        }
+    }
+
+    for(int i = 0; i < TRIGGER_COUNT; i++)
+    {
+        if(inputData[currentWorkedOn].trigger[i] <= 0.0f)
+        {
+            inputData[currentWorkedOn].triggerHoldTime[i] = currentTimeStamp;
+        }
+        else
+        {
+            inputData[currentWorkedOn].triggerHoldTime[i] = inputData[tLastFinished].triggerHoldTime[i];
+        }
+
+    }
 
     /*mark as finished*/
     lastFinished = currentWorkedOn;

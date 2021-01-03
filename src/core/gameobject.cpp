@@ -1,12 +1,11 @@
 #include "gameobject.h"
+#include "../util/collisiondatabase.h"
 #include "../util/serviceprovider.h"
-
 
 using namespace DirectX;
 
 
-
-GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
+GameObject::GameObject(const json& objectJson, int index, int skinnedIndex) // used for all items in the level
 {
     /*Name*/
     Name = objectJson["Name"];
@@ -43,7 +42,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     }
     else
     {
-        Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        Rotation = { 0,0,0 };
     }
 
     /*Texture Transforms*/
@@ -96,7 +95,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
             isShadowForced = false;
             rItem->staticModel = renderResource->mModels["box"].get();
             TextureScale = Scale;
-            gameObjectType = GameObjectType::Wall;
+            gameObjectType = ObjectType::Wall;
         }
         else
         {
@@ -115,7 +114,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     {
         if (renderResource->mMaterials.find(objectJson["Material"]) == renderResource->mMaterials.end())
         {
-            if (gameObjectType == GameObjectType::Wall)
+            if (gameObjectType == ObjectType::Wall)
             {
                 rItem->MaterialOverwrite = renderResource->mMaterials["invWall"].get();
             }
@@ -141,7 +140,7 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
     /*render type*/
     if (!exists(objectJson, "RenderType"))
     {
-        if (gameObjectType == GameObjectType::Wall)
+        if (gameObjectType == ObjectType::Wall)
         {
             rItem->renderType = RenderType::DefaultTransparency;
         }
@@ -186,56 +185,75 @@ GameObject::GameObject(const json& objectJson, int index, int skinnedIndex)
 
     renderItem = std::move(rItem);
 
-    /*set collider properties*/
 
-    if (objectJson["Name"] == "box_(208)")
-    {
-        int i = 1;
-    }
+
+    /*set base collider properties*/
 
     collider.setBaseBoxes(renderItem->getModel()->baseModelBox);
 
+    /*load bullet physics properties*/
 
-    XMFLOAT3 colliderCenter{}, colliderExtents{};
-    int colliderType = -1;
+    shapeType = ServiceProvider::getCollisionDatabase()->getShapeType(objectJson["Model"]);
+    extents = ServiceProvider::getCollisionDatabase()->getExtents(objectJson["Model"]);
+    XMStoreFloat3(&extents, XMVectorMultiply(XMLoadFloat3(&extents), XMLoadFloat3(&Scale)));
 
-    if (exists(objectJson, "ColliderType"))
+    numericalID = index; 
+
+    if(exists(objectJson, "MotionType"))
     {
-        colliderType = objectJson["ColliderType"];
+        if(objectJson["MotionType"] == "Kinetic")
+        {
+            motionType = ObjectMotionType::Kinetic;
+        }
+        else if(objectJson["MotionType"] == "Dynamic")
+        {
+            motionType = ObjectMotionType::Dynamic;
+        }
     }
 
-    if (exists(objectJson, "ColliderOffset"))
+    if(exists(objectJson, "Mass"))
     {
-        colliderCenter.x = objectJson["ColliderOffset"][0];
-        colliderCenter.y = objectJson["ColliderOffset"][1];
-        colliderCenter.z = objectJson["ColliderOffset"][2];
+        mass = objectJson["Mass"];
+
+        if(mass < 0.0f) mass = 0.0f;
+
+        if(mass > 0.0f && motionType == ObjectMotionType::Static)
+        {
+            LOG(Severity::Warning, "Game object " << Name << ": Static but mass over 0!");
+            mass = 0.0f;
+        }
     }
 
-    if (exists(objectJson, "ColliderExtents"))
+    if(exists(objectJson, "Restitution"))
     {
-        colliderExtents.x = objectJson["ColliderExtents"][0];
-        colliderExtents.y = objectJson["ColliderExtents"][1];
-        colliderExtents.z = objectJson["ColliderExtents"][2];
+        restitution = objectJson["Restitution"];
+
+        if(restitution < 0.0f) restitution = 0.0f;
+
     }
 
-    if (colliderType == -1)
+    if(exists(objectJson, "Damping"))
     {
-        /*if no collider specified use base collider of the model*/
-        setColliderProperties(GameCollider::GameObjectCollider::OBB, renderItem->getModel()->baseModelBox.Center, renderItem->getModel()->baseModelBox.Extents);
-    }
-    else
-    {
-        setColliderProperties(static_cast<GameCollider::GameObjectCollider>(colliderType), colliderCenter, colliderExtents);
+        damping = objectJson["Damping"];
+
+        if(damping < 0.0f) damping = 0.0f;
+
     }
 
+    if(exists(objectJson, "Friction"))
+    {
+        friction = objectJson["Friction"];
 
-    updateTransforms();
+        if(friction < 0.0f) friction = 0.0f;
+    }
+
+    setRotation(getRotation()); //also updates transforms
 }
 
 GameObject::GameObject()
 {
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    setRotation({ 0,0,0 }, false);
     Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -246,14 +264,14 @@ GameObject::GameObject()
     skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
 }
 
-GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
+GameObject::GameObject(const std::string& name, int index, int skinnedIndex) // used for character/player etc.
 {
     auto renderResource = ServiceProvider::getRenderResource();
 
     Name = name;
 
     Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    setRotation({ 0,0,0 }, false);
     Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
     TextureTranslation = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -273,7 +291,7 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
     }
     else
     {
-        gameObjectType = GameObjectType::Dynamic;
+        gameObjectType = ObjectType::Skinned;
         tItem->renderType = RenderType::SkinnedDefault;
         tItem->shadowType = ShadowRenderType::ShadowSkinned;
         tItem->SkinnedCBIndex = skinnedIndex;
@@ -284,6 +302,19 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
 
     objectCBSize = d3dUtil::CalcConstantBufferSize(sizeof(ObjectConstants));
     skinnedCBSize = d3dUtil::CalcConstantBufferSize(sizeof(SkinnedConstants));
+
+}
+
+GameObject::~GameObject()
+{
+    
+    if(bulletBody != nullptr)
+    {
+        delete bulletBody->getMotionState();
+        delete bulletBody->getCollisionShape();
+        delete bulletBody;
+    }
+
 }
 
 
@@ -291,7 +322,22 @@ GameObject::GameObject(const std::string& name, int index, int skinnedIndex)
 /***UDPATE***/
 void GameObject::update(const GameTime& gt)
 {
-    if (gameObjectType == GameObjectType::Dynamic)
+
+    // Transfer transformation back from bullet object if the object is not static
+    if(motionType != ObjectMotionType::Static)
+    {
+        btTransform t;
+        bulletBody->getMotionState()->getWorldTransform(t);
+
+        XMStoreFloat4x4(&rotationQuat, XMMatrixRotationQuaternion(XMVectorSet(t.getRotation().x(), t.getRotation().y(), t.getRotation().z(), t.getRotation().w())));
+        Position = { t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z() };
+
+        updateTransforms();
+    }
+
+
+    // update animation for skinned objects
+    if (gameObjectType == ObjectType::Skinned)
     {
         if (renderItem->currentClip != nullptr)
         {
@@ -322,10 +368,10 @@ bool GameObject::draw() const
     const auto gObjRenderItem = renderItem.get();
     const auto objectCB = ServiceProvider::getRenderResource()->getCurrentFrameResource()->ObjectCB->getResource();
 
-    if (gameObjectType == GameObjectType::Debug) return false;
+    if (gameObjectType == ObjectType::Debug) return false;
 
     if (!isDrawEnabled &&
-        !(gameObjectType == GameObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
+        !(gameObjectType == ObjectType::Wall && ServiceProvider::getSettings()->miscSettings.EditModeEnabled))
     {
         return false;
     }
@@ -340,8 +386,10 @@ bool GameObject::draw() const
 
     for (const auto& gObjMeshes : gObjRenderItem->getModel()->meshes)
     {
-        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+        const auto vbv = gObjMeshes->VertexBufferView();
+        const auto ibv = gObjMeshes->IndexBufferView();
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &vbv);
+        renderResource->cmdList->IASetIndexBuffer(&ibv);
         renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
@@ -368,6 +416,8 @@ bool GameObject::draw() const
     return true;
 }
 
+
+
 bool GameObject::drawShadow() const
 {
     const auto gObjRenderItem = renderItem.get();
@@ -383,8 +433,10 @@ bool GameObject::drawShadow() const
 
     for (const auto& gObjMeshes : gObjRenderItem->getModel()->meshes)
     {
-        renderResource->cmdList->IASetVertexBuffers(0, 1, &gObjMeshes->VertexBufferView());
-        renderResource->cmdList->IASetIndexBuffer(&gObjMeshes->IndexBufferView());
+        const auto vbv = gObjMeshes->VertexBufferView();
+        const auto ibv = gObjMeshes->IndexBufferView();
+        renderResource->cmdList->IASetVertexBuffers(0, 1, &vbv);
+        renderResource->cmdList->IASetIndexBuffer(&ibv);
         renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[meshCounter] * objectCBSize;
@@ -410,6 +462,8 @@ bool GameObject::drawShadow() const
     return true;
 }
 
+
+
 void GameObject::drawPickBox() const
 {
     const auto gObjRenderItem = renderItem.get();
@@ -422,8 +476,10 @@ void GameObject::drawPickBox() const
 
     const auto renderResource = ServiceProvider::getRenderResource();
 
-    renderResource->cmdList->IASetVertexBuffers(0, 1, &boxMesh->VertexBufferView());
-    renderResource->cmdList->IASetIndexBuffer(&boxMesh->IndexBufferView());
+    const auto vbv = boxMesh->VertexBufferView();
+    const auto ibv = boxMesh->IndexBufferView();
+    renderResource->cmdList->IASetVertexBuffers(0, 1, &vbv);
+    renderResource->cmdList->IASetIndexBuffer(&ibv);
     renderResource->cmdList->IASetPrimitiveTopology(gObjRenderItem->PrimitiveType);
 
     D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + (long long)gObjRenderItem->ObjCBIndex[0] * objectCBSize;
@@ -433,12 +489,14 @@ void GameObject::drawPickBox() const
     renderResource->cmdList->DrawIndexedInstanced(boxMesh->IndexCount, 1, 0, 0, 0);
 }
 
+
+
 json GameObject::toJson() const
 {
     json jElement;
 
     jElement["Name"] = Name;
-    jElement["Model"] = gameObjectType != GameObjectType::Wall ? renderItem->staticModel->name : "";
+    jElement["Model"] = gameObjectType != ObjectType::Wall ? renderItem->staticModel->name : "";
 
     if (renderItem->MaterialOverwrite != nullptr)
     {
@@ -472,14 +530,35 @@ json GameObject::toJson() const
     jElement["Rotation"][1] = XMConvertToDegrees(getRotation().y);
     jElement["Rotation"][2] = XMConvertToDegrees(getRotation().z);
 
-    /*save game collider*/
-    jElement["ColliderType"] = static_cast<UINT>(collider.getType());
-    jElement["ColliderOffset"][0] = collider.getRelativeCenterOffset().x;
-    jElement["ColliderOffset"][1] = collider.getRelativeCenterOffset().y;
-    jElement["ColliderOffset"][2] = collider.getRelativeCenterOffset().z;
-    jElement["ColliderExtents"][0] = collider.getExtents().x;
-    jElement["ColliderExtents"][1] = collider.getExtents().y;
-    jElement["ColliderExtents"][2] = collider.getExtents().z;
+    /*bullet physics*/
+    if(mass != 0.0f)
+    {
+        jElement["Mass"] = mass;
+    }
+
+    if(motionType == ObjectMotionType::Kinetic)
+    {
+        jElement["MotionType"] = "Kinetic";
+    }
+    else if(motionType == ObjectMotionType::Dynamic)
+    {
+        jElement["MotionType"] = "Dynamic";
+    }
+
+    if(restitution != 0.0f)
+    {
+        jElement["Restitution"] = restitution;
+    }
+
+    if(damping != 0.0f)
+    {
+        jElement["Damping"] = damping;
+    }
+
+    if(friction != 0.5f)
+    {
+        jElement["Friction"] = friction;
+    }
 
     return jElement;
 }
@@ -487,24 +566,28 @@ json GameObject::toJson() const
 void GameObject::setScale(DirectX::XMFLOAT3 _scale)
 {
 
+    XMStoreFloat3(&extents, XMVectorAdd(XMLoadFloat3(&extents),
+                                        XMVectorSubtract(XMLoadFloat3(&_scale), XMLoadFloat3(&Scale))
+                                        ));
+
     Scale = _scale;
 
     updateTransforms();
 
-    /*apply scale to game object collider*/
-    collider.setProperties(collider.getInternalPickBoxOffset(), collider.getPickBox().Extents);
-    updateTransforms();
 }
 
 void GameObject::makeDynamic(SkinnedModel* sModel, UINT cbIndex)
 {
-    gameObjectType = GameObjectType::Dynamic;
+    gameObjectType = ObjectType::Skinned;
     renderItem->skinnedModel = sModel;
     setAnimation(nullptr);
 }
 
 void GameObject::setAnimation(AnimationClip* aClip, bool keepRelativeTime)
 {
+    //nothing to do
+    if(renderItem->currentClip == aClip && keepRelativeTime) return;
+
     float percentTime = 0.0f;
 
     if (keepRelativeTime)
@@ -541,40 +624,23 @@ void GameObject::checkInViewFrustum(BoundingFrustum& localCamFrustum)
 
 }
 
-void GameObject::setColliderProperties(GameCollider::GameObjectCollider type, DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
-{
-    collider.setColliderType(type);
-    collider.setProperties(center, extents);
-
-    updateTransforms();
-}
-
-bool GameObject::intersects(const GameObject& obj) const
-{
-    if (!isCollisionEnabled || !obj.isCollisionEnabled)
-    {
-        return false;
-    }
-
-    return collider.intersects(obj.collider);
-}
-
 void GameObject::updateTransforms()
 {
     /*update transforms for constant buffer*/
     XMMATRIX rootTransform = XMMatrixIdentity();
 
-    /*for dynamic objects apply scene root transform*/
-    if (gameObjectType == GameObjectType::Dynamic)
+    /*for skinned objects apply scene root transform*/
+    if (gameObjectType == ObjectType::Skinned)
     {
         rootTransform = XMLoadFloat4x4(&renderItem->skinnedModel->rootTransform);
     }
 
-    XMMATRIX preWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
-        XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)) *
-        XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
+    XMMATRIX mWorld = XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+                                                XMLoadFloat4x4(&rotationQuat) *
+                                                XMMatrixTranslationFromVector(XMLoadFloat3(&Position));
 
-    XMStoreFloat4x4(&renderItem->World, rootTransform *preWorld);
+
+    XMStoreFloat4x4(&renderItem->World, rootTransform * mWorld);
 
     XMStoreFloat4x4(&renderItem->TexTransform, XMMatrixScalingFromVector(XMLoadFloat3(&TextureScale)) *
                     XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&TextureRotation)) *
@@ -582,8 +648,6 @@ void GameObject::updateTransforms()
 
     /*update collider*/
     collider.update(renderItem->World);
-
-
 
     renderItem->NumFramesDirty = gNumFrameResources;
 }

@@ -73,23 +73,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
-    <LibraryPath>C:\Users\n_seh\source\bullet3\debug\lib;C:\lua;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\lua\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
+    <LibraryPath>C:\Users\n_seh\source\bullet3\debug\lib;C:\sdk\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\sdk\lua\include;$(IncludePath)</IncludePath>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\Output\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)\Temp\</IntDir>
-    <LibraryPath>C:\Users\n_seh\source\bullet3\lib;C:\lua;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\lua\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
+    <LibraryPath>C:\Users\n_seh\source\bullet3\lib;C:\sdk\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\sdk\lua\include;$(IncludePath)</IncludePath>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,6 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,7 +130,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <StackReserveSize>
       </StackReserveSize>
-      <AdditionalOptions>/NODEFAULTLIB:lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NODEFAULTLIB:libcmt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -134,6 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,6 +176,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <StackReserveSize>
       </StackReserveSize>
+      <AdditionalOptions>/NODEFAULTLIB:libcmt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -179,7 +188,7 @@
     <ClCompile Include="src\core\dx12app.cpp" />
     <ClCompile Include="src\core\fixedcamera.cpp" />
     <ClCompile Include="src\core\fpscamera.cpp" />
-    <ClCompile Include="src\core\gamecollider.cpp" />
+    <ClCompile Include="src\core\basecollider.cpp" />
     <ClCompile Include="src\core\gameobject.cpp" />
     <ClCompile Include="src\core\gametime.cpp" />
     <ClCompile Include="src\core\grass.cpp" />
@@ -190,9 +199,16 @@
     <ClCompile Include="src\core\terrain.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\extern\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\hud\editmodehud.cpp" />
     <ClCompile Include="src\input\controllerinput.cpp" />
     <ClCompile Include="src\input\inputmanager.cpp" />
+    <ClCompile Include="src\physics\bulletcontroller.cpp" />
     <ClCompile Include="src\physics\bulletphysics.cpp" />
     <ClCompile Include="src\render\blur.cpp" />
     <ClCompile Include="src\render\frameresource.cpp" />
@@ -203,6 +219,7 @@
     <ClCompile Include="src\render\sobel.cpp" />
     <ClCompile Include="src\script\scriptsystem.cpp" />
     <ClCompile Include="src\util\cliploader.cpp" />
+    <ClCompile Include="src\util\collisiondatabase.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
     <ClCompile Include="src\util\geogen.cpp" />
     <ClCompile Include="src\util\log.cpp" />
@@ -222,7 +239,7 @@
     <ClInclude Include="src\core\editmode.h" />
     <ClInclude Include="src\core\fixedcamera.h" />
     <ClInclude Include="src\core\fpscamera.h" />
-    <ClInclude Include="src\core\gamecollider.h" />
+    <ClInclude Include="src\core\basecollider.h" />
     <ClInclude Include="src\core\gameobject.h" />
     <ClInclude Include="src\core\gamestate.h" />
     <ClInclude Include="src\core\gametime.h" />
@@ -235,10 +252,19 @@
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />
+    <ClInclude Include="src\extern\imgui\imconfig.h" />
+    <ClInclude Include="src\extern\imgui\imgui.h" />
+    <ClInclude Include="src\extern\imgui\imgui_impl_dx12.h" />
+    <ClInclude Include="src\extern\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="src\extern\imgui\imgui_internal.h" />
+    <ClInclude Include="src\extern\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\extern\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\extern\imgui\imstb_truetype.h" />
     <ClInclude Include="src\extern\json.hpp" />
     <ClInclude Include="src\hud\editmodehud.h" />
     <ClInclude Include="src\input\controllerinput.h" />
     <ClInclude Include="src\input\inputmanager.h" />
+    <ClInclude Include="src\physics\bulletcontroller.h" />
     <ClInclude Include="src\physics\bulletphysics.h" />
     <ClInclude Include="src\render\blur.h" />
     <ClInclude Include="src\render\frameresource.h" />
@@ -250,6 +276,8 @@
     <ClInclude Include="src\render\uploadbuffer.h" />
     <ClInclude Include="src\script\scriptsystem.h" />
     <ClInclude Include="src\util\cliploader.h" />
+    <ClInclude Include="src\util\collector.h" />
+    <ClInclude Include="src\util\collisiondatabase.h" />
     <ClInclude Include="src\util\d3dUtil.h" />
     <ClInclude Include="src\util\debuginfo.h" />
     <ClInclude Include="src\util\geogen.h" />

@@ -6,6 +6,7 @@
 #include "../core/level.h"
 #include "../core/player.h"
 #include "../util/serviceprovider.h"
+#include "../util/collisiondatabase.h"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -118,6 +119,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         if(tModel)
         {
             modelCounter++;
+
+            // add to collision database
+            ServiceProvider::getCollisionDatabase()->add(entry.path().stem().string(), 0, tModel->baseModelBox.Extents);
+
             mModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
@@ -159,6 +164,10 @@ bool RenderResource::init(ID3D12Device* _device, ID3D12GraphicsCommandList* _cmd
         if(tModel)
         {
             skinnedCounter++;
+
+            // add to collision database
+            ServiceProvider::getCollisionDatabase()->add(entry.path().stem().string(), 0, tModel->baseModelBox.Extents);
+
             mSkinnedModels[entry.path().stem().string()] = std::move(tModel);
 
             /*set per sub mesh material*/
@@ -1335,7 +1344,7 @@ void RenderResource::updateShadowTransform(const GameTime& gt)
 
     //only the first light casts shadow
     XMVECTOR lightDir = XMLoadFloat3(&ServiceProvider::getActiveLevel()->mCurrentLightObjects[0]->getDirection());
-    XMVECTOR lightPos = -2.0f * mShadowMap->shadowBounds.Radius * lightDir + XMLoadFloat3(&mShadowMap->shadowBounds.Center);
+    XMVECTOR lightPos = XMVectorAdd((-2.0f * mShadowMap->shadowBounds.Radius * lightDir), XMLoadFloat3(&mShadowMap->shadowBounds.Center));
     XMVECTOR targetPos = XMLoadFloat3(&mShadowMap->shadowBounds.Center);
     XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);
@@ -1476,11 +1485,15 @@ void RenderResource::updateShadowPassConstantBuffers(const GameTime& gt)
 {
     XMMATRIX view = XMLoadFloat4x4(&mLightView);
     XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
-
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+    XMVECTOR mDetView = XMMatrixDeterminant(view);
+    XMVECTOR mDetProj = XMMatrixDeterminant(proj);
+    XMVECTOR mDetViewProj = XMMatrixDeterminant(viewProj);
+
+    XMMATRIX invView = XMMatrixInverse(&mDetView, view);
+    XMMATRIX invProj = XMMatrixInverse(&mDetProj, proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&mDetViewProj, viewProj);
 
     UINT w = mShadowMap->Width();
     UINT h = mShadowMap->Height();
@@ -1508,7 +1521,7 @@ void RenderResource::updateSkinnedDataBuffers(const GameTime& gt)
 
     const auto updateSingleSkinnedCB = [&](const GameObject* gO)
     {
-        if (gO->gameObjectType != GameObjectType::Dynamic) return;
+        if (gO->gameObjectType != ObjectType::Skinned) return;
 
         auto e = gO->renderItem.get();
 
@@ -1542,11 +1555,15 @@ void RenderResource::updateMainPassConstantBuffers(const GameTime& gt)
     /*always update the camera light etc buffer*/
     XMMATRIX view = ServiceProvider::getActiveCamera()->getView();
     XMMATRIX proj = ServiceProvider::getActiveCamera()->getProj();
-
     XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+    XMVECTOR mDetView = XMMatrixDeterminant(view);
+    XMVECTOR mDetProj = XMMatrixDeterminant(proj);
+    XMVECTOR mDetViewProj = XMMatrixDeterminant(viewProj);
+
+    XMMATRIX invView = XMMatrixInverse(&mDetView, view);
+    XMMATRIX invProj = XMMatrixInverse(&mDetProj, proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&mDetViewProj, viewProj);
 
     XMStoreFloat4x4(&mMainPassConstants.View, XMMatrixTranspose(view));
     XMStoreFloat4x4(&mMainPassConstants.InvView, XMMatrixTranspose(invView));
@@ -1682,8 +1699,8 @@ void RenderResource::generateDefaultShapes()
     mModels["box"] = std::move(m);
 
     /*box hitbox*/
-    XMStoreFloat3(&mModels["box"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["box"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["box"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["box"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     std::unique_ptr<Mesh> hitboxBox = std::make_unique<Mesh>();
 
@@ -1801,8 +1818,8 @@ void RenderResource::generateDefaultShapes()
     v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
-    XMStoreFloat3(&mModels["grid"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["grid"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["grid"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["grid"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
 
     GeometryGenerator::MeshData boxMeshGrid = geoGen.CreateBox(mModels["grid"]->baseModelBox.Extents.x * 2.f,
@@ -1902,8 +1919,8 @@ void RenderResource::generateDefaultShapes()
     v.y = 0.025f;
     vMax = XMLoadFloat3(&v);
 
-    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["watergrid"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     GeometryGenerator::MeshData boxMeshWGrid = geoGen.CreateBox(mModels["watergrid"]->baseModelBox.Extents.x * 2.f,
                                                                mModels["watergrid"]->baseModelBox.Extents.y * 2.f,
@@ -1995,8 +2012,8 @@ void RenderResource::generateDefaultShapes()
 
     /*sphere hitbox*/
 
-    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["sphere"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     GeometryGenerator::MeshData boxMeshSp = geoGen.CreateBox(mModels["sphere"]->baseModelBox.Extents.x * 2.f,
                                                              mModels["sphere"]->baseModelBox.Extents.y * 2.f,
@@ -2087,8 +2104,8 @@ void RenderResource::generateDefaultShapes()
 
     /*cylinder hitbox*/
 
-    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Center, 0.5f * XMVectorAdd(vMin, vMax));
+    XMStoreFloat3(&mModels["cylinder"]->baseModelBox.Extents, 0.5f * XMVectorSubtract(vMin, vMax));
 
     GeometryGenerator::MeshData boxMeshCyl = geoGen.CreateBox(mModels["cylinder"]->baseModelBox.Extents.x * 2.f,
                                                               mModels["cylinder"]->baseModelBox.Extents.y * 2.f,

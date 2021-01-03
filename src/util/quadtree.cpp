@@ -73,57 +73,57 @@ std::unique_ptr<QuadTree::QuadNode> QuadTree::populateNode(DirectX::XMFLOAT3 cen
 }
 
 
-void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const
-{
-    std::vector<QuadNode*> nodeCollisions;
-    UINT checks = 0;
-
-    /*skip if obj has no collision*/
-    if (!obj->isCollisionEnabled) return;
-
-    /*look up which quadtree nodes collide with the object bounding box*/
-    const std::function<void(QuadNode*)> recursiveSearch = [&](QuadNode* node)
-    {
-        if (node->children.empty())
-        {
-            checks++;
-            if (node->boundingBox.Intersects(obj->getCollider().getFrustumBox()))
-            {
-                nodeCollisions.push_back(node);
-            }
-        }
-        else
-        {
-            checks++;
-            if (node->boundingBox.Intersects(obj->getCollider().getFrustumBox()))
-            {
-                for (auto& i : node->children)
-                {
-                    recursiveSearch(i.get());
-                }
-            }
-        }
-    };
-
-    recursiveSearch(getRoot());
-
-    /*call intersect on every game object in every collided node*/
-    for (const auto& i : nodeCollisions)
-    {
-        for (const auto& go : i->containedObjects)
-        {
-            if (!go->isCollisionEnabled) continue;
-
-            checks++;
-            if (go->getCollider().intersects(obj->getCollider()))
-            {
-                collisions.push_back(go);
-            }
-        }
-    }
-
-    //LOG(Severity::Debug, "Checks: " << checks << " in " << nodeCollisions.size() << " nodes.");
-}
+//void QuadTree::searchCollision(GameObject* obj, std::vector<GameObject*>& collisions) const
+//{
+//    std::vector<QuadNode*> nodeCollisions;
+//    UINT checks = 0;
+//
+//    /*skip if obj has no collision*/
+//    if (!obj->isCollisionEnabled) return;
+//
+//    /*look up which quadtree nodes collide with the object bounding box*/
+//    const std::function<void(QuadNode*)> recursiveSearch = [&](QuadNode* node)
+//    {
+//        if (node->children.empty())
+//        {
+//            checks++;
+//            if (node->boundingBox.Intersects(obj->getCollider().getFrustumBox()))
+//            {
+//                nodeCollisions.push_back(node);
+//            }
+//        }
+//        else
+//        {
+//            checks++;
+//            if (node->boundingBox.Intersects(obj->getCollider().getFrustumBox()))
+//            {
+//                for (auto& i : node->children)
+//                {
+//                    recursiveSearch(i.get());
+//                }
+//            }
+//        }
+//    };
+//
+//    recursiveSearch(getRoot());
+//
+//    /*call intersect on every game object in every collided node*/
+//    for (const auto& i : nodeCollisions)
+//    {
+//        for (const auto& go : i->containedObjects)
+//        {
+//            if (!go->isCollisionEnabled) continue;
+//
+//            checks++;
+//            if (go->getCollider().intersects(obj->getCollider()))
+//            {
+//                collisions.push_back(go);
+//            }
+//        }
+//    }
+//
+//    //LOG(Severity::Debug, "Checks: " << checks << " in " << nodeCollisions.size() << " nodes.");
+//}
 
 void QuadTree::searchCollision(const DirectX::BoundingFrustum& frustum, std::vector<QuadNode*>& nodes) const
 {

@@ -62,9 +62,6 @@ public:
 
     void addGameObject(json goJson);
 
-    /*check if players collides with something*/
-    bool playerCollides();
-
     std::unique_ptr<Terrain> mTerrain;
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;

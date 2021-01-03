@@ -12,9 +12,7 @@
 
 using namespace DirectX;
 
-EditModeHUD::EditModeHUD()
-{
-}
+
 
 void EditModeHUD::init()
 {
@@ -84,7 +82,7 @@ void EditModeHUD::init()
         L"data\\texture\\hud\\gui\\edit\\light_info.png",
         L"data\\texture\\hud\\gui\\edit\\light_cursor.png",
         L"data\\texture\\hud\\gui\\edit\\collision.png",
-        L"data\\texture\\hud\\gui\\edit\\collision_axis_select.png",
+        L"data\\texture\\hud\\gui\\edit\\physic_prop.png",
     };
 
     std::vector<std::wstring> fontPaths = {
@@ -200,10 +198,9 @@ void EditModeHUD::init()
     mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_CURSOR, { 0.93f, 0.835f }, 1.0f));
     mHUDElements.push_back(initHUDElement(TextureDescriptors::LIGHT_CURSOR, { 0.93f, 0.8f }, 1.0f));
 
-    /*collision edit 34-36*/
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::COLLISION_AXIS_SELECT, { 0.905f, 0.825f }));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.837f, 0.7675f }, 0.5f));
-    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_GREEN, { 0.8885f,  0.7675f }, 0.5f));
+    /*collision edit 34-35*/
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::TOOL_PHYSIC_WIN, { 0.905f, 0.45f }));
+    mHUDElements.push_back(initHUDElement(TextureDescriptors::SLIDER_BLUE, { 0.95f, 0.405f }, 0.35f));
 
     /*fonts 0-9*/
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.842f, 0.525f }, 0.2f));
@@ -241,6 +238,15 @@ void EditModeHUD::init()
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.905f }, 0.2f));
     mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.87f,0.93f }, 0.2f));
 
+    /*object physic properties 26 - 31*/
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.3375f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.363f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.3855f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.414f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.4395f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.465f }, 0.2f));
+    mFontElements.push_back(initFontElement(FontDescriptors::Editor64, { 0.9f,0.555f }, 0.2f));
+
     /*set visibility*/
     for (int i = 6; i < 15; i++) mHUDElements[i]->hudVisibility = HUDVisibility::HEIGHT_AND_PAINT;
     mHUDElements[10]->Visible = false;
@@ -271,7 +277,6 @@ void EditModeHUD::init()
 
     mHUDElements[34]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
     mHUDElements[35]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
-    mHUDElements[36]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
 
     for (int i = 0; i < mFontElements.size(); i++)
     {
@@ -284,6 +289,11 @@ void EditModeHUD::init()
     for (UINT i = 13; i < mFontElements.size(); i++)
     {
         mFontElements[i]->hudVisibility = HUDVisibility::LIGHT;
+    }
+
+    for(UINT i = 25; i < mFontElements.size(); i++)
+    {
+        mFontElements[i]->hudVisibility = HUDVisibility::OBJECT_COLLISION;
     }
 
 }
@@ -539,10 +549,58 @@ void EditModeHUD::update()
     }
     else if(editSetting->toolMode == EditTool::ObjectCollision)
     {
+        /*update slider*/
+        mHUDElements[35]->NormalizedPosition.y = 0.405f + static_cast<int>(editSetting->selectedPhysicProperty) * 0.026f;
 
-        mHUDElements[35]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionTranslationAxis * 0.033f;
-        mHUDElements[36]->NormalizedPosition.y = 0.7675f + (int)editSetting->collisionScaleAxis * 0.033f;
+        /*update text*/
+        std::wstringstream ss;
+        ss << std::setprecision(4);
 
+        switch(editSetting->currentSelection->motionType)
+        {
+            case ObjectMotionType::Static: ss << L"Static"; break;
+            case ObjectMotionType::Dynamic: ss << L"Dynamic"; break;
+            default: ss << L"Kinetic"; break;
+        }
+
+        mFontElements[25]->text = ss.str();
+
+        ss.str(L"");
+        switch(editSetting->currentSelection->getShape())
+        {
+            case BOX_SHAPE_PROXYTYPE: ss << L"Box"; break;
+            case SPHERE_SHAPE_PROXYTYPE: ss << L"Sphere"; break;
+            case CAPSULE_SHAPE_PROXYTYPE: ss << L"Capsule"; break;
+            case CYLINDER_SHAPE_PROXYTYPE: ss << L"Cylinder"; break;
+        }
+        mFontElements[26]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->mass;
+        mFontElements[27]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->restitution;
+        mFontElements[28]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->friction;
+        mFontElements[29]->text = ss.str();
+
+        ss.str(L"");
+        ss << editSetting->currentSelection->damping;
+        mFontElements[30]->text = ss.str();
+
+        ss.str(L"");
+
+        switch(editSetting->collisionScaleAxis)
+        {
+            case ScaleAxis::XYZ: ss << L"XYZ"; break;
+            case ScaleAxis::X: ss << L"X"; break;
+            case ScaleAxis::Y: ss << L"Y"; break;
+            case ScaleAxis::Z: ss << L"Z"; break;
+        }
+        mFontElements[31]->text = ss.str();
     }
 
     /*recalculate actual screen position*/

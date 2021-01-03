@@ -7,8 +7,13 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace std;
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    if(ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+        return true;
+
     return DX12App::getApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
@@ -33,6 +38,10 @@ DX12App::DX12App(HINSTANCE /*hInstance*/)
 
 DX12App::~DX12App()
 {
+    ImGui_ImplDX12_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
     if (mDevice != nullptr)
         flushCommandQueue();
 }
@@ -178,7 +187,13 @@ bool DX12App::Initialize()
     mFullscreenState = ServiceProvider::getSettings()->displaySettings.WindowMode == 1 ? 1 : 0;
     setFullscreen(mFullscreenState);
 
-    ShowCursor(false);
+    ShowCursor(true);
+
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    imgui_IO = &ImGui::GetIO();
+
+    ImGui_ImplWin32_Init(mMainWindow);
 
     return true;
 }
@@ -254,8 +269,9 @@ void DX12App::onResize()
     optClear.Format = mDepthStencilFormat;
     optClear.DepthStencil.Depth = 1.0f;
     optClear.DepthStencil.Stencil = 0;
+    const auto heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
     ThrowIfFailed(mDevice->CreateCommittedResource(
-        &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+        &heapProp,
         D3D12_HEAP_FLAG_NONE,
         &depthStencilDesc,
         D3D12_RESOURCE_STATE_COMMON,
@@ -266,8 +282,9 @@ void DX12App::onResize()
     mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), nullptr, getDepthStencilView());
 
     // Transition the resource from its initial state to be used as a depth buffer.
-    mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mDepthStencilBuffer.Get(),
-                                  D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+    const auto resDesc = CD3DX12_RESOURCE_BARRIER::Transition(mDepthStencilBuffer.Get(),
+                                                              D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+    mCommandList->ResourceBarrier(1, &resDesc);
 
     // Execute the resize commands.
     ThrowIfFailed(mCommandList->Close());
@@ -448,7 +465,7 @@ bool DX12App::initDirect3D()
 
     logAdapters();
 
-    LOG(Severity::Info, "Using graphic adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".");
+    LOG(Severity::Info, "Using graphics adapter " << ServiceProvider::getSettings()->miscSettings.AdapterName << ".");
 
     createCommandObjects();
     createSwapChain();
@@ -554,26 +571,17 @@ void DX12App::calculateFrameStats()
 
     frameCount++;
 
-    if ((mTimer.TotalTime() - timeElapsed) >= 0.25f)
+    if ((mTimer.TotalTime() - timeElapsed) >= 0.1f)
     {
-        float fps = (float)frameCount * 4;
+        float fps = (float)frameCount * 10;
         float mspf = 1000.0f / fps;
 
         ServiceProvider::getDebugInfo()->CurrentFPS = fps;
         ServiceProvider::getDebugInfo()->Mspf = mspf;
-
-        wstring fpsStr = to_wstring(fps);
-        wstring mspfStr = to_wstring(mspf);
-        wstring objectsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnGameObjects);
-        wstring shadowsDrawn = to_wstring(ServiceProvider::getDebugInfo()->DrawnShadowObjects);
-
-        wstring windowText = mWindowCaption +
-            L"    fps: " + fpsStr +
-            L"   mspf: " + mspfStr + L"  objects drawn: " + objectsDrawn + L"  shadows drawn: " + shadowsDrawn;
-        SetWindowText(mMainWindow, windowText.c_str());
+        ServiceProvider::getDebugInfo()->fpsData.push_back(fps);
 
         frameCount = 0;
-        timeElapsed += 0.25f;
+        timeElapsed += 0.1f;
     }
 }
 

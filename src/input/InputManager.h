@@ -51,9 +51,13 @@ enum TRG : int
 struct InputData
 {
     int type = TYPE_GAMEPAD;
+
     bool buttons[BUTTON_COUNT] = {};
+    std::chrono::steady_clock::time_point buttonHoldTime[BUTTON_COUNT] = {};
 
     float trigger[TRIGGER_COUNT] = {};
+    std::chrono::steady_clock::time_point triggerHoldTime[TRIGGER_COUNT] = {};
+
 };
 
 struct InputSet
@@ -70,6 +74,29 @@ struct InputSet
     {
         return !current.buttons[button] && previous.buttons[button];
     }
+
+    bool Hold(int button) const
+    {
+        return current.buttons[button];
+    }
+
+    float getButtonHoldTime(int btn) const
+    {
+        if(!current.buttons[btn]) return 0;
+
+        long long elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - current.buttonHoldTime[btn]).count();
+        
+        return (elapsed / 1000.0f);
+    }
+
+    float getTriggerHoldTime(int trg) const
+    {
+        if(current.trigger[trg] < 0.05f) return 0;
+
+        long long elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - current.triggerHoldTime[trg]).count();
+
+        return (elapsed / 1000.0f);
+    }
 };
 
 class InputManager
@@ -84,7 +111,7 @@ public:
 
     void Update();
 
-    InputSet& getInput();
+    InputSet getInput();
     void setPrevious(InputData data);
 
     void releaseInput();

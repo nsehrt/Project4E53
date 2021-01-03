@@ -13,7 +13,7 @@ Terrain::Terrain(const json& terrainInfo)
 
     cellSpacing = terrainSize / terrainSlices;
 
-    GeometryGenerator geoGen;
+    GeometryGenerator geoGen{};
     GeometryGenerator::MeshData grid = geoGen.CreateGrid((float)terrainSize, (float)terrainSize,
                                                          terrainSlices, terrainSlices);
 
@@ -188,7 +188,7 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
     float startX = x - (iterations / 2.0f * cellSpacing);
     float startZ = z - (iterations / 2.0f * cellSpacing);
 
-    float xPos, zPos;
+    float xPos{0}, zPos{0};
     zPos = startZ;
 
     for (int i = 0; i < iterations; i++)
@@ -222,7 +222,7 @@ void Terrain::increaseHeight(float x, float z, float fallStart, float fallEnd, f
             if (mHeightMap[currentIndex] < mainVertexHeight && increase < 0) continue;
 
             /*normalize distance from center*/
-            float normalizedDistance;
+            float normalizedDistance = 0.0f;
 
             if (lengthBetween < fallStart)
             {
@@ -269,7 +269,7 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
     float startX = x - (iterations / 2.0f * cellSpacing);
     float startZ = z - (iterations / 2.0f * cellSpacing);
 
-    float xPos, zPos;
+    float xPos = 0.0f, zPos = 0.0f;
     zPos = startZ;
 
     for (int i = 0; i < iterations; i++)
@@ -299,7 +299,7 @@ void Terrain::paint(float x, float z, float fallStart, float fallEnd, float incr
             if (currentIndex > mBlendMap.size() - 1 || currentIndex < 0) continue;
 
             /*normalize distance from center*/
-            float normalizedDistance;
+            float normalizedDistance = 0.0f;
 
             if (lengthBetween < fallStart)
             {
@@ -357,7 +357,7 @@ void Terrain::generateHeight()
 {
     int octaveCount = 7;
     float scalingBias = 1.8f;
-    float heightMod = 3.5f;
+    float heightMod = 2.5f;
 
     /*init vectors*/
     std::vector<float> fSeed((INT_PTR)terrainSlices * terrainSlices);

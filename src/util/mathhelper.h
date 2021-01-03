@@ -86,31 +86,16 @@ public:
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    /*polar angle of point*/
-    static float angleFromXY(float x, float y);
+    /*polar angle of vector*/
+    static float angleFromVector2(const DirectX::XMFLOAT2& vector);
+    static float angleFromVector2Centered(const DirectX::XMFLOAT2& vector);
 
     /*angle to vector(x,y)*/
-    static DirectX::XMFLOAT3 vectorFromAngle(float angle)
-    {
-        DirectX::XMFLOAT3 vec;
-
-        vec.x = cos(angle);
-        vec.y = 0.0f;
-        vec.z = -sin(angle);
-
-        return vec;
-    }
-
-
-    static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi)
-    {
-        return DirectX::XMVectorSet(
-            radius * std::sinf(phi) * std::cosf(theta),
-            radius * std::cosf(phi),
-            radius * std::sinf(phi) * std::sinf(theta),
-            1.0f);
-    }
-
+    static DirectX::XMFLOAT2 vector2FromAngleCentered(float angle);
+    /*angle to vector(x,0,z)*/
+    static DirectX::XMFLOAT3 vector3FromAngle(float angle);
+    static DirectX::XMFLOAT2 rotateUnitVectorByAngle(DirectX::XMFLOAT2& vec, float angle);
+    static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi);
     static DirectX::XMFLOAT3 forward(DirectX::XMFLOAT3 V)
     {
         DirectX::XMFLOAT3 res;
@@ -160,4 +145,5 @@ public:
 
     static const float Infinity;
     static const float Pi;
+    static const float Epsilon;
 };

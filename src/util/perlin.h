@@ -39,7 +39,7 @@ namespace Perlin {
 		}
 	}
 
-	static void perlinNoise(const int width, const int height, const std::vector<float> fSeed, const int octaves, const float fBias, std::vector<float>& fOut)
+	static void perlinNoise(const int width, const int height, const std::vector<float>& fSeed, const int octaves, const float fBias, std::vector<float>& fOut)
 	{
 
 		for (int x = 0; x < width; x++)

@@ -35,6 +35,9 @@
     <Filter Include="Source Files\src\physics">
       <UniqueIdentifier>{57865e58-d9fe-4505-b9b1-ae31ee48895f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\extern\imgui">
+      <UniqueIdentifier>{10ae0e92-0cbb-4dbb-9d3c-a9ca913a6679}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\util\settings.h">
@@ -166,9 +169,6 @@
     <ClInclude Include="src\core\animationblender.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\gamecollider.h">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\quadtree.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
@@ -177,6 +177,42 @@
     </ClInclude>
     <ClInclude Include="src\physics\bulletphysics.h">
       <Filter>Source Files\src\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\basecollider.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\collisiondatabase.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\bulletcontroller.h">
+      <Filter>Source Files\src\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imconfig.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imgui.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imgui_impl_dx12.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imgui_impl_win32.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imgui_internal.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imstb_rectpack.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imstb_textedit.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\extern\imgui\imstb_truetype.h">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\collector.h">
+      <Filter>Source Files\src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -291,9 +327,6 @@
     <ClCompile Include="src\core\animationblender.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\gamecollider.cpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="src\util\quadtree.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
@@ -302,6 +335,33 @@
     </ClCompile>
     <ClCompile Include="src\physics\bulletphysics.cpp">
       <Filter>Source Files\src\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\basecollider.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\collisiondatabase.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\bulletcontroller.cpp">
+      <Filter>Source Files\src\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\imgui\imgui.cpp">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\imgui\imgui_demo.cpp">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\imgui\imgui_draw.cpp">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\imgui\imgui_impl_dx12.cpp">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\imgui\imgui_impl_win32.cpp">
+      <Filter>Source Files\src\extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extern\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\src\extern\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

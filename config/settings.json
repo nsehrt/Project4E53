@@ -11,7 +11,7 @@
         "ResolutionHeight": 1080,
         "FOV": 70,
         "VSync": 0,
-        "WindowMode": 0
+        "WindowMode": 2
     },
     "Gameplay": [],
     "Graphic": {
