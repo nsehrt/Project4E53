@@ -1816,6 +1816,8 @@ void P_4E53::update(const GameTime& gt)
         if (inputData.Pressed(BTN::A))
         {
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
+            Grid g = mazeGenerator.generate();
+
         }
 
         /*fps camera controls*/

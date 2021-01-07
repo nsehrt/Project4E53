@@ -20,30 +20,48 @@ enum class MazeAlgorithm
     RecursiveBacktracker,
     RecursiveDivision,
     SideWinder,
-    TruePrimes,
+    TruePrims,
     Count
 };
 
 class Maze
 {
+
     public:
 
     Maze() = delete;
     ~Maze() = default;
 
-    explicit Maze(Randomizer& randomizer) : rand(randomizer)
+    explicit Maze(Randomizer& randomizer, int _width = baseGridSize, int _height = baseGridSize, float _braid = 0.0F)
+        : rand(randomizer), width(_width), height(_height), braidRatio(_braid)
     {
+
+    }
+
+    auto setBraidRatio(float braid) -> void
+    {
+        if(braid > 1.0F || braid < 0.0F)
+        {
+            braidRatio = 0.0F;
+        }
+        else
+        {
+            braidRatio = braid;
+        }
     }
 
     Grid generate();
 
-    private:
 
-    const int baseGridSize = 20;
 
     MazeAlgorithm algorithm = MazeAlgorithm::BinaryTree;
-    int width = baseGridSize;
-    int height = baseGridSize;
+
+    private:
+
+    static const int baseGridSize = 20;
+    
+    int width;
+    int height;
     Randomizer& rand;
     float braidRatio = 0.0F;
 };

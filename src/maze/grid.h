@@ -6,6 +6,8 @@
 
 class Grid
 {
+    using GridPosition = std::pair<int, int>;
+
     public:
 
     explicit Grid(int _width, int _height, Randomizer& _rand) : width(_width), height(_height), rand(_rand)
@@ -49,6 +51,18 @@ class Grid
         int index = y * width + x;
         return &cells[index];
     }
+
+    void solve(GridPosition& start, GridPosition& goal)
+    {
+        Cell* startCell = (*this)(start.first, start.second);
+        Cell* goalCell = (*this)(goal.first, goal.second);
+
+
+        Distances path = distances.path(goalCell);
+        this->setDistances(std::move(path));
+
+    }
+
 
     int columns() const
     {
