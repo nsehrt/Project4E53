@@ -11,23 +11,25 @@
 class MathHelper
 {
 public:
-    /*random float between 0.0 and <1.0*/
-    static float randF()
-    {
-        return (float)(rand()) / (FLOAT)RAND_MAX;
-    }
 
-    /*random float between a and <b*/
-    static float randF(float a, float b)
-    {
-        return a + randF() * (b - a);
-    }
+    // BAD RNG
+    ///*random float between 0.0 and <1.0*/
+    //static float randF()
+    //{
+    //    return (float)(rand()) / (FLOAT)RAND_MAX;
+    //}
 
-    /*random int between a and b*/
-    static int randI(int a, int b)
-    {
-        return a + rand() % ((b - a) + 1);
-    }
+    ///*random float between a and <b*/
+    //static float randF(float a, float b)
+    //{
+    //    return a + randF() * (b - a);
+    //}
+
+    ///*random int between a and b*/
+    //static int randI(int a, int b)
+    //{
+    //    return a + rand() % ((b - a) + 1);
+    //}
 
     /*min*/
     template<typename T>
@@ -98,7 +100,7 @@ public:
     static DirectX::XMVECTOR sphericalToCartesian(float radius, float theta, float phi);
     static DirectX::XMFLOAT3 forward(DirectX::XMFLOAT3 V)
     {
-        DirectX::XMFLOAT3 res;
+        DirectX::XMFLOAT3 res{};
 
         res.x = std::sinf(V.y) * std::cosf(V.x);
         res.y = std::sinf(-V.x);

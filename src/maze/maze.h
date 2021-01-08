@@ -33,7 +33,7 @@ class Maze
     ~Maze() = default;
 
     explicit Maze(Randomizer& randomizer, int _width = baseGridSize, int _height = baseGridSize, float _braid = 0.0F)
-        : rand(randomizer), width(_width), height(_height), braidRatio(_braid)
+        : rand(randomizer), width(_width), height(_height), braidRatio(_braid), grid(_width, _height, randomizer)
     {
 
     }
@@ -50,9 +50,12 @@ class Maze
         }
     }
 
-    Grid generate();
+    void generate();
 
-
+    Grid& getGrid()
+    {
+        return grid;
+    }
 
     MazeAlgorithm algorithm = MazeAlgorithm::BinaryTree;
 
@@ -60,6 +63,7 @@ class Maze
 
     static const int baseGridSize = 20;
     
+    Grid grid;
     int width;
     int height;
     Randomizer& rand;

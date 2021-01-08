@@ -22,11 +22,6 @@ class Randomizer
         m_Distribution = std::make_unique<std::uniform_int_distribution<std::uint32_t>>(m_From, m_To);
     };
 
-    //delete copy constructor
-    Randomizer (const Randomizer& other) = delete;
-    //delete copy assignment
-    Randomizer& operator=(const Randomizer& other) = delete;
-
     ~Randomizer() = default;
 
     // return random int in range from-to
@@ -57,6 +52,12 @@ class Randomizer
     {
         float r = static_cast<float>(nextInt());
         return r / m_Range;
+    }
+
+    // return a random float between min and max(inclusive)
+    float nextFloat(float min, float max)
+    {
+        return min + nextNormFloat() * (max - min);
     }
 
     private:

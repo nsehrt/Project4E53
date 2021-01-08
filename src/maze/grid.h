@@ -10,7 +10,13 @@ class Grid
 
     public:
 
+    explicit Grid(Randomizer& _rand) : width(16), height(16), rand(_rand) {}
     explicit Grid(int _width, int _height, Randomizer& _rand) : width(_width), height(_height), rand(_rand)
+    {
+        reset();
+    }
+
+    void reset()
     {
         prepareGrid();
         configureCells();

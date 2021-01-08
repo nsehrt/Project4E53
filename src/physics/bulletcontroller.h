@@ -70,8 +70,8 @@ class BulletController final : public btActionInterface
     const float minimumJumpTime = 0.1f;
     const float fallJumpGracePeriod = 0.125f;
 
-    const float walkSpeed = 4.0f;
-    const float runSpeed = 6.5f;
+    const float walkSpeed = 3.0f;
+    const float runSpeed = 6.0f;
     const float moveIncreaseConstant = 8.5f;
     const float moveDecreaseConstant = 24.0f;
     const float jumpUpVelocity = 12.5f;

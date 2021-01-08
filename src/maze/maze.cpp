@@ -1,9 +1,9 @@
 #include "maze.h"
 #include "../util/serviceprovider.h"
 
-Grid Maze::generate()
+void Maze::generate()
 {
-    Grid grid(width, height, rand);
+    grid.reset();
 
     switch(algorithm)
     {
@@ -32,5 +32,4 @@ Grid Maze::generate()
 
     grid.braid(braidRatio);
 
-    return grid;
 }

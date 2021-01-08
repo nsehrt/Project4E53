@@ -1,5 +1,7 @@
 #include "grass.h"
+#include "../util/serviceprovider.h"
 #include "../core/terrain.h"
+#include "../util/randomizer.h"
 
 using namespace DirectX;
 
@@ -48,7 +50,8 @@ void Grass::create(const json& grassJson, Terrain* terrain)
 
         highestPoint = MathHelper::maxH(highestPoint, vertices[i].Pos.y);
 
-        float variation = MathHelper::randF(0, 2 * sizeVariation) - sizeVariation;
+        float variation = ServiceProvider::getRandomizer()->nextFloat(0.0f, 2.0f * sizeVariation) - sizeVariation;  
+        // MathHelper::randF(0, 2 * sizeVariation) - sizeVariation;
 
         vertices[i].Size = quadSize;
         vertices[i].Size.x += variation;

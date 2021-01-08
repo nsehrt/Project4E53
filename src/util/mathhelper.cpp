@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include "serviceprovider.h"
+#include "randomizer.h"
 
 using namespace DirectX;
 
@@ -27,7 +28,7 @@ float MathHelper::angleFromVector2Centered(const DirectX::XMFLOAT2& vector)
 
 DirectX::XMFLOAT3 MathHelper::vector3FromAngle(float angle)
 {
-    DirectX::XMFLOAT3 vec;
+    DirectX::XMFLOAT3 vec{};
 
     vec.x = cos(angle);
     vec.y = 0.0f;
@@ -93,8 +94,11 @@ XMVECTOR MathHelper::randUnitVec3()
     XMVECTOR Zero = XMVectorZero();
 
     while (true)
-    {
-        XMVECTOR v = XMVectorSet(MathHelper::randF(-1.0, 1.0f), MathHelper::randF(-1.0, 1.0f), MathHelper::randF(-1.0, 1.0f), 0.0f);
+    { 
+        XMVECTOR v = XMVectorSet(ServiceProvider::getRandomizer()->nextFloat(-1.0f, 1.0f),
+                                 ServiceProvider::getRandomizer()->nextFloat(-1.0f, 1.0f),
+                                 ServiceProvider::getRandomizer()->nextFloat(-1.0f, 1.0f),
+                                 0.0f);
 
         if (XMVector3Greater(XMVector3LengthSq(v), One))
             continue;
@@ -110,7 +114,10 @@ XMVECTOR MathHelper::randHemisphereUnitVec3(XMVECTOR n)
 
     while (true)
     {
-        XMVECTOR v = XMVectorSet(MathHelper::randF(-1.0f, 1.0f), MathHelper::randF(-1.0f, 1.0f), MathHelper::randF(-1.0f, 1.0f), 0.0f);
+        XMVECTOR v = XMVectorSet(ServiceProvider::getRandomizer()->nextFloat(-1.0f, 1.0f),
+                                 ServiceProvider::getRandomizer()->nextFloat(-1.0f, 1.0f),
+                                 ServiceProvider::getRandomizer()->nextFloat(-1.0f, 1.0f),
+                                 0.0f);
 
         if (XMVector3Greater(XMVector3LengthSq(v), One))
             continue;

@@ -1,5 +1,6 @@
 #include "water.h"
-
+#include "../util/serviceprovider.h"
+#include "../util/randomizer.h"
 
 using namespace DirectX;
 
@@ -45,7 +46,8 @@ Water::Water(RenderResource* r, const json& waterJson)
     heightScale.y = waterJson["HeightScale"][1];
 
     /*random offset so dont all materials get updated on the same frame*/
-    updateTime = MathHelper::randF(0.0f, updFixedTime);
+    updateTime = ServiceProvider::getRandomizer()->nextFloat(0.0f, updFixedTime);
+        //MathHelper::randF(0.0f, updFixedTime);
 
 }
 

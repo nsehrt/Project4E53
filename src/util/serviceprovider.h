@@ -9,6 +9,7 @@ class Camera;
 class Player;
 class BulletPhysics;
 class CollisionDatabase;
+class Randomizer;
 
 struct EditSettings;
 struct DebugInfo;
@@ -39,7 +40,7 @@ private:
     static std::shared_ptr<Camera> activeCamera;
     static std::shared_ptr<DebugInfo> debugInfo;
     static std::shared_ptr<EditSettings> editSettings;
-    
+    static std::shared_ptr<Randomizer> randomizer;
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -80,6 +81,9 @@ public:
 
     static Camera* getActiveCamera();
     static void setActiveCamera(std::shared_ptr<Camera> _camera);
+
+    static Randomizer* getRandomizer();
+    static void setRandomizer(std::shared_ptr<Randomizer> _randomizer);
 
     static DebugInfo* getDebugInfo();
     static EditSettings* getEditSettings();

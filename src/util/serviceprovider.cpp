@@ -16,6 +16,7 @@ CollisionDatabase* ServiceProvider::collisionDatabase = nullptr;
 std::shared_ptr<Player>ServiceProvider::activePlayer = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
+std::shared_ptr<Randomizer>ServiceProvider::randomizer = nullptr;
 std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInfo>();
 std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<EditSettings>();
 
@@ -133,6 +134,16 @@ Camera* ServiceProvider::getActiveCamera()
 void ServiceProvider::setActiveCamera(std::shared_ptr<Camera> providedCamera)
 {
     activeCamera = providedCamera;
+}
+
+Randomizer* ServiceProvider::getRandomizer()
+{
+    return randomizer.get();
+}
+
+void ServiceProvider::setRandomizer(std::shared_ptr<Randomizer> _randomizer)
+{
+    randomizer = _randomizer;
 }
 
 DebugInfo* ServiceProvider::getDebugInfo()
