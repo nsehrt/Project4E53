@@ -10,6 +10,7 @@ class Player;
 class BulletPhysics;
 class CollisionDatabase;
 class Randomizer;
+class Maze;
 
 struct EditSettings;
 struct DebugInfo;
@@ -41,6 +42,7 @@ private:
     static std::shared_ptr<DebugInfo> debugInfo;
     static std::shared_ptr<EditSettings> editSettings;
     static std::shared_ptr<Randomizer> randomizer;
+    static std::shared_ptr<Maze> maze;
 
     static std::atomic<unsigned int> audioGuid;
     static std::mutex audioLock;
@@ -84,6 +86,9 @@ public:
 
     static Randomizer* getRandomizer();
     static void setRandomizer(std::shared_ptr<Randomizer> _randomizer);
+
+    static Maze* getMaze();
+    static void setMaze(std::shared_ptr<Maze> _maze);
 
     static DebugInfo* getDebugInfo();
     static EditSettings* getEditSettings();

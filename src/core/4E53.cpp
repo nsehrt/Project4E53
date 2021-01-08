@@ -45,8 +45,6 @@ private:
     BulletPhysics physics;
     CollisionDatabase collisionData;
 
-    //Maze mazeGenerator{rand};
-
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;
 
@@ -94,16 +92,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 
     int status = 0;
 
-    /*rand*/
-    auto randomizer = std::make_shared<Randomizer>();
-    ServiceProvider::setRandomizer(randomizer);
-
     /*create logger*/
     std::shared_ptr<Logger<LogPolicy>> vsLogger(new Logger<LogPolicy>(L""));
     vsLogger->setThreadName("mainThread");
     ServiceProvider::setLoggingService(vsLogger);
 
     ServiceProvider::getLogger()->print<Severity::Info>("Logger started successfully.");
+
+
+    /*rand*/
+    auto randomizer = std::make_shared<Randomizer>();
+    ServiceProvider::setRandomizer(randomizer);
+
+    /*maze generator*/
+    auto mazeGen = std::make_shared<Maze>((*randomizer));
+    ServiceProvider::setMaze(mazeGen);
 
     /*load settings file*/
     SettingsLoader settingsLoader;
@@ -1818,8 +1821,8 @@ void P_4E53::update(const GameTime& gt)
         if (inputData.Pressed(BTN::A))
         {
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
-            //mazeGenerator.generate();
-            //std::cout << mazeGenerator.getGrid();
+            ServiceProvider::getMaze()->generate();
+            std::cout << ServiceProvider::getMaze()->getGrid();
         }
 
         /*fps camera controls*/

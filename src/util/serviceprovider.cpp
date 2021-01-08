@@ -17,6 +17,7 @@ std::shared_ptr<Player>ServiceProvider::activePlayer = nullptr;
 std::shared_ptr<Level>ServiceProvider::activeLevel = nullptr;
 std::shared_ptr<Camera>ServiceProvider::activeCamera = nullptr;
 std::shared_ptr<Randomizer>ServiceProvider::randomizer = nullptr;
+std::shared_ptr<Maze>ServiceProvider::maze = nullptr;
 std::shared_ptr<DebugInfo>ServiceProvider::debugInfo = std::make_shared<DebugInfo>();
 std::shared_ptr<EditSettings>ServiceProvider::editSettings = std::make_shared<EditSettings>();
 
@@ -144,6 +145,16 @@ Randomizer* ServiceProvider::getRandomizer()
 void ServiceProvider::setRandomizer(std::shared_ptr<Randomizer> _randomizer)
 {
     randomizer = _randomizer;
+}
+
+Maze* ServiceProvider::getMaze()
+{
+    return maze.get();
+}
+
+void ServiceProvider::setMaze(std::shared_ptr<Maze> _maze)
+{
+    maze = _maze;
 }
 
 DebugInfo* ServiceProvider::getDebugInfo()
