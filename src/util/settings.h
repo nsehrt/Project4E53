@@ -35,7 +35,8 @@ struct GraphicSettings
 
 struct GameplaySettings
 {
-    int fill = 0;
+    int MazeAlgorithm = 0;
+    float MazeBraidRatio = 0.0f;
 };
 
 struct AudioSettings

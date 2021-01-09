@@ -104,10 +104,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
     auto randomizer = std::make_shared<Randomizer>();
     ServiceProvider::setRandomizer(randomizer);
 
-    /*maze generator*/
-    auto mazeGen = std::make_shared<Maze>((*randomizer));
-    ServiceProvider::setMaze(mazeGen);
-
     /*load settings file*/
     SettingsLoader settingsLoader;
 
@@ -121,6 +117,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 
     ServiceProvider::getLogger()->print<Severity::Info>("Settings file loaded successfully.");
 
+    /*maze generator*/
+    auto mazeGen = std::make_shared<Maze>((*randomizer));
+    ServiceProvider::setMaze(mazeGen);
+
+    if(ServiceProvider::getSettings()->gameplaySettings.MazeAlgorithm >= static_cast<int>(MazeAlgorithm::Count))
+    {
+        ServiceProvider::getSettings()->gameplaySettings.MazeAlgorithm = 0;
+    }
+
+    mazeGen->algorithm = static_cast<MazeAlgorithm>(ServiceProvider::getSettings()->gameplaySettings.MazeAlgorithm);
+    mazeGen->setBraidRatio(ServiceProvider::getSettings()->gameplaySettings.MazeBraidRatio);
+
+    /*misc output*/
     LOG(Severity::Info, "Debug Mode is " << (ServiceProvider::getSettings()->miscSettings.DebugEnabled ? "enabled" : "disabled") << ".");
 
 

@@ -65,8 +65,19 @@ bool SettingsLoader::loadSettings(const std::string& path)
         /*load gameplay settings*/
 
 
-        /*---*/
+        settings.gameplaySettings.MazeAlgorithm = settingsJson["Gameplay"]["MazeAlgorithm"];
+        settings.gameplaySettings.MazeBraidRatio = settingsJson["Gameplay"]["MazeBraidRatio"];
 
+        if(settings.gameplaySettings.MazeAlgorithm < 0)
+        {
+            settings.gameplaySettings.MazeAlgorithm = 0;
+        }
+
+        if(settings.gameplaySettings.MazeBraidRatio < 0.0f ||
+           settings.gameplaySettings.MazeBraidRatio > 1.0f)
+        {
+            settings.gameplaySettings.MazeBraidRatio = 0.0f;
+        }
 
         /*load graphic settings*/
 

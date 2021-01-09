@@ -186,7 +186,8 @@ class Grid
         const std::string body = "   ";
         const std::string corner = "+";
 
-        std::cout << "+" << Grid::repeat("---+", grid.columns()) << "\n";
+        std::cout << "\nGrid " << grid.width << "x" << grid.height;
+        std::cout << "\n+" << Grid::repeat("---+", grid.columns()) << "\n";
 
         for(const auto& row : grid.getEachRow())
         {

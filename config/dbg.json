@@ -13,7 +13,10 @@
         "VSync": 0,
         "WindowMode": 0
     },
-    "Gameplay": [],
+    "Gameplay": {
+        "MazeAlgorithm": 0,
+        "MazeBraidRatio": 0.0
+    },
     "Graphic": {
         "NumFrameResources": 3,
         "AnisotropicFiltering": 16,
