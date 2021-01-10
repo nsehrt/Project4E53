@@ -9,6 +9,7 @@
 #include "../core/particlesystem.h"
 #include "../util/quadtree.h"
 #include "../script/scriptsystem.h"
+#include "../maze/maze.h"
 
 
 inline const std::string LEVEL_PATH = "data/level";
@@ -32,6 +33,12 @@ public:
 
     /* load a level file in data/level/ */
     bool load(const std::string& levelFile);
+
+    /* setup the maze grid with game objects */
+    void setupMazeGrid(int width, int height);
+
+    /* deactive maze walls according to maze grid*/
+    void updateToGrid(Grid& grid);
 
     /* update all game objects in the level */
     void update(const GameTime& gt);

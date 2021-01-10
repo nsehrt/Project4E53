@@ -316,6 +316,11 @@ bool P_4E53::Initialize()
     mLevel.push_back(std::move(level));
     ServiceProvider::setActiveLevel(mLevel.back());
 
+    ServiceProvider::getActiveLevel()->setupMazeGrid(
+                    ServiceProvider::getMaze()->getGrid().columns(),
+                    ServiceProvider::getMaze()->getGrid().rows() 
+                                                );
+
     /*initialize player and camera*/
 
     if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
@@ -1831,7 +1836,7 @@ void P_4E53::update(const GameTime& gt)
         {
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
             ServiceProvider::getMaze()->generate();
-            std::cout << ServiceProvider::getMaze()->getGrid();
+            ServiceProvider::getActiveLevel()->updateToGrid(ServiceProvider::getMaze()->getGrid());
         }
 
         /*fps camera controls*/

@@ -61,7 +61,7 @@ class Maze
 
     private:
 
-    static const int baseGridSize = 20;
+    static const int baseGridSize = 22;
     
     Grid grid;
     int width;

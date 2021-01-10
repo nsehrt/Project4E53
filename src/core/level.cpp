@@ -4,6 +4,7 @@
 #include "../util/debuginfo.h"
 #include "../util/serviceprovider.h"
 #include "../physics/bulletphysics.h"
+#include "../util/collisiondatabase.h"
 
 using namespace DirectX;
 
@@ -160,6 +161,155 @@ bool Level::load(const std::string& levelFile)
     loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
 
     return true;
+}
+
+void Level::setupMazeGrid(int width, int height)
+{
+    const std::string fenceModel = "WoodenFence_03";
+
+    /*base fence json*/
+    json fenceJson = R"({
+        "ColliderType" : 0,
+        "CollisionEnabled" : true,
+        "DrawEnabled" : true,
+        "Model" : "",
+        "Name" : "",
+        "Position" : [
+                    0,0.65,0
+                ] ,
+        "RenderType" : "Default",
+        "Rotation" : [
+            0.0,
+            0.0,
+            0.0
+           ],
+        "Scale" : [
+            0.5,
+            0.5,
+            0.5
+            ],
+        "ShadowEnabled" : true,
+        "ShadowForced" : false
+        })"_json;
+
+    fenceJson["Model"] = fenceModel;
+
+    int fenceCounterX = 0;
+    int fenceCounterY = 0;
+    auto renderResource = ServiceProvider::getRenderResource();
+
+    auto addFence = [&](json& jData, const std::string& prefix, const XMFLOAT2& position, bool rotated = false)
+    {
+        jData["Name"] = prefix + std::to_string(rotated ? fenceCounterY++ : fenceCounterX++);
+        jData["Position"][0] = position.x;
+        jData["Position"][2] = position.y;
+
+        auto gameObject = std::make_unique<GameObject>(jData, amountObjectCBs);
+        amountObjectCBs += 4;
+
+        if(rotated)
+        {
+            gameObject->setRotation({0.0f, XM_PIDIV2, 0.0f});
+        }
+
+        ServiceProvider::getPhysics()->addGameObject(*gameObject.get());
+        addGameObjectToQuadTree(gameObject.get());
+        mGameObjects[gameObject->Name] = std::move(gameObject);
+    };
+
+    const auto& modelExtents = ServiceProvider::getCollisionDatabase()->getExtents(fenceModel);
+
+    float baseWidth = modelExtents.x + modelExtents.z;// 3.552544116973877f + 0.24824516475200653f;
+    float baseHalf = baseWidth / 2.0f;
+
+    float baseX = -baseWidth * width / 2.0f;
+    float baseZ = baseWidth * height / 2.0f;
+
+    // northern wall
+    fenceCounterX = 0;
+    for(int x = 0; x < width; x++)
+    {
+        float xPos = baseX + x * baseWidth + baseHalf;
+        addFence(fenceJson, "WFN", { xPos, baseZ }, false);
+    }
+    
+
+    //western wall
+    fenceCounterY = 0;
+    for(int y = 0; y < height; y++)
+    {
+        float zPos = baseZ - y * baseWidth - baseHalf;
+        addFence(fenceJson, "WNW", { baseX, zPos }, true);
+    }
+
+    //all other grid walls
+    fenceCounterX = 0;
+    fenceCounterY = 0;
+    float xPos = 0.0f;
+    float zPos = baseZ - 1 * baseWidth - baseHalf;
+
+    for(int y = 0; y < height+1; y++)
+    {
+        for(int x = 0; x < width+1; x++)
+        {
+            //south
+            xPos = baseX + x * baseWidth + baseHalf;
+            addFence(fenceJson, "WS", { xPos, zPos - baseHalf}, false);
+
+            //east
+
+
+            addFence(fenceJson, "WE", { xPos + baseHalf, zPos }, true);
+
+        }
+        zPos = baseZ - y * baseWidth -baseHalf;
+    }
+
+    std::cout << "\n" << fenceCounterX << " | " << fenceCounterY << std::endl;
+
+    /*recalculate render orders*/
+    calculateRenderOrderSizes();
+
+}
+
+void Level::updateToGrid(Grid& grid)
+{
+    // reactivate all walls
+
+
+    // deactivate linked walls
+
+    int x = 0;
+    int y = 0;
+    const std::string prefixSouth = "WS";
+    const std::string prefixEast = "WE";
+
+    for(const auto& row : grid.getEachRow())
+    {
+
+        for(const auto cell : row)
+        {
+            int currentIndex = y * grid.columns() + x;
+
+            if(currentIndex > 520) break;
+
+            //east wall
+            if(cell->isLinked(cell->e))
+            {
+                mGameObjects[prefixEast + std::to_string(currentIndex)]->isDrawEnabled = false;
+            }
+
+            //south wall
+            if(cell->isLinked(cell->s))
+            {
+                mGameObjects[prefixSouth + std::to_string(currentIndex)]->isDrawEnabled = false;
+            }
+
+            x++;
+        }
+        y++;
+    }
+
 }
 
 void Level::update(const GameTime& gt)
