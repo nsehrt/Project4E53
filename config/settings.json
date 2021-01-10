@@ -15,7 +15,7 @@
     },
     "Gameplay": {
         "MazeAlgorithm": 4,
-        "MazeBraidRatio": 1.0
+        "MazeBraidRatio": 0.2
     },
     "Graphic": {
         "NumFrameResources": 3,

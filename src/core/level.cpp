@@ -246,23 +246,21 @@ void Level::setupMazeGrid(int width, int height)
     fenceCounterX = 0;
     fenceCounterY = 0;
     float xPos = 0.0f;
-    float zPos = baseZ - 1 * baseWidth - baseHalf;
+    float zPos = baseZ - 0 * baseWidth - baseHalf;
 
-    for(int y = 0; y < height+1; y++)
+    for(int y = 0; y < height; y++)
     {
-        for(int x = 0; x < width+1; x++)
+        for(int x = 0; x < width; x++)
         {
             //south
             xPos = baseX + x * baseWidth + baseHalf;
             addFence(fenceJson, "WS", { xPos, zPos - baseHalf}, false);
 
             //east
-
-
             addFence(fenceJson, "WE", { xPos + baseHalf, zPos }, true);
 
         }
-        zPos = baseZ - y * baseWidth -baseHalf;
+        zPos = baseZ - (y+1) * baseWidth -baseHalf;
     }
 
     std::cout << "\n" << fenceCounterX << " | " << fenceCounterY << std::endl;
@@ -274,15 +272,28 @@ void Level::setupMazeGrid(int width, int height)
 
 void Level::updateToGrid(Grid& grid)
 {
-    // reactivate all walls
-
-
-    // deactivate linked walls
-
     int x = 0;
     int y = 0;
     const std::string prefixSouth = "WS";
     const std::string prefixEast = "WE";
+
+    // reactivate all walls
+    for(int i = 0; i < grid.rows() * grid.columns(); i++)
+    {
+        if(!mGameObjects[prefixEast + std::to_string(i)]->isDrawEnabled)
+        {
+            mGameObjects[prefixEast + std::to_string(i)]->isDrawEnabled = true;
+            mGameObjects[prefixEast + std::to_string(i)]->setCollision();
+        }
+        
+        if(!mGameObjects[prefixSouth + std::to_string(i)]->isDrawEnabled)
+        {
+            mGameObjects[prefixSouth + std::to_string(i)]->isDrawEnabled = true;
+            mGameObjects[prefixEast + std::to_string(i)]->setCollision();
+        }
+    }
+
+    // deactivate linked walls
 
     for(const auto& row : grid.getEachRow())
     {
@@ -291,23 +302,24 @@ void Level::updateToGrid(Grid& grid)
         {
             int currentIndex = y * grid.columns() + x;
 
-            if(currentIndex > 520) break;
-
             //east wall
             if(cell->isLinked(cell->e))
             {
                 mGameObjects[prefixEast + std::to_string(currentIndex)]->isDrawEnabled = false;
+                mGameObjects[prefixEast + std::to_string(currentIndex)]->setCollision(false);
             }
 
             //south wall
             if(cell->isLinked(cell->s))
             {
                 mGameObjects[prefixSouth + std::to_string(currentIndex)]->isDrawEnabled = false;
+                mGameObjects[prefixSouth + std::to_string(currentIndex)]->setCollision(false);
             }
 
             x++;
         }
         y++;
+        x = 0;
     }
 
 }

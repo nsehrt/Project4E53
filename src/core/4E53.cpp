@@ -1836,6 +1836,7 @@ void P_4E53::update(const GameTime& gt)
         {
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
             ServiceProvider::getMaze()->generate();
+            std::cout << "\n" << ServiceProvider::getMaze()->getGrid() << std::endl;
             ServiceProvider::getActiveLevel()->updateToGrid(ServiceProvider::getMaze()->getGrid());
         }
 

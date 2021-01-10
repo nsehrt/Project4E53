@@ -162,6 +162,18 @@ public:
         return Rotation;
     }
 
+    void setCollision(bool on = true)
+    {
+        if(on)
+        {
+            bulletBody->setCollisionFlags(bulletBody->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        }
+        else
+        {
+            bulletBody->setCollisionFlags(bulletBody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        }
+    }
+
     /*Texture transform getter/setter*/
     void setTextureTranslation(DirectX::XMFLOAT3 _translation)
     {
