@@ -221,6 +221,7 @@ void Level::setupMazeGrid(int width, int height)
 
     float baseWidth = modelExtents.x + modelExtents.z;// 3.552544116973877f + 0.24824516475200653f;
     float baseHalf = baseWidth / 2.0f;
+    mazeBaseWidth = baseWidth;
 
     float baseX = -baseWidth * width / 2.0f;
     float baseZ = baseWidth * height / 2.0f;
@@ -230,7 +231,7 @@ void Level::setupMazeGrid(int width, int height)
     for(int x = 0; x < width; x++)
     {
         float xPos = baseX + x * baseWidth + baseHalf;
-        addFence(fenceJson, "WFN", { xPos, baseZ }, false);
+        addFence(fenceJson, prefixNorth, { xPos, baseZ }, false);
     }
     
 
@@ -239,7 +240,7 @@ void Level::setupMazeGrid(int width, int height)
     for(int y = 0; y < height; y++)
     {
         float zPos = baseZ - y * baseWidth - baseHalf;
-        addFence(fenceJson, "WNW", { baseX, zPos }, true);
+        addFence(fenceJson, prefixWest, { baseX, zPos }, true);
     }
 
     //all other grid walls
@@ -254,10 +255,10 @@ void Level::setupMazeGrid(int width, int height)
         {
             //south
             xPos = baseX + x * baseWidth + baseHalf;
-            addFence(fenceJson, "WS", { xPos, zPos - baseHalf}, false);
+            addFence(fenceJson, prefixSouth, { xPos, zPos - baseHalf}, false);
 
             //east
-            addFence(fenceJson, "WE", { xPos + baseHalf, zPos }, true);
+            addFence(fenceJson, prefixEast, { xPos + baseHalf, zPos }, true);
 
         }
         zPos = baseZ - (y+1) * baseWidth -baseHalf;
@@ -274,22 +275,21 @@ void Level::updateToGrid(Grid& grid)
 {
     int x = 0;
     int y = 0;
-    const std::string prefixSouth = "WS";
-    const std::string prefixEast = "WE";
 
     // reactivate all walls
     for(int i = 0; i < grid.rows() * grid.columns(); i++)
     {
+        mGameObjects[prefixEast + std::to_string(i)]->setCollision(true);
+        mGameObjects[prefixSouth + std::to_string(i)]->setCollision(true);
+
         if(!mGameObjects[prefixEast + std::to_string(i)]->isDrawEnabled)
         {
             mGameObjects[prefixEast + std::to_string(i)]->isDrawEnabled = true;
-            mGameObjects[prefixEast + std::to_string(i)]->setCollision();
         }
         
         if(!mGameObjects[prefixSouth + std::to_string(i)]->isDrawEnabled)
         {
             mGameObjects[prefixSouth + std::to_string(i)]->isDrawEnabled = true;
-            mGameObjects[prefixEast + std::to_string(i)]->setCollision();
         }
     }
 
@@ -321,6 +321,36 @@ void Level::updateToGrid(Grid& grid)
         y++;
         x = 0;
     }
+
+}
+
+void Level::setStartEnd(Grid& grid, Cell* start, Cell* end)
+{
+    // reset all west elements, east already closed
+
+    for(int i = 0; i < grid.rows(); i++)
+    {
+        mGameObjects[prefixWest + std::to_string(i)]->isDrawEnabled = true;
+        mGameObjects[prefixWest + std::to_string(i)]->setCollision(true);
+    }
+
+    // open start
+    auto [xPosStart, yPosStart] = start->getPosition();
+    mGameObjects[prefixWest + std::to_string(yPosStart)]->isDrawEnabled = false;
+    mGameObjects[prefixWest + std::to_string(yPosStart)]->setCollision(false);
+
+
+    // open end
+    auto [xPosEnd, yPosEnd] = end->getPosition();
+   
+    int index = yPosEnd * grid.columns() + xPosEnd;
+    mGameObjects[prefixEast + std::to_string(index)]->isDrawEnabled = false;
+    mGameObjects[prefixEast + std::to_string(index)]->setCollision(false);
+
+
+    // move end segment to correct position
+
+
 
 }
 
@@ -661,6 +691,9 @@ bool Level::save()
     {
         if (e.second->gameObjectType != ObjectType::Default) continue;
         if(e.first == "HITBOX_EDIT") continue;
+
+        //maze game objects have & at the first place, skip them
+        if(e.first[0] == '&') continue;
 
        saveFile["GameObject"].push_back(e.second->toJson());
     }
@@ -1242,6 +1275,7 @@ bool Level::parseGameObjects(const json& gameObjectJson)
 
         //add the game object to the bullet physics world
         ServiceProvider::getPhysics()->addGameObject(*gameObject.get());
+        gameObject->initCollision();
 
         mGameObjects[gameObject->Name] = std::move(gameObject);
     }

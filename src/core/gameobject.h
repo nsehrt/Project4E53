@@ -127,13 +127,7 @@ public:
     }
 
     /*Transform getter/setter*/
-    void setPosition(DirectX::XMFLOAT3 _pos, bool updTrf = true)
-    {
-        Position = _pos;
-
-        if(updTrf)
-            updateTransforms();
-    }
+    void setPosition(DirectX::XMFLOAT3 _pos, bool updTrf = true);
 
     void setScale(DirectX::XMFLOAT3 _scale);
 
@@ -162,8 +156,11 @@ public:
         return Rotation;
     }
 
+    /*enable or disable collision for this object in bullet physics*/
     void setCollision(bool on = true)
     {
+        isCollisionEnabled = on;
+
         if(on)
         {
             bulletBody->setCollisionFlags(bulletBody->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -172,6 +169,11 @@ public:
         {
             bulletBody->setCollisionFlags(bulletBody->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
         }
+    }
+
+    void initCollision()
+    {
+        setCollision(isCollisionEnabled);
     }
 
     /*Texture transform getter/setter*/

@@ -1,0 +1,248 @@
+{
+    "GameObject": [
+        {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Material": "default",
+            "Model": "box",
+            "Name": "box",
+            "Position": [
+                -2.5770976543426514,
+                0.781572699546814,
+                1.6979007720947266
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        }
+    ],
+    "Grass": [
+        {
+            "Density": [
+                12,
+                17
+            ],
+            "Material": "grass_3",
+            "Name": "grass",
+            "Position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "QuadSize": [
+                1.0,
+                1.0
+            ],
+            "Size": [
+                5.0,
+                5.0
+            ],
+            "SizeVariation": 0.0
+        }
+    ],
+    "Light": {
+        "AmbientLight": [
+            0.30000001192092896,
+            0.30000001192092896,
+            0.30000001192092896
+        ],
+        "Directional": [
+            {
+                "Direction": [
+                    -0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D1",
+                "Strength": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            },
+            {
+                "Direction": [
+                    0.5699999928474426,
+                    -0.5699999928474426,
+                    0.5699999928474426
+                ],
+                "Name": "D2",
+                "Strength": [
+                    0.4000000059604645,
+                    0.4000000059604645,
+                    0.4000000059604645
+                ]
+            },
+            {
+                "Direction": [
+                    0.0,
+                    -0.699999988079071,
+                    -0.699999988079071
+                ],
+                "Name": "D3",
+                "Strength": [
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
+                ]
+            }
+        ],
+        "Point": [
+            {
+                "FallOffEnd": 12.0,
+                "FallOffStart": 10.0,
+                "Name": "P_(1)",
+                "Position": [
+                    -3.0,
+                    3.0,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    0.0,
+                    0.25
+                ]
+            },
+            {
+                "FallOffEnd": 3.4250001907348633,
+                "FallOffStart": 1.7125000953674316,
+                "Name": "EditLight",
+                "Position": [
+                    0.0,
+                    0.8531982898712158,
+                    0.0
+                ],
+                "Strength": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ]
+    },
+    "ParticleSystem": [
+        {
+            "DirectionMultiplier": [
+                0.699999988079071,
+                1.2999999523162842,
+                0.699999988079071
+            ],
+            "Material": "fire1",
+            "MaxAge": 1.0,
+            "Name": "particle_fire",
+            "ParticleCount": 250,
+            "Position": [
+                0.0,
+                3.0,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.004999999888241291,
+            "Type": "Fire"
+        },
+        {
+            "DirectionMultiplier": [
+                0.10000000149011612,
+                0.4000000059604645,
+                0.10000000149011612
+            ],
+            "Material": "smoke1",
+            "MaxAge": 6.0,
+            "Name": "particle_smoke",
+            "ParticleCount": 250,
+            "Position": [
+                2.0,
+                3.0,
+                5.0
+            ],
+            "Size": [
+                1.0,
+                1.0
+            ],
+            "SpawnTime": 0.05000000074505806,
+            "Type": "Smoke"
+        }
+    ],
+    "Sky": {
+        "DefaultCubeMap": "grasscube1024.dds",
+        "Material": "sky"
+    },
+    "Terrain": {
+        "BlendMap": "basemaze.level.bld",
+        "BlendTextures": [
+            "ForestFloorGreen.dds",
+            "DirtGround.dds",
+            "PavementGray.dds",
+            "SimpleSand.dds"
+        ],
+        "HeightMap": "basemaze.level.raw",
+        "HeightScale": 200.0
+    },
+    "Water": [
+        {
+            "Displacement1Transform": [
+                0.800000011920929,
+                0.009999999776482582,
+                0.029999999329447746
+            ],
+            "Displacement2Transform": [
+                0.4000000059604645,
+                -0.009999999776482582,
+                0.029999999329447746
+            ],
+            "HeightScale": [
+                0.4000000059604645,
+                0.800000011920929
+            ],
+            "Material": "water",
+            "MaterialTranslation": [
+                0.15000000596046448,
+                0.4000000059604645
+            ],
+            "Name": "water",
+            "Normal1Transform": [
+                5.0,
+                0.05000000074505806,
+                0.20000000298023224
+            ],
+            "Normal2Transform": [
+                4.0,
+                -0.019999999552965164,
+                0.05000000074505806
+            ],
+            "Position": [
+                10.0,
+                0.0,
+                0.0
+            ],
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TexScale": [
+                10.0,
+                10.0,
+                1.0
+            ]
+        }
+    ]
+}

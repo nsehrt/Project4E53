@@ -40,6 +40,9 @@ public:
     /* deactive maze walls according to maze grid*/
     void updateToGrid(Grid& grid);
 
+    /* set start and end */
+    void setStartEnd(Grid& grid, Cell* start, Cell* end);
+
     /* update all game objects in the level */
     void update(const GameTime& gt);
 
@@ -88,6 +91,8 @@ public:
     std::string skyMaterial;
     std::string loadedLevel;
 
+    float mazeBaseWidth = 0.0f;
+
 private:
 
     ScriptSystem script_system;
@@ -112,6 +117,11 @@ private:
 
     std::vector<std::vector<GameObject*>> renderOrder;
     std::vector<std::vector<GameObject*>> shadowRenderOrder;
+
+    const std::string prefixSouth = "&WS";
+    const std::string prefixEast = "&WE";
+    const std::string prefixNorth = "&WN";
+    const std::string prefixWest = "&WW";
 
     bool exists(const nlohmann::json& j, const std::string& key)
     {

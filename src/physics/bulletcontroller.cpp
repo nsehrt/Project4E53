@@ -108,19 +108,19 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
     }
     else if(player->currentCState == CharacterState::Fall)
     {
-
-        if(onGround)
-        {
-            setState(CharacterState::Ground);
-            rigidBody->setGravity(onGroundGravity);
-        }
-
         // pressed jump is valid if grace period not over
         if(pressedJump && timeInCurrentState < fallJumpGracePeriod)
         {
             setState(CharacterState::Jump);
             jumpedThisFrame = true;
             rigidBody->setGravity(inAirGravity);
+        }
+
+        rigidBody->setGravity(inAirGravity);
+        if(onGround)
+        {
+            setState(CharacterState::Ground);
+            rigidBody->setGravity(onGroundGravity);
         }
 
     }
@@ -269,7 +269,8 @@ void BulletController::debugDraw(btIDebugDraw* debugDrawer)
 
 void BulletController::jump()
 {
-    pressedJump = true;
+    //disabled
+    //pressedJump = true;
 }
 
 void BulletController::run(bool value)

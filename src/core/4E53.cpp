@@ -64,6 +64,7 @@ private:
 
     std::vector<std::string> mPointLightNames;
 
+    void setupNewMaze();
     void drawFrameStats();
     void drawToShadowMap();
     void setModelSelection();
@@ -281,7 +282,7 @@ bool P_4E53::Initialize()
 
     /*load first level*/
     const std::string suffix = ".level";
-    std::string levelFile = "bullet2";
+    std::string levelFile = "basemaze";
 
     auto level = std::make_shared<Level>();
 
@@ -1835,9 +1836,8 @@ void P_4E53::update(const GameTime& gt)
         if (inputData.Pressed(BTN::A))
         {
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
-            ServiceProvider::getMaze()->generate();
-            std::cout << "\n" << ServiceProvider::getMaze()->getGrid() << std::endl;
-            ServiceProvider::getActiveLevel()->updateToGrid(ServiceProvider::getMaze()->getGrid());
+
+            setupNewMaze();
         }
 
         /*fps camera controls*/
@@ -2173,6 +2173,51 @@ UINT P_4E53::getPointLightIndex(const std::string& name, UINT direction) const
     }
 
     return 0;
+}
+
+void P_4E53::setupNewMaze()
+{
+    auto& grid = ServiceProvider::getMaze()->getGrid();
+
+    //generate new maze and apply to level
+    ServiceProvider::getMaze()->generate();
+    ServiceProvider::getActiveLevel()->updateToGrid(ServiceProvider::getMaze()->getGrid());
+
+    //set start and goal
+
+    /*start in the middle of the left side*/
+    Cell* start = grid(0, grid.rows() / 2);
+    Distances distances = start->distances();
+
+    /*find which cell on the right has the longest way*/
+    int maxLength = 0;
+    int maxIndex = 0;
+    Cell* goalCell = nullptr;
+
+    for(int i = 0; i < grid.rows(); i++)
+    {
+        goalCell = grid(grid.columns() - 1, i);
+
+        if(distances.get(goalCell) > maxLength)
+        {
+            std::cout << distances.get(goalCell) << " > " << maxLength << "\n";
+            maxLength = distances.get(goalCell);
+            maxIndex = i;
+        }
+
+    }
+
+    goalCell = grid(grid.columns()-1, maxIndex);
+
+    ServiceProvider::getActiveLevel()->setStartEnd(grid, start, goalCell);
+
+    //position player at the start
+    float width = ServiceProvider::getActiveLevel()->mazeBaseWidth;
+    float plPosX = -width * grid.columns() / 2.0f - width;
+    float plPosZ = width * grid.rows() / 2.0f - grid.rows() / 2 * width - width / 2.0f;
+
+    ServiceProvider::getPlayer()->setPosition({plPosX,8.5f,plPosZ});
+
 }
 
 void P_4E53::drawFrameStats()

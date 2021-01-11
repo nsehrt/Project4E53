@@ -1,6 +1,7 @@
 #include "gameobject.h"
 #include "../util/collisiondatabase.h"
 #include "../util/serviceprovider.h"
+#include "../physics/bulletphysics.h"
 
 using namespace DirectX;
 
@@ -561,6 +562,25 @@ json GameObject::toJson() const
     }
 
     return jElement;
+}
+
+void GameObject::setPosition(DirectX::XMFLOAT3 _pos, bool updTrf)
+{
+
+    Position = _pos;
+
+    if(bulletBody)
+    {
+        btTransform newTransform;
+        newTransform.setOrigin({ Position.x, Position.y, Position.z });
+        newTransform.setRotation(bulletBody->getWorldTransform().getRotation());
+        bulletBody->setWorldTransform(newTransform);
+    }
+
+
+    if(updTrf)
+        updateTransforms();
+
 }
 
 void GameObject::setScale(DirectX::XMFLOAT3 _scale)
