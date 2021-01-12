@@ -16,7 +16,8 @@
     "Gameplay": {
         "MazeAlgorithm": 0,
         "MazeBraidRatio": 0.0,
-        "TrailEnabled": false
+        "TrailEnabled": false,
+        "RandomSeed": 999999
     },
     "Graphic": {
         "NumFrameResources": 3,

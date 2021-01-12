@@ -231,6 +231,12 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
     }
     
 
+    if(movementReset)
+    {
+        rigidBody->setLinearVelocity({ 0.f, rigidBody->getLinearVelocity().y(), 0.f });
+        player->Rotation.y = 0.0f;
+        movementReset = false;
+    }
 
     resetMovementParameters();
 

@@ -25,58 +25,6 @@ void Player::stickToTerrain()
 void Player::update(const GameTime& gt)
 {
 
-    //TODO: update animation code here based on speed and action performed etc.
-
-//    if(running)
-//    {
-//        currentSpeed = runSpeed;
-//
-//        currentCState = CharacterState::Run;
-//        if(previousCState != CharacterState::Run)
-//        {
-//            setAnimation(SP_ANIM("geo_Run"), true);
-//        }
-//    }
-//    else
-//    {
-//        currentCState = CharacterState::Walk;
-//        if(previousCState != CharacterState::Walk)
-//        {
-//            setAnimation(SP_ANIM("geo_Walk"), true);
-//        }
-//    }
-//
-//    currentSpeed = currentSpeed * inputMagnitude;
-//
-//    /*apply to calculated speed to the player position using the direction the player faces*/
-//    auto pPos = getPosition();
-//    auto pRot = MathHelper::vectorFromAngle(getRotation().y + XM_PIDIV2);
-//
-//    pPos.x += pRot.x * currentSpeed * gt.DeltaTime();
-//    pPos.z += pRot.z * currentSpeed * gt.DeltaTime();
-//
-//    projectedPosition = pPos;
-//}
-//    else
-//    {
-//    /*reset idle timer when no input (standing still)*/
-//    currentCState = CharacterState::Idle;
-//
-//    if(previousCState != CharacterState::Idle)
-//    {
-//        setAnimation(SP_ANIM("geo_Idle"), true);
-//    }
-//
-//    timeIdle += gt.DeltaTime();
-//    timeMoving = 0.0f;
-//
-//    if(timeIdle > SP_ANIM("geo_Idle")->getEndTime() * 3.0f)
-//    {
-//        setAnimation(SP_ANIM("geo_Idle2"), false);
-//        timeIdle = 0.0f;
-//    }
-//    
-
     // Transfer transformation back from bullet object if the object is not static
     if(motionType != ObjectMotionType::Static)
     {

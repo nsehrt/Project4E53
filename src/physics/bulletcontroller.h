@@ -20,6 +20,10 @@ class BulletController final : public btActionInterface
 
     void jump();
     void run(bool value = false);
+    void resetMovement()
+    {
+        movementReset = true;
+    }
     void setMovement(const DirectX::XMFLOAT2& direction, const float magnitude);
 
     private:
@@ -55,6 +59,7 @@ class BulletController final : public btActionInterface
     bool pressedJump = false;
     bool pressedRun = false;
     bool pressedRoll = false;
+    bool movementReset = false;
 
     float distanceToGround = 0.0f;
     float previousDistanceToGround = 0.0f;

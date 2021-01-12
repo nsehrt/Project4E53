@@ -10,7 +10,7 @@ class Randomizer
     public:
 
     //from and to are inclusive
-    explicit Randomizer(std::uint32_t max = std::numeric_limits<std::uint32_t>::max())
+    explicit Randomizer(int seed = -1, std::uint32_t max = std::numeric_limits<std::uint32_t>::max())
         :  m_To(max)
     {
         assert(m_To > m_From);
@@ -18,7 +18,7 @@ class Randomizer
         m_Range = m_To - m_From;
 
         std::random_device rd;
-        m_Generator = std::make_unique<std::mt19937>(rd());
+        m_Generator = std::make_unique<std::mt19937>(seed < 0 ? rd() : static_cast<unsigned int>(seed));
         m_Distribution = std::make_unique<std::uniform_int_distribution<std::uint32_t>>(m_From, m_To);
     };
 

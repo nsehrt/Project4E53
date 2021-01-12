@@ -119,7 +119,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
     ServiceProvider::getLogger()->print<Severity::Info>("Settings file loaded successfully.");
 
     /*maze generator*/
-    auto mazeGen = std::make_shared<Maze>((*randomizer));
+    auto mazeGen = std::make_shared<Maze>(ServiceProvider::getSettings()->gameplaySettings.RandomSeed);
     ServiceProvider::setMaze(mazeGen);
 
     if(ServiceProvider::getSettings()->gameplaySettings.MazeAlgorithm >= static_cast<int>(MazeAlgorithm::Count))
@@ -1806,11 +1806,6 @@ void P_4E53::update(const GameTime& gt)
         /*update player control data*/
         auto controller = mPlayer->getController();
 
-        if(inputData.Pressed(BTN::A))
-        {
-            controller->jump();
-        }
-
         if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f)
         {
             controller->run();
@@ -1838,6 +1833,7 @@ void P_4E53::update(const GameTime& gt)
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 
             setupNewMaze();
+            controller->resetMovement();
         }
 
         /*fps camera controls*/
@@ -1861,7 +1857,7 @@ void P_4E53::update(const GameTime& gt)
         //blurriness += 1.25f * (inputData.current.buttons[BTN::DPAD_UP] ? 1.0f : inputData.current.buttons[BTN::DPAD_DOWN] ? -1.0f : 0.0f) * gt.DeltaTime();
         //blurriness = MathHelper::clampH(blurriness, 0.0f, 2.5f);
 
-        //renderResource->getBlurFilter()->setSigma(blurriness);
+         //renderResource->getBlurFilter()->setSigma(1.05f);
 
         ///**COMPOSITE COLOR TEST**/
         //renderResource->addToCompositeColor(inputData.current.buttons[BTN::A] ? gt.DeltaTime() : inputData.current.buttons[BTN::B] ? -gt.DeltaTime() : 0.0f);
@@ -2217,7 +2213,8 @@ void P_4E53::setupNewMaze()
     float plPosZ = width * grid.rows() / 2.0f - grid.rows() / 2 * width - width / 2.0f;
 
     ServiceProvider::getPlayer()->setPosition({plPosX,8.5f,plPosZ});
-
+    ServiceProvider::getPlayer()->setRotation({ 0.f,0.f,0.f });
+    
 }
 
 void P_4E53::drawFrameStats()
