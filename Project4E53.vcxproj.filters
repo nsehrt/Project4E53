@@ -259,6 +259,12 @@
     <ClInclude Include="src\maze\maze.h">
       <Filter>Source Files\src\maze</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\title.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\transition.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util\log.cpp">
@@ -413,6 +419,9 @@
     </ClCompile>
     <ClCompile Include="src\maze\maze.cpp">
       <Filter>Source Files\src\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\transition.cpp">
+      <Filter>Source Files\src\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

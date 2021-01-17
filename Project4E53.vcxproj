@@ -197,6 +197,7 @@
     <ClCompile Include="src\core\particlesystem.cpp" />
     <ClCompile Include="src\core\player.cpp" />
     <ClCompile Include="src\core\terrain.cpp" />
+    <ClCompile Include="src\core\transition.cpp" />
     <ClCompile Include="src\core\water.cpp" />
     <ClCompile Include="src\extern\DDSTextureLoader.cpp" />
     <ClCompile Include="src\extern\imgui\imgui.cpp" />
@@ -251,6 +252,8 @@
     <ClInclude Include="src\core\particlesystem.h" />
     <ClInclude Include="src\core\player.h" />
     <ClInclude Include="src\core\terrain.h" />
+    <ClInclude Include="src\core\title.h" />
+    <ClInclude Include="src\core\transition.h" />
     <ClInclude Include="src\core\water.h" />
     <ClInclude Include="src\extern\d3dx12.h" />
     <ClInclude Include="src\extern\DDSTextureLoader.h" />

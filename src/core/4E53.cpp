@@ -13,6 +13,8 @@
 #include "../util/debuginfo.h"
 #include "../physics/bulletphysics.h"
 #include "../maze/maze.h"
+#include "../core/title.h"
+#include "../core/transition.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -44,6 +46,7 @@ private:
 
     BulletPhysics physics;
     CollisionDatabase collisionData;
+    TitleItems titleSelection = TitleItems::NewGame;
 
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;
@@ -140,7 +143,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
     }
     else
     {
-        ServiceProvider::setGameState(GameState::INGAME);
+        ServiceProvider::setGameState(GameState::TITLE);
     }
     
     LOG(Severity::Info, "Edit Mode is " << (ServiceProvider::getSettings()->miscSettings.EditModeEnabled ? "enabled" : "disabled") << ".");
@@ -1800,6 +1803,51 @@ void P_4E53::update(const GameTime& gt)
     /*************/
     /*Game Update*/
     /*************/
+    else if(ServiceProvider::getGameState() == GameState::TITLE)
+    {
+
+        /*selection*/
+        if(inputData.Pressed(BTN::DPAD_UP))
+        {
+            switch(titleSelection)
+            {
+                case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
+                case TitleItems::Quit: titleSelection = TitleItems::NewGame; break;
+            }
+
+        }
+        else if(inputData.Pressed(BTN::DPAD_DOWN))
+        {
+            switch(titleSelection)
+            {
+                case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
+                case TitleItems::Quit: titleSelection = TitleItems::NewGame; break;
+            }
+
+        }
+
+        /*action*/
+        if(inputData.Pressed(BTN::A))
+        {
+            if(titleSelection == TitleItems::Quit)
+            {
+                //quits main game loop
+                mIsRunning = false;
+            }
+            else if(titleSelection == TitleItems::NewGame)
+            {
+                /*start transition*/
+
+
+
+            }
+        }
+
+    }
+    else if(ServiceProvider::getGameState() == GameState::ENDSCREEN)
+    {
+
+    }
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
 
@@ -1873,13 +1921,6 @@ void P_4E53::update(const GameTime& gt)
         {
             mainCamera->updateFixedCamera(mPlayer->getPosition(), 0.0f, 0.0f);
         }
-
-    }
-    else if (ServiceProvider::getGameState() == GameState::PAUSE)
-    {
-
-
-
 
     }
 

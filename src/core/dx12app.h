@@ -74,6 +74,7 @@ protected:
     bool mMaximized = false;
     bool mResizing = false;
     bool mFullscreenState = false;
+    bool mIsRunning = true;
 
     GameTime mTimer;
 

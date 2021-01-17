@@ -128,7 +128,7 @@ int DX12App::run()
 
     mTimer.Reset();
 
-    while (msg.message != WM_QUIT)
+    while (msg.message != WM_QUIT && mIsRunning)
     {
         if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
         {

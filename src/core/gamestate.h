@@ -6,5 +6,5 @@ enum class GameState
     EDITOR,
     TITLE,
     INGAME,
-    PAUSE
+    ENDSCREEN
 };
