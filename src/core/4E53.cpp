@@ -47,6 +47,7 @@ private:
     BulletPhysics physics;
     CollisionDatabase collisionData;
     TitleItems titleSelection = TitleItems::NewGame;
+    Transition mTransition{};
 
     std::unique_ptr<std::thread> inputThread;
     std::unique_ptr<std::thread> audioThread;
@@ -66,6 +67,8 @@ private:
     std::vector<std::shared_ptr<Level>> mLevel;
 
     std::vector<std::string> mPointLightNames;
+
+    bool mToNewGame = false;
 
     void setupNewMaze();
     void drawFrameStats();
@@ -456,6 +459,10 @@ bool P_4E53::Initialize()
 
     // Wait until initialization is complete.
     flushCommandQueue();
+
+
+    //transition in on game start
+    mTransition.start();
 
     return true;
 }
@@ -1806,40 +1813,58 @@ void P_4E53::update(const GameTime& gt)
     else if(ServiceProvider::getGameState() == GameState::TITLE)
     {
 
-        /*selection*/
-        if(inputData.Pressed(BTN::DPAD_UP))
+        //fade out when choosing new game
+        if(mToNewGame && !mTransition.inProgress())
         {
-            switch(titleSelection)
-            {
-                case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
-                case TitleItems::Quit: titleSelection = TitleItems::NewGame; break;
-            }
-
+            mToNewGame = false;
+            ServiceProvider::setGameState(GameState::INGAME);
+            mTransition.start();
         }
-        else if(inputData.Pressed(BTN::DPAD_DOWN))
+        else if(!mToNewGame)
         {
-            switch(titleSelection)
+
+            /*selection*/
+            if(inputData.Pressed(BTN::DPAD_UP))
             {
-                case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
-                case TitleItems::Quit: titleSelection = TitleItems::NewGame; break;
+                switch(titleSelection)
+                {
+                    case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
+                    case TitleItems::Quit: titleSelection = TitleItems::NewGame; break;
+                }
+
+            }
+            else if(inputData.Pressed(BTN::DPAD_DOWN))
+            {
+                switch(titleSelection)
+                {
+                    case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
+                    case TitleItems::Quit: titleSelection = TitleItems::NewGame; break;
+                }
+
             }
 
-        }
-
-        /*action*/
-        if(inputData.Pressed(BTN::A))
-        {
-            if(titleSelection == TitleItems::Quit)
+            /*action*/
+            if(inputData.Pressed(BTN::A))
             {
-                //quits main game loop
-                mIsRunning = false;
-            }
-            else if(titleSelection == TitleItems::NewGame)
-            {
-                /*start transition*/
+                if(titleSelection == TitleItems::Quit)
+                {
+                    //quits main game loop
+                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
+                    mIsRunning = false;
+                }
+                else if(titleSelection == TitleItems::NewGame)
+                {
+                    /*start transition*/
+                    mTransition.start();
+                    mToNewGame = true;
 
+                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
 
+                    //create a new maze
+                    setupNewMaze();
+                    mPlayer->getController()->resetMovement();
 
+                }
             }
         }
 
@@ -1867,22 +1892,17 @@ void P_4E53::update(const GameTime& gt)
         XMStoreFloat(&inputMagnitude, inputMagnitudeV);
         inputMagnitude = inputMagnitude > 1.0f ? 1.0f : inputMagnitude;
 
-        controller->setMovement(inputDirection, inputMagnitude);
+        if(!fpsCameraMode)
+        {
+            controller->setMovement(inputDirection, inputMagnitude);
+        }
+          
 
         /*update physics simulation*/
         physics.simulateStep(gt.DeltaTime());
 
         /*update player*/
         mPlayer->update(gt);
-
-
-        if (inputData.Pressed(BTN::A))
-        {
-            ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
-
-            setupNewMaze();
-            controller->resetMovement();
-        }
 
         /*fps camera controls*/
         if (inputData.Released(BTN::DPAD_RIGHT))
@@ -1899,19 +1919,6 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
-        /**BLUR TEST**/
-        //float blurriness = renderResource->getBlurFilter()->getSigma();
-
-        //blurriness += 1.25f * (inputData.current.buttons[BTN::DPAD_UP] ? 1.0f : inputData.current.buttons[BTN::DPAD_DOWN] ? -1.0f : 0.0f) * gt.DeltaTime();
-        //blurriness = MathHelper::clampH(blurriness, 0.0f, 2.5f);
-
-         //renderResource->getBlurFilter()->setSigma(1.05f);
-
-        ///**COMPOSITE COLOR TEST**/
-        //renderResource->addToCompositeColor(inputData.current.buttons[BTN::A] ? gt.DeltaTime() : inputData.current.buttons[BTN::B] ? -gt.DeltaTime() : 0.0f);
-
-
-
 
         if (fpsCameraMode)
         {
@@ -1921,6 +1928,11 @@ void P_4E53::update(const GameTime& gt)
         {
             mainCamera->updateFixedCamera(mPlayer->getPosition(), 0.0f, 0.0f);
         }
+
+        /*check if the player reached the end*/
+
+
+
 
     }
 
@@ -1937,6 +1949,13 @@ void P_4E53::update(const GameTime& gt)
     activeLevel->update(gt);
 
     renderResource->updateBuffers(gt);
+
+    /*update transition vars*/
+    mTransition.update(gt.DeltaTime());
+
+    renderResource->getBlurFilter()->setSigma(mTransition.blur());
+    renderResource->setCompositeColor(mTransition.fade());
+
 
     /*save input for next frame*/
     ServiceProvider::getInputManager()->setPrevious(inputData.current);

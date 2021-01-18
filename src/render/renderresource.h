@@ -142,6 +142,14 @@ public:
 
     }
 
+    void setCompositeColor(float f)
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            mCompositeColor[i] = MathHelper::clampH(f, 0.0f, 1.0f);
+        }
+    }
+
     CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
 
 private:
