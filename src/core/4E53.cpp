@@ -1848,12 +1848,16 @@ void P_4E53::update(const GameTime& gt)
             {
                 if(titleSelection == TitleItems::Quit)
                 {
+                    LOG(Severity::Info, "Quit selected.");
+
                     //quits main game loop
                     ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
                     mIsRunning = false;
                 }
                 else if(titleSelection == TitleItems::NewGame)
                 {
+                    LOG(Severity::Info, "New game selected.");
+
                     /*start transition*/
                     mTransition.start();
                     mToNewGame = true;
@@ -1917,6 +1921,11 @@ void P_4E53::update(const GameTime& gt)
             {
                 ServiceProvider::setActiveCamera(mainCamera);
             }
+        }
+
+        if(inputData.Pressed(BTN::DPAD_LEFT))
+        {
+            LOG(Severity::Debug, *ServiceProvider::getActiveCamera());
         }
 
 
@@ -2256,7 +2265,6 @@ void P_4E53::setupNewMaze()
 
         if(distances.get(goalCell) > maxLength)
         {
-            std::cout << distances.get(goalCell) << " > " << maxLength << "\n";
             maxLength = distances.get(goalCell);
             maxIndex = i;
         }
@@ -2275,6 +2283,7 @@ void P_4E53::setupNewMaze()
     ServiceProvider::getPlayer()->setPosition({plPosX,8.5f,plPosZ});
     ServiceProvider::getPlayer()->setRotation({ 0.f,0.f,0.f });
     
+    LOG(Severity::Info, "Generated a maze with algorithm " << static_cast<int>(ServiceProvider::getMaze()->algorithm) << ".");
 }
 
 void P_4E53::drawFrameStats()

@@ -256,7 +256,7 @@ void BulletController::setupBody()
 
 void BulletController::setState(const CharacterState state)
 {
-    std::cout << "State changed to " << state << " after " << timeInCurrentState << "s.\n";
+    //std::cout << "State changed to " << state << " after " << timeInCurrentState << "s.\n";
     ServiceProvider::getPlayer()->currentCState = state;
     timeInCurrentState = 0.0f;
 }

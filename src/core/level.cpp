@@ -264,8 +264,6 @@ void Level::setupMazeGrid(int width, int height)
         zPos = baseZ - (y+1) * baseWidth -baseHalf;
     }
 
-    std::cout << "\n" << fenceCounterX << " | " << fenceCounterY << std::endl;
-
     /*recalculate render orders*/
     calculateRenderOrderSizes();
 
