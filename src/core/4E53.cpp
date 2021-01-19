@@ -58,6 +58,8 @@ private:
 
     std::shared_ptr<FPSCamera> fpsCamera;
     std::shared_ptr<FixedCamera> mainCamera;
+    std::shared_ptr<Camera> titleCamera;
+
     bool fpsCameraMode = false;
 
     std::shared_ptr<FixedCamera> editCamera;
@@ -191,6 +193,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 P_4E53::P_4E53(HINSTANCE hInstance)
     : DX12App(hInstance)
 {
+
     /*create console output window*/
     AllocConsole();
     FILE* dummy = freopen("CONOUT$", "w", stdout);
@@ -335,13 +338,16 @@ bool P_4E53::Initialize()
         mainCamera = std::make_shared<FixedCamera>();
         mainCamera->initFixedDistance(10.0f, 15.0f);
 
+        titleCamera = std::make_shared<FixedCamera>();
+        titleCamera->lookAt(XMFLOAT3{ 1.0f,4.0f,-20.0f }, { 0,0,0 }, { 0,1,0 });
+
         mPlayer = std::make_shared<Player>("geo");
         mPlayer->stickToTerrain();
         ServiceProvider::getPhysics()->addCharacter(*mPlayer);
         mPlayer->setupController();
         ServiceProvider::getPhysics()->addAction(mPlayer->getController());
 
-        ServiceProvider::setActiveCamera(mainCamera);
+        ServiceProvider::setActiveCamera(titleCamera);
         ServiceProvider::setPlayer(mPlayer);
     }
     else
@@ -1817,7 +1823,14 @@ void P_4E53::update(const GameTime& gt)
         if(mToNewGame && !mTransition.inProgress())
         {
             mToNewGame = false;
+
+            //create a new maze
+            setupNewMaze();
+            mPlayer->getController()->resetMovement();
+
             ServiceProvider::setGameState(GameState::INGAME);
+            ServiceProvider::setActiveCamera(mainCamera);
+
             mTransition.start();
         }
         else if(!mToNewGame)
@@ -1863,10 +1876,6 @@ void P_4E53::update(const GameTime& gt)
                     mToNewGame = true;
 
                     ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
-
-                    //create a new maze
-                    setupNewMaze();
-                    mPlayer->getController()->resetMovement();
 
                 }
             }
@@ -1981,6 +1990,8 @@ void P_4E53::draw(const GameTime& gt)
     const auto settings = ServiceProvider::getSettings();
 
     // Start the Dear ImGui frame
+    auto& guiIO = ImGui::GetIO();
+
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -1995,6 +2006,28 @@ void P_4E53::draw(const GameTime& gt)
         drawFrameStats();
     }
 
+    // draw temporary title menu
+    if(ServiceProvider::getGameState() == GameState::TITLE)
+    {
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+        ImGui::SetNextWindowBgAlpha(0.75f);
+
+
+        ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+        ImGui::Begin("", NULL, windowFlags);
+        ImGui::Text(titleSelection == TitleItems::NewGame ? ">NEW GAME" : "NEW GAME");
+        ImGui::Text(titleSelection == TitleItems::Quit ? ">QUIT" : "QUIT");
+
+        ImGui::End();
+
+    }
+
+
+
+
+    /*main dx12 render code*/
     auto cmdListAlloc = mCurrentFrameResource->CmdListAlloc.Get();
     ThrowIfFailed(cmdListAlloc->Reset());
 
