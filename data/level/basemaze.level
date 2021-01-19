@@ -1,17 +1,64 @@
 {
     "GameObject": [
         {
-            "CollisionEnabled": false,
+            "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Material": "default",
-            "Model": "box",
-            "Name": "box",
+            "Model": "PineTree_04",
+            "Name": "pineTree",
             "Position": [
-                -2.5770976543426514,
-                0.781572699546814,
-                1.6979007720947266
+                -49.449684143066406,
+                2.9555037021636963,
+                -4.5
             ],
-            "RenderType": "Default",
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree(1)",
+            "Position": [
+                -53.208919525146484,
+                2.9555037021636963,
+                -4.5
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree(2)",
+            "Position": [
+                -56.97938537597656,
+                2.9555037021636963,
+                -4.5
+            ],
+            "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
                 0.0,

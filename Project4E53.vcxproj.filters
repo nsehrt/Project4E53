@@ -172,9 +172,6 @@
     <ClInclude Include="src\core\gamestate.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\animationblender.h">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\quadtree.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
@@ -263,6 +260,9 @@
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\transition.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\coins.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
   </ItemGroup>
@@ -373,9 +373,6 @@
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\core\player.cpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\animationblender.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\util\quadtree.cpp">

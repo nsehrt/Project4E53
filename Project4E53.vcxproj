@@ -74,12 +74,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)bin\_intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)bin\_intermediate\$(Configuration)\</IntDir>
     <LibraryPath>C:\Users\n_seh\source\bullet3\debug\lib;C:\sdk\lua;$(LibraryPath)</LibraryPath>
     <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\sdk\lua\include;$(IncludePath)</IncludePath>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
@@ -87,12 +87,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)bin\_intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)bin\intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)bin\_intermediate\$(Configuration)\</IntDir>
     <LibraryPath>C:\Users\n_seh\source\bullet3\lib;C:\sdk\lua;$(LibraryPath)</LibraryPath>
     <IncludePath>C:\Users\n_seh\source\bullet3\include\bullet;C:\sdk\lua\include;$(IncludePath)</IncludePath>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
@@ -182,7 +182,6 @@
   <ItemGroup>
     <ClCompile Include="src\audio\soundengine.cpp" />
     <ClCompile Include="src\core\4E53.cpp" />
-    <ClCompile Include="src\core\animationblender.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\character.cpp" />
     <ClCompile Include="src\core\dx12app.cpp" />
@@ -235,9 +234,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio\soundengine.h" />
-    <ClInclude Include="src\core\animationblender.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\character.h" />
+    <ClInclude Include="src\core\coins.h" />
     <ClInclude Include="src\core\dx12app.h" />
     <ClInclude Include="src\core\editmode.h" />
     <ClInclude Include="src\core\fixedcamera.h" />

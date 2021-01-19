@@ -5,6 +5,7 @@
 #include "../util/serviceprovider.h"
 #include "../physics/bulletphysics.h"
 #include "../util/collisiondatabase.h"
+#include"../core/coins.h"
 
 using namespace DirectX;
 
@@ -166,6 +167,34 @@ bool Level::load(const std::string& levelFile)
 void Level::setupMazeGrid(int width, int height)
 {
     const std::string fenceModel = "WoodenFence_03";
+    const std::string coinModel = "box";
+
+    /*coin json*/
+    json coinJson = R"({
+        "ColliderType" : 0,
+        "CollisionEnabled" : false,
+        "DrawEnabled" : true,
+        "Model" : "",
+        "Material": "default",
+        "Name" : "",
+        "Position" : [
+                    0,-10,0
+                ] ,
+        "RenderType" : "Default",
+        "Rotation" : [
+            0.0,
+            0.0,
+            0.0
+           ],
+        "Scale" : [
+            1,1,1
+            ],
+        "ShadowEnabled" : true,
+        "FrustumCulled": false,
+        "ShadowForced" : false
+        })"_json;
+
+    coinJson["Model"] = coinModel;
 
     /*base fence json*/
     json fenceJson = R"({
@@ -217,6 +246,22 @@ void Level::setupMazeGrid(int width, int height)
         mGameObjects[gameObject->Name] = std::move(gameObject);
     };
 
+    auto addCoin = [&](json& jData, int index, const XMFLOAT2& position)
+    {
+        jData["Name"] = "&COIN" + std::to_string(index);
+        jData["Position"][0] = position.x;
+        jData["Position"][2] = position.y;
+
+        auto gameObject = std::make_unique<GameObject>(jData, amountObjectCBs);
+        amountObjectCBs += 4;
+
+        ServiceProvider::getPhysics()->addGameObject(*gameObject.get());
+        addGameObjectToQuadTree(gameObject.get());
+        mGameObjects[gameObject->Name] = std::move(gameObject);
+    };
+
+
+
     const auto& modelExtents = ServiceProvider::getCollisionDatabase()->getExtents(fenceModel);
 
     float baseWidth = modelExtents.x + modelExtents.z;// 3.552544116973877f + 0.24824516475200653f;
@@ -264,8 +309,36 @@ void Level::setupMazeGrid(int width, int height)
         zPos = baseZ - (y+1) * baseWidth -baseHalf;
     }
 
+
+    // 4 coin gameobjects
+    for(int i = 0; i < Coins::CoinCount; i++)
+    {
+        addCoin(coinJson, i, { i * 10.0f, 0.0f });
+    }
+
     /*recalculate render orders*/
     calculateRenderOrderSizes();
+
+}
+
+void Level::setupCoins(Grid& grid)
+{
+
+    //generate coin placement
+    auto coinPlacement = Coins::getCoinPlacement(*ServiceProvider::getRandomizer(), grid.columns(), grid.rows());
+
+    float baseHalf = mazeBaseWidth / 2.0f;
+
+    float baseX = -mazeBaseWidth * grid.columns() / 2.0f;
+    float baseZ = mazeBaseWidth * grid.rows() / 2.0f;
+
+    for(int i = 0; i < Coins::CoinCount; i++)
+    {
+        float xPos = baseX + coinPlacement[i].first * mazeBaseWidth + baseHalf;
+        float zPos = baseZ - (coinPlacement[i].second + 1) * mazeBaseWidth - baseHalf;
+        std::cout << "\n" << xPos << " " << Coins::BaseHeight << " " << zPos;
+        mGameObjects["&COIN" + std::to_string(i)]->setPosition({ xPos, Coins::BaseHeight, zPos });
+    }
 
 }
 
@@ -354,6 +427,8 @@ void Level::setStartEnd(Grid& grid, Cell* start, Cell* end)
 
 void Level::update(const GameTime& gt)
 {
+    GameState gstate = ServiceProvider::getGameState();
+
     std::vector<QuadTree::QuadNode*> frustumNodes;
 
     auto renderResource = ServiceProvider::getRenderResource();
@@ -382,7 +457,7 @@ void Level::update(const GameTime& gt)
     /*update inViewFrustum status of objects in visible nodes*/
     /* when in edit mode the quadtree is disabled because objects
     can be moved out of their original cell.*/
-    if(ServiceProvider::getGameState() != GameState::EDITOR)
+    if(gstate != GameState::EDITOR)
     {
         for(const auto& i : frustumNodes)
         {
@@ -396,7 +471,7 @@ void Level::update(const GameTime& gt)
     /*udpdate all game objects*/
     for (auto& gameObj : mGameObjects)
     {
-        if(ServiceProvider::getGameState() == GameState::EDITOR)
+        if(gstate == GameState::EDITOR)
         {
             gameObj.second->checkInViewFrustum(localSpaceFrustum);
         }
@@ -409,6 +484,20 @@ void Level::update(const GameTime& gt)
             }
 
             gameObj.second->update(gt);
+
+            if(gameObj.first.rfind("&COIN", 0) == 0 && gstate == GameState::INGAME)
+            {
+                auto pos = gameObj.second->getPosition();
+                auto rot = gameObj.second->getRotation();
+                float y = Coins::BaseHeight + (std::sinf(gt.TotalTime()) * 0.3f);
+                float yRot = std::fmodf(gt.TotalTime() * 0.5f, XM_2PI);
+                gameObj.second->setPosition({
+                    pos.x, y, pos.z
+                                            });
+                gameObj.second->setRotation({
+                    rot.x, yRot, rot.z
+                                            });
+            }
         }
         
     }
@@ -418,7 +507,7 @@ void Level::update(const GameTime& gt)
     const auto cameraPos = aCamera->getTarget();
 
     /*order point lights by shortest distance from camera*/
-    if (ServiceProvider::getGameState() == GameState::EDITOR)
+    if (gstate == GameState::EDITOR)
     {
         auto lPtr = mLightObjects[ServiceProvider::getEditSettings()->currentLightSelectionIndex].get();
 

@@ -30,7 +30,7 @@ class Randomizer
         return m_Distribution->operator()(*m_Generator);
     }
 
-    //return uint between min (default 0, inclusive) and max (inclusive), kind of flawed
+    //return uint between min (default 0, inclusive) and max (inclusive)
     std::uint32_t nextInt(int max, int min = 0) const
     {
         if(max == 0) { return 0; }

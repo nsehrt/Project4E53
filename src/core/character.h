@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../core/gameobject.h"
-#include "../core/animationblender.h"
 
 class BulletController;
 
@@ -58,8 +57,6 @@ public:
     void update(const GameTime& gt) override;
 
 protected:
-
-    AnimationBlender animationBlender;
 
     std::unique_ptr<BulletController> charController;
 

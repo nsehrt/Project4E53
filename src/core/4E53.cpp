@@ -15,6 +15,7 @@
 #include "../maze/maze.h"
 #include "../core/title.h"
 #include "../core/transition.h"
+#include "../core/coins.h"
 #include <filesystem>
 
 #ifndef _DEBUG
@@ -77,6 +78,8 @@ private:
     void drawToShadowMap();
     void setModelSelection();
     void resetCollisionOnModelSwitch();
+
+    float roundTime = 0.0f;
 };
 
 int gNumFrameResources = 1;
@@ -1832,6 +1835,8 @@ void P_4E53::update(const GameTime& gt)
             ServiceProvider::setActiveCamera(mainCamera);
 
             mTransition.start();
+
+            roundTime = 0.0f;
         }
         else if(!mToNewGame)
         {
@@ -1917,6 +1922,9 @@ void P_4E53::update(const GameTime& gt)
         /*update player*/
         mPlayer->update(gt);
 
+        //acc time
+        roundTime += gt.DeltaTime();
+
         /*fps camera controls*/
         if (inputData.Released(BTN::DPAD_RIGHT))
         {
@@ -1950,7 +1958,7 @@ void P_4E53::update(const GameTime& gt)
         /*check if the player reached the end*/
 
 
-
+        //TODO
 
     }
 
@@ -2016,12 +2024,26 @@ void P_4E53::draw(const GameTime& gt)
 
         ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-        ImGui::Begin("", NULL, windowFlags);
+        ImGui::Begin("Title menu", NULL, windowFlags);
         ImGui::Text(titleSelection == TitleItems::NewGame ? ">NEW GAME" : "NEW GAME");
         ImGui::Text(titleSelection == TitleItems::Quit ? ">QUIT" : "QUIT");
 
         ImGui::End();
 
+    }
+    else if(ServiceProvider::getGameState() == GameState::INGAME)
+    {
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+        ImGui::SetNextWindowBgAlpha(0.75f);
+
+
+        ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.9f, guiIO.DisplaySize.y * 0.05f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+        ImGui::Begin("ingame", NULL, windowFlags);
+        ImGui::Text("Time: %.2f", roundTime);
+
+        ImGui::End();
     }
 
 
@@ -2307,6 +2329,7 @@ void P_4E53::setupNewMaze()
     goalCell = grid(grid.columns()-1, maxIndex);
 
     ServiceProvider::getActiveLevel()->setStartEnd(grid, start, goalCell);
+    ServiceProvider::getActiveLevel()->setupCoins(grid);
 
     //position player at the start
     float width = ServiceProvider::getActiveLevel()->mazeBaseWidth;

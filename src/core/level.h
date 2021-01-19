@@ -36,6 +36,7 @@ public:
 
     /* setup the maze grid with game objects */
     void setupMazeGrid(int width, int height);
+    void setupCoins(Grid& grid);
 
     /* deactive maze walls according to maze grid*/
     void updateToGrid(Grid& grid);
