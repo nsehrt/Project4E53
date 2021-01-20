@@ -73,6 +73,8 @@ private:
 
     bool mToNewGame = false;
 
+    DirectX::BoundingBox goalBox{};
+
     void setupNewMaze();
     void drawFrameStats();
     void drawToShadowMap();
@@ -2033,17 +2035,33 @@ void P_4E53::draw(const GameTime& gt)
     }
     else if(ServiceProvider::getGameState() == GameState::INGAME)
     {
-        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
-        ImGui::SetNextWindowBgAlpha(0.75f);
+        {
+            ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+                ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+            ImGui::SetNextWindowBgAlpha(0.75f);
 
 
-        ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.9f, guiIO.DisplaySize.y * 0.05f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+            ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.9f, guiIO.DisplaySize.y * 0.05f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-        ImGui::Begin("ingame", NULL, windowFlags);
-        ImGui::Text("Time: %.2f", roundTime);
+            ImGui::Begin("ingame", NULL, windowFlags);
+            ImGui::Text("Time: %.2f", roundTime);
 
-        ImGui::End();
+            ImGui::End();
+        }
+
+        {
+            ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+                ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+            ImGui::SetNextWindowBgAlpha(0.75f);
+
+
+            ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.9f, guiIO.DisplaySize.y * 0.1f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+            ImGui::Begin("coins", NULL, windowFlags);
+            ImGui::Text("Coins: 0/8");
+
+            ImGui::End();
+        }
     }
 
 
@@ -2339,6 +2357,15 @@ void P_4E53::setupNewMaze()
     ServiceProvider::getPlayer()->setPosition({plPosX,8.5f,plPosZ});
     ServiceProvider::getPlayer()->setRotation({ 0.f,0.f,0.f });
     
+    //create hitbox at the goal
+
+    float glPosX = -width * grid.columns() / 2.0f - width;
+    float glPosY = width * grid.rows() / 2.0f - grid.rows() / 2 * width - width / 2.0f;
+
+    goalBox = BoundingBox();
+
+    //TODO
+
     LOG(Severity::Info, "Generated a maze with algorithm " << static_cast<int>(ServiceProvider::getMaze()->algorithm) << ".");
 }
 
