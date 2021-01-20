@@ -7,10 +7,15 @@ class Coins
 {
     public:
 
-    static std::array<std::pair<int, int>, 4> getCoinPlacement(Randomizer& rand, int w, int h)
+    static constexpr int CoinCount = 8;
+    static constexpr float minDistance = 6.5f;
+    static constexpr float BaseHeight = 1.35f;
+
+
+    static std::array < std::pair<int, int>, Coins::CoinCount> getCoinPlacement(Randomizer& rand, int w, int h)
     {
 
-        std::array<std::pair<int, int>, 4> placement{};
+        std::array<std::pair<int, int>, Coins::CoinCount> placement{};
 
         for(int i = 0; i < placement.size(); i++)
         {
@@ -52,10 +57,6 @@ class Coins
     {
         return std::sqrtf(static_cast<float>(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2))));
     }
-
-    static constexpr int CoinCount = 4;
-    static constexpr float minDistance = 8.0f;
-    static constexpr float BaseHeight = 1.25f;
 
     private:
 };

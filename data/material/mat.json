@@ -26,6 +26,14 @@
         "Roughness" : 0.3
     },
     {
+        "Name" : "coin_mat",
+        "Texture" : "coin",
+        "NormalMap" : "default_nmap",
+        "DiffuseAlbedo" : [0.8,0.8,0.8,1.0],
+        "FresnelR0" : [0.1,0.1,0.1],
+        "Roughness" : 0.5
+    },
+    {
         "Name" : "grass_1",
         "Texture" : "Grass_01",
         "NormalMap" : "default_nmap",

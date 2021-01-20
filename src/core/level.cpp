@@ -167,7 +167,7 @@ bool Level::load(const std::string& levelFile)
 void Level::setupMazeGrid(int width, int height)
 {
     const std::string fenceModel = "WoodenFence_03";
-    const std::string coinModel = "box";
+    const std::string coinModel = "coin";
 
     /*coin json*/
     json coinJson = R"({
@@ -175,7 +175,6 @@ void Level::setupMazeGrid(int width, int height)
         "CollisionEnabled" : false,
         "DrawEnabled" : true,
         "Model" : "",
-        "Material": "default",
         "Name" : "",
         "Position" : [
                     0,-10,0
@@ -187,7 +186,7 @@ void Level::setupMazeGrid(int width, int height)
             0.0
            ],
         "Scale" : [
-            1,1,1
+            0.025, 0.025, 0.025
             ],
         "ShadowEnabled" : true,
         "FrustumCulled": false,
@@ -335,8 +334,7 @@ void Level::setupCoins(Grid& grid)
     for(int i = 0; i < Coins::CoinCount; i++)
     {
         float xPos = baseX + coinPlacement[i].first * mazeBaseWidth + baseHalf;
-        float zPos = baseZ - (coinPlacement[i].second + 1) * mazeBaseWidth - baseHalf;
-        std::cout << "\n" << xPos << " " << Coins::BaseHeight << " " << zPos;
+        float zPos = baseZ - coinPlacement[i].second * mazeBaseWidth - baseHalf;
         mGameObjects["&COIN" + std::to_string(i)]->setPosition({ xPos, Coins::BaseHeight, zPos });
     }
 
