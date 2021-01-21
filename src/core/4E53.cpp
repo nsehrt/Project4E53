@@ -2103,13 +2103,13 @@ void P_4E53::draw(const GameTime& gt)
             ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
             ImGui::Begin("end screen", NULL, windowFlags);
-            ImGui::Text("Coins: 0");
             int totalSeconds = static_cast<int>(roundTime);
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
             ImGui::Text("You finished the maze! :)");
             ImGui::Text("");
             ImGui::Text("Time: %02d:%02d", minutes, seconds);
+            ImGui::Text("Coins: 0/8");
             ImGui::Text("");
             ImGui::Text("Press A to continue.");
             ImGui::End();
