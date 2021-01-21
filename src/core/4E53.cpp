@@ -1876,7 +1876,7 @@ void P_4E53::update(const GameTime& gt)
                 }
                 else if(titleSelection == TitleItems::NewGame)
                 {
-                    LOG(Severity::Info, "New game selected.");
+                    LOG(Severity::Info, "Start game selected.");
 
                     /*start transition*/
                     mTransition.start();
@@ -1892,6 +1892,42 @@ void P_4E53::update(const GameTime& gt)
     else if(ServiceProvider::getGameState() == GameState::ENDSCREEN)
     {
 
+        /*update player control data*/
+        auto controller = mPlayer->getController();
+        controller->setMovement({ 0.0f,0.0f }, 0.0f);
+
+
+        /*update physics simulation*/
+        physics.simulateStep(gt.DeltaTime());
+
+        /*update player*/
+        mPlayer->update(gt);
+
+        //fade out when returning to title menu
+        if(mToNewGame && !mTransition.inProgress())
+        {
+            mToNewGame = false;
+
+            ServiceProvider::setGameState(GameState::TITLE);
+            ServiceProvider::setActiveCamera(titleCamera);
+
+            mTransition.start();
+
+            roundTime = 0.0f;
+        }
+        else if(!mToNewGame)
+        {
+
+            //press a to get back to the title menu
+            if(inputData.Pressed(BTN::A))
+            {
+                LOG(Severity::Info, "Return to title menu.");
+
+                /*start transition*/
+                mTransition.start();
+                mToNewGame = true;
+            }
+        }
     }
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
@@ -1959,8 +1995,11 @@ void P_4E53::update(const GameTime& gt)
 
         /*check if the player reached the end*/
 
-
-        //TODO
+        if(goalBox.Contains(BoundingSphere(mPlayer->getPosition(), 0.1f)))
+        {
+            std::cout << "end reached!";
+            ServiceProvider::setGameState(GameState::ENDSCREEN);
+        }
 
     }
 
@@ -2027,7 +2066,7 @@ void P_4E53::draw(const GameTime& gt)
         ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         ImGui::Begin("Title menu", NULL, windowFlags);
-        ImGui::Text(titleSelection == TitleItems::NewGame ? ">NEW GAME" : "NEW GAME");
+        ImGui::Text(titleSelection == TitleItems::NewGame ? ">START GAME" : "START GAME");
         ImGui::Text(titleSelection == TitleItems::Quit ? ">QUIT" : "QUIT");
 
         ImGui::End();
@@ -2041,29 +2080,41 @@ void P_4E53::draw(const GameTime& gt)
             ImGui::SetNextWindowBgAlpha(0.75f);
 
 
-            ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.9f, guiIO.DisplaySize.y * 0.05f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+            ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.15f), ImGuiCond_Always, ImVec2(0.f, 0.f));
 
             ImGui::Begin("ingame", NULL, windowFlags);
-            ImGui::Text("Time: %.2f", roundTime);
-
+            int totalSeconds = static_cast<int>(roundTime);
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            ImGui::Text("Time: %02d:%02d", minutes, seconds);
+            ImGui::Text("Coins: 0/8");
             ImGui::End();
         }
 
+    }
+    else if(ServiceProvider::getGameState() == GameState::ENDSCREEN)
+    {
         {
             ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
                 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
             ImGui::SetNextWindowBgAlpha(0.75f);
 
 
-            ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.9f, guiIO.DisplaySize.y * 0.1f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+            ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-            ImGui::Begin("coins", NULL, windowFlags);
-            ImGui::Text("Coins: 0/8");
-
+            ImGui::Begin("end screen", NULL, windowFlags);
+            ImGui::Text("Coins: 0");
+            int totalSeconds = static_cast<int>(roundTime);
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            ImGui::Text("You finished the maze! :)");
+            ImGui::Text("");
+            ImGui::Text("Time: %02d:%02d", minutes, seconds);
+            ImGui::Text("");
+            ImGui::Text("Press A to continue.");
             ImGui::End();
         }
     }
-
 
 
 
@@ -2351,6 +2402,7 @@ void P_4E53::setupNewMaze()
 
     //position player at the start
     float width = ServiceProvider::getActiveLevel()->mazeBaseWidth;
+    float halfWidth = width / 2.0f;
     float plPosX = -width * grid.columns() / 2.0f - width;
     float plPosZ = width * grid.rows() / 2.0f - grid.rows() / 2 * width - width / 2.0f;
 
@@ -2359,12 +2411,13 @@ void P_4E53::setupNewMaze()
     
     //create hitbox at the goal
 
-    float glPosX = -width * grid.columns() / 2.0f - width;
-    float glPosY = width * grid.rows() / 2.0f - grid.rows() / 2 * width - width / 2.0f;
+    float glPosX = width * grid.columns() / 2.0f + width / 2.0f;
+    float glPosY = width * grid.rows() / 2.0f - goalCell->getPosition().second * width -width / 2.0f;
 
-    goalBox = BoundingBox();
+    goalBox = BoundingBox({ glPosX, 0.0f, glPosY }, { halfWidth, halfWidth, halfWidth });
 
-    //TODO
+    //std::cout << "\n" << glPosX << " , " << glPosY << " " << goalCell->getPosition().second << "\n";
+
 
     LOG(Severity::Info, "Generated a maze with algorithm " << static_cast<int>(ServiceProvider::getMaze()->algorithm) << ".");
 }
