@@ -28,8 +28,8 @@ void Player::update(const GameTime& gt)
     // Transfer transformation back from bullet object if the object is not static
     if(motionType != ObjectMotionType::Static)
     {
-        btTransform t;
-        bulletBody->getMotionState()->getWorldTransform(t);
+        btTransform t = bulletBody->getWorldTransform();
+        //bulletBody->getMotionState()->getWorldTransform(t);
         XMStoreFloat4x4(&rotationQuat, XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation)));
         Position = { t.getOrigin().x(), t.getOrigin().y() - height, t.getOrigin().z() };
 

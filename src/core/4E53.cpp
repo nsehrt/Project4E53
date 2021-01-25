@@ -84,6 +84,7 @@ private:
     float roundTime = 0.0f;
     const XMFLOAT3 titlePlayerPos = { -11.7801f,1.0f,-62.9093f };
     const XMFLOAT3 titlePlayerRot = { 0.0f,-0.307f, 0.0f };
+    const std::string titlePlayerAnimation = "geo_Idle2";
 
 };
 
@@ -206,7 +207,7 @@ P_4E53::P_4E53(HINSTANCE hInstance)
     AllocConsole();
     FILE* dummy = freopen("CONOUT$", "w", stdout);
 
-    mWindowCaption = L"Project 4E53";
+    mWindowCaption = L"Amaze";
 }
 
 P_4E53::~P_4E53()
@@ -368,7 +369,7 @@ bool P_4E53::Initialize()
         ServiceProvider::setPlayer(mPlayer);
         
         mPlayer->getController()->resetMovement();
-        mPlayer->setAnimation(SP_ANIM("geo_Walk"));
+        mPlayer->setAnimation(SP_ANIM(titlePlayerAnimation));
     }
     else
     {
@@ -1927,8 +1928,10 @@ void P_4E53::update(const GameTime& gt)
             mToNewGame = false;
 
             //player to title
+            mPlayer->getController()->resetMovement();
             ServiceProvider::getPlayer()->setPosition(titlePlayerPos);
             ServiceProvider::getPlayer()->setRotation(titlePlayerRot);
+            mPlayer->setAnimation(SP_ANIM(titlePlayerAnimation));
 
             ServiceProvider::setGameState(GameState::TITLE);
             ServiceProvider::setActiveCamera(titleCamera);
@@ -1936,9 +1939,6 @@ void P_4E53::update(const GameTime& gt)
             mTransition.start();
 
             roundTime = 0.0f;
-
-            //mPlayer->getController()->resetMovement();
-            //mPlayer->setAnimation(SP_ANIM("geo_Walk"));
 
         }
         else if(!mToNewGame)
