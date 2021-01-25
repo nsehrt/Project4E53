@@ -83,7 +83,8 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Camera& camera)
     {
         os << "Pos: " << camera.mPosition.x << " | " << camera.mPosition.y << " | " << camera.mPosition.z <<
-            " // Look: " << camera.mLook.x << " | " << camera.mLook.y << " | " << camera.mLook.z;
+            " // Look: " << camera.mLook.x << " | " << camera.mLook.y << " | " << camera.mLook.z <<
+            " // Up: " << camera.mUp.x << " | " << camera.mUp.y << " | " << camera.mUp.z;
         return os;
     }
 

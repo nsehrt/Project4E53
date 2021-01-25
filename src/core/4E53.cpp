@@ -82,6 +82,9 @@ private:
     void resetCollisionOnModelSwitch();
 
     float roundTime = 0.0f;
+    const XMFLOAT3 titlePlayerPos = { -11.7801f,1.0f,-62.9093f };
+    const XMFLOAT3 titlePlayerRot = { 0.0f,-0.307f, 0.0f };
+
 };
 
 int gNumFrameResources = 1;
@@ -344,16 +347,28 @@ bool P_4E53::Initialize()
         mainCamera->initFixedDistance(10.0f, 15.0f);
 
         titleCamera = std::make_shared<FixedCamera>();
-        titleCamera->lookAt(XMFLOAT3{ 1.0f,4.0f,-20.0f }, { 0,0,0 }, { 0,1,0 });
+
+        //Pos: -5.42424 | 8.21301 | -77.1866 
+        // Look: -0.457481 | -0.368652 | 0.809201 
+        // Up: -0.181437 | 0.929568 | 0.320913
+        titleCamera->lookAt(XMFLOAT3{ -5.42424f,8.21301f,-77.1866f },
+                            XMFLOAT3{ -5.42424f - 0.457481f,8.21301f -0.368652f, -77.1866f + 0.809201 },
+                            XMFLOAT3{ 0,1,0});
 
         mPlayer = std::make_shared<Player>("geo");
-        mPlayer->stickToTerrain();
+
+        mPlayer->setPosition(titlePlayerPos);
+        mPlayer->setRotation(titlePlayerRot);
+
         ServiceProvider::getPhysics()->addCharacter(*mPlayer);
         mPlayer->setupController();
         ServiceProvider::getPhysics()->addAction(mPlayer->getController());
 
         ServiceProvider::setActiveCamera(titleCamera);
         ServiceProvider::setPlayer(mPlayer);
+        
+        mPlayer->getController()->resetMovement();
+        mPlayer->setAnimation(SP_ANIM("geo_Walk"));
     }
     else
     {
@@ -1824,6 +1839,9 @@ void P_4E53::update(const GameTime& gt)
     else if(ServiceProvider::getGameState() == GameState::TITLE)
     {
 
+        /*update player*/
+        mPlayer->update(gt);
+
         //fade out when choosing new game
         if(mToNewGame && !mTransition.inProgress())
         {
@@ -1908,12 +1926,20 @@ void P_4E53::update(const GameTime& gt)
         {
             mToNewGame = false;
 
+            //player to title
+            ServiceProvider::getPlayer()->setPosition(titlePlayerPos);
+            ServiceProvider::getPlayer()->setRotation(titlePlayerRot);
+
             ServiceProvider::setGameState(GameState::TITLE);
             ServiceProvider::setActiveCamera(titleCamera);
 
             mTransition.start();
 
             roundTime = 0.0f;
+
+            //mPlayer->getController()->resetMovement();
+            //mPlayer->setAnimation(SP_ANIM("geo_Walk"));
+
         }
         else if(!mToNewGame)
         {
@@ -1997,7 +2023,6 @@ void P_4E53::update(const GameTime& gt)
 
         if(goalBox.Contains(BoundingSphere(mPlayer->getPosition(), 0.1f)))
         {
-            std::cout << "end reached!";
             ServiceProvider::setGameState(GameState::ENDSCREEN);
         }
 

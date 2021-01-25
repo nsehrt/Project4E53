@@ -118,6 +118,21 @@ bool Level::load(const std::string& levelFile)
     }
 
 
+    // add dynamic player for title screen
+
+    //{
+
+    //    auto titleGeo = std::make_unique<GameObject>(std::string("&TITLE_GEO"), amountObjectCBs++, 0);
+
+    //    titleGeo->makeDynamic(ServiceProvider::getRenderResource()->mSkinnedModels["geo"].get(), 0);
+    //    titleGeo->setAnimation(ServiceProvider::getRenderResource()->mAnimations["geo_Idle2"].get());
+
+    //    titleGeo->setPosition({ -11.7801f,-0.25f,-62.9093f });
+    //    titleGeo->setRotation({ 0.0f,-0.307f, 0.0f });
+
+    //    mGameObjects[titleGeo->Name] = std::move(titleGeo);
+    //}
+
     /*add test dynamic object*/
 
     //auto testObject = std::make_unique<Player>("geo");
