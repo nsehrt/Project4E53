@@ -47,15 +47,26 @@ std::unique_ptr<AnimationClip> ClipLoader::loadCLP(const std::filesystem::direct
 
     delete[] animName;
 
+    if(anim->name == "geo_Stretch_01")
+    {
+        int i = 1;
+    }
+
     UINT numBones = 0;
     file.read((char*)(&numBones), sizeof(int));
 
     anim->boneAnimations.resize(numBones);
 
+    UINT keyfrCount = 0;
     for (UINT i = 0; i < numBones; i++)
     {
-        UINT keyfrCount = 0;
-        file.read((char*)(&keyfrCount), sizeof(int));
+        UINT kTemp = 0;
+        file.read((char*)(&kTemp), sizeof(int));
+
+        if(i == 0)
+        {
+            keyfrCount = kTemp;
+        }
 
         if (keyfrCount == -1)
         {

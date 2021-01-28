@@ -84,7 +84,7 @@ private:
     float roundTime = 0.0f;
     const XMFLOAT3 titlePlayerPos = { -11.7801f,1.0f,-62.9093f };
     const XMFLOAT3 titlePlayerRot = { 0.0f,-0.307f, 0.0f };
-    const std::string titlePlayerAnimation = "geo_Idle2";
+    const std::string titlePlayerAnimation = "geo_Stretch_01";
 
 };
 
