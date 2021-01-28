@@ -32,7 +32,7 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
     cmdList->ResourceBarrier(1, &resBarr);
 
     const auto resBarr2 = CD3DX12_RESOURCE_BARRIER::Transition(mBlurMap0.Get(),
-                                                               D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
+                                                              D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
     cmdList->ResourceBarrier(1, &resBarr2);
 
     // Copy the input (back-buffer in this example) to BlurMap0.
@@ -85,11 +85,11 @@ void Blur::execute(ID3D12GraphicsCommandList* cmdList, ID3D12RootSignature* root
         cmdList->Dispatch(width, numGroupsY, 1);
 
         const auto resBarr3 = CD3DX12_RESOURCE_BARRIER::Transition(mBlurMap0.Get(),
-                                                                   D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ);
+                                                                   D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COMMON);
         cmdList->ResourceBarrier(1, &resBarr3);
 
         const auto resBarr4 = CD3DX12_RESOURCE_BARRIER::Transition(mBlurMap1.Get(),
-                                                                   D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                                                                   D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_COMMON);
         cmdList->ResourceBarrier(1, &resBarr4);
     }
 
