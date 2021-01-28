@@ -13,6 +13,17 @@ public:
     void stickToTerrain();
     virtual void update(const GameTime& gt) override;
 
+    int coinCount() const
+    {
+        int val = 0;
+        for(const bool b : coinsCollected)
+            if(b)
+                val++;
+        return val;
+    }
+
+    std::array<bool,8> coinsCollected{};
+
 private:
 
     enum class IdleAnimation
@@ -21,7 +32,11 @@ private:
         Scratch
     };
 
-    float baseStamina = 100.0f;
-    int health = 1;
-    int maxHealth = 1;
+    void resetCoins()
+    {
+        std::fill(coinsCollected.begin(), coinsCollected.end(), false);
+    }
+
+
+
 };

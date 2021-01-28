@@ -10,9 +10,13 @@ Player::Player(const std::string& model) : Character("Player", model, 0, 0)
 {
     setAnimation(SP_ANIM("geo_Idle"));
     isFrustumCulled = false;
-
+    
     extents = ServiceProvider::getCollisionDatabase()->getExtents("player_model");
+
+    resetCoins();
 }
+
+
 
 void Player::stickToTerrain()
 {

@@ -134,7 +134,7 @@ bool BulletPhysics::addCharacter(Character& obj)
 
 
     //enable callback function
-    //body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+    body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
     m_dynamicsWorld->addRigidBody(body);
 
@@ -260,10 +260,27 @@ bool BulletPhysics::collisionCallback(btManifoldPoint& cp, const btCollisionObje
         btAdjustInternalEdgeContacts(cp, obj2, obj1, id2, index2);
         return true;
     }
+    // player collides with something
+    else if(b->gameObjectType == ObjectType::Skinned)
+    {
+        //collision with coin
+        if(a->Name[0] == '&' && a->Name[1] == 'C')
+        {
+            //which coin
+            int coinIndex = static_cast<int>(a->Name[5] - '0');
+            auto player = ServiceProvider::getPlayer();
 
+            if(!player->coinsCollected[coinIndex])
+            {
+                player->coinsCollected[coinIndex] = true;
+                LOG(Severity::Info, "Collected coin " << (coinIndex + 1) << "!");
+            }
+
+        }
+
+        
+    }
     return true;
-
-    //LOG(Severity::Debug, a->Name << " " << b->Name);
 
     //return false;
 }

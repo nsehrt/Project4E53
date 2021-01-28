@@ -2112,7 +2112,7 @@ void P_4E53::draw(const GameTime& gt)
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
             ImGui::Text("Time: %02d:%02d", minutes, seconds);
-            ImGui::Text("Coins: 0/8");
+            ImGui::Text("Coins: %d/%d", mPlayer->coinCount(), Coins::CoinCount);
             ImGui::End();
         }
 
@@ -2134,7 +2134,7 @@ void P_4E53::draw(const GameTime& gt)
             ImGui::Text("You finished the maze! :)");
             ImGui::Text("");
             ImGui::Text("Time: %02d:%02d", minutes, seconds);
-            ImGui::Text("Coins: 0/8");
+            ImGui::Text("Coins: %d/%d", mPlayer->coinCount(), Coins::CoinCount);
             ImGui::Text("");
             ImGui::Text("Press A to continue.");
             ImGui::End();
