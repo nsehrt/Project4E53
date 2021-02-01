@@ -197,6 +197,11 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
 
     //update player model animation according to the gathered information
 
+    if(player->previousCState == CharacterState::Fall && player->currentCState != CharacterState::Fall)
+    {
+        player->setAnimation(SP_ANIM("geo_Idle"));
+    }
+
     if(currentVelocity < MathHelper::Epsilon)
     {
         if(isIdle)
@@ -207,7 +212,15 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
         {
             isIdle = true;
             timeIdle = deltaTimeStep;
-            player->setAnimation(SP_ANIM("geo_Idle"));
+            
+            if(player->currentCState == CharacterState::Fall)
+            {
+                player->setAnimation(SP_ANIM("geo_Fall"), false);
+            }
+            else
+            {
+                player->setAnimation(SP_ANIM("geo_Idle"));
+            }
         }
     }
     else

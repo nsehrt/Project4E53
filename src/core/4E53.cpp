@@ -1856,7 +1856,11 @@ void P_4E53::update(const GameTime& gt)
             ServiceProvider::setActiveCamera(mainCamera);
 
             mTransition.start();
-
+            activeLevel->mLightObjects[0]->setDirection(
+                { -0.5699999928474426f,
+                    -0.5699999928474426f,
+                    0.5699999928474426f }
+            );
             roundTime = 0.0f;
         }
         else if(!mToNewGame)
@@ -1957,6 +1961,13 @@ void P_4E53::update(const GameTime& gt)
     }
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
+      
+        auto lDir = activeLevel->mLightObjects[0]->getDirection();
+        lDir.x += 0.00025f * gt.DeltaTime();
+        XMStoreFloat3(&lDir, XMVector3Normalize(XMLoadFloat3(&lDir)));
+        activeLevel->mLightObjects[0]->setDirection(
+            lDir
+        );
 
         /*update player control data*/
         auto controller = mPlayer->getController();
@@ -1974,7 +1985,7 @@ void P_4E53::update(const GameTime& gt)
         XMStoreFloat(&inputMagnitude, inputMagnitudeV);
         inputMagnitude = inputMagnitude > 1.0f ? 1.0f : inputMagnitude;
 
-        if(!fpsCameraMode)
+        if(!fpsCameraMode && roundTime > 0.85f)
         {
             controller->setMovement(inputDirection, inputMagnitude);
         }

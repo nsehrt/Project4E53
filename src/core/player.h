@@ -23,7 +23,7 @@ public:
         return val;
     }
 
-    std::array<Coin,8> coins{};
+    std::array<Coin, Coins::CoinCount> coins{};
 
     void resetCoins()
     {

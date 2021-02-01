@@ -818,6 +818,8 @@ bool Level::save()
         {
             json jElement;
 
+            if(e->name == "EditLight") continue;
+
             jElement["Name"] = e->name;
             jElement["Strength"][0] = e->getStrength().x;
             jElement["Strength"][1] = e->getStrength().y;
@@ -1351,6 +1353,8 @@ bool Level::parseLights(const json& lightJson)
 
     /*point light*/
 
+    const bool editModeOn = ServiceProvider::getSettings()->miscSettings.EditModeEnabled;
+
     if (exists(lightJson, "Point"))
     {
         for (auto const& entryJson : lightJson["Point"])
@@ -1360,6 +1364,8 @@ bool Level::parseLights(const json& lightJson)
                 LOG(Severity::Warning, "LightObject is missing the name property!");
                 continue;
             }
+
+            if(!editModeOn && entryJson["Name"] == "EditLight") continue;
 
             auto lightObj = std::make_unique<LightObject>(LightType::Point, entryJson);
 
