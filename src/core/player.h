@@ -2,6 +2,7 @@
 
 #include "character.h"
 #include "../input/inputmanager.h"
+#include "coins.h"
 
 class Player : public Character
 {
@@ -16,13 +17,22 @@ public:
     int coinCount() const
     {
         int val = 0;
-        for(const bool b : coinsCollected)
-            if(b)
+        for(const auto& b : coins)
+            if(b.collected)
                 val++;
         return val;
     }
 
-    std::array<bool,8> coinsCollected{};
+    std::array<Coin,8> coins{};
+
+    void resetCoins()
+    {
+        std::fill(coins.begin(), coins.end(), Coin{});
+        for(int i = 0; i < Coins::CoinCount; i++)
+        {
+            coins[i].index = i;
+        }
+    }
 
 private:
 
@@ -31,12 +41,5 @@ private:
         Default,
         Scratch
     };
-
-    void resetCoins()
-    {
-        std::fill(coinsCollected.begin(), coinsCollected.end(), false);
-    }
-
-
 
 };

@@ -270,9 +270,10 @@ bool BulletPhysics::collisionCallback(btManifoldPoint& cp, const btCollisionObje
             int coinIndex = static_cast<int>(a->Name[5] - '0');
             auto player = ServiceProvider::getPlayer();
 
-            if(!player->coinsCollected[coinIndex])
+            if(!player->coins[coinIndex].collected)
             {
-                player->coinsCollected[coinIndex] = true;
+                player->coins[coinIndex].collected = true;
+                a->setCollision(false);
                 LOG(Severity::Info, "Collected coin " << (coinIndex + 1) << "!");
             }
 

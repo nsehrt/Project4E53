@@ -351,8 +351,19 @@ void Level::setupCoins(Grid& grid)
         float xPos = baseX + coinPlacement[i].first * mazeBaseWidth + baseHalf;
         float zPos = baseZ - coinPlacement[i].second * mazeBaseWidth - baseHalf;
         mGameObjects["&COIN" + std::to_string(i)]->setPosition({ xPos, Coins::BaseHeight, zPos });
+        mGameObjects["&COIN" + std::to_string(i)]->setScale({ Coins::BaseScale, Coins::BaseScale, Coins::BaseScale });
+        mGameObjects["&COIN" + std::to_string(i)]->isDrawEnabled = true;
+        mGameObjects["&COIN" + std::to_string(i)]->setCollision(true);
     }
 
+    // TODO REMOVE
+    //for(int i = 0; i < Coins::CoinCount; i++)
+    //{
+    //    mGameObjects["&COIN" + std::to_string(i)]->setPosition({ baseX + baseHalf, Coins::BaseHeight, baseZ - (7+i) * mazeBaseWidth - baseHalf });
+    //}
+    
+
+    ServiceProvider::getPlayer()->resetCoins();
 }
 
 void Level::updateToGrid(Grid& grid)
@@ -498,18 +509,55 @@ void Level::update(const GameTime& gt)
 
             gameObj.second->update(gt);
 
+            /*update coin animation*/
             if(gameObj.first.rfind("&COIN", 0) == 0 && gstate == GameState::INGAME)
             {
-                auto pos = gameObj.second->getPosition();
-                auto rot = gameObj.second->getRotation();
-                float y = Coins::BaseHeight + (std::sinf(gt.TotalTime()) * 0.3f);
-                float yRot = std::fmodf(gt.TotalTime() * 0.5f, XM_2PI);
-                gameObj.second->setPosition({
-                    pos.x, y, pos.z
-                                            });
-                gameObj.second->setRotation({
-                    rot.x, yRot, rot.z
-                                            });
+                const int coinIndex = static_cast<int>(gameObj.second->Name[5] - '0');
+                auto& pCoins = ServiceProvider::getPlayer()->coins;
+
+                if(pCoins[coinIndex].collected && !pCoins[coinIndex].animationFinished)
+                {
+                    pCoins[coinIndex].animationTime += gt.DeltaTime();
+
+                    if(pCoins[coinIndex].animationTime > Coins::FadeTime)
+                    {
+                        pCoins[coinIndex].animationFinished = true;
+                        gameObj.second->isDrawEnabled = false;
+                    }
+                    else
+                    {
+                        auto pos = gameObj.second->getPosition();
+                        auto rot = gameObj.second->getRotation();
+                        float y = Coins::BaseHeight * 2.25f * gt.DeltaTime();
+                        float yRot = XM_2PI * 2.5f * gt.DeltaTime();
+                        float scale = Coins::BaseScale * std::clamp((-0.5f * (pCoins[coinIndex].animationTime) / Coins::FadeTime) + 1.0f, 0.5f, 1.0f);
+
+                        gameObj.second->setPosition({
+                            pos.x, pos.y + y, pos.z
+                                                    });
+                        gameObj.second->setRotation({
+                            rot.x, rot.y + yRot, rot.z
+                                                    });
+
+                        gameObj.second->setScale({
+                            scale, scale, scale });
+                    }
+
+                }
+                else
+                {
+                    auto pos = gameObj.second->getPosition();
+                    auto rot = gameObj.second->getRotation();
+                    float y = Coins::BaseHeight + (std::sinf(gt.TotalTime()) * 0.3f);
+                    float yRot = std::fmodf(gt.TotalTime() * 0.5f, XM_2PI);
+                    gameObj.second->setPosition({
+                        pos.x, y, pos.z
+                                                });
+                    gameObj.second->setRotation({
+                        rot.x, yRot, rot.z
+                                                });
+                }
+
             }
         }
         

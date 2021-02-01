@@ -3,6 +3,14 @@
 #include <array>
 #include "../util/randomizer.h"
 
+struct Coin
+{
+    bool collected = false;
+    float animationTime = 0.0f;
+    bool animationFinished = false;
+    int index = -1;
+};
+
 class Coins
 {
     public:
@@ -10,7 +18,8 @@ class Coins
     static constexpr int CoinCount = 8;
     static constexpr float minDistance = 6.5f;
     static constexpr float BaseHeight = 1.35f;
-
+    static constexpr float FadeTime = 0.9f;
+    static constexpr float BaseScale = 0.025f;
 
     static std::array < std::pair<int, int>, Coins::CoinCount> getCoinPlacement(Randomizer& rand, int w, int h)
     {

@@ -2429,7 +2429,7 @@ void P_4E53::setupNewMaze()
     float width = ServiceProvider::getActiveLevel()->mazeBaseWidth;
     float halfWidth = width / 2.0f;
     float plPosX = -width * grid.columns() / 2.0f - width;
-    float plPosZ = width * grid.rows() / 2.0f - grid.rows() / 2 * width - width / 2.0f;
+    float plPosZ = width * grid.rows() / 2.0f - (grid.rows() / 2) * width - width / 2.0f;
 
     ServiceProvider::getPlayer()->setPosition({plPosX,8.5f,plPosZ});
     ServiceProvider::getPlayer()->setRotation({ 0.f,0.f,0.f });
