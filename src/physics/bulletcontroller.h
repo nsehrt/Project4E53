@@ -26,6 +26,11 @@ class BulletController final : public btActionInterface
     }
     void setMovement(const DirectX::XMFLOAT2& direction, const float magnitude);
 
+    void setUnIdle()
+    {
+        isIdle = false;
+    }
+
     private:
 
     void setupBody();

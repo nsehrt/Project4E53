@@ -1851,6 +1851,7 @@ void P_4E53::update(const GameTime& gt)
             //create a new maze
             setupNewMaze();
             mPlayer->getController()->resetMovement();
+            mPlayer->getController()->setUnIdle();
 
             ServiceProvider::setGameState(GameState::INGAME);
             ServiceProvider::setActiveCamera(mainCamera);
@@ -2032,7 +2033,8 @@ void P_4E53::update(const GameTime& gt)
 
         /*check if the player reached the end*/
 
-        if(goalBox.Contains(BoundingSphere(mPlayer->getPosition(), 0.1f)))
+        if(goalBox.Contains(BoundingSphere(mPlayer->getPosition(), 0.1f)) ||
+           (ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::START)))
         {
             ServiceProvider::setGameState(GameState::ENDSCREEN);
         }
@@ -2411,29 +2413,34 @@ void P_4E53::setupNewMaze()
     //set start and goal
 
     /*start in the middle of the left side*/
-    Cell* start = grid(0, grid.rows() / 2);
-    Distances distances = start->distances();
+    Cell* startCell = grid(0, grid.rows() / 2);
+    Distances distances = startCell->distances();
 
     /*find which cell on the right has the longest way*/
-    int maxLength = 0;
-    int maxIndex = 0;
-    Cell* goalCell = nullptr;
 
-    for(int i = 0; i < grid.rows(); i++)
-    {
-        goalCell = grid(grid.columns() - 1, i);
+    //int maxLength = 0;
+    //int maxIndex = 0;
+    //Cell* goalCell = nullptr;
 
-        if(distances.get(goalCell) > maxLength)
-        {
-            maxLength = distances.get(goalCell);
-            maxIndex = i;
-        }
+    //for(int i = 0; i < grid.rows(); i++)
+    //{
+    //    goalCell = grid(grid.columns() - 1, i);
 
-    }
+    //    if(distances.get(goalCell) > maxLength)
+    //    {
+    //        maxLength = distances.get(goalCell);
+    //        maxIndex = i;
+    //    }
 
-    goalCell = grid(grid.columns()-1, maxIndex);
+    //}
 
-    ServiceProvider::getActiveLevel()->setStartEnd(grid, start, goalCell);
+    //goalCell = grid(grid.columns() - 1, maxIndex);
+
+    /*nope, just take the middle*/
+    Cell* goalCell = grid(grid.columns()-1, grid.rows() / 2);
+
+
+    ServiceProvider::getActiveLevel()->setStartEnd(grid, startCell, goalCell);
     ServiceProvider::getActiveLevel()->setupCoins(grid);
 
     //position player at the start

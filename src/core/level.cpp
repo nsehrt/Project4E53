@@ -442,11 +442,7 @@ void Level::setStartEnd(Grid& grid, Cell* start, Cell* end)
     mGameObjects[prefixEast + std::to_string(index)]->isDrawEnabled = false;
     mGameObjects[prefixEast + std::to_string(index)]->setCollision(false);
 
-
-    // move end segment to correct position
-
-
-
+    //reset end door TODO
 }
 
 void Level::update(const GameTime& gt)
