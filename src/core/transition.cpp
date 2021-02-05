@@ -108,6 +108,11 @@ float Transition::blur() const
     return blurValue;
 }
 
+float Transition::blurNormalized() const
+{
+    return blurValue / maxBlur;
+}
+
 float Transition::fade() const
 {
     return fadeValue;

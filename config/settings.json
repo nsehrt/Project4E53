@@ -34,7 +34,7 @@
     "Misc": {
         "DebugEnabled": 1,
         "DebugQuadEnabled": 0,
-        "EditModeEnabled": 1,
+        "EditModeEnabled": 0,
         "DrawFPSEnabled": 1
     }
 }

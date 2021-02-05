@@ -27,30 +27,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "Leaf_02",
-            "Name": "pineTree_(30)",
-            "Position": [
-                -13.077390670776367,
-                0.01222512498497963,
-                -53.385520935058594
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                65.51641082763672,
-                0.0
-            ],
-            "Scale": [
-                0.8393905162811279,
-                0.8393905162811279,
-                0.8393905162811279
-            ],
-            "ShadowEnabled": false,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "PineTree_04",
             "Name": "pineTree_(9)",
             "Position": [
@@ -75,25 +51,25 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "Plant_13",
-            "Name": "pineTree_(32)",
+            "Model": "Leaf_02",
+            "Name": "pineTree_(30)",
             "Position": [
-                -10.851386070251465,
-                0.3416007459163666,
-                -55.521400451660156
+                -13.077390670776367,
+                0.01222512498497963,
+                -53.385520935058594
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                107.13770294189453,
+                65.51641082763672,
                 0.0
             ],
             "Scale": [
-                0.7649552822113037,
-                0.7649552822113037,
-                0.7649552822113037
+                0.8393905162811279,
+                0.8393905162811279,
+                0.8393905162811279
             ],
-            "ShadowEnabled": true,
+            "ShadowEnabled": false,
             "ShadowForced": false
         },
         {
@@ -124,11 +100,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "Plant_13",
-            "Name": "pineTree_(33)",
+            "Name": "pineTree_(32)",
             "Position": [
-                -7.526641845703125,
+                -10.851386070251465,
                 0.3416007459163666,
-                -58.01606369018555
+                -55.521400451660156
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -171,23 +147,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree(2)",
+            "Model": "Plant_13",
+            "Name": "pineTree_(33)",
             "Position": [
-                -56.97938537597656,
-                2.9555037021636963,
-                -4.5
+                -7.526641845703125,
+                0.3416007459163666,
+                -58.01606369018555
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                0.0,
+                107.13770294189453,
                 0.0
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
+                0.7649552822113037,
+                0.7649552822113037,
+                0.7649552822113037
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -212,6 +188,30 @@
                 0.7649552822113037,
                 0.7649552822113037,
                 0.7649552822113037
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree(2)",
+            "Position": [
+                -56.97938537597656,
+                2.9555037021636963,
+                -4.5
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -268,70 +268,22 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree(1)",
+            "Name": "pineTree_(79)",
             "Position": [
-                -53.208919525146484,
-                2.9555037021636963,
-                -4.5
+                -24.795068740844727,
+                3.376347541809082,
+                -77.38761901855469
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                0.0,
+                -26.29219627380371,
                 0.0
             ],
             "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree",
-            "Position": [
-                -49.449684143066406,
-                2.9555037021636963,
-                -4.5
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "Fork",
-            "Name": "pineTree_(35)",
-            "Position": [
-                -9.506135940551758,
-                1.7962181568145752,
-                -58.808956146240234
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                67.48095703125,
-                64.04139709472656,
-                -1.3791157007217407
-            ],
-            "Scale": [
-                2.1289114952087402,
-                2.1289114952087402,
-                2.1289114952087402
+                1.1258302927017212,
+                1.1258302927017212,
+                1.1258302927017212
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -363,23 +315,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree_(79)",
+            "Model": "Fork",
+            "Name": "pineTree_(35)",
             "Position": [
-                -24.795068740844727,
-                3.376347541809082,
-                -77.38761901855469
+                -9.506135940551758,
+                1.7962181568145752,
+                -58.808956146240234
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
+                67.48095703125,
+                64.04139709472656,
+                -1.3791157007217407
             ],
             "Scale": [
-                1.1258302927017212,
-                1.1258302927017212,
-                1.1258302927017212
+                2.1289114952087402,
+                2.1289114952087402,
+                2.1289114952087402
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -387,12 +339,12 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "BS1_Plant8_0",
-            "Name": "pineTree_(19)",
+            "Model": "PineTree_04",
+            "Name": "pineTree",
             "Position": [
-                -16.099872589111328,
-                0.22940143942832947,
-                -70.99502563476563
+                -49.449684143066406,
+                2.9555037021636963,
+                -4.5
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -401,9 +353,33 @@
                 0.0
             ],
             "Scale": [
-                0.7649552822113037,
-                0.7649552822113037,
-                0.7649552822113037
+                1.0,
+                1.0,
+                1.0
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree(1)",
+            "Position": [
+                -53.208919525146484,
+                2.9555037021636963,
+                -4.5
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -430,6 +406,30 @@
                 0.8393905162811279
             ],
             "ShadowEnabled": false,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "BS1_Plant8_0",
+            "Name": "pineTree_(19)",
+            "Position": [
+                -16.099872589111328,
+                0.22940143942832947,
+                -70.99502563476563
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.7649552822113037,
+                0.7649552822113037,
+                0.7649552822113037
+            ],
+            "ShadowEnabled": true,
             "ShadowForced": false
         },
         {
@@ -483,6 +483,30 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree_(2)",
+            "Position": [
+                -25.00368881225586,
+                3.347026824951172,
+                -51.20829391479492
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -26.29219627380371,
+                0.0
+            ],
+            "Scale": [
+                1.1258302927017212,
+                1.1258302927017212,
+                1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
             "Model": "BS3_Plant2_0",
             "Name": "pineTree_(24)",
             "Position": [
@@ -508,11 +532,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(2)",
+            "Name": "pineTree_(65)",
             "Position": [
-                -25.00368881225586,
-                3.347026824951172,
-                -51.20829391479492
+                -49.92485809326172,
+                3.527676582336426,
+                -28.452320098876953
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -524,6 +548,30 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Brush_11",
+            "Name": "pineTree_(142)",
+            "Position": [
+                -15.721125602722168,
+                0.0930144339799881,
+                -72.11438751220703
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                80.35382080078125,
+                -1.2102545499801636
+            ],
+            "Scale": [
+                0.8393905162811279,
+                0.8393905162811279,
+                0.8393905162811279
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -580,11 +628,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(65)",
+            "Name": "pineTree_(37)",
             "Position": [
-                -49.92485809326172,
-                3.527676582336426,
-                -28.452320098876953
+                -28.855514526367188,
+                3.347026824951172,
+                -58.148765563964844
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -596,30 +644,6 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "Brush_11",
-            "Name": "pineTree_(142)",
-            "Position": [
-                -15.721125602722168,
-                0.0930144339799881,
-                -72.11438751220703
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                80.35382080078125,
-                -1.2102545499801636
-            ],
-            "Scale": [
-                0.8393905162811279,
-                0.8393905162811279,
-                0.8393905162811279
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -652,9 +676,9 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(37)",
+            "Name": "pineTree_(4)",
             "Position": [
-                -28.855514526367188,
+                -25.00368881225586,
                 3.347026824951172,
                 -58.148765563964844
             ],
@@ -700,11 +724,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(4)",
+            "Name": "pineTree_(3)",
             "Position": [
                 -25.00368881225586,
                 3.347026824951172,
-                -58.148765563964844
+                -54.979148864746094
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -747,23 +771,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree_(3)",
+            "Model": "BS2_Plant9_0",
+            "Name": "pineTree_(23)",
             "Position": [
-                -25.00368881225586,
-                3.347026824951172,
-                -54.979148864746094
+                -8.837179183959961,
+                0.3122321665287018,
+                -65.44794464111328
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                -26.29219627380371,
+                107.13770294189453,
                 0.0
             ],
             "Scale": [
-                1.1258302927017212,
-                1.1258302927017212,
-                1.1258302927017212
+                0.7649552822113037,
+                0.7649552822113037,
+                0.7649552822113037
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -795,47 +819,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "BS2_Plant9_0",
-            "Name": "pineTree_(23)",
+            "Model": "PineTree_04",
+            "Name": "pineTree_(74)",
             "Position": [
-                -8.837179183959961,
-                0.3122321665287018,
-                -65.44794464111328
+                -7.1706037521362305,
+                3.376347541809082,
+                -77.59429168701172
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                107.13770294189453,
+                -26.29219627380371,
                 0.0
             ],
             "Scale": [
-                0.7649552822113037,
-                0.7649552822113037,
-                0.7649552822113037
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "Plant_13",
-            "Name": "pineTree_(27)",
-            "Position": [
-                -16.706127166748047,
-                0.3416007459163666,
-                -61.01786422729492
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                107.13770294189453,
-                0.0
-            ],
-            "Scale": [
-                0.7649552822113037,
-                0.7649552822113037,
-                0.7649552822113037
+                1.1258302927017212,
+                1.1258302927017212,
+                1.1258302927017212
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -891,23 +891,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree_(74)",
+            "Model": "Plant_13",
+            "Name": "pineTree_(27)",
             "Position": [
-                -7.1706037521362305,
-                3.376347541809082,
-                -77.59429168701172
+                -16.706127166748047,
+                0.3416007459163666,
+                -61.01786422729492
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                -26.29219627380371,
+                107.13770294189453,
                 0.0
             ],
             "Scale": [
-                1.1258302927017212,
-                1.1258302927017212,
-                1.1258302927017212
+                0.7649552822113037,
+                0.7649552822113037,
+                0.7649552822113037
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -1059,30 +1059,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree_(6)",
-            "Position": [
-                -16.915103912353516,
-                3.347026824951172,
-                -51.208984375
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                1.1258302927017212,
-                1.1258302927017212,
-                1.1258302927017212
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "BS1_Plant8_0",
             "Name": "pineTree_(20)",
             "Position": [
@@ -1108,11 +1084,35 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(7)",
+            "Name": "pineTree_(6)",
             "Position": [
-                -12.835678100585938,
+                -16.915103912353516,
                 3.347026824951172,
                 -51.208984375
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -26.29219627380371,
+                0.0
+            ],
+            "Scale": [
+                1.1258302927017212,
+                1.1258302927017212,
+                1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree_(72)",
+            "Position": [
+                4.150832653045654,
+                3.376347541809082,
+                -71.21302795410156
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -1156,57 +1156,9 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(72)",
+            "Name": "pineTree_(7)",
             "Position": [
-                4.150832653045654,
-                3.376347541809082,
-                -71.21302795410156
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                1.1258302927017212,
-                1.1258302927017212,
-                1.1258302927017212
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "Part_03a",
-            "Name": "pineTree_(115)",
-            "Position": [
-                -6.269865036010742,
-                0.6223046183586121,
-                -58.58966064453125
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                0.4604426920413971,
-                0.4604426920413971,
-                0.4604426920413971
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree_(10)",
-            "Position": [
-                -2.0881547927856445,
+                -12.835678100585938,
                 3.347026824951172,
                 -51.208984375
             ],
@@ -1276,11 +1228,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "Part_03a",
-            "Name": "pineTree_(116)",
+            "Name": "pineTree_(115)",
             "Position": [
                 -6.269865036010742,
-                0.361114501953125,
-                -59.48041915893555
+                0.6223046183586121,
+                -58.58966064453125
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -1300,11 +1252,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
-            "Name": "pineTree_(13)",
+            "Name": "pineTree_(10)",
             "Position": [
-                -3.9943573474884033,
+                -2.0881547927856445,
                 3.347026824951172,
-                -54.96943664550781
+                -51.208984375
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -1353,6 +1305,54 @@
                 -49.92485809326172,
                 3.527676582336426,
                 -36.622230529785156
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -26.29219627380371,
+                0.0
+            ],
+            "Scale": [
+                1.1258302927017212,
+                1.1258302927017212,
+                1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Part_03a",
+            "Name": "pineTree_(116)",
+            "Position": [
+                -6.269865036010742,
+                0.361114501953125,
+                -59.48041915893555
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.4604426920413971,
+                0.4604426920413971,
+                0.4604426920413971
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "PineTree_04",
+            "Name": "pineTree_(13)",
+            "Position": [
+                -3.9943573474884033,
+                3.347026824951172,
+                -54.96943664550781
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -1635,6 +1635,30 @@
             "ShadowForced": false
         },
         {
+            "CollisionEnabled": false,
+            "DrawEnabled": true,
+            "Model": "Gate_03",
+            "Name": "ENDGATE",
+            "Position": [
+                47.48529815673828,
+                1.6217570304870605,
+                -1.3922775983810425
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "Scale": [
+                1.265936255455017,
+                1.1110130548477173,
+                1.108892560005188
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "PineTree_04",
@@ -1733,30 +1757,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "Brush_11",
-            "Name": "pineTree_(154)",
-            "Position": [
-                -23.011091232299805,
-                0.42111635208129883,
-                -55.12175750732422
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                0.8393905162811279,
-                0.8393905162811279,
-                0.8393905162811279
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "PineTree_04",
             "Name": "pineTree_(59)",
             "Position": [
@@ -1774,6 +1774,30 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Brush_11",
+            "Name": "pineTree_(154)",
+            "Position": [
+                -23.011091232299805,
+                0.42111635208129883,
+                -55.12175750732422
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.8393905162811279,
+                0.8393905162811279,
+                0.8393905162811279
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -1930,30 +1954,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "PineTree_04",
-            "Name": "pineTree_(60)",
-            "Position": [
-                -49.92485809326172,
-                3.527676582336426,
-                -42.56246566772461
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                1.1258302927017212,
-                1.1258302927017212,
-                1.1258302927017212
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "Part_02a",
             "Name": "pineTree_(147)",
             "Position": [
@@ -1978,23 +1978,23 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "Brush_11",
-            "Name": "pineTree_(143)",
+            "Model": "PineTree_04",
+            "Name": "pineTree_(60)",
             "Position": [
-                -13.417759895324707,
-                0.030081696808338165,
-                -65.02711486816406
+                -49.92485809326172,
+                3.527676582336426,
+                -42.56246566772461
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 0.0,
-                0.0,
+                -26.29219627380371,
                 0.0
             ],
             "Scale": [
-                0.5068742632865906,
-                0.5068742632865906,
-                0.5068742632865906
+                1.1258302927017212,
+                1.1258302927017212,
+                1.1258302927017212
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -2019,6 +2019,30 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Brush_11",
+            "Name": "pineTree_(143)",
+            "Position": [
+                -13.417759895324707,
+                0.030081696808338165,
+                -65.02711486816406
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5068742632865906,
+                0.5068742632865906,
+                0.5068742632865906
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -2146,30 +2170,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "BS2_Plant9_0",
-            "Name": "pineTree_(140)",
-            "Position": [
-                -14.618756294250488,
-                0.5162761807441711,
-                -65.24677276611328
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                206.66836547851563,
-                0.0
-            ],
-            "Scale": [
-                0.7649552822113037,
-                0.7649552822113037,
-                0.7649552822113037
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "PineTree_04",
             "Name": "pineTree_(67)",
             "Position": [
@@ -2187,6 +2187,30 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "BS2_Plant9_0",
+            "Name": "pineTree_(140)",
+            "Position": [
+                -14.618756294250488,
+                0.5162761807441711,
+                -65.24677276611328
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                206.66836547851563,
+                0.0
+            ],
+            "Scale": [
+                0.7649552822113037,
+                0.7649552822113037,
+                0.7649552822113037
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -2316,6 +2340,32 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Orange",
+            "MotionType": "Dynamic",
+            "Name": "pineTree_(160)",
+            "Position": [
+                -57.63093948364258,
+                3.347026824951172,
+                7.045842170715332
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                -26.29219627380371,
+                0.0
+            ],
+            "Scale": [
+                0.5031736493110657,
+                0.5031736493110657,
+                0.5031736493110657
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
             "Model": "PineTree_04",
             "Name": "pineTree_(43)",
             "Position": [
@@ -2339,28 +2389,27 @@
         },
         {
             "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Mass": 1.9255108833312988,
-            "Model": "box_Orange",
-            "MotionType": "Dynamic",
-            "Name": "pineTree_(160)",
+            "DrawEnabled": false,
+            "Material": "invWall",
+            "Model": "box",
+            "Name": "ENDOPENED",
             "Position": [
-                -57.63093948364258,
-                3.347026824951172,
-                7.045842170715332
+                49.38755416870117,
+                1.442861557006836,
+                -1.3184829950332642
             ],
-            "RenderType": "DefaultAlpha",
+            "RenderType": "DefaultTransparency",
             "Rotation": [
                 0.0,
-                -26.29219627380371,
+                180.0,
                 0.0
             ],
             "Scale": [
-                0.5031736493110657,
-                0.5031736493110657,
-                0.5031736493110657
+                3.25772762298584,
+                3.102806329727173,
+                0.6889586448669434
             ],
-            "ShadowEnabled": true,
+            "ShadowEnabled": false,
             "ShadowForced": false
         },
         {
@@ -2407,6 +2456,30 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "Part_01a",
+            "Name": "ENDPOLE",
+            "Position": [
+                47.47682189941406,
+                1.361573576927185,
+                -1.655596375465393
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                270.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0816541910171509,
+                1.0
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -2654,30 +2727,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Model": "BS2_Plant9_0",
-            "Name": "pineTree_(141)",
-            "Position": [
-                -16.569244384765625,
-                0.5450809001922607,
-                -63.64445877075195
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                87.22010040283203,
-                0.0
-            ],
-            "Scale": [
-                0.7649552822113037,
-                0.7649552822113037,
-                0.7649552822113037
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "PineTree_04",
             "Name": "pineTree_(66)",
             "Position": [
@@ -2695,6 +2744,30 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Model": "BS2_Plant9_0",
+            "Name": "pineTree_(141)",
+            "Position": [
+                -16.569244384765625,
+                0.5450809001922607,
+                -63.64445877075195
+            ],
+            "RenderType": "DefaultAlpha",
+            "Rotation": [
+                0.0,
+                87.22010040283203,
+                0.0
+            ],
+            "Scale": [
+                0.7649552822113037,
+                0.7649552822113037,
+                0.7649552822113037
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -3624,7 +3697,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 -3.833322286605835,
-                14.02955436706543,
+                14.02955150604248,
                 0.0
             ],
             "Scale": [
@@ -3672,7 +3745,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 -3.833322286605835,
-                14.029553413391113,
+                14.029550552368164,
                 0.0
             ],
             "Scale": [
@@ -3696,7 +3769,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 -3.833322286605835,
-                14.029555320739746,
+                14.029552459716797,
                 0.0
             ],
             "Scale": [
@@ -3994,6 +4067,31 @@
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": false,
+            "Material": "invWall",
+            "Model": "box",
+            "Name": "ENDBLOCKED",
+            "Position": [
+                47.40827178955078,
+                1.4565402269363403,
+                0.36973100900650024
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "Scale": [
+                3.25772762298584,
+                3.102806329727173,
+                0.6889586448669434
+            ],
+            "ShadowEnabled": false,
+            "ShadowForced": false
         }
     ],
     "Grass": [
@@ -4091,12 +4189,12 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 3.4250001907348633,
-                "FallOffStart": 1.7125000953674316,
+                "FallOffEnd": 1.374720573425293,
+                "FallOffStart": 0.6873602867126465,
                 "Name": "P_(1)",
                 "Position": [
                     0.0,
-                    0.8531982898712158,
+                    0.34062838554382324,
                     0.0
                 ],
                 "Strength": [

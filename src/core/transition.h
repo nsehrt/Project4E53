@@ -23,6 +23,7 @@ class Transition
     bool fadingOn() const;
     bool fadingOff() const;
     float blur() const;
+    float blurNormalized() const;
     float fade() const;
 
     private:

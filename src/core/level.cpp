@@ -835,7 +835,8 @@ bool Level::save()
 
     for (const auto& e : mGameObjects)
     {
-        if (e.second->gameObjectType != ObjectType::Default) continue;
+        if (e.second->gameObjectType != ObjectType::Default && 
+            e.second->gameObjectType != ObjectType::Wall) continue;
         if(e.first == "HITBOX_EDIT") continue;
 
         //maze game objects have & at the first place, skip them

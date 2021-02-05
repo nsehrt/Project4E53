@@ -2093,12 +2093,15 @@ void P_4E53::draw(const GameTime& gt)
         drawFrameStats();
     }
 
+    float imguiWindowOpacity = (1.0f - mTransition.blurNormalized()) * 0.85f;
+    if(imguiWindowOpacity < 0.125f) imguiWindowOpacity = 0.0f;
+
     // draw temporary title menu
-    if(ServiceProvider::getGameState() == GameState::TITLE)
+    if(ServiceProvider::getGameState() == GameState::TITLE && imguiWindowOpacity > 0.0f)
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
             ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
-        ImGui::SetNextWindowBgAlpha(0.75f);
+        ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
 
 
         ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -2110,12 +2113,12 @@ void P_4E53::draw(const GameTime& gt)
         ImGui::End();
 
     }
-    else if(ServiceProvider::getGameState() == GameState::INGAME)
+    else if(ServiceProvider::getGameState() == GameState::INGAME && imguiWindowOpacity > 0.0f)
     {
         {
             ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
                 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
-            ImGui::SetNextWindowBgAlpha(0.75f);
+            ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
 
 
             ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.15f), ImGuiCond_Always, ImVec2(0.f, 0.f));
@@ -2130,14 +2133,13 @@ void P_4E53::draw(const GameTime& gt)
         }
 
     }
-    else if(ServiceProvider::getGameState() == GameState::ENDSCREEN)
+    else if(ServiceProvider::getGameState() == GameState::ENDSCREEN && imguiWindowOpacity > 0.0f)
     {
         {
             ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
                 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
-            ImGui::SetNextWindowBgAlpha(0.75f);
-
-
+            ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
+            
             ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
             ImGui::Begin("end screen", NULL, windowFlags);
@@ -2454,7 +2456,7 @@ void P_4E53::setupNewMaze()
     
     //create hitbox at the goal
 
-    float glPosX = width * grid.columns() / 2.0f + width / 2.0f;
+    float glPosX = width * grid.columns() / 2.0f + width;
     float glPosY = width * grid.rows() / 2.0f - goalCell->getPosition().second * width -width / 2.0f;
 
     goalBox = BoundingBox({ glPosX, 0.0f, glPosY }, { halfWidth, halfWidth, halfWidth });

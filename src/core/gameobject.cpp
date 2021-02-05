@@ -497,7 +497,7 @@ json GameObject::toJson() const
     json jElement;
 
     jElement["Name"] = Name;
-    jElement["Model"] = gameObjectType != ObjectType::Wall ? renderItem->staticModel->name : "";
+    jElement["Model"] = gameObjectType != ObjectType::Wall ? renderItem->staticModel->name : "box";
 
     if (renderItem->MaterialOverwrite != nullptr)
     {
