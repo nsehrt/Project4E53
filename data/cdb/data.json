@@ -3867,6 +3867,51 @@
                 0.5,
                 0.5
             ],
+            "Name": "sphere_Turquoise",
+            "Type": 8
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Name": "sphere_Orange",
+            "Type": 8
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Name": "sphere_Purple",
+            "Type": 8
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Name": "sphere_Gray",
+            "Type": 8
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Name": "sphere_Blue",
+            "Type": 8
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
             "Name": "cylinder",
             "Type": 13
         }
