@@ -1918,14 +1918,32 @@ void P_4E53::update(const GameTime& gt)
 
         /*update player control data*/
         auto controller = mPlayer->getController();
-        controller->setMovement({ 0.0f,0.0f }, 0.0f);
 
+        if(inputData.current.trigger[TRG::RIGHT_TRIGGER] > 0.1f)
+        {
+            controller->run();
+        }
+
+        float inputMagnitude{};
+        XMFLOAT2 inputDirection = { inputData.current.trigger[TRG::THUMB_LX], inputData.current.trigger[TRG::THUMB_LY] };
+        XMVECTOR inputDirectionV = XMVector2Normalize(XMLoadFloat2(&inputDirection));
+        XMVECTOR inputMagnitudeV = XMVector2Length(XMLoadFloat2(&inputDirection));
+        XMStoreFloat2(&inputDirection, inputDirectionV);
+        XMStoreFloat(&inputMagnitude, inputMagnitudeV);
+        inputMagnitude = inputMagnitude > 1.0f ? 1.0f : inputMagnitude;
+
+        if(!fpsCameraMode && roundTime > 0.85f)
+        {
+            controller->setMovement(inputDirection, inputMagnitude);
+        }
 
         /*update physics simulation*/
         physics.simulateStep(gt.DeltaTime());
 
         /*update player*/
         mPlayer->update(gt);
+
+        mainCamera->updateFixedCamera(mPlayer->getPosition(), 0.0f, 0.0f);
 
         //fade out when returning to title menu
         if(mToNewGame && !mTransition.inProgress())
@@ -1990,7 +2008,6 @@ void P_4E53::update(const GameTime& gt)
         {
             controller->setMovement(inputDirection, inputMagnitude);
         }
-          
 
         /*update physics simulation*/
         physics.simulateStep(gt.DeltaTime());
@@ -2034,9 +2051,17 @@ void P_4E53::update(const GameTime& gt)
         /*check if the player reached the end*/
 
         if(goalBox.Contains(BoundingSphere(mPlayer->getPosition(), 0.1f)) ||
-           (ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::START)))
+           (ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::START))) // CHEAT
         {
             ServiceProvider::setGameState(GameState::ENDSCREEN);
+        }
+
+        if((ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::BACK))) // CHEAT
+        {
+            for(Coin& c : mPlayer->coins)
+            {
+                c.collected = true;
+            }
         }
 
     }

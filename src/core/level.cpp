@@ -356,13 +356,6 @@ void Level::setupCoins(Grid& grid)
         mGameObjects["&COIN" + std::to_string(i)]->setCollision(true);
     }
 
-    // TODO REMOVE
-    //for(int i = 0; i < Coins::CoinCount; i++)
-    //{
-    //    mGameObjects["&COIN" + std::to_string(i)]->setPosition({ baseX + baseHalf, Coins::BaseHeight, baseZ - (7+i) * mazeBaseWidth - baseHalf });
-    //}
-    
-
     ServiceProvider::getPlayer()->resetCoins();
 }
 
@@ -443,6 +436,8 @@ void Level::setStartEnd(Grid& grid, Cell* start, Cell* end)
     mGameObjects[prefixEast + std::to_string(index)]->setCollision(false);
 
     //reset end door TODO
+    mGameObjects["ENDBLOCKED"]->setCollision(true);
+    mGameObjects["ENDGATE"]->setRotation({0.0f, XM_PIDIV2, 0.0f});
 }
 
 void Level::update(const GameTime& gt)
@@ -504,6 +499,23 @@ void Level::update(const GameTime& gt)
             }
 
             gameObj.second->update(gt);
+
+            /* open door if all coins collected*/
+            if(gameObj.first.rfind("ENDG", 0) == 0 &&
+               ServiceProvider::getPlayer()->coinCount() == Coins::CoinCount)
+            {
+                auto rot = gameObj.second->getRotation();
+                if(rot.y < XM_PI)
+                {
+                    rot.y += XM_PIDIV2 * gt.DeltaTime();
+                    gameObj.second->setRotation(rot);
+                }
+                else
+                {
+                    mGameObjects["ENDBLOCKED"]->setCollision(false);
+                }
+
+            }
 
             /*update coin animation*/
             if(gameObj.first.rfind("&COIN", 0) == 0 && gstate == GameState::INGAME)
