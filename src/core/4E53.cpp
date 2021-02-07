@@ -1950,6 +1950,7 @@ void P_4E53::update(const GameTime& gt)
         {
             mToNewGame = false;
 
+
             //player to title
             mPlayer->getController()->resetMovement();
             ServiceProvider::getPlayer()->setPosition(titlePlayerPos);

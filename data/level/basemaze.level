@@ -4,11 +4,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "Leaf_02",
-            "Name": "pineTree_(92)",
+            "Name": "pineTree_(30)",
             "Position": [
-                -11.698104858398438,
-                0.006359972525388002,
-                -55.980621337890625
+                -13.077390670776367,
+                0.01222512498497963,
+                -53.385520935058594
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -52,11 +52,11 @@
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "Leaf_02",
-            "Name": "pineTree_(30)",
+            "Name": "pineTree_(92)",
             "Position": [
-                -13.077390670776367,
-                0.01222512498497963,
-                -53.385520935058594
+                -11.698104858398438,
+                0.006359972525388002,
+                -55.980621337890625
             ],
             "RenderType": "DefaultAlpha",
             "Rotation": [
@@ -70,6 +70,58 @@
                 0.8393905162811279
             ],
             "ShadowEnabled": false,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": false,
+            "Material": "invWall",
+            "Model": "box",
+            "Name": "ENDBLOCKED",
+            "Position": [
+                47.40827178955078,
+                1.4565402269363403,
+                0.36973100900650024
+            ],
+            "RenderType": "DefaultTransparency",
+            "Rotation": [
+                0.0,
+                90.0,
+                0.0
+            ],
+            "Scale": [
+                3.25772762298584,
+                3.102806329727173,
+                0.6889586448669434
+            ],
+            "ShadowEnabled": false,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Turquoise",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(0)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                0.4969483017921448,
+                -0.19326698780059814
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
             "ShadowForced": false
         },
         {
@@ -1587,32 +1639,6 @@
         {
             "CollisionEnabled": true,
             "DrawEnabled": true,
-            "Mass": 1.9255108833312988,
-            "Model": "box_Turquoise",
-            "MotionType": "Dynamic",
-            "Name": "pineTree_(161)",
-            "Position": [
-                -55.67253494262695,
-                3.347026824951172,
-                8.566798210144043
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                0.5031736493110657,
-                0.5031736493110657,
-                0.5031736493110657
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
             "Model": "Wall_04",
             "Name": "pineTree_(84)",
             "Position": [
@@ -1848,35 +1874,6 @@
                 0.8393905162811279
             ],
             "ShadowEnabled": false,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "Damping": 0.8381932377815247,
-            "DrawEnabled": true,
-            "Friction": 0.8591837882995605,
-            "Mass": 1.9255108833312988,
-            "Model": "sphere_Turquoise",
-            "MotionType": "Dynamic",
-            "Name": "pineTree_(163)",
-            "Position": [
-                -58.622344970703125,
-                4.2580366134643555,
-                6.2366509437561035
-            ],
-            "RenderType": "DefaultAlpha",
-            "Restitution": 0.8196102976799011,
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                0.5031736493110657,
-                0.5031736493110657,
-                0.5031736493110657
-            ],
-            "ShadowEnabled": true,
             "ShadowForced": false
         },
         {
@@ -2307,58 +2304,6 @@
                 1.1258302927017212,
                 1.1258302927017212,
                 1.1258302927017212
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Mass": 1.9255108833312988,
-            "Model": "box_Purple",
-            "MotionType": "Dynamic",
-            "Name": "pineTree_(162)",
-            "Position": [
-                -58.622344970703125,
-                3.347026824951172,
-                6.2366509437561035
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                0.5031736493110657,
-                0.5031736493110657,
-                0.5031736493110657
-            ],
-            "ShadowEnabled": true,
-            "ShadowForced": false
-        },
-        {
-            "CollisionEnabled": true,
-            "DrawEnabled": true,
-            "Mass": 1.9255108833312988,
-            "Model": "box_Orange",
-            "MotionType": "Dynamic",
-            "Name": "pineTree_(160)",
-            "Position": [
-                -57.63093948364258,
-                3.347026824951172,
-                7.045842170715332
-            ],
-            "RenderType": "DefaultAlpha",
-            "Rotation": [
-                0.0,
-                -26.29219627380371,
-                0.0
-            ],
-            "Scale": [
-                0.5031736493110657,
-                0.5031736493110657,
-                0.5031736493110657
             ],
             "ShadowEnabled": true,
             "ShadowForced": false
@@ -3697,7 +3642,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 -3.833322286605835,
-                14.02955150604248,
+                14.029549598693848,
                 0.0
             ],
             "Scale": [
@@ -3745,7 +3690,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 -3.833322286605835,
-                14.029550552368164,
+                14.029548645019531,
                 0.0
             ],
             "Scale": [
@@ -3769,7 +3714,7 @@
             "RenderType": "DefaultAlpha",
             "Rotation": [
                 -3.833322286605835,
-                14.029552459716797,
+                14.029550552368164,
                 0.0
             ],
             "Scale": [
@@ -4070,27 +4015,273 @@
         },
         {
             "CollisionEnabled": true,
-            "DrawEnabled": false,
-            "Material": "invWall",
-            "Model": "box",
-            "Name": "ENDBLOCKED",
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Turquoise",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(8)",
+            "Friction": 0.8,
             "Position": [
-                47.40827178955078,
-                1.4565402269363403,
-                0.36973100900650024
+                58.84184265136719,
+                2.499373435974121,
+                -0.2617880702018738
             ],
-            "RenderType": "DefaultTransparency",
+            "RenderType": "Default",
             "Rotation": [
                 0.0,
-                90.0,
+                0.0,
                 0.0
             ],
             "Scale": [
-                3.25772762298584,
-                3.102806329727173,
-                0.6889586448669434
+                0.5,
+                0.5,
+                0.5
             ],
-            "ShadowEnabled": false,
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Orange",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(7)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                2.499373435974121,
+                0.8077939748764038
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Blue",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(4)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                1.4868700504302979,
+                -0.7377206087112427
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Gray",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(5)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                1.4868700504302979,
+                0.27774789929389954
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Purple",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(3)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                0.4969483017921448,
+                -1.2234364748001099
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Blue",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(9)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                3.505157947540283,
+                0.26705023646354675
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Purple",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(6)",
+            "Friction": 0.8,
+            "Position": [
+                58.84184265136719,
+                1.4868700504302979,
+                1.3061248064041138
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Orange",
+            "MotionType": "Dynamic",
+            "Friction": 0.6,
+            "Name": "PHY_OBJ_(1)",
+            "Position": [
+                58.84184265136719,
+                0.4969483017921448,
+                0.8157646656036377
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "DrawEnabled": true,
+            "Mass": 1.9255108833312988,
+            "Model": "box_Gray",
+            "MotionType": "Dynamic",
+            "Friction": 0.8,
+            "Name": "PHY_OBJ_(2)",
+            "Position": [
+                58.84184265136719,
+                0.4969483017921448,
+                1.8327983617782593
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "ShadowEnabled": true,
+            "ShadowForced": false
+        },
+        {
+            "CollisionEnabled": true,
+            "Damping": 0.1,
+            "DrawEnabled": true,
+            "Friction": 0.1,
+            "Mass": 5.0,
+            "Model": "sphere_Turquoise",
+            "MotionType": "Dynamic",
+            "Name": "PHY_OBJ_(10)",
+            "Position": [
+                53.33693313598633,
+                0.6010411381721497,
+                0.13404080271720886
+            ],
+            "RenderType": "Default",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.6040928959846497,
+                0.6040928959846497,
+                0.6040928959846497
+            ],
+            "ShadowEnabled": true,
             "ShadowForced": false
         }
     ],
@@ -4142,9 +4333,9 @@
     ],
     "Light": {
         "AmbientLight": [
-            0.15,
-            0.15,
-            0.15
+            0.15000000596046448,
+            0.15000000596046448,
+            0.15000000596046448
         ],
         "Directional": [
             {
@@ -4189,18 +4380,18 @@
         ],
         "Point": [
             {
-                "FallOffEnd": 3.0,
-                "FallOffStart": 2.0,
+                "FallOffEnd": 4.656949996948242,
+                "FallOffStart": 0.23284749686717987,
                 "Name": "CenterLight_(0)",
                 "Position": [
-                    0.0,
-                    0.5,
-                    0.0
+                    53.92066955566406,
+                    1.1611857414245605,
+                    -4.5561347007751465
                 ],
                 "Strength": [
-                    0.92,
-                    0.67,
-                    0.21
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             }
         ]
