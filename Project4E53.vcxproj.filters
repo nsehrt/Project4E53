@@ -29,9 +29,6 @@
     <Filter Include="Source Files\src\hud">
       <UniqueIdentifier>{3403e18f-8f6f-4cec-b8eb-d72508042c77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\src\script">
-      <UniqueIdentifier>{23427b26-0407-46c9-8dc9-614bd94ca33e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\src\physics">
       <UniqueIdentifier>{57865e58-d9fe-4505-b9b1-ae31ee48895f}</UniqueIdentifier>
     </Filter>
@@ -174,9 +171,6 @@
     </ClInclude>
     <ClInclude Include="src\util\quadtree.h">
       <Filter>Source Files\src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="src\script\scriptsystem.h">
-      <Filter>Source Files\src\script</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\bulletphysics.h">
       <Filter>Source Files\src\physics</Filter>
@@ -377,9 +371,6 @@
     </ClCompile>
     <ClCompile Include="src\util\quadtree.cpp">
       <Filter>Source Files\src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="src\script\scriptsystem.cpp">
-      <Filter>Source Files\src\script</Filter>
     </ClCompile>
     <ClCompile Include="src\physics\bulletphysics.cpp">
       <Filter>Source Files\src\physics</Filter>

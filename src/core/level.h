@@ -8,7 +8,6 @@
 #include "../core/grass.h"
 #include "../core/particlesystem.h"
 #include "../util/quadtree.h"
-#include "../script/scriptsystem.h"
 #include "../maze/maze.h"
 
 
@@ -20,6 +19,12 @@ inline constexpr int AMOUNT_SPOT = 1;
 
 
 using json = nlohmann::json;
+
+struct PhyRestore
+{
+    DirectX::XMFLOAT3 position{};
+    DirectX::XMFLOAT3 rotation{};
+};
 
 class Level
 {
@@ -43,6 +48,9 @@ public:
 
     /* set start and end */
     void setStartEnd(Grid& grid, Cell* start, Cell* end);
+
+    /*restore transform of physic objects*/
+    void resetPhyObjects();
 
     /* update all game objects in the level */
     void update(const GameTime& gt);
@@ -76,6 +84,7 @@ public:
     std::unique_ptr<Terrain> mTerrain;
 
     std::unordered_map<std::string, std::unique_ptr<GameObject>> mGameObjects;
+    std::unordered_map<std::string, PhyRestore> mPhyRestore;
 
     std::array<LightObject*, MAX_LIGHTS> mCurrentLightObjects;
     std::vector<std::unique_ptr<LightObject>> mLightObjects;
@@ -95,8 +104,6 @@ public:
     float mazeBaseWidth = 0.0f;
 
 private:
-
-    ScriptSystem script_system;
 
     QuadTree quadTree;
     void addGameObjectToQuadTree(GameObject* go);

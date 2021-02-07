@@ -219,7 +219,6 @@
     <ClCompile Include="src\render\rendertarget.cpp" />
     <ClCompile Include="src\render\shadowmap.cpp" />
     <ClCompile Include="src\render\sobel.cpp" />
-    <ClCompile Include="src\script\scriptsystem.cpp" />
     <ClCompile Include="src\util\cliploader.cpp" />
     <ClCompile Include="src\util\collisiondatabase.cpp" />
     <ClCompile Include="src\util\d3dUtil.cpp" />
@@ -290,7 +289,6 @@
     <ClInclude Include="src\render\shadowmap.h" />
     <ClInclude Include="src\render\sobel.h" />
     <ClInclude Include="src\render\uploadbuffer.h" />
-    <ClInclude Include="src\script\scriptsystem.h" />
     <ClInclude Include="src\util\cliploader.h" />
     <ClInclude Include="src\util\collector.h" />
     <ClInclude Include="src\util\collisiondatabase.h" />

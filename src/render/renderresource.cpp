@@ -2099,6 +2099,7 @@ void RenderResource::generateDefaultShapes()
 
     mCyl->name = "cylinder";
     mCyl->group = "default";
+    
     mCyl->meshes.push_back(std::move(geoCyl));
     mModels["cylinder"] = std::move(mCyl);
 

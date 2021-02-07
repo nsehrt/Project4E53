@@ -176,6 +176,17 @@ bool Level::load(const std::string& levelFile)
 
     loadedLevel = LEVEL_PATH + std::string("/") + levelFile;
 
+
+    /*save phy object init transform*/
+
+    for(const auto& [n, g] : mGameObjects)
+    {
+        if(n.rfind("PHY_OBJ_", 0) == 0)
+        {
+            mPhyRestore[n] = { g->getPosition(), g->getRotation() };
+        }
+    }
+
     return true;
 }
 
@@ -437,7 +448,19 @@ void Level::setStartEnd(Grid& grid, Cell* start, Cell* end)
 
     //reset end door TODO
     mGameObjects["ENDBLOCKED"]->setCollision(true);
-    mGameObjects["ENDGATE"]->setRotation({0.0f, XM_PIDIV2, 0.0f});
+    mGameObjects["ENDGATE"]->setRotation({0.0f, XM_PIDIV2, 0.0f}
+
+    );
+}
+
+void Level::resetPhyObjects()
+{
+    for(const auto& [n, t] : mPhyRestore)
+    {
+        mGameObjects[n]->resetMomentum();
+        mGameObjects[n]->setRotation(t.rotation);
+        mGameObjects[n]->setPosition(t.position);
+    }
 }
 
 void Level::update(const GameTime& gt)

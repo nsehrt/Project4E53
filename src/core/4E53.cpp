@@ -2437,6 +2437,7 @@ void P_4E53::setupNewMaze()
     //generate new maze and apply to level
     ServiceProvider::getMaze()->generate();
     ServiceProvider::getActiveLevel()->updateToGrid(ServiceProvider::getMaze()->getGrid());
+    ServiceProvider::getActiveLevel()->resetPhyObjects();
 
     //set start and goal
 

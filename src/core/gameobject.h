@@ -235,6 +235,14 @@ public:
 
     void updateTransforms();
 
+    void resetMomentum()
+    {
+        if(bulletBody)
+        {
+            bulletBody->clearForces();
+        }
+    }
+
     bool exists(const nlohmann::json& j, const std::string& key)
     {
         return j.find(key) != j.end();

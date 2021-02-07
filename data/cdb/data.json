@@ -3914,6 +3914,24 @@
             ],
             "Name": "cylinder",
             "Type": 13
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Name": "cylinder_Turquoise",
+            "Type": 13
+        },
+        {
+            "Extents": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Name": "cylinder_Purple",
+            "Type": 13
         }
     ]
 }
