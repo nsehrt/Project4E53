@@ -200,7 +200,7 @@ bool DX12App::Initialize()
 
 void DX12App::createRtvAndDsvDescriptorHeaps()
 {
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
     rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
     rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
@@ -208,7 +208,7 @@ void DX12App::createRtvAndDsvDescriptorHeaps()
     ThrowIfFailed(mDevice->CreateDescriptorHeap(
         &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
 
-    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
     dsvHeapDesc.NumDescriptors = 1;
     dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
     dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
@@ -252,7 +252,7 @@ void DX12App::onResize()
     }
 
     // Create the depth/stencil buffer and view.
-    D3D12_RESOURCE_DESC depthStencilDesc;
+    D3D12_RESOURCE_DESC depthStencilDesc{};
     depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
     depthStencilDesc.Alignment = 0;
     depthStencilDesc.Width = mWindowWidth;
@@ -265,7 +265,7 @@ void DX12App::onResize()
     depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
-    D3D12_CLEAR_VALUE optClear;
+    D3D12_CLEAR_VALUE optClear{};
     optClear.Format = mDepthStencilFormat;
     optClear.DepthStencil.Depth = 1.0f;
     optClear.DepthStencil.Stencil = 0;
@@ -362,13 +362,14 @@ LRESULT DX12App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 bool DX12App::initMainWindow()
 {
-    WNDCLASS wc;
+    WNDCLASS wc{};
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = MainWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = mAppInst;
-    wc.hIcon = LoadIcon(0, IDI_APPLICATION);
+    wc.hIcon = (HICON)LoadImage(NULL, L"amaze_icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+        //LoadIcon(0, MAKEINTRESOURCE(MAINICON));
     wc.hCursor = LoadCursor(0, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
     wc.lpszMenuName = 0;
@@ -502,7 +503,7 @@ void DX12App::createSwapChain()
     // Release the previous swapchain we will be recreating.
     mSwapChain.Reset();
 
-    DXGI_SWAP_CHAIN_DESC sd;
+    DXGI_SWAP_CHAIN_DESC sd{};
     sd.BufferDesc.Width = mWindowWidth;
     sd.BufferDesc.Height = mWindowHeight;
     sd.BufferDesc.RefreshRate.Numerator = (int)ServiceProvider::getSettings()->displaySettings.RefreshRate;

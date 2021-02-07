@@ -415,4 +415,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project4E53.rc" />
+  </ItemGroup>
 </Project>
