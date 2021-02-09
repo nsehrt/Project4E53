@@ -5,6 +5,7 @@
 #include "../core/terrain.h"
 #include "../util/mathhelper.h"
 #include "../util/serviceprovider.h"
+#include "../audio/soundengine.h"
 
 BulletPhysics::BulletPhysics(float gravity)
 {
@@ -275,6 +276,7 @@ bool BulletPhysics::collisionCallback(btManifoldPoint& cp, const btCollisionObje
                 player->coins[coinIndex].collected = true;
                 a->setCollision(false);
                 LOG(Severity::Info, "Collected coin " << (coinIndex + 1) << "!");
+                ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "coin_collect");
             }
 
         }

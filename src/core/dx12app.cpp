@@ -369,7 +369,7 @@ bool DX12App::initMainWindow()
     wc.cbWndExtra = 0;
     wc.hInstance = mAppInst;
     wc.hIcon = (HICON)LoadImage(NULL, L"amaze_icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
-        //LoadIcon(0, MAKEINTRESOURCE(MAINICON));
+    //wc.hIcon = LoadIcon(0, MAKEINTRESOURCE(128));
     wc.hCursor = LoadCursor(0, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
     wc.lpszMenuName = 0;

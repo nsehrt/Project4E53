@@ -1,8 +1,8 @@
 {
     "Audio": {
-        "MasterVolume": 0.6,
-        "EffectVolume": 0.8,
-        "MusicVolume": 0.75
+        "MasterVolume": 0.7,
+        "EffectVolume": 1.0,
+        "MusicVolume": 0.55
     },
     "Display": {
         "Monitor": 0,

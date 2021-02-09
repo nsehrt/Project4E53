@@ -85,6 +85,7 @@ private:
     const XMFLOAT3 titlePlayerPos = { -11.7801f,1.0f,-62.9093f };
     const XMFLOAT3 titlePlayerRot = { 0.0f,-0.307f, 0.0f };
     const std::string titlePlayerAnimation = "geo_Stretch_01";
+    unsigned int bgmID = -1;
 
 };
 
@@ -217,6 +218,7 @@ P_4E53::~P_4E53()
     ServiceProvider::getInputManager()->Stop();
     inputThread->join();
 
+    ServiceProvider::getAudio()->forceStop(bgmID);
     ServiceProvider::getAudio()->Stop();
     audioThread->join();
 
@@ -490,6 +492,9 @@ bool P_4E53::Initialize()
 
     //transition in on game start
     mTransition.start();
+
+    bgmID = ServiceProvider::getAudioGuid();
+    ServiceProvider::getAudio()->add(bgmID, "bgm");
 
     return true;
 }
@@ -1870,6 +1875,8 @@ void P_4E53::update(const GameTime& gt)
             /*selection*/
             if(inputData.Pressed(BTN::DPAD_UP))
             {
+                ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "switch_action");
+
                 switch(titleSelection)
                 {
                     case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
@@ -1879,6 +1886,8 @@ void P_4E53::update(const GameTime& gt)
             }
             else if(inputData.Pressed(BTN::DPAD_DOWN))
             {
+                ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "switch_action");
+
                 switch(titleSelection)
                 {
                     case TitleItems::NewGame: titleSelection = TitleItems::Quit; break;
@@ -1895,7 +1904,7 @@ void P_4E53::update(const GameTime& gt)
                     LOG(Severity::Info, "Quit selected.");
 
                     //quits main game loop
-                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
+                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "confirm_action");
                     mIsRunning = false;
                 }
                 else if(titleSelection == TitleItems::NewGame)
@@ -1906,7 +1915,7 @@ void P_4E53::update(const GameTime& gt)
                     mTransition.start();
                     mToNewGame = true;
 
-                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "action");
+                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "confirm_action");
 
                 }
             }
@@ -1976,6 +1985,8 @@ void P_4E53::update(const GameTime& gt)
                 /*start transition*/
                 mTransition.start();
                 mToNewGame = true;
+
+                ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "confirm_action");
             }
         }
     }
@@ -2055,6 +2066,7 @@ void P_4E53::update(const GameTime& gt)
            (ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::START))) // CHEAT
         {
             ServiceProvider::setGameState(GameState::ENDSCREEN);
+            ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "maze_finished");
         }
 
         if((ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::BACK))) // CHEAT

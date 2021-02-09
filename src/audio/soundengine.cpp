@@ -305,11 +305,11 @@ void SoundEngine::update()
                 /*custom volume per type*/
                 if (c->audio->soundType == SoundType::Music)
                 {
-                    c->srcVoice->SetVolume(ServiceProvider::getSettings()->audioSettings.MusicVolume);
+                    c->srcVoice->SetVolume(ServiceProvider::getSettings()->audioSettings.MasterVolume * ServiceProvider::getSettings()->audioSettings.MusicVolume);
                 }
                 else if (c->audio->soundType == SoundType::Effect)
                 {
-                    c->srcVoice->SetVolume(ServiceProvider::getSettings()->audioSettings.EffectVolume);
+                    c->srcVoice->SetVolume(ServiceProvider::getSettings()->audioSettings.MasterVolume * ServiceProvider::getSettings()->audioSettings.EffectVolume);
                 }
 
                 c->srcVoice->Start();

@@ -15,7 +15,7 @@ class Coins
 {
     public:
 
-    static constexpr int CoinCount = 6;
+    static constexpr int CoinCount = 8;
     static constexpr float minDistance = 6.5f;
     static constexpr float BaseHeight = 1.35f;
     static constexpr float FadeTime = 0.9f;
