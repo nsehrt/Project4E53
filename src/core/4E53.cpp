@@ -134,6 +134,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
     }
     ServiceProvider::setSettings(settingsLoader.get());
 
+    /*create console output window*/
+    if(settingsLoader.get()->miscSettings.DebugEnabled)
+    {
+        AllocConsole();
+        FILE* dummy = freopen("CONOUT$", "w", stdout);
+    }
+
     ServiceProvider::getLogger()->print<Severity::Info>("Settings file loaded successfully.");
 
     /*maze generator*/
@@ -204,10 +211,6 @@ P_4E53::P_4E53(HINSTANCE hInstance)
     : DX12App(hInstance)
 {
 
-    /*create console output window*/
-    AllocConsole();
-    FILE* dummy = freopen("CONOUT$", "w", stdout);
-
     mWindowCaption = L"Amaze";
 }
 
@@ -230,6 +233,7 @@ P_4E53::~P_4E53()
 /****************/
 bool P_4E53::Initialize()
 {
+
     if (!DX12App::Initialize())
         return false;
 
@@ -2027,6 +2031,8 @@ void P_4E53::update(const GameTime& gt)
         /*update player*/
         mPlayer->update(gt);
 
+        /*TODO update objective indicator*/
+
         //acc time
         roundTime += gt.DeltaTime();
 
@@ -2180,6 +2186,7 @@ void P_4E53::draw(const GameTime& gt)
             int totalSeconds = static_cast<int>(roundTime);
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
+            ImGui::Text("Find all coins to unlock the\ndoor at the end of the maze!");
             ImGui::Text("Time: %02d:%02d", minutes, seconds);
             ImGui::Text("Coins: %d/%d", mPlayer->coinCount(), Coins::CoinCount);
             ImGui::End();

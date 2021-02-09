@@ -446,7 +446,7 @@ void Level::setStartEnd(Grid& grid, Cell* start, Cell* end)
     mGameObjects[prefixEast + std::to_string(index)]->isDrawEnabled = false;
     mGameObjects[prefixEast + std::to_string(index)]->setCollision(false);
 
-    //reset end door TODO
+    //reset end door
     mGameObjects["ENDBLOCKED"]->setCollision(true);
     mGameObjects["ENDGATE"]->setRotation({0.0f, XM_PIDIV2, 0.0f}
 
