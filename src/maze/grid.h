@@ -22,6 +22,16 @@ class Grid
         configureCells();
     }
 
+    void setRandomizer(Randomizer& _rand)
+    {
+        rand = _rand;
+    }
+
+    Randomizer& getRandomizer()
+    {
+        return rand;
+    }
+
     virtual void prepareGrid()
     {
         cells.clear();

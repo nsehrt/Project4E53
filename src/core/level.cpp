@@ -350,7 +350,7 @@ void Level::setupCoins(Grid& grid)
 {
 
     //generate coin placement
-    auto coinPlacement = Coins::getCoinPlacement(*ServiceProvider::getRandomizer(), grid.columns(), grid.rows());
+    auto coinPlacement = Coins::getCoinPlacement(grid.getRandomizer(), grid.columns(), grid.rows());
 
     float baseHalf = mazeBaseWidth / 2.0f;
 

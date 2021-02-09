@@ -1972,7 +1972,7 @@ void P_4E53::update(const GameTime& gt)
             mTransition.start();
 
             roundTime = 0.0f;
-
+            ServiceProvider::getSettings()->gameplaySettings.RandomSeed = -1;
         }
         else if(!mToNewGame)
         {
@@ -1993,7 +1993,7 @@ void P_4E53::update(const GameTime& gt)
     else if (ServiceProvider::getGameState() == GameState::INGAME)
     {
       
-        auto lDir = activeLevel->mLightObjects[0]->getDirection();
+        auto& lDir = activeLevel->mLightObjects[0]->getDirection();
         lDir.x += 0.00025f * gt.DeltaTime();
         XMStoreFloat3(&lDir, XMVector3Normalize(XMLoadFloat3(&lDir)));
         activeLevel->mLightObjects[0]->setDirection(
@@ -2150,6 +2150,21 @@ void P_4E53::draw(const GameTime& gt)
 
         ImGui::End();
 
+        //input seed window
+        ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
+        ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.07f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+        ImGui::Begin("input seed", NULL, windowFlags);
+        ImGui::Text("Maze Seed (-1 = random):");
+        ImGui::InputInt("", &ServiceProvider::getSettings()->gameplaySettings.RandomSeed, 0, 0);
+        bool randPressed = ImGui::Button("Randomize Seed");
+
+        if(randPressed)
+        {
+            ServiceProvider::getSettings()->gameplaySettings.RandomSeed = ServiceProvider::getRandomizer()->nextInt(10000000, 100000);
+        }
+
+        ImGui::End();
     }
     else if(ServiceProvider::getGameState() == GameState::INGAME && imguiWindowOpacity > 0.0f)
     {
@@ -2447,6 +2462,11 @@ void P_4E53::setupNewMaze()
     auto& grid = ServiceProvider::getMaze()->getGrid();
 
     //generate new maze and apply to level
+    LOG(Severity::Info, "Creating maze with seed " << ServiceProvider::getSettings()->gameplaySettings.RandomSeed << "...");
+
+    Randomizer rNew{ ServiceProvider::getSettings()->gameplaySettings.RandomSeed };
+
+    ServiceProvider::getMaze()->setRandomizer(rNew);
     ServiceProvider::getMaze()->generate();
     ServiceProvider::getActiveLevel()->updateToGrid(ServiceProvider::getMaze()->getGrid());
     ServiceProvider::getActiveLevel()->resetPhyObjects();

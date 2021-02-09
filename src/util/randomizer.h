@@ -4,6 +4,7 @@
 #include <memory>
 #include <numeric>
 #include <cassert>
+#include <iostream>
 
 class Randomizer
 {
@@ -16,6 +17,7 @@ class Randomizer
         assert(m_To > m_From);
 
         m_Range = m_To - m_From;
+        m_Seed = seed;
 
         std::random_device rd;
         m_Generator = std::make_unique<std::mt19937>(seed < 0 ? rd() : static_cast<unsigned int>(seed));
@@ -23,6 +25,19 @@ class Randomizer
     };
 
     ~Randomizer() = default;
+
+
+    Randomizer& operator = (Randomizer &r)
+    {
+        m_Generator = std::move(r.m_Generator);
+        m_Distribution = std::move(r.m_Distribution);
+        m_Seed = r.m_Seed;
+        m_From = r.m_From;
+        m_To = r.m_To;
+
+        return *this;
+    }
+    
 
     // return random int in range from-to
     std::uint32_t nextInt() const
@@ -68,5 +83,6 @@ class Randomizer
     std::uint32_t m_From = 0;
     std::uint32_t m_To = 0;
     std::uint32_t m_Range = 0;
+    int m_Seed = -1;
     const float m_Epsilon = 0.0001F;
 };

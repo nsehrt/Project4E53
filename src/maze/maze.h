@@ -57,6 +57,17 @@ class Maze
         return grid;
     }
 
+    void setRandomizer(Randomizer& r)
+    {
+        rand = r;
+        grid.setRandomizer(rand);
+    }
+
+    Randomizer& getRandomizer()
+    {
+        return rand;
+    }
+
     MazeAlgorithm algorithm = MazeAlgorithm::BinaryTree;
 
     private:
