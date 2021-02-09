@@ -7,8 +7,8 @@
     "Display": {
         "Monitor": 0,
         "RefreshRate": 144,
-        "ResolutionWidth": 1920,
-        "ResolutionHeight": 1080,
+        "ResolutionWidth": 1280,
+        "ResolutionHeight": 720,
         "FOV": 70,
         "VSync": 0,
         "WindowMode": 0

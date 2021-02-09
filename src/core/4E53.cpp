@@ -2116,7 +2116,7 @@ void P_4E53::draw(const GameTime& gt)
 
     // Start the Dear ImGui frame
     auto& guiIO = ImGui::GetIO();
-
+    
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -2152,7 +2152,7 @@ void P_4E53::draw(const GameTime& gt)
 
         //input seed window
         ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
-        ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.07f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always);
 
         ImGui::Begin("input seed", NULL, windowFlags);
         ImGui::Text("Maze Seed (-1 = random):");
@@ -2174,7 +2174,7 @@ void P_4E53::draw(const GameTime& gt)
             ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
 
 
-            ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.15f), ImGuiCond_Always, ImVec2(0.f, 0.f));
+            ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always);
 
             ImGui::Begin("ingame", NULL, windowFlags);
             int totalSeconds = static_cast<int>(roundTime);

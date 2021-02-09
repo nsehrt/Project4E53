@@ -193,6 +193,7 @@ bool DX12App::Initialize()
     ImGui::StyleColorsDark();
     imgui_IO = &ImGui::GetIO();
 
+    ImGui_ImplWin32_EnableDpiAwareness();
     ImGui_ImplWin32_Init(mMainWindow);
 
     return true;
@@ -404,7 +405,7 @@ bool DX12App::initMainWindow()
         return false;
     }
 
-    CreateMutexA(0, false, "___dx12app___");
+    CreateMutexA(0, false, "___dx12app_AMAZE___");
     if (GetLastError() == ERROR_ALREADY_EXISTS)
     {
         MessageBox(mMainWindow, L"Application already running!", L"Error", MB_OK);
