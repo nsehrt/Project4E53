@@ -38,22 +38,16 @@ VertexOut VS(VertexIn vin)
     vin.PosL = posL;
 #endif
 
-    // Transform to world space.
     float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);
-
-    // Transform to homogeneous clip space.
     vout.PosH = mul(posW, gViewProj);
 	
-	// Output vertex attributes for interpolation across triangle.
 	vout.TexC = mul(float4(vin.TexC, 0.0f, 1.0f), matData.MatTransform).xy;
 	
     return vout;
 }
 
-/*only use this for the purpose of clipping, use null pixel shader for opaque objects*/
 void PS(VertexOut pin) 
 {
-	// Fetch the material data.
 	MaterialData matData = gMaterialData[gMaterialIndex];
 	float4 diffuseAlbedo = matData.DiffuseAlbedo;
     uint diffuseMapIndex = matData.DiffuseMapIndex;

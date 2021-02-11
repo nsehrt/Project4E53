@@ -118,8 +118,7 @@ float4 PS(GeoOut pin) : SV_Target
         bumpedNormalW, toEyeW, shadowFactor);
 
     float4 litColor = diffuseAlbedo + directLight;
-	
-    // Common convention to take alpha from diffuse albedo.
+
     litColor.a = diffuseAlbedo.a; 
 
     return litColor;

@@ -18,11 +18,9 @@ VertexOut VS(VertexIn vin)
 	VertexOut vout = (VertexOut)0.0f;
     MaterialData matData = gMaterialData[gMaterialIndex];
 
-    // Transform to world space.
     float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);
     vout.PosW = posW.xyz;
 
-    // Transform to homogeneous clip space.
     vout.PosH = mul(posW, gViewProj);
 
 	vout.TexC = mul(float4(vin.TexC, 0.0f, 1.0f), matData.MatTransform).xy;

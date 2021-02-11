@@ -67,10 +67,14 @@ void BulletController::updateAction(btCollisionWorld* collisionWorld, btScalar d
     if(pressedRun)
     {
         intendedVelocity *= runSpeed;
+        if(intendedVelocity > 0.1f)
+        intendedVelocity = std::clamp(intendedVelocity, runSpeed * 0.7f, runSpeed);
     }
     else
     {
         intendedVelocity *= walkSpeed;
+        if(intendedVelocity > 0.1f)
+        intendedVelocity = std::clamp(intendedVelocity, walkSpeed * 0.7f, walkSpeed);
     }
     
     /* figure out the next state */

@@ -43,6 +43,8 @@ public:
     void setupMazeGrid(int width, int height);
     void setupCoins(Grid& grid);
 
+    void setIndicator(const GameTime& gt);
+
     /* deactive maze walls according to maze grid*/
     void updateToGrid(Grid& grid);
 

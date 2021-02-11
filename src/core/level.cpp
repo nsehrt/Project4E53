@@ -194,6 +194,9 @@ void Level::setupMazeGrid(int width, int height)
 {
     const std::string fenceModel = "WoodenFence_03";
     const std::string coinModel = "coin";
+    const std::string indicatorModel = "box";
+
+    /*indicator json*/
 
     /*coin json*/
     json coinJson = R"({
@@ -420,6 +423,13 @@ void Level::updateToGrid(Grid& grid)
         y++;
         x = 0;
     }
+
+}
+
+void Level::setIndicator(const GameTime& gt)
+{
+
+
 
 }
 

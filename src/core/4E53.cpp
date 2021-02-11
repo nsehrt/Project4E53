@@ -2033,6 +2033,8 @@ void P_4E53::update(const GameTime& gt)
 
         /*TODO update objective indicator*/
 
+        activeLevel->setIndicator(gt);
+
         //acc time
         roundTime += gt.DeltaTime();
 

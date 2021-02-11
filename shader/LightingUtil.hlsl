@@ -1,7 +1,5 @@
 /*Max amount of lights possible*/
 #define MaxLights 8
-
-/*light struct that can describe parallel, point and spotlight*/
 struct Light
 {
     float3 Strength;
@@ -12,7 +10,6 @@ struct Light
     float SpotPower;    // spot light only
 };
 
-/*material properties*/
 struct Material
 {
     float4 DiffuseAlbedo;
@@ -20,13 +17,11 @@ struct Material
     float Shininess;
 };
 
-/*this is used to calculate light fall off on the edges*/
 float CalcAttenuation(float d, float falloffStart, float falloffEnd)
 {
     return saturate((falloffEnd-d) / (falloffEnd - falloffStart));
 }
 
-// gives an approximation of the Fresnel effect
 float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
 {
     float cosIncidentAngle = saturate(dot(normal, lightVec));
@@ -37,7 +32,6 @@ float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
     return reflectPercent;
 }
 
-/*lighting formula*/
 float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, Material mat)
 {
     const float m = mat.Shininess * 256.0f;
@@ -54,10 +48,9 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
 
 float3 ComputeDirectionalLight(Light L, Material mat, float3 normal, float3 toEye)
 {
-    // The light vector aims opposite the direction the light rays travel.
+
     float3 lightVec = -L.Direction;
 
-    // Scale light down by Lambert's cosine law.
     float ndotl = max(dot(lightVec, normal), 0.0f);
     float3 lightStrength = L.Strength * ndotl;
 
@@ -67,23 +60,17 @@ float3 ComputeDirectionalLight(Light L, Material mat, float3 normal, float3 toEy
 float3 ComputePointLight(Light L, Material mat, float3 pos, float3 normal, float3 toEye)
 {
     float3 returnVar = float3(0.0f,0.0f,0.0f);
-    // The vector from the surface to the light.
-    float3 lightVec = L.Position - pos;
 
-    // The distance from surface to light.
+    float3 lightVec = L.Position - pos;
     float d = length(lightVec);
 
-    // Range test.
     if(d < L.FalloffEnd)
     {
-        // Normalize the light vector.
         lightVec /= d;
 
-        // Scale light down by Lambert's cosine law.
         float ndotl = max(dot(lightVec, normal), 0.0f);
         float3 lightStrength = L.Strength * ndotl;
 
-        // Attenuate light by distance.
         float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
         lightStrength *= att;
 
@@ -97,26 +84,18 @@ float3 ComputeSpotLight(Light L, Material mat, float3 pos, float3 normal, float3
 {
     float3 returnVar = float3(0.0f,0.0f,0.0f);
     
-    // The vector from the surface to the light.
     float3 lightVec = L.Position - pos;
-
-    // The distance from surface to light.
     float d = length(lightVec);
 
-    // Range test.
     if(d < L.FalloffEnd){
-        // Normalize the light vector.
         lightVec /= d;
 
-        // Scale light down by Lambert's cosine law.
         float ndotl = max(dot(lightVec, normal), 0.0f);
         float3 lightStrength = L.Strength * ndotl;
 
-        // Attenuate light by distance.
         float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
         lightStrength *= att;
 
-        // Scale by spotlight
         float spotFactor = pow(max(dot(-lightVec, L.Direction), 0.0f), L.SpotPower);
         lightStrength *= spotFactor;
 
@@ -152,7 +131,6 @@ float4 ComputeLightingNoDirectional(Light gLights[MaxLights], Material mat,
     return float4(result, 0.0f);
 }
 
-/*add all light sources to one final lighting color*/
 float4 ComputeLighting(Light gLights[MaxLights], Material mat,
                        float3 pos, float3 normal, float3 toEye,
                        float3 shadowFactor)

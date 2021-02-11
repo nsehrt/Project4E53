@@ -16,7 +16,6 @@ VertexOut VS(VertexIn vin)
 {
 	VertexOut vout = (VertexOut)0.0f;
 
-    // local Position is already in homogeneous clip space
     vout.PosH = float4(vin.PosL, 1.0f);
 	vout.TexC = vin.TexC;
 	
@@ -25,7 +24,6 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-	/*sample the shadow map*/
     return float4(gShadowMap.Sample(gsamLinearWrap, pin.TexC).rrr, 1.0f);
 }
 

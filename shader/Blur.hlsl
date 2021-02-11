@@ -32,18 +32,15 @@ void HorizontalBlurCS(int3 groupThreadID : SV_GroupThreadID,
 
 	if(groupThreadID.x < gBlurRadius)
 	{
-		// Clamp out of bound samples that occur at image borders.
 		int x = max(dispatchThreadID.x - gBlurRadius, 0);
 		gCache[groupThreadID.x] = gInput[int2(x, dispatchThreadID.y)];
 	}
 	if(groupThreadID.x >= N-gBlurRadius)
 	{
-		// Clamp out of bound samples that occur at image borders.
 		int x = min(dispatchThreadID.x + gBlurRadius, gInput.Length.x-1);
 		gCache[groupThreadID.x+2*gBlurRadius] = gInput[int2(x, dispatchThreadID.y)];
 	}
 
-	// Clamp out of bound samples that occur at image borders.
 	gCache[groupThreadID.x+gBlurRadius] = gInput[min(dispatchThreadID.xy, gInput.Length.xy-1)];
 
 	GroupMemoryBarrierWithGroupSync();
@@ -68,22 +65,17 @@ void VerticalBlurCS(int3 groupThreadID : SV_GroupThreadID,
 
 	if(groupThreadID.y < gBlurRadius)
 	{
-		// Clamp out of bound samples that occur at image borders.
 		int y = max(dispatchThreadID.y - gBlurRadius, 0);
 		gCache[groupThreadID.y] = gInput[int2(dispatchThreadID.x, y)];
 	}
 	if(groupThreadID.y >= N-gBlurRadius)
 	{
-		// Clamp out of bound samples that occur at image borders.
 		int y = min(dispatchThreadID.y + gBlurRadius, gInput.Length.y-1);
 		gCache[groupThreadID.y+2*gBlurRadius] = gInput[int2(dispatchThreadID.x, y)];
 	}
 	
-	// Clamp out of bound samples that occur at image borders.
 	gCache[groupThreadID.y+gBlurRadius] = gInput[min(dispatchThreadID.xy, gInput.Length.xy-1)];
 
-
-	// Wait for all threads to finish.
 	GroupMemoryBarrierWithGroupSync();
 
 	float4 blurColor = float4(0, 0, 0, 0);

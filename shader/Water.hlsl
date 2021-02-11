@@ -34,12 +34,10 @@ VertexOut VS(VertexIn vin)
 	
     MaterialData matData = gMaterialData[gMaterialIndex];
 
-	// Transform to world space space.
 	vout.PosW     = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
 	vout.NormalW  = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
 	vout.TangentW = mul(vin.TangentL, (float3x3)gWorld);
 
-	// Output vertex attributes for interpolation across triangle.
 	vout.Tex            = mul(float4(vin.Tex, 0.0f, 1.0f), matData.MatTransform).xy;
 	vout.WaveDispTex0   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement1Transform).xy;
 	vout.WaveDispTex1   = mul(float4(vin.Tex, 0.0f, 1.0f), matData.Displacement2Transform).xy;
@@ -141,7 +139,6 @@ DomainOut DS(PatchTess patchTess,
 	DomainOut dout;
 	MaterialData matData = gMaterialData[gMaterialIndex];
 
-	// Interpolate patch attributes to generated vertices.
 	dout.PosW           = bary.x*tri[0].PosW           + bary.y*tri[1].PosW           + bary.z*tri[2].PosW;
 	dout.ShadowPosH     = bary.x*tri[0].ShadowPosH           + bary.y*tri[1].ShadowPosH           + bary.z*tri[2].ShadowPosH;
 	dout.NormalW        = bary.x*tri[0].NormalW        + bary.y*tri[1].NormalW        + bary.z*tri[2].NormalW;
@@ -152,26 +149,17 @@ DomainOut DS(PatchTess patchTess,
 	dout.WaveNormalTex0 = bary.x*tri[0].WaveNormalTex0 + bary.y*tri[1].WaveNormalTex0 + bary.z*tri[2].WaveNormalTex0;
 	dout.WaveNormalTex1 = bary.x*tri[0].WaveNormalTex1 + bary.y*tri[1].WaveNormalTex1 + bary.z*tri[2].WaveNormalTex1;
 
-	// Interpolating normal can unnormalize it, so normalize it.
 	dout.NormalW = normalize(dout.NormalW);
 	
-	//
-	// Displacement mapping.
-	//
-	
-	// Choose the mipmap level based on distance to the eye; specifically, choose
-	// the next miplevel every MipInterval units, and clamp the miplevel in [0,6].
 	const float MipInterval = 20.0f;
 	float mipLevel = clamp( (distance(dout.PosW, gEyePosW) - MipInterval) / MipInterval, 0.0f, 6.0f);
 	
-	// Sample height map (stored in alpha channel).
 	float h0 = gTextureMaps[matData.Displacement1Index].SampleLevel(gsamLinearWrap, dout.WaveDispTex0, mipLevel).a;
 	float h1 = gTextureMaps[matData.Displacement2Index].SampleLevel(gsamLinearWrap, dout.WaveDispTex1, mipLevel).a;
 
 	dout.PosW.y += matData.MiscFloat1*h0;
 	dout.PosW.y += matData.MiscFloat2*h1;
 
-	// Project to homogeneous clip space.
 	dout.PosH = mul(float4(dout.PosW, 1.0f), gViewProj);
 	
 	return dout;
@@ -181,17 +169,14 @@ DomainOut DS(PatchTess patchTess,
 
 float4 PS(DomainOut pin) : SV_Target
 {
-	// Fetch the material data.
 	MaterialData matData = gMaterialData[gMaterialIndex];
 	float4 diffuseAlbedo = matData.DiffuseAlbedo;
 	float3 fresnelR0 = matData.FresnelR0;
 	float  roughness = matData.Roughness;
 	uint diffuseMapIndex = matData.DiffuseMapIndex;
-    
-	// Interpolating normal can unnormalize it, so renormalize it.
+
     pin.NormalW = normalize(pin.NormalW);
 
-    // Vector from point being lit to eye. 
     float3 toEyeW = normalize(gEyePosW - pin.PosW);
 
 	toEyeW.x *= -1.0f;
@@ -206,11 +191,8 @@ float4 PS(DomainOut pin) : SV_Target
 	float3 bumpedNormalW1 = NormalSampleToWorldSpace(normalMapSample1, pin.NormalW, pin.TangentW);
 	 
 	float3 bumpedNormalW = normalize(bumpedNormalW0 + bumpedNormalW1);
-
-    // Light terms.
     float4 ambient = gAmbientLight*diffuseAlbedo;
 
-    // Only the first light casts a shadow.
     float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
     
     shadowFactor[0] = saturate(CalcShadowFactor(pin.ShadowPosH) + SHADOW_ADD_BRIGHTNESS);

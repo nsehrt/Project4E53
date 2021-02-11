@@ -39,19 +39,15 @@ static const float2 texCoord[4] =
     float2(1.0f,0.0f)
 };
 
-/*calculate the amount the fragment is in shadow*/
 float CalcShadowFactor(float4 shadowPosH)
 {
-    // Complete projection by doing division by w.
     shadowPosH.xyz /= shadowPosH.w;
 
-    // Depth in NDC space.
     float depth = shadowPosH.z;
 
     uint width, height, numMips;
     gShadowMap.GetDimensions(0, width, height, numMips);
 
-    // Texel size.
     float dx = 1.0f / (float)width;
 
     float percentLit = 0.0f;
