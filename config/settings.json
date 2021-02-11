@@ -17,7 +17,8 @@
         "MazeAlgorithm": 4,
         "MazeBraidRatio": 0.2,
         "TrailEnabled": false,
-        "RandomSeed": -1
+        "RandomSeed": -1,
+        "IndicatorEnabled": true
     },
     "Graphic": {
         "NumFrameResources": 3,

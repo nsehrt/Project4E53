@@ -1872,6 +1872,12 @@ void P_4E53::update(const GameTime& gt)
                     0.5699999928474426f }
             );
             roundTime = 0.0f;
+
+            if(ServiceProvider::getSettings()->gameplaySettings.IndicatorEnabled)
+            {
+                activeLevel->indicatorOn();
+            }
+            
         }
         else if(!mToNewGame)
         {
@@ -2031,8 +2037,7 @@ void P_4E53::update(const GameTime& gt)
         /*update player*/
         mPlayer->update(gt);
 
-        /*TODO update objective indicator*/
-
+        /*update objective indicator*/
         activeLevel->setIndicator(gt);
 
         //acc time
@@ -2075,6 +2080,7 @@ void P_4E53::update(const GameTime& gt)
         {
             ServiceProvider::setGameState(GameState::ENDSCREEN);
             ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "maze_finished");
+            activeLevel->indicatorOff();
         }
 
         if((ServiceProvider::getSettings()->miscSettings.DebugEnabled && inputData.Pressed(BTN::BACK))) // CHEAT

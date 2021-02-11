@@ -44,6 +44,8 @@ public:
     void setupCoins(Grid& grid);
 
     void setIndicator(const GameTime& gt);
+    void indicatorOn();
+    void indicatorOff();
 
     /* deactive maze walls according to maze grid*/
     void updateToGrid(Grid& grid);
@@ -104,6 +106,8 @@ public:
     std::string loadedLevel;
 
     float mazeBaseWidth = 0.0f;
+    float prevIndicatorAngle = 0.0f;
+    float indicatorAngle = 0.0f;
 
 private:
 

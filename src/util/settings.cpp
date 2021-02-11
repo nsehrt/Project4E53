@@ -69,6 +69,7 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.gameplaySettings.MazeBraidRatio = settingsJson["Gameplay"]["MazeBraidRatio"];
         settings.gameplaySettings.TrailEnabled = settingsJson["Gameplay"]["TrailEnabled"];
         settings.gameplaySettings.RandomSeed = settingsJson["Gameplay"]["RandomSeed"];
+        settings.gameplaySettings.IndicatorEnabled = settingsJson["Gameplay"]["IndicatorEnabled"];
 
         if(settings.gameplaySettings.MazeAlgorithm < 0)
         {

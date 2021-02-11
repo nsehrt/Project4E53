@@ -39,6 +39,7 @@ struct GameplaySettings
     float MazeBraidRatio = 0.0f;
     bool TrailEnabled = false;
     int RandomSeed = -1;
+    bool IndicatorEnabled = true;
 };
 
 struct AudioSettings

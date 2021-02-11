@@ -190,11 +190,21 @@ bool Level::load(const std::string& levelFile)
     return true;
 }
 
+void Level::indicatorOn()
+{
+    mGameObjects["INDICATOR"]->isDrawEnabled = true;
+}
+
+void Level::indicatorOff()
+{
+    mGameObjects["INDICATOR"]->isDrawEnabled = false;
+}
+
 void Level::setupMazeGrid(int width, int height)
 {
     const std::string fenceModel = "WoodenFence_03";
     const std::string coinModel = "coin";
-    const std::string indicatorModel = "box";
+    const std::string indicatorModel = "sphere_Blue";
 
     /*indicator json*/
 
@@ -223,6 +233,33 @@ void Level::setupMazeGrid(int width, int height)
         })"_json;
 
     coinJson["Model"] = coinModel;
+
+    /*indicator json*/
+
+    json indicatorJson = R"({
+        "ColliderType" : 0,
+        "CollisionEnabled" : false,
+        "DrawEnabled" : false,
+        "Model" : "",
+        "Name" : "INDICATOR",
+        "Position" : [
+                    0,0,0
+                ] ,
+        "RenderType" : "Default",
+        "Rotation" : [
+            0.0,
+            0.0,
+            0.0
+           ],
+        "Scale" : [
+            1,1,1
+            ],
+        "ShadowEnabled" : false,
+        "FrustumCulled": false,
+        "ShadowForced" : false
+        })"_json;
+
+    indicatorJson["Model"] = indicatorModel;
 
     /*base fence json*/
     json fenceJson = R"({
@@ -292,7 +329,7 @@ void Level::setupMazeGrid(int width, int height)
 
     const auto& modelExtents = ServiceProvider::getCollisionDatabase()->getExtents(fenceModel);
 
-    float baseWidth = modelExtents.x + modelExtents.z;// 3.552544116973877f + 0.24824516475200653f;
+    float baseWidth = modelExtents.x + modelExtents.z;
     float baseHalf = baseWidth / 2.0f;
     mazeBaseWidth = baseWidth;
 
@@ -343,6 +380,16 @@ void Level::setupMazeGrid(int width, int height)
     {
         addCoin(coinJson, i, { i * 10.0f, 0.0f });
     }
+
+    /*add indicator*/
+
+    {
+        auto gameObject = std::make_unique<GameObject>(indicatorJson, amountObjectCBs);
+        amountObjectCBs += 4;
+
+        mGameObjects[gameObject->Name] = std::move(gameObject);
+    }
+
 
     /*recalculate render orders*/
     calculateRenderOrderSizes();
@@ -428,8 +475,65 @@ void Level::updateToGrid(Grid& grid)
 
 void Level::setIndicator(const GameTime& gt)
 {
+    prevIndicatorAngle = indicatorAngle;
 
+    std::vector<GameObject*> coins{};
+    const auto mPlayer = ServiceProvider::getPlayer();
+    const auto pPosF3 = mPlayer->getPosition();
+    const XMVECTOR pPos = XMLoadFloat3(&pPosF3);
+    float exactAngle = 0.0f;
 
+    //still coins to collect
+    if(mPlayer->coinCount() != Coins::CoinCount)
+    {
+        for(int i = 0; i < Coins::CoinCount; i++)
+        {
+            if(!mPlayer->coins[i].collected)
+                coins.push_back(mGameObjects["&COIN" + std::to_string(i)].get());
+        }
+
+        std::sort(coins.begin(), coins.end(), [&](const GameObject* a, const GameObject* b)
+                  {
+                      auto aPos = a->getPosition();
+                      auto bPos = b->getPosition();
+
+                      XMVECTOR lengthA = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&aPos), pPos));
+                      XMVECTOR lengthB = XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&bPos), pPos));
+
+                      XMFLOAT3 t{}, s{};
+                      XMStoreFloat3(&t, lengthA);
+                      XMStoreFloat3(&s, lengthB);
+
+                      return t.x < s.x;
+                  });
+
+        const XMFLOAT2 betweenVector = { coins[0]->getPosition().x - pPosF3.x,
+                                  coins[0]->getPosition().z - pPosF3.z };
+
+        exactAngle = MathHelper::angleFromVector2(betweenVector);
+    }
+    //else point to door
+    else
+    {
+        const auto dPos = mGameObjects["ENDGATE"]->getPosition();
+
+        const XMFLOAT2 betweenVector = { dPos.x - pPosF3.x,
+                                         dPos.z - pPosF3.z };
+
+        exactAngle = MathHelper::angleFromVector2(betweenVector);
+    }
+
+    indicatorAngle = MathHelper::lerpAngle(prevIndicatorAngle, exactAngle, gt.DeltaTime()*5.0f);
+
+    const float newX = std::cos(indicatorAngle) * 2.0f - std::sin(indicatorAngle) * 0.0f;
+    const float newY = std::sin(indicatorAngle) * 2.0f + std::cos(indicatorAngle) * 0.0f;
+
+    XMFLOAT3 fPos = pPosF3;
+    fPos.x += newX;
+    fPos.z += newY;
+    fPos.y += 1.5f;
+
+    mGameObjects["INDICATOR"]->setPosition(fPos);
 
 }
 
