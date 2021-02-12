@@ -204,7 +204,7 @@ void Level::setupMazeGrid(int width, int height)
 {
     const std::string fenceModel = "WoodenFence_03";
     const std::string coinModel = "coin";
-    const std::string indicatorModel = "sphere_Blue";
+    const std::string indicatorModel = "arrow";
 
     /*indicator json*/
 
@@ -523,10 +523,10 @@ void Level::setIndicator(const GameTime& gt)
         exactAngle = MathHelper::angleFromVector2(betweenVector);
     }
 
-    indicatorAngle = MathHelper::lerpAngle(prevIndicatorAngle, exactAngle, gt.DeltaTime()*5.0f);
+    indicatorAngle = MathHelper::lerpAngle(prevIndicatorAngle, exactAngle, gt.DeltaTime()*3.5f);
 
-    const float newX = std::cos(indicatorAngle) * 2.0f - std::sin(indicatorAngle) * 0.0f;
-    const float newY = std::sin(indicatorAngle) * 2.0f + std::cos(indicatorAngle) * 0.0f;
+    const float newX = std::cos(indicatorAngle) * 1.75f;// -std::sin(indicatorAngle) * 0.0f;
+    const float newY = std::sin(indicatorAngle) * 1.75f;// +std::cos(indicatorAngle) * 0.0f;
 
     XMFLOAT3 fPos = pPosF3;
     fPos.x += newX;
@@ -534,6 +534,7 @@ void Level::setIndicator(const GameTime& gt)
     fPos.y += 1.5f;
 
     mGameObjects["INDICATOR"]->setPosition(fPos);
+    mGameObjects["INDICATOR"]->setRotation({ 0.0f, -indicatorAngle + XM_PIDIV2 , 0.0f });
 
 }
 

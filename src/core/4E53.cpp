@@ -2169,6 +2169,22 @@ void P_4E53::draw(const GameTime& gt)
         ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always);
 
         ImGui::Begin("input seed", NULL, windowFlags);
+        bool btnInd = false;
+        
+        if(ServiceProvider::getSettings()->gameplaySettings.IndicatorEnabled)
+        {
+            btnInd = ImGui::Button("Objective indicator is on.");
+        }
+        else
+        {
+            btnInd = ImGui::Button("Objective indicator is off.");
+        }
+
+        if(btnInd)
+        {
+            ServiceProvider::getSettings()->gameplaySettings.IndicatorEnabled = !ServiceProvider::getSettings()->gameplaySettings.IndicatorEnabled;
+        }
+        ImGui::Separator();
         ImGui::Text("Maze Seed (-1 = random):");
         ImGui::InputInt("", &ServiceProvider::getSettings()->gameplaySettings.RandomSeed, 0, 0);
         bool randPressed = ImGui::Button("Randomize Seed");
