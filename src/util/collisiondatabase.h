@@ -6,7 +6,7 @@
 struct CollisionInfo
 {
     int shapeType = 0;
-    DirectX::XMFLOAT3 extents;
+    DirectX::XMFLOAT3 extents{};
 };
 
 class CollisionDatabase
