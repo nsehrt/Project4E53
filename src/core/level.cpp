@@ -705,6 +705,18 @@ void Level::update(const GameTime& gt)
                 }
 
             }
+
+            if(gameObj.first.rfind("BANNER", 0) == 0 && gstate == GameState::TITLE)
+            {
+                auto rot = gameObj.second->getRotation();
+
+                float scale = 2.5f + (std::cos(gt.TotalTime() * 0.5f) * 0.25f);
+                float x = -XM_PIDIV4 / 4.0f + std::sin(gt.TotalTime() * 0.5f) * (XM_PIDIV4 / 2.0f);
+
+                gameObj.second->setScale({ scale, scale,scale });
+                gameObj.second->setRotation({ x, rot.y, rot.z });
+            }
+
         }
         
     }
