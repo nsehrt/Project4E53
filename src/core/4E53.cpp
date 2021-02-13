@@ -2135,6 +2135,9 @@ void P_4E53::draw(const GameTime& gt)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    int centerX = ServiceProvider::getSettings()->displaySettings.ResolutionWidth / 2;
+    int centerY = ServiceProvider::getSettings()->displaySettings.ResolutionHeight / 2;
+
     // Prepare all dear imgui windows
 
     //ImGui::ShowDemoWindow();
@@ -2156,7 +2159,7 @@ void P_4E53::draw(const GameTime& gt)
         ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
 
 
-        ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowPos(ImVec2(centerX, centerY), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         ImGui::Begin("Title menu", NULL, windowFlags);
         ImGui::Text(titleSelection == TitleItems::NewGame ? ">START GAME" : "START GAME");
@@ -2166,7 +2169,7 @@ void P_4E53::draw(const GameTime& gt)
 
         //input seed window
         ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
-        ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(ImVec2(10.0f, centerY * 0.4f), ImGuiCond_Always);
 
         ImGui::Begin("input seed", NULL, windowFlags);
         bool btnInd = false;
@@ -2204,7 +2207,7 @@ void P_4E53::draw(const GameTime& gt)
             ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
 
 
-            ImGui::SetNextWindowPos(ImVec2(10.0f, guiIO.DisplaySize.y * 0.2f), ImGuiCond_Always);
+            ImGui::SetNextWindowPos(ImVec2(10.0f, centerY * 0.4f), ImGuiCond_Always);
 
             ImGui::Begin("ingame", NULL, windowFlags);
             int totalSeconds = static_cast<int>(roundTime);
@@ -2224,7 +2227,7 @@ void P_4E53::draw(const GameTime& gt)
                 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
             ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
             
-            ImGui::SetNextWindowPos(ImVec2(guiIO.DisplaySize.x * 0.5f, guiIO.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+            ImGui::SetNextWindowPos(ImVec2(centerX, centerY), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
             ImGui::Begin("end screen", NULL, windowFlags);
             int totalSeconds = static_cast<int>(roundTime);
