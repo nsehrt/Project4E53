@@ -221,7 +221,11 @@ P_4E53::~P_4E53()
     ServiceProvider::getInputManager()->Stop();
     inputThread->join();
 
-    ServiceProvider::getAudio()->forceStop(bgmID);
+    if(bgmID != -1)
+    {
+        ServiceProvider::getAudio()->forceStop(bgmID);
+    }
+
     ServiceProvider::getAudio()->Stop();
     audioThread->join();
 
@@ -359,7 +363,7 @@ bool P_4E53::Initialize()
         // Look: -0.457481 | -0.368652 | 0.809201 
         // Up: -0.181437 | 0.929568 | 0.320913
         titleCamera->lookAt(XMFLOAT3{ -5.42424f,8.21301f,-77.1866f },
-                            XMFLOAT3{ -5.42424f - 0.457481f,8.21301f -0.368652f, -77.1866f + 0.809201 },
+                            XMFLOAT3{ -5.42424f - 0.457481f,8.21301f -0.368652f, -77.1866f + 0.809201f},
                             XMFLOAT3{ 0,1,0});
 
         mPlayer = std::make_shared<Player>("geo");
@@ -497,8 +501,11 @@ bool P_4E53::Initialize()
     //transition in on game start
     mTransition.start();
 
-    bgmID = ServiceProvider::getAudioGuid();
-    ServiceProvider::getAudio()->add(bgmID, "bgm");
+    if(!ServiceProvider::getSettings()->miscSettings.EditModeEnabled)
+    {
+        bgmID = ServiceProvider::getAudioGuid();
+        ServiceProvider::getAudio()->add(bgmID, "bgm");
+    }
 
     return true;
 }
@@ -2135,8 +2142,8 @@ void P_4E53::draw(const GameTime& gt)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    int centerX = ServiceProvider::getSettings()->displaySettings.ResolutionWidth / 2;
-    int centerY = ServiceProvider::getSettings()->displaySettings.ResolutionHeight / 2;
+    float centerX = ServiceProvider::getSettings()->displaySettings.ResolutionWidth / 2.0f;
+    float centerY = ServiceProvider::getSettings()->displaySettings.ResolutionHeight / 2.0f;
 
     // Prepare all dear imgui windows
 

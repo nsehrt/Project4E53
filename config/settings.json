@@ -7,8 +7,8 @@
     "Display": {
         "Monitor": 0,
         "RefreshRate": 144,
-        "ResolutionWidth": 1280,
-        "ResolutionHeight": 720,
+        "ResolutionWidth": 1600,
+        "ResolutionHeight": 900,
         "FOV": 70,
         "VSync": 0,
         "WindowMode": 0
@@ -35,7 +35,7 @@
     "Misc": {
         "DebugEnabled": 1,
         "DebugQuadEnabled": 0,
-        "EditModeEnabled": 0,
+        "EditModeEnabled": 1,
         "DrawFPSEnabled": 1
     }
 }
