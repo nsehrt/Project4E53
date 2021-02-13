@@ -192,12 +192,12 @@ bool Level::load(const std::string& levelFile)
 
 void Level::indicatorOn()
 {
-    mGameObjects["INDICATOR"]->isDrawEnabled = true;
+    mGameObjects["&INDICATOR"]->isDrawEnabled = true;
 }
 
 void Level::indicatorOff()
 {
-    mGameObjects["INDICATOR"]->isDrawEnabled = false;
+    mGameObjects["&INDICATOR"]->isDrawEnabled = false;
 }
 
 void Level::setupMazeGrid(int width, int height)
@@ -241,7 +241,7 @@ void Level::setupMazeGrid(int width, int height)
         "CollisionEnabled" : false,
         "DrawEnabled" : false,
         "Model" : "",
-        "Name" : "INDICATOR",
+        "Name" : "&INDICATOR",
         "Position" : [
                     0,0,0
                 ] ,
@@ -533,8 +533,8 @@ void Level::setIndicator(const GameTime& gt)
     fPos.z += newY;
     fPos.y += 1.5f;
 
-    mGameObjects["INDICATOR"]->setPosition(fPos);
-    mGameObjects["INDICATOR"]->setRotation({ 0.0f, -indicatorAngle + XM_PIDIV2 , 0.0f });
+    mGameObjects["&INDICATOR"]->setPosition(fPos);
+    mGameObjects["&INDICATOR"]->setRotation({ 0.0f, -indicatorAngle + XM_PIDIV2 , 0.0f });
 
 }
 

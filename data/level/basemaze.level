@@ -2910,30 +2910,6 @@
             "ShadowForced": false
         },
         {
-            "CollisionEnabled": false,
-            "DrawEnabled": false,
-            "Model": "arrow",
-            "Name": "INDICATOR",
-            "Position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "RenderType": "Default",
-            "Rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "ShadowEnabled": false,
-            "ShadowForced": false
-        },
-        {
             "CollisionEnabled": true,
             "DrawEnabled": true,
             "Model": "Plant_03_a",
@@ -4825,7 +4801,7 @@
             "ShadowForced": false
         },
         {
-            "CollisionEnabled": true,
+            "CollisionEnabled": false,
             "DrawEnabled": true,
             "Model": "amaze",
             "Name": "BANNER",

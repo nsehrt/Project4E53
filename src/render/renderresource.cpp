@@ -651,62 +651,62 @@ void RenderResource::buildShaders()
 NULL, NULL
     };
 
-    mShaders["defaultVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["defaultPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["defaultVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["defaultPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["skinnedVS"] = d3dUtil::CompileShader(L"shader\\Skinned.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["skinnedBindVS"] = d3dUtil::CompileShader(L"shader\\Skinned.hlsl", nullptr, "BindVS", "vs_5_1");
+    mShaders["skinnedVS"] = d3dUtil::CompileShader(L"data\\shader\\Skinned.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["skinnedBindVS"] = d3dUtil::CompileShader(L"data\\shader\\Skinned.hlsl", nullptr, "BindVS", "vs_5_1");
 
-    mShaders["waterVS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["waterDS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "DS", "ds_5_1");
-    mShaders["waterHS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "HS", "hs_5_1");
-    mShaders["waterPS"] = d3dUtil::CompileShader(L"shader\\Water.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["waterVS"] = d3dUtil::CompileShader(L"data\\shader\\Water.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["waterDS"] = d3dUtil::CompileShader(L"data\\shader\\Water.hlsl", nullptr, "DS", "ds_5_1");
+    mShaders["waterHS"] = d3dUtil::CompileShader(L"data\\shader\\Water.hlsl", nullptr, "HS", "hs_5_1");
+    mShaders["waterPS"] = d3dUtil::CompileShader(L"data\\shader\\Water.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["grassVS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["grassGS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "GS", "gs_5_1");
-    mShaders["grassPS"] = d3dUtil::CompileShader(L"shader\\Grass.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["grassVS"] = d3dUtil::CompileShader(L"data\\shader\\Grass.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["grassGS"] = d3dUtil::CompileShader(L"data\\shader\\Grass.hlsl", nullptr, "GS", "gs_5_1");
+    mShaders["grassPS"] = d3dUtil::CompileShader(L"data\\shader\\Grass.hlsl", nullptr, "PS", "ps_5_1");
 
     /*particle system shaders*/
-    mShaders["particle_FireVS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["particle_FireGS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "GS", "gs_5_1");
-    mShaders["particle_FirePS"] = d3dUtil::CompileShader(L"shader\\Fire.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["particle_FireVS"] = d3dUtil::CompileShader(L"data\\shader\\Fire.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["particle_FireGS"] = d3dUtil::CompileShader(L"data\\shader\\Fire.hlsl", nullptr, "GS", "gs_5_1");
+    mShaders["particle_FirePS"] = d3dUtil::CompileShader(L"data\\shader\\Fire.hlsl", nullptr, "PS", "ps_5_1");
 
 
-    mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
-    mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
+    mShaders["defaultAlphaVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "VS", "vs_5_1");
+    mShaders["defaultAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
-    mShaders["defaultNoNormalVS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", normalMapDefines, "VS", "vs_5_1");
-    mShaders["defaultNoNormalPS"] = d3dUtil::CompileShader(L"shader\\Default.hlsl", normalMapDefines, "PS", "ps_5_1");
+    mShaders["defaultNoNormalVS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "VS", "vs_5_1");
+    mShaders["defaultNoNormalPS"] = d3dUtil::CompileShader(L"data\\shader\\Default.hlsl", normalMapDefines, "PS", "ps_5_1");
 
-    mShaders["terrainVS"] = d3dUtil::CompileShader(L"shader\\Terrain.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["terrainPS"] = d3dUtil::CompileShader(L"shader\\Terrain.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["terrainVS"] = d3dUtil::CompileShader(L"data\\shader\\Terrain.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["terrainPS"] = d3dUtil::CompileShader(L"data\\shader\\Terrain.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["skyVS"] = d3dUtil::CompileShader(L"shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["skyPS"] = d3dUtil::CompileShader(L"shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["skyVS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["skyPS"] = d3dUtil::CompileShader(L"data\\shader\\Sky.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["hitboxVS"] = d3dUtil::CompileShader(L"shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["hitboxPS"] = d3dUtil::CompileShader(L"shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["hitboxVS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["hitboxPS"] = d3dUtil::CompileShader(L"data\\shader\\Hitbox.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["shadowVS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
-    mShaders["shadowSkinnedVS"] = d3dUtil::CompileShader(L"shader\\Shadows.hlsl", skinnedDefines, "VS", "vs_5_1");
+    mShaders["shadowVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["shadowAlphaPS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["shadowSkinnedVS"] = d3dUtil::CompileShader(L"data\\shader\\Shadows.hlsl", skinnedDefines, "VS", "vs_5_1");
 
-    mShaders["compositeVS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["compositePS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["compositeVS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["compositePS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["compositeMultPS"] = d3dUtil::CompileShader(L"shader\\Composite.hlsl", multColorDefines, "PS", "ps_5_1");
+    mShaders["compositeMultPS"] = d3dUtil::CompileShader(L"data\\shader\\Composite.hlsl", multColorDefines, "PS", "ps_5_1");
 
-    mShaders["sobelCS"] = d3dUtil::CompileShader(L"shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
+    mShaders["sobelCS"] = d3dUtil::CompileShader(L"data\\shader\\Sobel.hlsl", nullptr, "CS", "cs_5_1");
 
-    mShaders["blurHorzCS"] = d3dUtil::CompileShader(L"shader\\Blur.hlsl", nullptr, "HorizontalBlurCS", "cs_5_1");
-    mShaders["blurVertCS"] = d3dUtil::CompileShader(L"shader\\Blur.hlsl", nullptr, "VerticalBlurCS", "cs_5_1");
+    mShaders["blurHorzCS"] = d3dUtil::CompileShader(L"data\\shader\\Blur.hlsl", nullptr, "HorizontalBlurCS", "cs_5_1");
+    mShaders["blurVertCS"] = d3dUtil::CompileShader(L"data\\shader\\Blur.hlsl", nullptr, "VerticalBlurCS", "cs_5_1");
 
-    mShaders["debugVS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["debugPS"] = d3dUtil::CompileShader(L"shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["debugVS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["debugPS"] = d3dUtil::CompileShader(L"data\\shader\\Debug.hlsl", nullptr, "PS", "ps_5_1");
 
-    mShaders["outlineVS"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "VS", "vs_5_1");
-    mShaders["outlinePS"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "PS", "ps_5_1");
-    mShaders["outlinePSColl"] = d3dUtil::CompileShader(L"shader\\Outline.hlsl", nullptr, "PS_COLL", "ps_5_1");
+    mShaders["outlineVS"] = d3dUtil::CompileShader(L"data\\shader\\Outline.hlsl", nullptr, "VS", "vs_5_1");
+    mShaders["outlinePS"] = d3dUtil::CompileShader(L"data\\shader\\Outline.hlsl", nullptr, "PS", "ps_5_1");
+    mShaders["outlinePSColl"] = d3dUtil::CompileShader(L"data\\shader\\Outline.hlsl", nullptr, "PS_COLL", "ps_5_1");
 
 }
 
