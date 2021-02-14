@@ -156,22 +156,6 @@
         "Roughness" : 6.0
     },
     {
-        "Name" : "brick0",
-        "Texture" : "Bricks",
-        "NormalMap" : "Bricks_n",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.1,0.1,0.1],
-        "Roughness" : 0.2
-    },
-    {
-        "Name" : "transp",
-        "Texture" : "Bricks",
-        "NormalMap" : "Bricks_n",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,0.7],
-        "FresnelR0" : [0.1,0.1,0.1],
-        "Roughness" : 0.2
-    },
-    {
         "Name" : "transp2",
         "Texture" : "tile",
         "NormalMap" : "tile_nmap",
@@ -179,15 +163,6 @@
         "FresnelR0" : [0.1,0.1,0.1],
         "Roughness" : 0.2
     },
-    {
-        "Name" : "wire",
-        "Texture" : "WireFence",
-        "NormalMap" : "tile_nmap",
-        "DiffuseAlbedo" : [1.0,1.0,1.0,1.0],
-        "FresnelR0" : [0.1,0.1,0.1],
-        "Roughness" : 0.2
-    },
-
     {
         "Name" : "tile0",
         "Texture" : "tile",
