@@ -2158,6 +2158,10 @@ void P_4E53::draw(const GameTime& gt)
     float imguiWindowOpacity = (1.0f - mTransition.blurNormalized()) * 0.85f;
     if(imguiWindowOpacity < 0.125f) imguiWindowOpacity = 0.0f;
 
+    //ImGui::Begin("DBG");
+    //ImGui::Text("Ctr: %.2f\n\t%.2f", ServiceProvider::getInput().current.trigger[TRG::THUMB_LX], ServiceProvider::getInput().current.trigger[TRG::THUMB_LY]);
+    //ImGui::End();
+
     // draw temporary title menu
     if(ServiceProvider::getGameState() == GameState::TITLE && imguiWindowOpacity > 0.0f)
     {

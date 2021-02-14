@@ -127,4 +127,13 @@ private:
     InputSet inputSet = {};
 
     const struct InputData EmptyInputData = {};
+
+    bool useKeyboard = false;
+
+    int charToVKey(char c)
+    {
+        int k = (int)c - 32;
+        return (k < 65 || k > 90) ? -1 : k;
+    }
+
 };
