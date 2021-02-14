@@ -2051,7 +2051,7 @@ void P_4E53::update(const GameTime& gt)
         roundTime += gt.DeltaTime();
 
         /*fps camera controls*/
-        if (inputData.Released(BTN::DPAD_RIGHT))
+        if (inputData.Released(BTN::DPAD_RIGHT) && ServiceProvider::getSettings()->miscSettings.DebugEnabled)
         {
             fpsCameraMode = !fpsCameraMode;
 
@@ -2065,7 +2065,7 @@ void P_4E53::update(const GameTime& gt)
             }
         }
 
-        if(inputData.Pressed(BTN::DPAD_LEFT))
+        if(inputData.Pressed(BTN::DPAD_LEFT) && ServiceProvider::getSettings()->miscSettings.DebugEnabled)
         {
             LOG(Severity::Debug, *ServiceProvider::getActiveCamera());
         }
