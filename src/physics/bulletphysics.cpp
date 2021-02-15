@@ -276,7 +276,15 @@ bool BulletPhysics::collisionCallback(btManifoldPoint& cp, const btCollisionObje
                 player->coins[coinIndex].collected = true;
                 a->setCollision(false);
                 LOG(Severity::Info, "Collected coin " << (coinIndex + 1) << "!");
-                ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "coin_collect");
+                if(player->coinCount() == Coins::CoinCount)
+                {
+                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "all_coins");
+                }
+                else
+                {
+                    ServiceProvider::getAudio()->add(ServiceProvider::getAudioGuid(), "coin_collect");
+                }
+                
             }
 
         }

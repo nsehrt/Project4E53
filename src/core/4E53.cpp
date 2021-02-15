@@ -2208,6 +2208,14 @@ void P_4E53::draw(const GameTime& gt)
             ServiceProvider::getSettings()->gameplaySettings.RandomSeed = ServiceProvider::getRandomizer()->nextInt(10000000, 100000);
         }
 
+        ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
+        ImGui::SetNextWindowPos(ImVec2(10.0f, ServiceProvider::getSettings()->displaySettings.ResolutionHeight - 125.0f), ImGuiCond_Always, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("credit", NULL, windowFlags);
+
+        ImGui::Text("Copyright 2021 Nicolai Sehrt");
+
+        ImGui::End();
+
         ImGui::End();
     }
     else if(ServiceProvider::getGameState() == GameState::INGAME && imguiWindowOpacity > 0.0f)

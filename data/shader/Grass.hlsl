@@ -43,11 +43,6 @@ void GS(point VertexOut gin[1],
     look = normalize(look);
     float3 right = cross(up,look);
 
-    /*fixed*/
-    // float3 up = float3(0.0f,1.0f,0.0f);
-    // float3 look = float3(0.0f,0.0f,0.5f);
-    // float3 right = float3(1.0f,0.0f,0.0f);
-
     float halfW = 0.5f * gin[0].SizeW.x;
     float halfH = 0.5f * gin[0].SizeW.y;
 
