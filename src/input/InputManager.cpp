@@ -190,15 +190,23 @@ void InputManager::Update()
     //keyboard
     else
     {
-        inputData[currentWorkedOn].trigger[TRG::THUMB_LX] = 0.0f;
-        inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = 0.0f;
 
-        inputData[currentWorkedOn].trigger[TRG::THUMB_LX] = keyboard[charToVKey('a')] ? -1.f : 0.01f;
-        inputData[currentWorkedOn].trigger[TRG::THUMB_LX] += keyboard[charToVKey('d')] ? 1.f : 0.01f;
-        inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = keyboard[charToVKey('s')] ? -1.f : 0.01f;
-        inputData[currentWorkedOn].trigger[TRG::THUMB_LY] += keyboard[charToVKey('w')] ? 1.f : 0.01f;
+        inputData[currentWorkedOn].trigger[TRG::THUMB_LX] = keyboard[charToVKey('a')] ? -1.f : 0.00001f;
+        inputData[currentWorkedOn].trigger[TRG::THUMB_LX] += keyboard[charToVKey('d')] ? 1.f : 0.00001f;
+        inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = keyboard[charToVKey('s')] ? -1.f : 0.00001f;
+        inputData[currentWorkedOn].trigger[TRG::THUMB_LY] += keyboard[charToVKey('w')] ? 1.f : 0.00001f;
         inputData[currentWorkedOn].trigger[LEFT_TRIGGER] = keyboard[charToVKey('q')] ? 1.f : 0.f;
         inputData[currentWorkedOn].trigger[RIGHT_TRIGGER] = keyboard[VK_SHIFT] ? 1.f : 0.f;
+
+        if(inputData[currentWorkedOn].trigger[TRG::THUMB_LX] < 0.001f &&
+           inputData[currentWorkedOn].trigger[TRG::THUMB_LX] > -0.001f &&
+           inputData[currentWorkedOn].trigger[TRG::THUMB_LY] < 0.001f &&
+           inputData[currentWorkedOn].trigger[TRG::THUMB_LY] > -0.001f
+           )
+        {
+            inputData[currentWorkedOn].trigger[TRG::THUMB_LX] = 0.0f;
+            inputData[currentWorkedOn].trigger[TRG::THUMB_LY] = 0.0f;
+        }
 
         /*buttons*/
         inputData[currentWorkedOn].buttons[BTN::A] = keyboard[VK_SPACE] || keyboard[VK_RETURN];
