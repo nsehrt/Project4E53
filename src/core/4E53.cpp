@@ -2182,9 +2182,26 @@ void P_4E53::draw(const GameTime& gt)
         ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
         ImGui::SetNextWindowPos(ImVec2(10.0f, centerY * 0.4f), ImGuiCond_Always);
 
-        ImGui::Begin("input seed", NULL, windowFlags);
+        ImGui::Begin("options_window", NULL, windowFlags);
         bool btnInd = false;
         
+        ImGui::Text("Difficulty:");
+
+        static int difficulty = 1;
+
+        ImGui::RadioButton("Easy", &difficulty, 0); ImGui::SameLine();
+        ImGui::RadioButton("Medium", &difficulty, 1); ImGui::SameLine();
+        ImGui::RadioButton("Hard", &difficulty, 2);
+
+        ImGui::Separator();
+
+        switch(difficulty)
+        {
+            case 0: ServiceProvider::getSettings()->gameplaySettings.MazeBraidRatio = 0.8f; break;
+            case 1: ServiceProvider::getSettings()->gameplaySettings.MazeBraidRatio = 0.4f; break;
+            case 2: ServiceProvider::getSettings()->gameplaySettings.MazeBraidRatio = 0.15f; break;
+        }
+
         if(ServiceProvider::getSettings()->gameplaySettings.IndicatorEnabled)
         {
             btnInd = ImGui::Button("Objective indicator is on.");
@@ -2576,7 +2593,8 @@ void P_4E53::setupNewMaze()
     //std::cout << "\n" << glPosX << " , " << glPosY << " " << goalCell->getPosition().second << "\n";
 
 
-    LOG(Severity::Info, "Generated a maze with algorithm " << static_cast<int>(ServiceProvider::getMaze()->algorithm) << ".");
+    LOG(Severity::Info, "Generated maze with algorithm " << static_cast<int>(ServiceProvider::getMaze()->algorithm) << ". (Ratio: " << ServiceProvider::getSettings()->gameplaySettings.MazeBraidRatio << ")");
+    
 }
 
 void P_4E53::drawFrameStats()

@@ -30,6 +30,6 @@ void Maze::generate()
         default: LOG(Severity::Warning, "Undefined maze algorithm!"); break;
     }
 
-    grid.braid(braidRatio);
+    grid.braid(ServiceProvider::getSettings()->gameplaySettings.MazeBraidRatio);
 
 }
