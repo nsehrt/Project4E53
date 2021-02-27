@@ -128,6 +128,7 @@ bool SettingsLoader::loadSettings(const std::string& path)
         settings.inputSettings.InvertYAxis = settingsJson["Input"]["InvertYAxis"];
         settings.inputSettings.Sensitivity = settingsJson["Input"]["Sensitivity"];
         settings.inputSettings.FPSCameraSpeed = settingsJson["Input"]["FPSCameraSpeed"];
+        settings.inputSettings.forceKeyboard = settingsJson["Input"]["ForceKeyboard"];
 
         if (settings.inputSettings.InvertYAxis != 0)
         {

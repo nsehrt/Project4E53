@@ -110,6 +110,11 @@ void InputManager::Update()
 
             return;
         }
+
+        if(ServiceProvider::getSettings()->inputSettings.forceKeyboard)
+        {
+            useKeyboard = true;
+        }
     }
 
     //controller

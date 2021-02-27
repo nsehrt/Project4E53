@@ -21,6 +21,7 @@ struct InputSettings
     int InvertYAxis = 0;
     float Sensitivity = 1.0f;
     float FPSCameraSpeed = 1.0f;
+    bool forceKeyboard = false;
 };
 
 struct GraphicSettings

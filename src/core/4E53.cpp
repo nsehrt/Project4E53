@@ -2224,14 +2224,29 @@ void P_4E53::draw(const GameTime& gt)
         {
             ServiceProvider::getSettings()->gameplaySettings.RandomSeed = ServiceProvider::getRandomizer()->nextInt(10000000, 100000);
         }
+        ImGui::End();
 
+        //Control window
+        ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
+        ImGui::SetNextWindowPos(ImVec2(10.0f, ServiceProvider::getSettings()->displaySettings.ResolutionHeight /2.0f), ImGuiCond_Always, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("Controls", NULL, windowFlags);
+
+        ImGui::BulletText("Move - W/A/S/D or Left stick");
+        ImGui::BulletText("Run - Shift or Right trigger");
+        ImGui::BulletText("Menu up/down - W/A or Dpad up/down");
+        ImGui::BulletText("Confirm - Space or A");
+
+        ImGui::End();
+
+
+        //Credits window
         ImGui::SetNextWindowBgAlpha(imguiWindowOpacity);
         ImGui::SetNextWindowPos(ImVec2(10.0f, ServiceProvider::getSettings()->displaySettings.ResolutionHeight - 125.0f), ImGuiCond_Always, ImVec2(0.0f, 0.0f));
         ImGui::Begin("credit", NULL, windowFlags);
 
         ImGui::Text("Copyright 2021 Nicolai Sehrt");
 
-        ImGui::End();
+        
 
         ImGui::End();
     }
